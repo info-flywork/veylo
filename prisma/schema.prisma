@@ -1,0 +1,378 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────── Kullanıcı ───────────────────────────────
+
+enum Gender {
+  FEMALE
+  MALE
+  NON_BINARY
+  PREFER_NOT_TO_SAY
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DELETION_REQUESTED
+}
+
+enum AuthProvider {
+  GOOGLE
+  APPLE
+  PASSWORD
+  DEV
+}
+
+model User {
+  id                  String       @id @default(uuid()) @db.Char(36)
+  firebaseUid         String       @unique @map("firebase_uid") @db.VarChar(128)
+  authProvider        AuthProvider @map("auth_provider")
+  email               String?      @db.VarChar(255)
+  /// Doğrulama için, herkese açık değil.
+  fullName            String?      @map("full_name") @db.VarChar(100)
+  username            String?      @unique @db.VarChar(30)
+  displayName         String?      @map("display_name") @db.VarChar(50)
+  avatarUrl           String?      @map("avatar_url") @db.VarChar(512)
+  /// Anonim sohbette %70'te gösterilen, sunucuda bulanıklaştırılmış küçük sürüm (ayrı rastgele yol).
+  avatarBlurUrl       String?      @map("avatar_blur_url") @db.VarChar(512)
+  bio                String?      @db.VarChar(160)
+  gender              Gender?
+  interests           Json?
+  chatGoal            String?      @map("chat_goal") @db.VarChar(32)
+  heightCm            Int?         @map("height_cm") @db.SmallInt
+  languages           Json?
+  relationshipGoal    String?      @map("relationship_goal") @db.VarChar(32)
+  zodiac              String?      @db.VarChar(16)
+  education           String?      @db.VarChar(16)
+  pets                String?      @db.VarChar(24)
+  drinking            String?      @db.VarChar(24)
+  smoking             String?      @db.VarChar(24)
+  voiceIntroUrl       String?      @map("voice_intro_url") @db.VarChar(512)
+  borderId            String?      @map("border_id") @db.VarChar(32)
+  profileVisible      Boolean      @default(true) @map("profile_visible")
+  onboardingCompleted Boolean      @default(false) @map("onboarding_completed")
+  tokenBalance        Int          @default(0) @map("token_balance")
+  status              UserStatus   @default(ACTIVE)
+  lastSeenAt          DateTime?    @map("last_seen_at")
+  createdAt           DateTime     @default(now()) @map("created_at")
+  updatedAt           DateTime     @updatedAt @map("updated_at")
+
+  memberships      ConversationMember[]
+  messages         Message[]
+  following        Follow[]                 @relation("follower")
+  followers        Follow[]                 @relation("following")
+  blocksMade       Block[]                  @relation("blocker")
+  blocksReceived   Block[]                  @relation("blocked")
+  reportsMade      Report[]                 @relation("reporter")
+  reportsReceived  Report[]                 @relation("reported")
+  ledger           TokenLedger[]
+  ownedItems       OwnedItem[]
+  devices          DeviceToken[]
+  deletionRequests AccountDeletionRequest[]
+  media            Media[]
+
+  @@map("users")
+}
+
+// ─────────────────────────────── Medya (Bunny Storage) ───────────────────────────────
+
+enum MediaKind {
+  AVATAR
+  AVATAR_BLUR
+  VOICE_INTRO
+  CHAT_IMAGE
+  CHAT_VOICE
+}
+
+model Media {
+  id          String    @id @default(uuid()) @db.Char(36)
+  ownerId     String    @map("owner_id") @db.Char(36)
+  kind        MediaKind
+  /// Depolama içindeki yol, ör. "avatars/2f1c...webp". Kullanıcı id'si yolda yer almaz.
+  path        String    @unique @db.VarChar(255)
+  url         String    @db.VarChar(512)
+  contentType String    @map("content_type") @db.VarChar(64)
+  size        Int
+  width       Int?      @db.SmallInt
+  height      Int?      @db.SmallInt
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  @@index([ownerId, kind])
+  @@map("media")
+}
+
+model Follow {
+  followerId  String   @map("follower_id") @db.Char(36)
+  followingId String   @map("following_id") @db.Char(36)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  follower  User @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@id([followerId, followingId])
+  @@index([followingId, createdAt])
+  @@map("follows")
+}
+
+model DeviceToken {
+  id        String   @id @default(uuid()) @db.Char(36)
+  userId    String   @map("user_id") @db.Char(36)
+  token     String   @unique @db.VarChar(255)
+  platform  String   @db.VarChar(16)
+  /// Bildirim metinlerinin dili (uygulamada seçili dil).
+  locale    String   @default("en") @db.VarChar(8)
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("device_tokens")
+}
+
+// ─────────────────────────────── Mesajlaşma ───────────────────────────────
+
+enum ConversationType {
+  DIRECT
+  ANONYMOUS
+  GROUP
+}
+
+/// PENDING = mesaj isteği (alıcı henüz onaylamadı).
+enum ConversationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum MemberRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  VOICE
+  SYSTEM
+}
+
+model Conversation {
+  id                 String             @id @default(uuid()) @db.Char(36)
+  type               ConversationType
+  status             ConversationStatus @default(ACCEPTED)
+  /// DIRECT/ANONYMOUS için iki kullanıcının sıralı id'leri: aynı çift için ikinci sohbet açılmasın.
+  pairKey            String?            @map("pair_key") @db.VarChar(80)
+  initiatorId        String             @map("initiator_id") @db.Char(36)
+  title              String?            @db.VarChar(80)
+  /// Anonim sohbette 0-100 arası; sunucu hesaplar.
+  connectionProgress Int                @default(0) @map("connection_progress") @db.TinyInt
+  revealedAt         DateTime?          @map("revealed_at")
+  /// Anonim sohbetin Vibes paylaşımından başladıysa alıntı.
+  contextQuote       String?            @map("context_quote") @db.VarChar(160)
+  lastSeq            Int                @default(0) @map("last_seq")
+  lastSenderId       String?            @map("last_sender_id") @db.Char(36)
+  lastMessageAt      DateTime?          @map("last_message_at")
+  lastMessagePreview String?            @map("last_message_preview") @db.VarChar(120)
+  createdAt          DateTime           @default(now()) @map("created_at")
+  updatedAt          DateTime           @updatedAt @map("updated_at")
+
+  members  ConversationMember[]
+  messages Message[]
+
+  @@unique([type, pairKey])
+  @@index([lastMessageAt])
+  @@map("conversations")
+}
+
+model ConversationMember {
+  conversationId String     @map("conversation_id") @db.Char(36)
+  userId         String     @map("user_id") @db.Char(36)
+  role           MemberRole @default(MEMBER)
+  /// Anonim sohbette karşı tarafın gördüğü maskeli ad (ör. "J***").
+  alias          String?    @db.VarChar(40)
+  lastReadSeq    Int        @default(0) @map("last_read_seq")
+  /// "Sohbeti sil": bu seq ve öncesi bu kullanıcıya gösterilmez.
+  clearedSeq     Int        @default(0) @map("cleared_seq")
+  hidden         Boolean    @default(false)
+  pinned         Boolean    @default(false)
+  muted          Boolean    @default(false)
+  revealConsent  Boolean    @default(false) @map("reveal_consent")
+  joinedAt       DateTime   @default(now()) @map("joined_at")
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([conversationId, userId])
+  @@index([userId])
+  @@map("conversation_members")
+}
+
+model Message {
+  id             String      @id @default(uuid()) @db.Char(36)
+  conversationId String      @map("conversation_id") @db.Char(36)
+  seq            Int
+  senderId       String      @map("sender_id") @db.Char(36)
+  /// İstemcinin ürettiği id; tekrar gönderimde aynı mesaj iki kez yazılmaz.
+  clientMsgId    String      @map("client_msg_id") @db.VarChar(64)
+  type           MessageType @default(TEXT)
+  body           String?     @db.Text
+  mediaId        String?     @map("media_id") @db.Char(36)
+  mediaUrl       String?     @map("media_url") @db.VarChar(512)
+  createdAt      DateTime    @default(now()) @map("created_at")
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, seq])
+  @@unique([senderId, clientMsgId])
+  @@map("messages")
+}
+
+// ─────────────────────────────── Güvenlik ───────────────────────────────
+
+/// BLOCK: hiçbir etkileşim yok. RESTRICT: çevrimiçi/okundu bilgisi gizlenir.
+enum BlockType {
+  BLOCK
+  RESTRICT
+}
+
+enum ReportReason {
+  HARASSMENT
+  HATE_SPEECH
+  NUDITY
+  UNDERAGE
+  SPAM
+  SCAM
+  VIOLENCE
+  IMPERSONATION
+  OTHER
+}
+
+enum ReportStatus {
+  OPEN
+  REVIEWING
+  ACTIONED
+  DISMISSED
+}
+
+enum ReportContext {
+  PROFILE
+  CHAT
+  CALL
+  ROOM
+}
+
+model Block {
+  blockerId String    @map("blocker_id") @db.Char(36)
+  blockedId String    @map("blocked_id") @db.Char(36)
+  type      BlockType
+  /// Anonim sohbetten engellendiyse listede kimlik gösterilmez.
+  anonymous Boolean   @default(false)
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  blocker User @relation("blocker", fields: [blockerId], references: [id], onDelete: Cascade)
+  blocked User @relation("blocked", fields: [blockedId], references: [id], onDelete: Cascade)
+
+  @@id([blockerId, blockedId])
+  @@index([blockedId])
+  @@map("blocks")
+}
+
+model Report {
+  id             String        @id @default(uuid()) @db.Char(36)
+  reporterId     String        @map("reporter_id") @db.Char(36)
+  targetUserId   String        @map("target_user_id") @db.Char(36)
+  context        ReportContext
+  conversationId String?       @map("conversation_id") @db.Char(36)
+  reason         ReportReason
+  details        String?       @db.VarChar(1000)
+  status         ReportStatus  @default(OPEN)
+  createdAt      DateTime      @default(now()) @map("created_at")
+  updatedAt      DateTime      @updatedAt @map("updated_at")
+
+  reporter User @relation("reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+  target   User @relation("reported", fields: [targetUserId], references: [id], onDelete: Cascade)
+
+  @@index([status, createdAt])
+  @@index([targetUserId])
+  @@map("reports")
+}
+
+enum DeletionRequestStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+model AccountDeletionRequest {
+  id        String                @id @default(uuid()) @db.Char(36)
+  userId    String                @map("user_id") @db.Char(36)
+  reason    String?               @db.VarChar(1000)
+  status    DeletionRequestStatus @default(PENDING)
+  createdAt DateTime              @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@map("account_deletion_requests")
+}
+
+// ─────────────────────────────── Token ───────────────────────────────
+
+enum LedgerReason {
+  WELCOME_BONUS
+  PURCHASE
+  REFUND
+  ROOM_CREATE
+  ROOM_JOIN
+  CALL_GENDER_FILTER
+  VIDEO_CALL
+  BORDER_PURCHASE
+  POST_BOOST
+  ADMIN_ADJUST
+}
+
+/// Her bakiye değişikliği buraya yazılır; users.token_balance bunun önbelleğidir.
+model TokenLedger {
+  id           String       @id @default(uuid()) @db.Char(36)
+  userId       String       @map("user_id") @db.Char(36)
+  delta        Int
+  balanceAfter Int          @map("balance_after")
+  reason       LedgerReason
+  /// Aynı işlemin iki kez yazılmasını engeller (ör. mağaza transaction id'si).
+  refId        String?      @map("ref_id") @db.VarChar(128)
+  meta         Json?
+  createdAt    DateTime     @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([reason, refId])
+  @@index([userId, createdAt])
+  @@map("token_ledger")
+}
+
+enum OwnedItemType {
+  BORDER
+  FONT
+}
+
+model OwnedItem {
+  userId    String        @map("user_id") @db.Char(36)
+  itemType  OwnedItemType @map("item_type")
+  itemId    String        @map("item_id") @db.VarChar(32)
+  createdAt DateTime      @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, itemType, itemId])
+  @@map("owned_items")
+}
