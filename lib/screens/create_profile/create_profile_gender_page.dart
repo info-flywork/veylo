@@ -4,11 +4,22 @@ import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_selectable_tile.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/screens/create_profile/create_profile_draft.dart';
 import 'package:veylo/screens/create_profile/create_profile_interests_page.dart';
 import 'package:veylo/screens/create_profile/create_profile_nav.dart';
 import 'package:veylo/screens/create_profile/create_profile_shell.dart';
 
-enum ProfileGender { female, male, nonBinary, preferNotToSay }
+enum ProfileGender {
+  female('FEMALE'),
+  male('MALE'),
+  nonBinary('NON_BINARY'),
+  preferNotToSay('PREFER_NOT_TO_SAY');
+
+  const ProfileGender(this.apiValue);
+
+  /// Backend değeri.
+  final String apiValue;
+}
 
 /// Create Profile — 3/5 Gender.
 class CreateProfileGenderPage extends StatefulWidget {
@@ -79,6 +90,7 @@ class _CreateProfileGenderPageState extends State<CreateProfileGenderPage> {
         onPressed: _selected == null
             ? null
             : () {
+                CreateProfileDraft.instance.gender = _selected!.apiValue;
                 Navigator.of(context).push(
                   createProfileRoute(const CreateProfileInterestsPage()),
                 );

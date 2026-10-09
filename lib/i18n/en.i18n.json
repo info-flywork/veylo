@@ -39,7 +39,9 @@
     "revealSubtitle": "Reveal your full profiles to each other? Both sides must agree.",
     "revealWaiting": "Waiting for {name} to accept",
     "revealCta": "Reveal my profile",
-    "revealNotYet": "Not Yet"
+    "revealNotYet": "Not Yet",
+    "seen": "Seen",
+    "typing": "typing…"
   },
   "profile": {
     "eyebrow": "Profile",
@@ -184,7 +186,9 @@
     "reportMessageLabel": "Report Mesajı",
     "reportMessageHint": "Mesajınızı yazın",
     "reportCancel": "Cancel",
-    "sendReport": "Send Report"
+    "sendReport": "Send Report",
+    "notSet": "Not set",
+    "reportSent": "Thanks, we received your report."
   },
   "nav": {
     "discover": "Discover",
@@ -438,7 +442,8 @@
     "termsOfService": "Terms of Service",
     "legalMiddle": " and acknowledge our ",
     "privacyPolicy": "Privacy Policy",
-    "legalSuffix": "."
+    "legalSuffix": ".",
+    "passwordResetSent": "We sent a password reset link to your email."
   },
   "onboarding": {
     "skip": "Skip",
@@ -527,6 +532,28 @@
     "preparingTitleLine3": "you.",
     "preparingSubtitleLine1": "Based on your answers, we're selecting",
     "preparingSubtitleLine2": "the best matches—please wait a moment.",
-    "preparingPercent": "%{percent}"
+    "preparingPercent": "%{percent}",
+    "usernameInvalid": "Use 3–30 letters, numbers, dots or underscores."
+  },
+  "errors": {
+    "network": "Couldn’t reach Veylo. Check your connection and try again.",
+    "generic": "Something went wrong. Please try again.",
+    "signInFailed": "Sign in failed. Please try again.",
+    "sessionExpired": "Your session has ended. Please sign in again.",
+    "accountSuspended": "This account has been suspended.",
+    "unsupportedImage": "Please choose a JPEG, PNG or WebP photo.",
+    "fileTooLarge": "This file is too large.",
+    "enterEmailForReset": "Enter your email above to reset your password.",
+    "wrongCredentials": "Email/username or password is incorrect.",
+    "emailInUse": "This email is already registered. Try logging in.",
+    "weakPassword": "Password must be at least 6 characters.",
+    "invalidEmail": "Please enter a valid email address.",
+    "tooManyAttempts": "Too many attempts. Please wait a bit and try again.",
+    "fillAllFields": "Please fill in all fields.",
+    "insufficientTokens": "Not enough tokens.",
+    "requestNotAccepted": "Accept the request to reply.",
+    "requestPendingLimit": "You can send more messages after they accept your request.",
+    "blocked": "You can’t message this person.",
+    "peerUnavailable": "This account is no longer available."
   }
 }

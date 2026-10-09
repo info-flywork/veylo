@@ -5,6 +5,7 @@ import 'package:veylo/core/widgets/app_interest_chip.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/screens/create_profile/create_profile_draft.dart';
 import 'package:veylo/screens/create_profile/create_profile_chat_goal_page.dart';
 import 'package:veylo/screens/create_profile/create_profile_nav.dart';
 import 'package:veylo/screens/create_profile/create_profile_shell.dart';
@@ -139,6 +140,11 @@ class _CreateProfileInterestsPageState
         label: t.common.continueAction,
         onPressed: canContinue
             ? () {
+                // Ekrandaki sırayla.
+                CreateProfileDraft.instance.interests = [
+                  for (final item in _items)
+                    if (_selected.contains(item.id)) item.id,
+                ];
                 Navigator.of(context).push(
                   createProfileRoute(const CreateProfileChatGoalPage()),
                 );

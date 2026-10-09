@@ -39,7 +39,9 @@
     "revealSubtitle": "Reveal your full profiles to each other? Both sides must agree.",
     "revealWaiting": "Waiting for {name} to accept",
     "revealCta": "Reveal my profile",
-    "revealNotYet": "Not Yet"
+    "revealNotYet": "Not Yet",
+    "seen": "Görüldü",
+    "typing": "yazıyor…"
   },
   "profile": {
     "eyebrow": "Profile",
@@ -184,7 +186,9 @@
     "reportMessageLabel": "Report Mesajı",
     "reportMessageHint": "Mesajınızı yazın",
     "reportCancel": "Cancel",
-    "sendReport": "Send Report"
+    "sendReport": "Send Report",
+    "notSet": "Belirtilmedi",
+    "reportSent": "Teşekkürler, raporunu aldık."
   },
   "nav": {
     "discover": "Discover",
@@ -438,7 +442,8 @@
     "termsOfService": "Hizmet Şartları",
     "legalMiddle": "’nı kabul etmiş ve ",
     "privacyPolicy": "Gizlilik Politikası",
-    "legalSuffix": "’nı onaylamış olursun."
+    "legalSuffix": "’nı onaylamış olursun.",
+    "passwordResetSent": "Şifre sıfırlama bağlantısını e-postana gönderdik."
   },
   "onboarding": {
     "skip": "Atla",
@@ -527,6 +532,28 @@
     "preparingTitleLine3": "hazırlıyoruz.",
     "preparingSubtitleLine1": "Cevaplarına göre en iyi eşleşmeleri",
     "preparingSubtitleLine2": "seçiyoruz—lütfen bir an bekle.",
-    "preparingPercent": "%{percent}"
+    "preparingPercent": "%{percent}",
+    "usernameInvalid": "3–30 karakter: harf, rakam, nokta veya alt çizgi kullan."
+  },
+  "errors": {
+    "network": "Veylo’ya ulaşılamadı. Bağlantını kontrol edip tekrar dene.",
+    "generic": "Bir şeyler ters gitti. Lütfen tekrar dene.",
+    "signInFailed": "Giriş yapılamadı. Lütfen tekrar dene.",
+    "sessionExpired": "Oturumun sona erdi. Lütfen tekrar giriş yap.",
+    "accountSuspended": "Bu hesap askıya alındı.",
+    "unsupportedImage": "Lütfen JPEG, PNG veya WebP bir fotoğraf seç.",
+    "fileTooLarge": "Bu dosya çok büyük.",
+    "enterEmailForReset": "Şifreni sıfırlamak için yukarıya e-postanı yaz.",
+    "wrongCredentials": "E-posta/kullanıcı adı veya şifre hatalı.",
+    "emailInUse": "Bu e-posta zaten kayıtlı. Giriş yapmayı dene.",
+    "weakPassword": "Şifre en az 6 karakter olmalı.",
+    "invalidEmail": "Lütfen geçerli bir e-posta adresi gir.",
+    "tooManyAttempts": "Çok fazla deneme yapıldı. Biraz bekleyip tekrar dene.",
+    "fillAllFields": "Lütfen tüm alanları doldur.",
+    "insufficientTokens": "Yeterli token yok.",
+    "requestNotAccepted": "Cevap vermek için isteği onayla.",
+    "requestPendingLimit": "İsteğini kabul ettiğinde daha fazla mesaj gönderebilirsin.",
+    "blocked": "Bu kişiye mesaj gönderemezsin.",
+    "peerUnavailable": "Bu hesap artık kullanılamıyor."
   }
 }

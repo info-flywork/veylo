@@ -14,6 +14,7 @@ class ChatNote {
   final String userId;
   final String displayName;
   final String statusText;
+
   /// Network URL veya `assets/...` yolu.
   final String avatarUrl;
   final bool isSelf;

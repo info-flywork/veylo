@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:veylo/core/errors/error_messages.dart';
+import 'package:veylo/core/navigation/session_navigation.dart';
+import 'package:veylo/data/remote/session_store.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
-import 'package:veylo/screens/auth/login_page.dart';
 import 'package:veylo/screens/profile/change_email_sheet.dart';
 import 'package:veylo/screens/profile/change_password_sheet.dart';
 import 'package:veylo/screens/profile/delete_account_sheet.dart';
@@ -37,7 +39,7 @@ class AccountManagementPage extends StatefulWidget {
 }
 
 class _AccountManagementPageState extends State<AccountManagementPage> {
-  String _email = 'alex1234567@gmail.com';
+  String _email = SessionStore.instance.me?.email ?? '';
   bool _notificationsEnabled = true;
 
   Future<void> _openEmail() async {
@@ -53,25 +55,27 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
     await showChangePasswordSheet(context);
   }
 
-  Future<void> _toLogin() async {
-    // TODO: gerçek auth logout / token temizliği buraya eklenebilir.
+  Future<void> _toWelcome() async {
     if (!mounted) return;
-    await Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-      MaterialPageRoute<void>(builder: (_) => const LoginPage()),
-      (route) => false,
-    );
+    await goForSession(context, SessionStatus.signedOut);
   }
 
   Future<void> _openLogout() async {
     final ok = await showLogoutSheet(context);
-    if (ok) await _toLogin();
+    if (!ok) return;
+    await SessionStore.instance.signOut();
+    await _toWelcome();
   }
 
   Future<void> _openDelete() async {
     final reason = await showDeleteAccountSheet(context);
     if (reason == null) return;
-    // TODO: silme talebini backend'e gönder (reason).
-    await _toLogin();
+    try {
+      await SessionStore.instance.requestAccountDeletion(reason);
+      await _toWelcome();
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    }
   }
 
   Future<void> _openDeleteConversations() async {

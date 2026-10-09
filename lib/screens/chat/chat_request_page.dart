@@ -4,20 +4,19 @@ import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_back_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/screens/chat/anonymous_chat_page.dart';
+import 'package:veylo/screens/chat/direct_chat_page.dart';
+import 'package:veylo/screens/chat/widgets/chat_thread_tile.dart';
 
-/// Chats → Request — mesaj isteği yoksa empty state.
+/// Chats → Request — takip etmediğin kişilerden gelen mesaj istekleri; yoksa empty state.
 class ChatRequestPage extends StatelessWidget {
-  const ChatRequestPage({super.key, this.requests = const []});
-
-  /// İleride gerçek istek listesi; boşsa empty state.
-  final List<Object> requests;
+  const ChatRequestPage({super.key});
 
   static Future<void> open(BuildContext context) {
     return Navigator.of(context).push<void>(
-      MaterialPageRoute<void>(
-        builder: (_) => const ChatRequestPage(),
-      ),
+      MaterialPageRoute<void>(builder: (_) => const ChatRequestPage()),
     );
   }
 
@@ -42,9 +41,28 @@ class ChatRequestPage extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: requests.isEmpty
-                ? const _RequestEmptyState()
-                : const SizedBox.shrink(),
+            child: ListenableBuilder(
+              listenable: ChatStore.instance,
+              builder: (context, _) {
+                final requests = ChatStore.instance.requests;
+                if (requests.isEmpty) return const _RequestEmptyState();
+                return ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                  itemCount: requests.length,
+                  separatorBuilder: (_, _) => const SizedBox(height: 8),
+                  itemBuilder: (context, index) {
+                    final thread = requests[index];
+                    return ChatThreadTile(
+                      key: ValueKey(thread.id),
+                      thread: thread,
+                      onTap: () => thread.isAnonymous
+                          ? AnonymousChatPage.open(context, thread)
+                          : DirectChatPage.open(context, thread),
+                    );
+                  },
+                );
+              },
+            ),
           ),
         ],
       ),

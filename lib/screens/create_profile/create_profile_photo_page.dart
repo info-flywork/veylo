@@ -8,6 +8,7 @@ import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/screens/create_profile/create_profile_draft.dart';
 import 'package:veylo/screens/create_profile/create_profile_gender_page.dart';
 import 'package:veylo/screens/create_profile/create_profile_nav.dart';
 import 'package:veylo/screens/create_profile/create_profile_shell.dart';
@@ -110,6 +111,7 @@ class _CreateProfilePhotoPageState extends State<CreateProfilePhotoPage> {
   }
 
   void _goGender() {
+    CreateProfileDraft.instance.photoPath = _photo?.path;
     Navigator.of(context).push(
       createProfileRoute(const CreateProfileGenderPage()),
     );

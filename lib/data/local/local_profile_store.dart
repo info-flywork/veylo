@@ -48,8 +48,21 @@ class LocalProfileStore extends ChangeNotifier {
       followerCount: base.followerCount,
       tokenBalance: base.tokenBalance,
       isSelf: base.isSelf,
-      borderId: base.isSelf ? _borderId : null,
+      borderId: base.isSelf ? (_borderId ?? base.borderId) : base.borderId,
     );
+  }
+
+  /// Çıkışta: bir sonraki kullanıcıya önceki kullanıcının yerel düzenlemeleri taşınmasın.
+  Future<void> clear() async {
+    _borderId = null;
+    _displayName = null;
+    _bio = null;
+    final prefs = _prefs ?? await SharedPreferences.getInstance();
+    _prefs = prefs;
+    await prefs.remove(_kBorderId);
+    await prefs.remove(_kDisplayName);
+    await prefs.remove(_kBio);
+    notifyListeners();
   }
 
   Future<void> setBorderId(String? id) async {

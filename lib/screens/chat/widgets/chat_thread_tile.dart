@@ -11,9 +11,9 @@ const _kThreadRowHeight = 58.0;
 const _kActionSize = 44.0;
 const _kActionGap = 10.0;
 const _kActionsPadding = 4.0;
+
 /// 3 buton + 2 gap + sağ padding
-const _kRevealWidth =
-    (_kActionSize * 3) + (_kActionGap * 2) + _kActionsPadding;
+const _kRevealWidth = (_kActionSize * 3) + (_kActionGap * 2) + _kActionsPadding;
 
 const _kPinBg = Color(0xFF7C6CD6);
 const _kBlockBg = Color(0xFF6B6480);
@@ -170,7 +170,9 @@ class _ChatThreadTileState extends State<ChatThreadTile>
                   },
                   child: ColoredBox(
                     color: Color.alphaBlend(
-                      const Color(0xFF998FED).withValues(alpha: 0.1 * openAmount),
+                      const Color(
+                        0xFF998FED,
+                      ).withValues(alpha: 0.1 * openAmount),
                       AppColors.white,
                     ),
                     child: child,
@@ -205,9 +207,7 @@ class _ThreadContent extends StatelessWidget {
             avatarUrl: thread.avatarUrl,
             size: _kThreadAvatarSize,
             userId: thread.peerUserId,
-            displayName: thread.isAnonymous
-                ? thread.maskedName
-                : thread.title,
+            displayName: thread.isAnonymous ? thread.maskedName : thread.title,
             username: thread.peerUsername,
             enabled: !thread.isAnonymous,
             blurred: thread.isAnonymous,

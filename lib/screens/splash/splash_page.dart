@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:veylo/core/assets/app_assets.dart';
+import 'package:veylo/core/errors/error_messages.dart';
+import 'package:veylo/core/navigation/session_navigation.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/data/remote/api_client.dart';
+import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
-import 'package:veylo/screens/onboarding/onboarding_flow_page.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -25,20 +28,44 @@ class _SplashPageState extends State<SplashPage> {
         FlutterNativeSplash.remove();
       } catch (_) {}
     });
-    Future<void>.delayed(_duration, _goOnboarding);
+    _route();
   }
 
-  void _goOnboarding() {
+  /// Açılış animasyonu süresince oturumu geri yükler, sonra doğru ekrana geçer.
+  Future<void> _route() async {
+    final results = await Future.wait<Object?>([
+      Future<void>.delayed(_duration),
+      SessionStore.instance.restore().then<Object?>(
+        (s) => s,
+        onError: (Object e) => e,
+      ),
+    ]);
     if (!mounted) return;
-    Navigator.of(context).pushReplacement(
-      PageRouteBuilder<void>(
-        pageBuilder: (_, _, _) => const OnboardingFlowPage(),
-        transitionsBuilder: (_, animation, _, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-        transitionDuration: const Duration(milliseconds: 400),
+    final outcome = results[1];
+    if (outcome is SessionStatus) {
+      await goForSession(context, outcome);
+      return;
+    }
+    // Firebase oturumu var ama backend'e ulaşılamadı: tekrar dene.
+    await _showRetry(outcome ?? const ApiException(code: 'UNKNOWN'));
+  }
+
+  Future<void> _showRetry(Object error) async {
+    final t = Translations.of(context);
+    await showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
+        content: Text(errorMessage(context, error)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(t.common.retry),
+          ),
+        ],
       ),
     );
+    if (mounted) _route();
   }
 
   @override

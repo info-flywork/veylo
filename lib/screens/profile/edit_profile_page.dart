@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:veylo/core/assets/app_assets.dart';
+import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/data/local/local_profile_store.dart';
 import 'package:veylo/data/mock/profile_mock_repository.dart';
+import 'package:veylo/data/remote/session_store.dart';
+import 'package:veylo/data/remote/user_repository.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/profile/profile_border.dart';
 import 'package:veylo/models/profile/profile_user.dart';
@@ -62,15 +66,20 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   late final TextEditingController _interestCtrl;
   late String _displayName;
-  late ProfileGender _gender;
-  late RelationshipGoal _relationshipGoal;
-  late ZodiacSign _zodiac;
-  late EducationLevel _education;
-  late PetsPreference _pets;
-  late DrinkingPreference _drinking;
-  late SmokingPreference _smoking;
+  // Boş = kullanıcı henüz seçmedi ("Not set").
+  ProfileGender? _gender;
+  /// Onboarding'de seçilen NON_BINARY bu ekranın listesinde yok; dokunulmazsa korunur.
+  String? _apiGender;
+  RelationshipGoal? _relationshipGoal;
+  ZodiacSign? _zodiac;
+  EducationLevel? _education;
+  PetsPreference? _pets;
+  DrinkingPreference? _drinking;
+  SmokingPreference? _smoking;
   bool _profileVisible = true;
   int? _heightCm;
+  bool _saving = false;
+  bool _uploadingPhoto = false;
 
   ProfileUser get _baseProfile =>
       widget.user ?? ProfileMockRepository.currentUser();
@@ -84,13 +93,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final profile = LocalProfileStore.instance.apply(_baseProfile);
     _interestCtrl = TextEditingController(text: profile.bio);
     _displayName = profile.displayName;
-    _gender = ProfileGender.male;
-    _relationshipGoal = RelationshipGoal.newFriends;
-    _zodiac = ZodiacSign.gemini;
-    _education = EducationLevel.bachelors;
-    _pets = PetsPreference.haveCat;
-    _drinking = DrinkingPreference.frequently;
-    _smoking = SmokingPreference.tryingToQuit;
+    final me = SessionStore.instance.me;
+    if (me != null) {
+      _apiGender = me.gender;
+      _gender = switch (me.gender) {
+        'FEMALE' => ProfileGender.female,
+        'MALE' => ProfileGender.male,
+        'PREFER_NOT_TO_SAY' => ProfileGender.preferNotToSay,
+        _ => null,
+      };
+      _relationshipGoal = RelationshipGoal.values.asNameMap()[me.relationshipGoal];
+      _zodiac = ZodiacSign.values.asNameMap()[me.zodiac];
+      _education = EducationLevel.values.asNameMap()[me.education];
+      _pets = PetsPreference.values.asNameMap()[me.pets];
+      _drinking = DrinkingPreference.values.asNameMap()[me.drinking];
+      _smoking = SmokingPreference.values.asNameMap()[me.smoking];
+      _heightCm = me.heightCm;
+      _profileVisible = me.profileVisible;
+    }
   }
 
   Future<void> _openBorderSheet() async {
@@ -101,21 +121,71 @@ class _EditProfilePageState extends State<EditProfilePage> {
     await showProfileBorderSheet(
       context,
       avatarUrl: _profile.avatarUrl,
-      initialBorderId: LocalProfileStore.instance.borderId,
+      initialBorderId: SessionStore.instance.me?.borderId,
     );
     if (mounted) setState(() {});
   }
 
-  Future<void> _saveLocal() async {
-    await LocalProfileStore.instance.patch(
-      displayName: _displayName,
-      bio: _interestCtrl.text,
+  /// Değişiklikleri backend'e kaydeder (PATCH /users/me).
+  Future<void> _save() async {
+    if (_saving) return;
+    setState(() => _saving = true);
+    final bio = _interestCtrl.text.trim();
+    try {
+      await UserRepository.instance.updateProfile({
+        if (_displayName.trim().isNotEmpty) 'displayName': _displayName.trim(),
+        'bio': bio.isEmpty ? null : bio,
+        'heightCm': _heightCm,
+        'relationshipGoal': _relationshipGoal?.name,
+        'zodiac': _zodiac?.name,
+        'education': _education?.name,
+        'pets': _pets?.name,
+        'drinking': _drinking?.name,
+        'smoking': _smoking?.name,
+        'profileVisible': _profileVisible,
+        if (_gender != null)
+          'gender': switch (_gender!) {
+            ProfileGender.female => 'FEMALE',
+            ProfileGender.male => 'MALE',
+            ProfileGender.preferNotToSay => 'PREFER_NOT_TO_SAY',
+          },
+      });
+      // Eski yerel düzenlemeler sunucudaki değerin üstüne yazılmasın.
+      await LocalProfileStore.instance.clear();
+      if (!mounted) return;
+      if (widget.onSave != null) {
+        widget.onSave!();
+      } else {
+        Navigator.of(context).pop();
+      }
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
+  /// Galeriden fotoğraf seçip yükler; profil fotoğrafı hemen değişir.
+  Future<void> _changePhoto() async {
+    if (widget.onChangePhoto != null) {
+      widget.onChangePhoto!();
+      return;
+    }
+    if (_uploadingPhoto) return;
+    final file = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 1024,
+      maxHeight: 1024,
+      imageQuality: 85,
     );
-    if (!mounted) return;
-    if (widget.onSave != null) {
-      widget.onSave!();
-    } else {
-      Navigator.of(context).pop();
+    if (file == null || !mounted) return;
+    setState(() => _uploadingPhoto = true);
+    try {
+      await UserRepository.instance.uploadAvatar(file.path);
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    } finally {
+      if (mounted) setState(() => _uploadingPhoto = false);
     }
   }
 
@@ -136,17 +206,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<void> _openGenderSheet() async {
     final result = await showGenderSheet(
       context,
-      initial: _gender,
+      initial: _gender ?? ProfileGender.female,
     );
     if (result != null && mounted) {
-      setState(() => _gender = result);
+      setState(() {
+        _gender = result;
+        _apiGender = null;
+      });
     }
   }
 
   Future<void> _openRelationshipGoalsSheet() async {
     final result = await showRelationshipGoalsSheet(
       context,
-      initial: _relationshipGoal,
+      initial: _relationshipGoal ?? RelationshipGoal.newFriends,
     );
     if (result != null && mounted) {
       setState(() => _relationshipGoal = result);
@@ -156,7 +229,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<void> _openZodiacSheet() async {
     final result = await showZodiacSheet(
       context,
-      initial: _zodiac,
+      initial: _zodiac ?? ZodiacSign.aries,
     );
     if (result != null && mounted) {
       setState(() => _zodiac = result);
@@ -166,7 +239,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<void> _openEducationSheet() async {
     final result = await showEducationSheet(
       context,
-      initial: _education,
+      initial: _education ?? EducationLevel.highSchool,
     );
     if (result != null && mounted) {
       setState(() => _education = result);
@@ -176,7 +249,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<void> _openPetsSheet() async {
     final result = await showPetsSheet(
       context,
-      initial: _pets,
+      initial: _pets ?? PetsPreference.dontWant,
     );
     if (result != null && mounted) {
       setState(() => _pets = result);
@@ -186,7 +259,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<void> _openDrinkingSheet() async {
     final result = await showDrinkingSheet(
       context,
-      initial: _drinking,
+      initial: _drinking ?? DrinkingPreference.never,
     );
     if (result != null && mounted) {
       setState(() => _drinking = result);
@@ -196,7 +269,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<void> _openSmokingSheet() async {
     final result = await showSmokingSheet(
       context,
-      initial: _smoking,
+      initial: _smoking ?? SmokingPreference.nonSmoker,
     );
     if (result != null && mounted) {
       setState(() => _smoking = result);
@@ -229,7 +302,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   String _genderLabel(Translations$profile$tr t) {
-    return switch (_gender) {
+    final value = _gender;
+    if (value == null) {
+      return _apiGender == 'NON_BINARY'
+          ? Translations.of(context).createProfile.genderNonBinary
+          : t.notSet;
+    }
+    return switch (value) {
       ProfileGender.female => t.genderFemale,
       ProfileGender.male => t.genderMale,
       ProfileGender.preferNotToSay => t.genderPreferNotToSay,
@@ -237,7 +316,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   String _relationshipGoalLabel(Translations$profile$tr t) {
-    return switch (_relationshipGoal) {
+    final value = _relationshipGoal;
+    if (value == null) return t.notSet;
+    return switch (value) {
       RelationshipGoal.longTermOpenToShort => t.goalLongTermOpenToShort,
       RelationshipGoal.longTermRelationship => t.goalLongTermRelationship,
       RelationshipGoal.newFriends => t.goalNewFriends,
@@ -247,7 +328,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   String _educationLabel(Translations$profile$tr t) {
-    return switch (_education) {
+    final value = _education;
+    if (value == null) return t.notSet;
+    return switch (value) {
       EducationLevel.highSchool => t.educationHighSchool,
       EducationLevel.associates => t.educationAssociates,
       EducationLevel.bachelors => t.educationBachelors,
@@ -257,7 +340,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   String _petsLabel(Translations$profile$tr t) {
-    return switch (_pets) {
+    final value = _pets;
+    if (value == null) return t.notSet;
+    return switch (value) {
       PetsPreference.dontWant => t.petsDontWant,
       PetsPreference.allergic => t.petsAllergic,
       PetsPreference.haveCat => t.petsHaveCat,
@@ -268,7 +353,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   String _drinkingLabel(Translations$profile$tr t) {
-    return switch (_drinking) {
+    final value = _drinking;
+    if (value == null) return t.notSet;
+    return switch (value) {
       DrinkingPreference.never => t.drinkingNever,
       DrinkingPreference.specialOccasions => t.drinkingSpecialOccasions,
       DrinkingPreference.socially => t.drinkingSocially,
@@ -279,7 +366,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   String _smokingLabel(Translations$profile$tr t) {
-    return switch (_smoking) {
+    final value = _smoking;
+    if (value == null) return t.notSet;
+    return switch (value) {
       SmokingPreference.nonSmoker => t.smokingNonSmoker,
       SmokingPreference.socialSmoker => t.smokingSocialSmoker,
       SmokingPreference.smoker => t.smokingSmoker,
@@ -307,7 +396,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
     ).label;
 
     return ListenableBuilder(
-      listenable: LocalProfileStore.instance,
+      listenable: Listenable.merge([
+        LocalProfileStore.instance,
+        SessionStore.instance,
+      ]),
       builder: (context, _) {
         final profile = _profile;
         final borderAsset = ProfileBorder.assetFor(profile.borderId);
@@ -321,9 +413,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
           _EditProfileHeader(
             eyebrow: t.eyebrow,
             title: t.editProfile,
-            saveLabel: t.save,
             onBack: () => Navigator.of(context).pop(),
-            onSave: _saveLocal,
+            saveLabel: _saving ? Translations.of(context).common.loading : t.save,
+            onSave: _save,
           ),
           Expanded(
             child: SingleChildScrollView(
@@ -336,7 +428,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   _ChangePhotoRow(
                     avatarUrl: profile.avatarUrl,
                     borderAsset: borderAsset,
-                    onChangePhoto: widget.onChangePhoto,
+                    onChangePhoto: _uploadingPhoto ? null : _changePhoto,
                     onChangeBorder: _openBorderSheet,
                   ),
                   const SizedBox(height: 24),
@@ -390,7 +482,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   _ProfileFieldRow(
                     iconAsset: AppAssets.iconEpZodiac,
                     label: t.zodiac,
-                    value: _zodiac.label,
+                    value: _zodiac?.label ?? t.notSet,
                     onTap: _openZodiacSheet,
                   ),
                   const SizedBox(height: 10),

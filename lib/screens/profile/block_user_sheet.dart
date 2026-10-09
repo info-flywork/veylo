@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/data/remote/safety_repository.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/profile/profile_user.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
@@ -9,14 +11,19 @@ import 'package:veylo/screens/profile/report_user_sheet.dart';
 enum ProfileConfirmAction { block, restrict }
 
 /// Block @user onay sheet’i.
+/// [conversationId] verilirse sohbet üzerinden engellenir; [onDone] işlem bitince çağrılır.
 Future<void> showBlockUserSheet(
   BuildContext context, {
   required ProfileUser user,
+  String? conversationId,
+  VoidCallback? onDone,
 }) {
   return showProfileConfirmSheet(
     context,
     user: user,
     action: ProfileConfirmAction.block,
+    conversationId: conversationId,
+    onDone: onDone,
   );
 }
 
@@ -36,6 +43,8 @@ Future<void> showProfileConfirmSheet(
   BuildContext context, {
   required ProfileUser user,
   required ProfileConfirmAction action,
+  String? conversationId,
+  VoidCallback? onDone,
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -45,6 +54,8 @@ Future<void> showProfileConfirmSheet(
       user: user,
       parentContext: context,
       action: action,
+      conversationId: conversationId,
+      onDone: onDone,
     ),
   );
 }
@@ -55,9 +66,29 @@ class BlockUserSheet extends StatelessWidget {
     required this.user,
     required this.parentContext,
     this.action = ProfileConfirmAction.block,
+    this.conversationId,
+    this.onDone,
   });
 
   final ProfileUser user;
+  final String? conversationId;
+  final VoidCallback? onDone;
+
+  /// Engelle / kısıtla; başarılıysa true.
+  Future<bool> _apply() async {
+    try {
+      if (action == ProfileConfirmAction.restrict) {
+        await SafetyRepository.instance.restrict(user.id);
+      } else {
+        await SafetyRepository.instance.block(userId: user.id, conversationId: conversationId);
+      }
+      onDone?.call();
+      return true;
+    } catch (e) {
+      if (parentContext.mounted) showErrorSnackBar(parentContext, e);
+      return false;
+    }
+  }
   final BuildContext parentContext;
   final ProfileConfirmAction action;
 
@@ -118,7 +149,10 @@ class BlockUserSheet extends StatelessWidget {
                       color: _btnColor,
                       borderRadius: BorderRadius.circular(999),
                       child: InkWell(
-                        onTap: () => Navigator.of(context).pop(),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          _apply();
+                        },
                         borderRadius: BorderRadius.circular(999),
                         child: Center(
                           child: AppText(
@@ -137,13 +171,17 @@ class BlockUserSheet extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       Navigator.of(context).pop();
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        if (parentContext.mounted) {
-                          showReportUserSheet(parentContext, user: user);
-                        }
-                      });
+                      // "Engelle ve raporla": önce engelle, sonra rapor penceresi.
+                      if (!await _apply()) return;
+                      if (parentContext.mounted) {
+                        showReportUserSheet(
+                          parentContext,
+                          user: user,
+                          conversationId: conversationId,
+                        );
+                      }
                     },
                     child: AppText(
                       secondary,

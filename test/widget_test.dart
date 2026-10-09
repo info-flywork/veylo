@@ -21,7 +21,8 @@ void main() {
     expect(find.text('Tekrar hoş geldin'), findsOneWidget);
     expect(find.text('Giriş yap'), findsOneWidget);
     expect(find.text('Şifremi unuttum?'), findsOneWidget);
-    expect(find.text('Apple ile devam et'), findsOneWidget);
+    // Apple ile giriş sadece iOS'ta gösterilir (test ortamı iOS değil).
+    expect(find.text('Apple ile devam et'), findsNothing);
     expect(find.text('Google ile devam et'), findsOneWidget);
   });
 

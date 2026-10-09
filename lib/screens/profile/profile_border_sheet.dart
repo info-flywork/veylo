@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
+import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/data/local/local_profile_store.dart';
 import 'package:veylo/data/mock/profile_mock_repository.dart';
+import 'package:veylo/data/remote/session_store.dart';
+import 'package:veylo/data/remote/user_repository.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/profile/profile_border.dart';
 import 'package:veylo/screens/profile/widgets/profile_framed_avatar.dart';
@@ -29,7 +32,7 @@ Future<String?> showProfileBorderSheet(
     builder: (_) => ProfileBorderSheet(
       avatarUrl: avatarUrl ??
           store.apply(ProfileMockRepository.currentUser()).avatarUrl,
-      initialBorderId: initialBorderId ?? store.borderId,
+      initialBorderId: initialBorderId ?? SessionStore.instance.me?.borderId,
     ),
   );
 }
@@ -72,12 +75,22 @@ class _ProfileBorderSheetState extends State<ProfileBorderSheet> {
     };
   }
 
+  bool _buying = false;
+
+  /// Token ile satın alır (sahipse ücret alınmaz) ve takar. Bakiye yetmezse uyarı.
   Future<void> _confirm() async {
     final id = _selectedId;
-    if (id == null) return;
-    await LocalProfileStore.instance.setBorderId(id);
-    if (!mounted) return;
-    Navigator.of(context).pop(id);
+    if (id == null || _buying) return;
+    setState(() => _buying = true);
+    try {
+      await UserRepository.instance.purchaseBorder(id);
+      if (!mounted) return;
+      Navigator.of(context).pop(id);
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    } finally {
+      if (mounted) setState(() => _buying = false);
+    }
   }
 
   @override
@@ -173,7 +186,7 @@ class _ProfileBorderSheetState extends State<ProfileBorderSheet> {
                   ),
                   AppPrimaryButton(
                     label: t.borderBuyCta,
-                    onPressed: _selectedId == null ? null : _confirm,
+                    onPressed: _selectedId == null || _buying ? null : _confirm,
                   ),
                 ],
               ),

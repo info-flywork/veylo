@@ -1,4 +1,5 @@
 import 'package:veylo/core/assets/app_assets.dart';
+import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/models/profile/profile_user.dart';
 
 class ProfileMockRepository {
@@ -7,7 +8,27 @@ class ProfileMockRepository {
   static const _bio =
       'Vintage fashion, Comoc-con, Fashion, Drawing, Art, Manga';
 
-  static ProfileUser currentUser() => const ProfileUser(
+  /// Giriş yapan kullanıcı (backend). Oturum yoksa (önizleme/test) mock "Alex".
+  static ProfileUser currentUser() {
+    final me = SessionStore.instance.me;
+    if (me == null) return _mockSelf();
+    return ProfileUser(
+      id: me.id,
+      displayName: me.displayName ?? me.username ?? '',
+      username: me.username,
+      // Boş URL → avatar bileşeni yer tutucu ikon gösterir.
+      avatarUrl: me.avatarUrl ?? '',
+      bio: me.bio ?? '',
+      likeCount: me.likeCount,
+      followCount: me.followingCount,
+      followerCount: me.followerCount,
+      tokenBalance: me.tokenBalance,
+      isSelf: true,
+      borderId: me.borderId,
+    );
+  }
+
+  static ProfileUser _mockSelf() => const ProfileUser(
         id: 'user_self',
         displayName: 'Alex',
         username: 'alex',
@@ -171,6 +192,9 @@ class ProfileMockRepository {
 
   static ProfileUser? byId(String? id) {
     if (id == null || id.isEmpty) return null;
+    if (id == 'user_self' || id == SessionStore.instance.me?.id) {
+      return currentUser();
+    }
     return _byId[id];
   }
 

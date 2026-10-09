@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:veylo/core/errors/error_messages.dart';
+import 'package:veylo/core/navigation/session_navigation.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_back_button.dart';
 import 'package:veylo/core/widgets/app_legal_footer.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/widgets/app_text_field.dart';
+import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
-import 'package:veylo/screens/create_profile/create_profile_username_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -29,16 +31,40 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  void _goCreateProfile() {
-    Navigator.of(context).push(
-      PageRouteBuilder<void>(
-        pageBuilder: (_, _, _) => const CreateProfileUsernamePage(),
-        transitionsBuilder: (_, animation, _, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-        transitionDuration: const Duration(milliseconds: 350),
-      ),
-    );
+  bool _busy = false;
+
+  /// Firebase'de hesap açar, backend kullanıcısını oluşturur (+100 token),
+  /// sonra profil oluşturmaya geçer (kullanıcı adı orada hazır gelir).
+  Future<void> _signUp() async {
+    final username = _usernameController.text
+        .trim()
+        .replaceFirst(RegExp(r'^@+'), '')
+        .toLowerCase();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    if (username.isEmpty || email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(Translations.of(context).errors.fillAllFields),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+    FocusScope.of(context).unfocus();
+    setState(() => _busy = true);
+    try {
+      final status = await SessionStore.instance.registerWithEmail(
+        email,
+        password,
+      );
+      if (!mounted) return;
+      await goForSession(context, status, usernameHint: username);
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
   }
 
   @override
@@ -100,8 +126,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     const SizedBox(height: AppSpacing.sectionGap),
                     AppPrimaryButton(
-                      label: t.auth.signUp,
-                      onPressed: _goCreateProfile,
+                      label: _busy ? t.common.loading : t.auth.signUp,
+                      onPressed: _busy ? null : _signUp,
                     ),
                     const SizedBox(height: AppSpacing.xl),
                   ],

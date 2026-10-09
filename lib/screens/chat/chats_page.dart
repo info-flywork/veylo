@@ -3,21 +3,26 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_screen_title.dart';
+import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/data/mock/chat_mock_repository.dart';
+import 'package:veylo/data/remote/chat_repository.dart';
+import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/chat/chat_note.dart';
 import 'package:veylo/models/chat/chat_thread.dart';
+import 'package:veylo/models/profile/profile_user.dart';
 import 'package:veylo/screens/chat/anonymous_chat_page.dart';
 import 'package:veylo/screens/chat/direct_chat_page.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 import 'package:veylo/screens/chat/widgets/chat_thread_tile.dart';
 import 'package:veylo/screens/discover/rooms/group_chat_page.dart';
+import 'package:veylo/screens/profile/block_user_sheet.dart';
 import 'package:veylo/screens/profile/profile_navigation.dart';
 
 const _kSearchFill = Color(0x1A998FED);
 
-/// Ana sohbet listesi — mock veri; backend `ChatRepository` ile değiştirilecek.
+/// Ana sohbet listesi — [ChatStore] üzerinden canlı (socket) güncellenir.
 class ChatsPage extends StatefulWidget {
   const ChatsPage({
     super.key,
@@ -40,6 +45,10 @@ class ChatsPage extends StatefulWidget {
   final void Function(ChatThread thread)? onBlockThread;
   final void Function(ChatThread thread)? onDeleteThread;
 
+  /// Bildirime dokunulunca da aynı ekran açılır.
+  static void openThread(BuildContext context, ChatThread thread) =>
+      _ChatsPageState.openThread(context, thread);
+
   @override
   State<ChatsPage> createState() => _ChatsPageState();
 }
@@ -56,10 +65,16 @@ class _ChatsPageState extends State<ChatsPage> {
     super.initState();
     _reloadThreads();
     _searchCtrl.addListener(() => setState(() {}));
+    ChatStore.instance.addListener(_onStoreChanged);
+  }
+
+  void _onStoreChanged() {
+    if (widget.threads == null && mounted) setState(_reloadThreads);
   }
 
   @override
   void dispose() {
+    ChatStore.instance.removeListener(_onStoreChanged);
     _searchCtrl.dispose();
     _searchFocus.dispose();
     super.dispose();
@@ -83,7 +98,7 @@ class _ChatsPageState extends State<ChatsPage> {
   }
 
   void _reloadThreads() {
-    _threadItems = List.of(widget.threads ?? ChatMockRepository.threads());
+    _threadItems = List.of(widget.threads ?? ChatStore.instance.inbox);
   }
 
   void _toggleSearch() {
@@ -216,10 +231,18 @@ class _ChatsPageState extends State<ChatsPage> {
                       });
                     });
                   },
-                  onPin: () => widget.onPinThread?.call(thread),
-                  onBlock: () => widget.onBlockThread?.call(thread),
+                  onPin: () => widget.onPinThread != null
+                      ? widget.onPinThread!(thread)
+                      : _togglePin(thread),
+                  onBlock: () => widget.onBlockThread != null
+                      ? widget.onBlockThread!(thread)
+                      : _block(context, thread),
                   onDelete: () {
-                    widget.onDeleteThread?.call(thread);
+                    if (widget.onDeleteThread != null) {
+                      widget.onDeleteThread!(thread);
+                    } else {
+                      _delete(thread);
+                    }
                     setState(() {
                       _threadItems.removeWhere((e) => e.id == thread.id);
                       if (_openThreadId == thread.id) _openThreadId = null;
@@ -230,7 +253,7 @@ class _ChatsPageState extends State<ChatsPage> {
                       widget.onOpenThread!(context, thread);
                       return;
                     }
-                    _openThreadDefault(context, thread);
+                    openThread(context, thread);
                   },
                 );
               },
@@ -241,7 +264,49 @@ class _ChatsPageState extends State<ChatsPage> {
     );
   }
 
-  static void _openThreadDefault(BuildContext context, ChatThread thread) {
+  Future<void> _togglePin(ChatThread thread) async {
+    if (thread.isLocalOnly) return;
+    try {
+      await ChatRepository.instance.setPinned(thread.id, !thread.pinned);
+      await ChatStore.instance.refresh();
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    }
+  }
+
+  /// Sadece benim için siler; yeni mesaj gelirse sohbet tekrar görünür.
+  Future<void> _delete(ChatThread thread) async {
+    if (thread.isLocalOnly) return;
+    ChatStore.instance.remove(thread.id);
+    try {
+      await ChatRepository.instance.deleteForMe(thread.id);
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+      await ChatStore.instance.refresh();
+    }
+  }
+
+  /// Sohbet üzerinden engelleme (anonimde kullanıcı id'si bilinmez).
+  void _block(BuildContext context, ChatThread thread) {
+    showBlockUserSheet(
+      context,
+      user: ProfileUser(
+        id: thread.peerUserId ?? '',
+        displayName: thread.maskedName ?? thread.title,
+        username: thread.peerUsername,
+        avatarUrl: thread.avatarUrl,
+        bio: '',
+        likeCount: 0,
+        followCount: 0,
+        followerCount: 0,
+      ),
+      conversationId: thread.isLocalOnly ? null : thread.id,
+      onDone: () => ChatStore.instance.remove(thread.id),
+    );
+  }
+
+  /// Sohbeti türüne göre doğru ekranda açar.
+  static void openThread(BuildContext context, ChatThread thread) {
     if (thread.isAnonymous) {
       AnonymousChatPage.open(context, thread);
       return;

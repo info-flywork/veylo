@@ -13,17 +13,28 @@ class ChatThread {
     this.groupAvatarUrls,
     bool isAnonymous = false,
     this.maskedName,
+
     /// Karşı taraf kullanıcı adı (reveal waiting metni).
     this.peerUsername,
     int connectionProgress = 0,
     bool isOnline = false,
+
     /// Takip edilmeyen kişiden gelen mesaj — Approve / Block / Reject.
     bool isStrangerRequest = false,
-  })  : _isGroup = isGroup,
-        _isAnonymous = isAnonymous,
-        _connectionProgress = connectionProgress,
-        _isOnline = isOnline,
-        _isStrangerRequest = isStrangerRequest;
+    this.status = 'ACCEPTED',
+    this.isInitiator = false,
+    this.revealed = false,
+    this.myRevealConsent = false,
+    this.peerRevealConsent = false,
+    this.pinned = false,
+    this.muted = false,
+    this.peerLastReadSeq,
+    this.contextQuote,
+  }) : _isGroup = isGroup,
+       _isAnonymous = isAnonymous,
+       _connectionProgress = connectionProgress,
+       _isOnline = isOnline,
+       _isStrangerRequest = isStrangerRequest;
 
   final String id;
   final String title;
@@ -42,6 +53,98 @@ class ChatThread {
   final int? _connectionProgress;
   final bool? _isOnline;
   final bool? _isStrangerRequest;
+
+  /// PENDING (istek) | ACCEPTED | REJECTED
+  final String status;
+
+  /// Sohbeti ben başlattım (istek bende "gönderildi" olarak görünür).
+  final bool isInitiator;
+
+  /// Anonim sohbette iki taraf da onay verdi, profiller açıldı.
+  final bool revealed;
+  final bool myRevealConsent;
+  final bool peerRevealConsent;
+  final bool pinned;
+  final bool muted;
+
+  /// Karşı tarafın okuduğu son mesaj (görüldü). Kısıtlandıysam null.
+  final int? peerLastReadSeq;
+
+  /// Vibes'tan başladıysa paylaşım metni.
+  final String? contextQuote;
+
+  /// Backend'de karşılığı olmayan yerel sohbet (ör. Vibes demo akışı).
+  bool get isLocalOnly => id.startsWith('vibe_');
+
+  /// `GET /conversations` satırı → liste modeli.
+  factory ChatThread.fromApi(Map<String, dynamic> j) {
+    final peer = j['peer'] as Map<String, dynamic>?;
+    final connection = j['connection'] as Map<String, dynamic>?;
+    final last = j['lastMessage'] as Map<String, dynamic>?;
+    final isAnonymous = j['type'] == 'ANONYMOUS';
+    final revealed = connection?['revealed'] as bool? ?? false;
+    final title =
+        (j['title'] as String?) ?? (peer?['displayName'] as String?) ?? '';
+    return ChatThread(
+      id: j['id'] as String,
+      title: title,
+      lastMessagePreview: (last?['preview'] as String?) ?? '',
+      avatarUrl: (peer?['avatarUrl'] as String?) ?? '',
+      peerUserId: peer?['id'] as String?,
+      peerUsername: peer?['username'] as String?,
+      lastMessageAt: DateTime.tryParse(last?['at'] as String? ?? '')?.toLocal(),
+      unreadCount: (j['unreadCount'] as num?)?.toInt() ?? 0,
+      isGroup: j['type'] == 'GROUP',
+      memberCount: (j['memberCount'] as num?)?.toInt() ?? 2,
+      // Profiller açılınca normal sohbet gibi gösterilir.
+      isAnonymous: isAnonymous && !revealed,
+      maskedName: isAnonymous && !revealed ? title : null,
+      connectionProgress: (connection?['progress'] as num?)?.toInt() ?? 0,
+      isOnline: j['isOnline'] as bool? ?? false,
+      isStrangerRequest: j['isRequest'] as bool? ?? false,
+      status: j['status'] as String? ?? 'ACCEPTED',
+      isInitiator: j['isInitiator'] as bool? ?? false,
+      revealed: revealed,
+      myRevealConsent: connection?['myConsent'] as bool? ?? false,
+      peerRevealConsent: connection?['peerConsent'] as bool? ?? false,
+      pinned: j['pinned'] as bool? ?? false,
+      muted: j['muted'] as bool? ?? false,
+      peerLastReadSeq: (j['peerLastReadSeq'] as num?)?.toInt(),
+      contextQuote: j['contextQuote'] as String?,
+    );
+  }
+
+  ChatThread copyWith({
+    bool? isOnline,
+    int? peerLastReadSeq,
+    int? unreadCount,
+  }) => ChatThread(
+    id: id,
+    title: title,
+    lastMessagePreview: lastMessagePreview,
+    avatarUrl: avatarUrl,
+    peerUserId: peerUserId,
+    lastMessageAt: lastMessageAt,
+    unreadCount: unreadCount ?? this.unreadCount,
+    isGroup: isGroup,
+    memberCount: memberCount,
+    groupAvatarUrls: groupAvatarUrls,
+    isAnonymous: isAnonymous,
+    maskedName: maskedName,
+    peerUsername: peerUsername,
+    connectionProgress: connectionProgress,
+    isOnline: isOnline ?? this.isOnline,
+    isStrangerRequest: isStrangerRequest,
+    status: status,
+    isInitiator: isInitiator,
+    revealed: revealed,
+    myRevealConsent: myRevealConsent,
+    peerRevealConsent: peerRevealConsent,
+    pinned: pinned,
+    muted: muted,
+    peerLastReadSeq: peerLastReadSeq ?? this.peerLastReadSeq,
+    contextQuote: contextQuote,
+  );
 
   bool get isGroup => _isGroup ?? false;
   bool get isAnonymous => _isAnonymous ?? false;

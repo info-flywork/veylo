@@ -9,11 +9,7 @@ const _kNoteAvatarSize = 68.0;
 const _kAddBadgeSize = 24.0;
 
 class ChatNoteCard extends StatelessWidget {
-  const ChatNoteCard({
-    super.key,
-    required this.note,
-    this.onTap,
-  });
+  const ChatNoteCard({super.key, required this.note, this.onTap});
 
   final ChatNote note;
   final VoidCallback? onTap;
@@ -111,12 +107,7 @@ class ChatAvatarImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (url.startsWith('assets/')) {
-      return Image.asset(
-        url,
-        width: size,
-        height: size,
-        fit: fit,
-      );
+      return Image.asset(url, width: size, height: size, fit: fit);
     }
     return Image.network(
       url,

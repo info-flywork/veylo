@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
+import 'package:veylo/data/remote/push_service.dart';
 import 'package:veylo/i18n/strings.g.dart';
 
 /// Zovi tarzı dil seçim sheet'i. Bayraklar assets/flags altında.
@@ -67,6 +68,7 @@ class _LanguageSheetState extends State<_LanguageSheet> {
   void _apply() {
     // slang yalnızca desteklediği locale'e geçer, diğerlerinde base'e düşer.
     LocaleSettings.setLocaleRaw(_selected.code);
+    PushService.instance.setLanguage(_selected.code);
     Navigator.of(context).pop(_selected);
   }
 

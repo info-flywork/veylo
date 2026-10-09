@@ -54,6 +54,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$auth$tr auth = Translations$auth$tr.internal(_root);
 	late final Translations$onboarding$tr onboarding = Translations$onboarding$tr.internal(_root);
 	late final Translations$createProfile$tr createProfile = Translations$createProfile$tr.internal(_root);
+	late final Translations$errors$tr errors = Translations$errors$tr.internal(_root);
 }
 
 // Path: app
@@ -189,6 +190,12 @@ class Translations$chats$tr {
 
 	/// tr: 'Not Yet'
 	String get revealNotYet => 'Not Yet';
+
+	/// tr: 'Görüldü'
+	String get seen => 'Görüldü';
+
+	/// tr: 'yazıyor…'
+	String get typing => 'yazıyor…';
 }
 
 // Path: profile
@@ -627,6 +634,12 @@ class Translations$profile$tr {
 
 	/// tr: 'Send Report'
 	String get sendReport => 'Send Report';
+
+	/// tr: 'Belirtilmedi'
+	String get notSet => 'Belirtilmedi';
+
+	/// tr: 'Teşekkürler, raporunu aldık.'
+	String get reportSent => 'Teşekkürler, raporunu aldık.';
 }
 
 // Path: nav
@@ -940,6 +953,9 @@ class Translations$auth$tr {
 
 	/// tr: '’nı onaylamış olursun.'
 	String get legalSuffix => '’nı onaylamış olursun.';
+
+	/// tr: 'Şifre sıfırlama bağlantısını e-postana gönderdik.'
+	String get passwordResetSent => 'Şifre sıfırlama bağlantısını e-postana gönderdik.';
 }
 
 // Path: onboarding
@@ -1143,6 +1159,75 @@ class Translations$createProfile$tr {
 
 	/// tr: '%{percent}'
 	String preparingPercent({required Object percent}) => '%${percent}';
+
+	/// tr: '3–30 karakter: harf, rakam, nokta veya alt çizgi kullan.'
+	String get usernameInvalid => '3–30 karakter: harf, rakam, nokta veya alt çizgi kullan.';
+}
+
+// Path: errors
+class Translations$errors$tr {
+	Translations$errors$tr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// tr: 'Veylo’ya ulaşılamadı. Bağlantını kontrol edip tekrar dene.'
+	String get network => 'Veylo’ya ulaşılamadı. Bağlantını kontrol edip tekrar dene.';
+
+	/// tr: 'Bir şeyler ters gitti. Lütfen tekrar dene.'
+	String get generic => 'Bir şeyler ters gitti. Lütfen tekrar dene.';
+
+	/// tr: 'Giriş yapılamadı. Lütfen tekrar dene.'
+	String get signInFailed => 'Giriş yapılamadı. Lütfen tekrar dene.';
+
+	/// tr: 'Oturumun sona erdi. Lütfen tekrar giriş yap.'
+	String get sessionExpired => 'Oturumun sona erdi. Lütfen tekrar giriş yap.';
+
+	/// tr: 'Bu hesap askıya alındı.'
+	String get accountSuspended => 'Bu hesap askıya alındı.';
+
+	/// tr: 'Lütfen JPEG, PNG veya WebP bir fotoğraf seç.'
+	String get unsupportedImage => 'Lütfen JPEG, PNG veya WebP bir fotoğraf seç.';
+
+	/// tr: 'Bu dosya çok büyük.'
+	String get fileTooLarge => 'Bu dosya çok büyük.';
+
+	/// tr: 'Şifreni sıfırlamak için yukarıya e-postanı yaz.'
+	String get enterEmailForReset => 'Şifreni sıfırlamak için yukarıya e-postanı yaz.';
+
+	/// tr: 'E-posta/kullanıcı adı veya şifre hatalı.'
+	String get wrongCredentials => 'E-posta/kullanıcı adı veya şifre hatalı.';
+
+	/// tr: 'Bu e-posta zaten kayıtlı. Giriş yapmayı dene.'
+	String get emailInUse => 'Bu e-posta zaten kayıtlı. Giriş yapmayı dene.';
+
+	/// tr: 'Şifre en az 6 karakter olmalı.'
+	String get weakPassword => 'Şifre en az 6 karakter olmalı.';
+
+	/// tr: 'Lütfen geçerli bir e-posta adresi gir.'
+	String get invalidEmail => 'Lütfen geçerli bir e-posta adresi gir.';
+
+	/// tr: 'Çok fazla deneme yapıldı. Biraz bekleyip tekrar dene.'
+	String get tooManyAttempts => 'Çok fazla deneme yapıldı. Biraz bekleyip tekrar dene.';
+
+	/// tr: 'Lütfen tüm alanları doldur.'
+	String get fillAllFields => 'Lütfen tüm alanları doldur.';
+
+	/// tr: 'Yeterli token yok.'
+	String get insufficientTokens => 'Yeterli token yok.';
+
+	/// tr: 'Cevap vermek için isteği onayla.'
+	String get requestNotAccepted => 'Cevap vermek için isteği onayla.';
+
+	/// tr: 'İsteğini kabul ettiğinde daha fazla mesaj gönderebilirsin.'
+	String get requestPendingLimit => 'İsteğini kabul ettiğinde daha fazla mesaj gönderebilirsin.';
+
+	/// tr: 'Bu kişiye mesaj gönderemezsin.'
+	String get blocked => 'Bu kişiye mesaj gönderemezsin.';
+
+	/// tr: 'Bu hesap artık kullanılamıyor.'
+	String get peerUnavailable => 'Bu hesap artık kullanılamıyor.';
 }
 
 // Path: discover.aiMatch
@@ -1792,6 +1877,8 @@ extension on Translations {
 			'chats.revealWaiting' => ({required Object name}) => 'Waiting for ${name} to accept',
 			'chats.revealCta' => 'Reveal my profile',
 			'chats.revealNotYet' => 'Not Yet',
+			'chats.seen' => 'Görüldü',
+			'chats.typing' => 'yazıyor…',
 			'profile.eyebrow' => 'Profile',
 			'profile.title' => 'Settings',
 			'profile.editProfile' => 'Edit Profile',
@@ -1935,6 +2022,8 @@ extension on Translations {
 			'profile.reportMessageHint' => 'Mesajınızı yazın',
 			'profile.reportCancel' => 'Cancel',
 			'profile.sendReport' => 'Send Report',
+			'profile.notSet' => 'Belirtilmedi',
+			'profile.reportSent' => 'Teşekkürler, raporunu aldık.',
 			'nav.discover' => 'Discover',
 			'nav.chat' => 'Chat',
 			'nav.call' => 'Call',
@@ -2147,6 +2236,7 @@ extension on Translations {
 			'auth.legalMiddle' => '’nı kabul etmiş ve ',
 			'auth.privacyPolicy' => 'Gizlilik Politikası',
 			'auth.legalSuffix' => '’nı onaylamış olursun.',
+			'auth.passwordResetSent' => 'Şifre sıfırlama bağlantısını e-postana gönderdik.',
 			'onboarding.skip' => 'Atla',
 			'onboarding.page1Title' => 'Kendin ol. Anonim kal.',
 			'onboarding.page1Subtitle' => 'Kimliğini paylaşmadan yeni insanlarla tanış ve sohbet et.',
@@ -2230,6 +2320,26 @@ extension on Translations {
 			'createProfile.preparingSubtitleLine1' => 'Cevaplarına göre en iyi eşleşmeleri',
 			'createProfile.preparingSubtitleLine2' => 'seçiyoruz—lütfen bir an bekle.',
 			'createProfile.preparingPercent' => ({required Object percent}) => '%${percent}',
+			'createProfile.usernameInvalid' => '3–30 karakter: harf, rakam, nokta veya alt çizgi kullan.',
+			'errors.network' => 'Veylo’ya ulaşılamadı. Bağlantını kontrol edip tekrar dene.',
+			'errors.generic' => 'Bir şeyler ters gitti. Lütfen tekrar dene.',
+			'errors.signInFailed' => 'Giriş yapılamadı. Lütfen tekrar dene.',
+			'errors.sessionExpired' => 'Oturumun sona erdi. Lütfen tekrar giriş yap.',
+			'errors.accountSuspended' => 'Bu hesap askıya alındı.',
+			'errors.unsupportedImage' => 'Lütfen JPEG, PNG veya WebP bir fotoğraf seç.',
+			'errors.fileTooLarge' => 'Bu dosya çok büyük.',
+			'errors.enterEmailForReset' => 'Şifreni sıfırlamak için yukarıya e-postanı yaz.',
+			'errors.wrongCredentials' => 'E-posta/kullanıcı adı veya şifre hatalı.',
+			'errors.emailInUse' => 'Bu e-posta zaten kayıtlı. Giriş yapmayı dene.',
+			'errors.weakPassword' => 'Şifre en az 6 karakter olmalı.',
+			'errors.invalidEmail' => 'Lütfen geçerli bir e-posta adresi gir.',
+			'errors.tooManyAttempts' => 'Çok fazla deneme yapıldı. Biraz bekleyip tekrar dene.',
+			'errors.fillAllFields' => 'Lütfen tüm alanları doldur.',
+			'errors.insufficientTokens' => 'Yeterli token yok.',
+			'errors.requestNotAccepted' => 'Cevap vermek için isteği onayla.',
+			'errors.requestPendingLimit' => 'İsteğini kabul ettiğinde daha fazla mesaj gönderebilirsin.',
+			'errors.blocked' => 'Bu kişiye mesaj gönderemezsin.',
+			'errors.peerUnavailable' => 'Bu hesap artık kullanılamıyor.',
 			_ => null,
 		};
 	}

@@ -52,6 +52,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$auth$en auth = _Translations$auth$en._(_root);
 	@override late final _Translations$onboarding$en onboarding = _Translations$onboarding$en._(_root);
 	@override late final _Translations$createProfile$en createProfile = _Translations$createProfile$en._(_root);
+	@override late final _Translations$errors$en errors = _Translations$errors$en._(_root);
 }
 
 // Path: app
@@ -115,6 +116,8 @@ class _Translations$chats$en extends Translations$chats$tr {
 	@override String revealWaiting({required Object name}) => 'Waiting for ${name} to accept';
 	@override String get revealCta => 'Reveal my profile';
 	@override String get revealNotYet => 'Not Yet';
+	@override String get seen => 'Seen';
+	@override String get typing => 'typing…';
 }
 
 // Path: profile
@@ -267,6 +270,8 @@ class _Translations$profile$en extends Translations$profile$tr {
 	@override String get reportMessageHint => 'Mesajınızı yazın';
 	@override String get reportCancel => 'Cancel';
 	@override String get sendReport => 'Send Report';
+	@override String get notSet => 'Not set';
+	@override String get reportSent => 'Thanks, we received your report.';
 }
 
 // Path: nav
@@ -422,6 +427,7 @@ class _Translations$auth$en extends Translations$auth$tr {
 	@override String get legalMiddle => ' and acknowledge our ';
 	@override String get privacyPolicy => 'Privacy Policy';
 	@override String get legalSuffix => '.';
+	@override String get passwordResetSent => 'We sent a password reset link to your email.';
 }
 
 // Path: onboarding
@@ -502,6 +508,35 @@ class _Translations$createProfile$en extends Translations$createProfile$tr {
 	@override String get preparingSubtitleLine1 => 'Based on your answers, we\'re selecting';
 	@override String get preparingSubtitleLine2 => 'the best matches—please wait a moment.';
 	@override String preparingPercent({required Object percent}) => '%${percent}';
+	@override String get usernameInvalid => 'Use 3–30 letters, numbers, dots or underscores.';
+}
+
+// Path: errors
+class _Translations$errors$en extends Translations$errors$tr {
+	_Translations$errors$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get network => 'Couldn’t reach Veylo. Check your connection and try again.';
+	@override String get generic => 'Something went wrong. Please try again.';
+	@override String get signInFailed => 'Sign in failed. Please try again.';
+	@override String get sessionExpired => 'Your session has ended. Please sign in again.';
+	@override String get accountSuspended => 'This account has been suspended.';
+	@override String get unsupportedImage => 'Please choose a JPEG, PNG or WebP photo.';
+	@override String get fileTooLarge => 'This file is too large.';
+	@override String get enterEmailForReset => 'Enter your email above to reset your password.';
+	@override String get wrongCredentials => 'Email/username or password is incorrect.';
+	@override String get emailInUse => 'This email is already registered. Try logging in.';
+	@override String get weakPassword => 'Password must be at least 6 characters.';
+	@override String get invalidEmail => 'Please enter a valid email address.';
+	@override String get tooManyAttempts => 'Too many attempts. Please wait a bit and try again.';
+	@override String get fillAllFields => 'Please fill in all fields.';
+	@override String get insufficientTokens => 'Not enough tokens.';
+	@override String get requestNotAccepted => 'Accept the request to reply.';
+	@override String get requestPendingLimit => 'You can send more messages after they accept your request.';
+	@override String get blocked => 'You can’t message this person.';
+	@override String get peerUnavailable => 'This account is no longer available.';
 }
 
 // Path: discover.aiMatch
@@ -839,6 +874,8 @@ extension on TranslationsEn {
 			'chats.revealWaiting' => ({required Object name}) => 'Waiting for ${name} to accept',
 			'chats.revealCta' => 'Reveal my profile',
 			'chats.revealNotYet' => 'Not Yet',
+			'chats.seen' => 'Seen',
+			'chats.typing' => 'typing…',
 			'profile.eyebrow' => 'Profile',
 			'profile.title' => 'Settings',
 			'profile.editProfile' => 'Edit Profile',
@@ -982,6 +1019,8 @@ extension on TranslationsEn {
 			'profile.reportMessageHint' => 'Mesajınızı yazın',
 			'profile.reportCancel' => 'Cancel',
 			'profile.sendReport' => 'Send Report',
+			'profile.notSet' => 'Not set',
+			'profile.reportSent' => 'Thanks, we received your report.',
 			'nav.discover' => 'Discover',
 			'nav.chat' => 'Chat',
 			'nav.call' => 'Call',
@@ -1194,6 +1233,7 @@ extension on TranslationsEn {
 			'auth.legalMiddle' => ' and acknowledge our ',
 			'auth.privacyPolicy' => 'Privacy Policy',
 			'auth.legalSuffix' => '.',
+			'auth.passwordResetSent' => 'We sent a password reset link to your email.',
 			'onboarding.skip' => 'Skip',
 			'onboarding.page1Title' => 'Be yourself. Stay anonymous.',
 			'onboarding.page1Subtitle' => 'Meet new people and start conversations\nwithout revealing who you are.',
@@ -1277,6 +1317,26 @@ extension on TranslationsEn {
 			'createProfile.preparingSubtitleLine1' => 'Based on your answers, we\'re selecting',
 			'createProfile.preparingSubtitleLine2' => 'the best matches—please wait a moment.',
 			'createProfile.preparingPercent' => ({required Object percent}) => '%${percent}',
+			'createProfile.usernameInvalid' => 'Use 3–30 letters, numbers, dots or underscores.',
+			'errors.network' => 'Couldn’t reach Veylo. Check your connection and try again.',
+			'errors.generic' => 'Something went wrong. Please try again.',
+			'errors.signInFailed' => 'Sign in failed. Please try again.',
+			'errors.sessionExpired' => 'Your session has ended. Please sign in again.',
+			'errors.accountSuspended' => 'This account has been suspended.',
+			'errors.unsupportedImage' => 'Please choose a JPEG, PNG or WebP photo.',
+			'errors.fileTooLarge' => 'This file is too large.',
+			'errors.enterEmailForReset' => 'Enter your email above to reset your password.',
+			'errors.wrongCredentials' => 'Email/username or password is incorrect.',
+			'errors.emailInUse' => 'This email is already registered. Try logging in.',
+			'errors.weakPassword' => 'Password must be at least 6 characters.',
+			'errors.invalidEmail' => 'Please enter a valid email address.',
+			'errors.tooManyAttempts' => 'Too many attempts. Please wait a bit and try again.',
+			'errors.fillAllFields' => 'Please fill in all fields.',
+			'errors.insufficientTokens' => 'Not enough tokens.',
+			'errors.requestNotAccepted' => 'Accept the request to reply.',
+			'errors.requestPendingLimit' => 'You can send more messages after they accept your request.',
+			'errors.blocked' => 'You can’t message this person.',
+			'errors.peerUnavailable' => 'This account is no longer available.',
 			_ => null,
 		};
 	}

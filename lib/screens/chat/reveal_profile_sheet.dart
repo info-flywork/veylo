@@ -7,11 +7,12 @@ import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
 
 /// Anonim sohbet %100 — profil açma (reveal) bottom sheet.
-Future<void> showRevealProfileSheet(
+/// "Reveal my profile" seçilirse `true` döner.
+Future<bool?> showRevealProfileSheet(
   BuildContext context, {
   required String peerUsername,
 }) {
-  return showModalBottomSheet<void>(
+  return showModalBottomSheet<bool>(
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
@@ -93,10 +94,7 @@ class RevealProfileSheet extends StatelessWidget {
                       const SizedBox(height: 10),
                       AppPrimaryButton(
                         label: t.revealCta,
-                        onPressed: () {
-                          // TODO: reveal talebini gönder
-                          Navigator.of(context).pop();
-                        },
+                        onPressed: () => Navigator.of(context).pop(true),
                       ),
                       const SizedBox(height: 10),
                       GestureDetector(

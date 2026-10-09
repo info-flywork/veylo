@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/data/remote/safety_repository.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/profile/profile_user.dart';
 
@@ -8,6 +10,7 @@ import 'package:veylo/models/profile/profile_user.dart';
 Future<void> showReportUserSheet(
   BuildContext context, {
   required ProfileUser user,
+  String? conversationId,
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -16,14 +19,15 @@ Future<void> showReportUserSheet(
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
-    builder: (_) => ReportUserSheet(user: user),
+    builder: (_) => ReportUserSheet(user: user, conversationId: conversationId),
   );
 }
 
 class ReportUserSheet extends StatefulWidget {
-  const ReportUserSheet({super.key, required this.user});
+  const ReportUserSheet({super.key, required this.user, this.conversationId});
 
   final ProfileUser user;
+  final String? conversationId;
 
   @override
   State<ReportUserSheet> createState() => _ReportUserSheetState();
@@ -35,10 +39,33 @@ class _ReportUserSheetState extends State<ReportUserSheet> {
   static const _btnColor = Color(0xFF1A1714);
   static const _sendColor = Color(0xFFEC1C24);
 
+  bool _sending = false;
+
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  Future<void> _send() async {
+    if (_sending) return;
+    setState(() => _sending = true);
+    final messenger = ScaffoldMessenger.of(context);
+    final sent = Translations.of(context).profile.reportSent;
+    try {
+      await SafetyRepository.instance.report(
+        userId: widget.user.id,
+        conversationId: widget.conversationId,
+        details: _controller.text.trim(),
+      );
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      messenger.showSnackBar(SnackBar(content: Text(sent), behavior: SnackBarBehavior.floating));
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    } finally {
+      if (mounted) setState(() => _sending = false);
+    }
   }
 
   @override
@@ -173,7 +200,7 @@ class _ReportUserSheetState extends State<ReportUserSheet> {
               ),
               const SizedBox(height: 14),
               GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
+                onTap: _send,
                 child: AppText(
                   t.sendReport,
                   style: const TextStyle(

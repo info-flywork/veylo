@@ -6,6 +6,7 @@ import 'package:veylo/core/widgets/app_back_button.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/data/local/local_profile_store.dart';
+import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/data/mock/profile_mock_repository.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/profile/profile_border.dart';
@@ -72,7 +73,10 @@ class _ProfilePageState extends State<ProfilePage> {
     final media = ProfileMockRepository.mediaFor(_tab.name);
 
     return ListenableBuilder(
-      listenable: LocalProfileStore.instance,
+      listenable: Listenable.merge([
+        LocalProfileStore.instance,
+        SessionStore.instance,
+      ]),
       builder: (context, _) {
         final base = widget.user ?? ProfileMockRepository.currentUser();
         final profile = base.isSelf
