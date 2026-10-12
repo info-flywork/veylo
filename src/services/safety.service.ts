@@ -87,11 +87,15 @@ async function report(input: {
   reason: ReportReason;
   details?: string;
   conversationId?: string;
+  contentId?: string;
 }) {
   if (input.reporterId === input.targetUserId) throw AppError.badRequest('CANNOT_REPORT_SELF');
   const target = await prisma.user.findUnique({ where: { id: input.targetUserId }, select: { id: true } });
   if (!target) throw AppError.notFound('USER_NOT_FOUND');
-  const created = await prisma.report.create({ data: input });
+  const { reporterId, targetUserId, context, reason, details, conversationId, contentId } = input;
+  const created = await prisma.report.create({
+    data: { reporterId, targetUserId, context, reason, details, conversationId, contentId },
+  });
   return { id: created.id, status: created.status };
 }
 

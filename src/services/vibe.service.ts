@@ -147,8 +147,9 @@ async function report(viewerId: string, vibeId: string, input: { reason: ReportR
     reporterId: viewerId,
     targetUserId: v.authorId,
     context: 'VIBE',
+    contentId: v.id,
     reason: input.reason,
-    details: [`vibe:${v.id}`, `"${v.body}"`, input.details].filter(Boolean).join('\n').slice(0, 1000),
+    details: [`"${v.body}"`, input.details].filter(Boolean).join('\n').slice(0, 1000),
   });
 }
 

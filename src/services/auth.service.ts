@@ -39,13 +39,42 @@ async function verifyToken(rawToken: string | undefined): Promise<FirebaseIdenti
   }
 }
 
+/**
+ * Askıya alınmış hesap: süresi dolduysa hesabı açar ve güncel kullanıcıyı döner, dolmadıysa reddeder.
+ * Diğer durumlarda kullanıcıyı olduğu gibi döner.
+ */
+async function ensureNotSuspended<T extends Pick<User, 'id' | 'status' | 'suspendedUntil'>>(user: T): Promise<T> {
+  if (user.status !== 'SUSPENDED') return user;
+  if (!user.suspendedUntil || user.suspendedUntil > new Date()) throw AppError.forbidden('ACCOUNT_SUSPENDED');
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { status: 'ACTIVE', suspendedUntil: null, suspendedReason: null },
+  });
+  return { ...user, status: 'ACTIVE', suspendedUntil: null };
+}
+
 /** Kullanıcı yoksa oluşturur ve hoş geldin token'ını verir. */
 async function upsertSession(identity: FirebaseIdentity): Promise<{ user: User; isNew: boolean }> {
-  const existing = await prisma.user.findUnique({ where: { firebaseUid: identity.uid } });
-  if (existing) {
-    const user = await prisma.user.update({
-      where: { id: existing.id },
-      data: { lastSeenAt: new Date(), email: identity.email ?? existing.email },
+  const found = await prisma.user.findUnique({ where: { firebaseUid: identity.uid } });
+  if (found) {
+    const existing = await ensureNotSuspended(found);
+    // Silme isteğinden sonraki bekleme süresinde tekrar giriş: hesap geri alınır.
+    const restoring = existing.status === 'DELETION_REQUESTED';
+    const user = await prisma.$transaction(async (tx) => {
+      if (restoring) {
+        await tx.accountDeletionRequest.updateMany({
+          where: { userId: existing.id, status: 'PENDING' },
+          data: { status: 'CANCELLED', processedAt: new Date() },
+        });
+      }
+      return tx.user.update({
+        where: { id: existing.id },
+        data: {
+          lastSeenAt: new Date(),
+          email: identity.email ?? existing.email,
+          ...(restoring ? { status: 'ACTIVE' as const } : {}),
+        },
+      });
     });
     return { user, isNew: false };
   }
@@ -71,10 +100,10 @@ async function loginWithUsername(username: string, password: string): Promise<st
 
   const user = await prisma.user.findUnique({
     where: { username },
-    select: { firebaseUid: true, email: true, authProvider: true, status: true },
+    select: { id: true, firebaseUid: true, email: true, authProvider: true, status: true, suspendedUntil: true },
   });
   if (!user?.email || user.authProvider !== 'PASSWORD') throw AppError.unauthorized('INVALID_CREDENTIALS');
-  if (user.status === 'SUSPENDED') throw AppError.forbidden('ACCOUNT_SUSPENDED');
+  await ensureNotSuspended(user);
 
   const res = await fetch(
     `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${env.FIREBASE_WEB_API_KEY}`,
@@ -95,4 +124,4 @@ async function loginWithUsername(username: string, password: string): Promise<st
   return auth.createCustomToken(user.firebaseUid);
 }
 
-export const authService = { verifyToken, upsertSession, loginWithUsername };
+export const authService = { verifyToken, upsertSession, loginWithUsername, ensureNotSuspended };

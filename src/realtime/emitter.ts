@@ -29,3 +29,8 @@ export function joinChannel(userId: string, channel: string) {
 export function leaveChannel(userId: string, channel: string) {
   io?.in(userRoom(userId)).socketsLeave(channel);
 }
+
+/** Kullanıcının tüm bağlantılarını kapatır (askıya alma / hesap silme). */
+export function disconnectUser(userId: string) {
+  io?.in(userRoom(userId)).disconnectSockets(true);
+}

@@ -120,7 +120,7 @@ Hata cevapları her zaman `{ "error": { "code": "...", "message": "..." } }` şe
 | POST | `/users/me/onboarding` | Profil oluşturma (ad, kullanıcı adı, cinsiyet, ilgi alanları, hedef) |
 | GET | `/users/username-available?username=` | Müsaitlik + öneriler |
 | POST / DELETE | `/users/me/devices` | FCM token kaydet / sil |
-| POST | `/users/me/deletion-request` | Hesap silme talebi |
+| POST | `/users/me/deletion-request` | Hesap silme talebi (bkz. Hesap silme) |
 | GET | `/users/:id` | Başkasının profili |
 | POST / DELETE | `/users/:id/follow` | Takip et / bırak |
 | GET | `/users/:id/followers`, `/users/:id/following` | Listeler (cursor) |
@@ -176,12 +176,46 @@ tekrar gönderilir; sunucu ikinci kez yazmaz. Bağlantı kopup gelince her açı
 **Anonimlik:** anonim sohbet açılana kadar karşı tarafın `id`, kullanıcı adı ve fotoğrafı hiçbir cevapta
 dönmez; mesajlarda `senderId` null'dır; çevrimiçi bilgisi sohbet id'si ile gelir.
 
+## Hesap silme
+
+`POST /users/me/deletion-request` hesabı hemen gizler (akışlarda görünmez, oturum ve bildirimler kapanır).
+`ACCOUNT_DELETION_GRACE_DAYS` (varsayılan 30) gün içinde tekrar giriş yapan kullanıcının hesabı geri gelir.
+Süre dolunca saatlik iş (`src/jobs/account-deletion.job.ts`) hesabı kalıcı siler: birebir/anonim sohbetler
+(karşı taraftan da), grup üyelikleri (sahiplik sıradaki üyeye geçer), Bunny'deki dosyalar, Firebase hesabı ve
+veritabanındaki tüm kayıtlar. Bir adım başarısız olursa bir sonraki turda tekrar denenir.
+
+## Yönetim paneli API'si (`/api/v1/admin`)
+
+Panel ayrı bir uygulamadır; bu uçları sunucu tarafından (tercihen) çağırır. Her istekte:
+
+- `x-admin-key: <ADMIN_API_KEY>` (`.env`; boşsa tüm `/admin` uçları 404 döner)
+- `x-admin-actor: <işlemi yapan kişi>` (ör. e-posta; işlem kaydına yazılır)
+
+Panel tarayıcıdan doğrudan çağıracaksa panelin adresi `CORS_ORIGINS`'e eklenmeli ve anahtar tarayıcıya
+verilmemeli (panelin kendi sunucusu üzerinden geçirin). Yanlış anahtar denemeleri 15 dakikada 20 ile sınırlı.
+
+| Metot | Yol | Açıklama |
+|---|---|---|
+| GET | `/admin/stats` | Kullanıcı sayıları (durumlara göre), açık/incelenen şikayet, bekleyen silme |
+| GET | `/admin/reports?status=OPEN\|REVIEWING\|ACTIONED\|DISMISSED\|ALL&context=&targetUserId=&limit=&cursor=` | Şikayetler (açıklar en eski önce); şikayet eden, şikayet edilen (+toplam şikayet sayısı), içerik önizlemesi |
+| GET | `/admin/reports/:id` | Detay: içerik, şikayet edilen sohbetin son 50 mesajı, kişinin diğer şikayetleri ve işlem geçmişi |
+| PATCH | `/admin/reports/:id` | `{status: OPEN\|REVIEWING}` |
+| POST | `/admin/reports/:id/resolve` | `{decision: DISMISS\|ACTION, removeContent?, suspendDays?: number\|null, note?}` — `suspendDays: null` süresiz askı; içerik kaldırılınca aynı içeriğin diğer açık şikayetleri de kapanır |
+| GET | `/admin/users?q=&status=&limit=&cursor=` | Arama (kullanıcı adı, ad, e-posta, id) |
+| GET | `/admin/users/:id` | Detay: sayılar, aldığı şikayetler, silme istekleri, işlem geçmişi |
+| POST | `/admin/users/:id/suspend` | `{days: number\|null, reason}` — bağlantıları hemen kesilir, içerikleri gizlenir |
+| POST | `/admin/users/:id/unsuspend` | `{note?}` |
+| GET | `/admin/deletion-requests?status=PENDING\|CANCELLED\|ALL` | Silme istekleri (`purgeAt` = kalıcı silinme zamanı) |
+| POST | `/admin/deletion-requests/:id/purge` | `{note?}` beklemeden kalıcı sil |
+| GET | `/admin/actions?targetUserId=&limit=&cursor=` | İşlem kaydı (silinen kullanıcılar dahil) |
+
+Listeler `{items, nextCursor}` döner; sonraki sayfa için `cursor=<nextCursor>`.
+Askı süresi dolan hesap, kullanıcı bir sonraki istekte bulunduğunda kendiliğinden açılır.
+Test: `npx tsx scripts/smoke-admin.ts` (ardından `scripts/cleanup-dev-users.ts --smoke --yes`).
+
 ## Sıradaki adımlar
 
-- Aramalar: 60 sn yabancı eşleştirme kuyruğu, Agora token, karşılıklı "devam", video (token ile)
-- Odalar: sahne/koltuk, el kaldırma, katılma istekleri
 - Sohbet medyası için Bunny Token Authentication (süreli imzalı URL) ve kullanılmayan yüklemeleri temizleme işi
-- Vibes, keşfet, hikayeler; admin paneli (raporlar, silme talepleri)
 
 ## AI karakterler (persona)
 

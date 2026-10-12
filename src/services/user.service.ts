@@ -1,7 +1,9 @@
 import type { Prisma, User } from '@prisma/client';
 import { BORDER_CATALOG, RESERVED_USERNAMES } from '../config/constants';
+import { env } from '../config/env';
 import { AppError } from '../errors/AppError';
 import { prisma } from '../lib/prisma';
+import { disconnectUser } from '../realtime/emitter';
 import { serializeMe, serializePublicProfile, serializeUserSummary } from '../serializers/user.serializer';
 import { notificationService } from './notification.service';
 import { safetyService } from './safety.service';
@@ -209,12 +211,15 @@ async function removeDevice(userId: string, token: string) {
 }
 
 /** Apple kuralı: silme uygulama içinden başlatılabilmeli. Talep kaydedilir, hesap hemen gizlenir. */
+/** Hesap hemen gizlenir; veriler bekleme süresinden sonra kalıcı silinir (bkz. jobs/account-deletion). */
 async function requestDeletion(user: User, reason?: string) {
+  const purgeAt = new Date(Date.now() + env.ACCOUNT_DELETION_GRACE_DAYS * 24 * 60 * 60 * 1000);
   await prisma.$transaction([
-    prisma.accountDeletionRequest.create({ data: { userId: user.id, reason } }),
+    prisma.accountDeletionRequest.create({ data: { userId: user.id, reason, purgeAt } }),
     prisma.user.update({ where: { id: user.id }, data: { status: 'DELETION_REQUESTED' } }),
     prisma.deviceToken.deleteMany({ where: { userId: user.id } }),
   ]);
+  disconnectUser(user.id);
 }
 
 export const userService = {

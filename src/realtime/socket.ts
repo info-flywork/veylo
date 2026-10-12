@@ -29,8 +29,9 @@ export function initSocket(httpServer: HttpServer) {
   io.use(async (socket, next) => {
     try {
       const identity = await authService.verifyToken(socket.handshake.auth?.token);
-      const user = await prisma.user.findUnique({ where: { firebaseUid: identity.uid } });
-      if (!user) throw AppError.unauthorized('USER_NOT_REGISTERED');
+      const found = await prisma.user.findUnique({ where: { firebaseUid: identity.uid } });
+      if (!found) throw AppError.unauthorized('USER_NOT_REGISTERED');
+      const user = await authService.ensureNotSuspended(found);
       if (user.status !== 'ACTIVE') throw AppError.forbidden('ACCOUNT_NOT_ACTIVE');
       if (!user.onboardingCompleted) throw AppError.forbidden('ONBOARDING_REQUIRED');
       socket.data.userId = user.id;

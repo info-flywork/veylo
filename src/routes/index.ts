@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { prisma } from '../lib/prisma';
 import { presence } from '../realtime/presence.store';
+import { adminRoutes } from './admin.routes';
 import { authRoutes } from './auth.routes';
 import { conversationRoutes } from './conversation.routes';
 import { groupRoutes } from './group.routes';
@@ -36,3 +37,4 @@ apiRoutes.use('/safety', safetyRoutes);
 apiRoutes.use('/tokens', tokenRoutes);
 apiRoutes.use('/store', storeRoutes);
 apiRoutes.use('/webhooks', webhookRoutes);
+apiRoutes.use('/admin', adminRoutes);

@@ -11,6 +11,8 @@ declare global {
     interface Request {
       identity?: FirebaseIdentity;
       user?: User;
+      /** Yönetim panelini kullanan kişi (x-admin-actor). */
+      adminActor?: string;
       /** validate() middleware'inin ayrıştırdığı değerler. */
       valid: { body?: any; query?: any; params?: any };
     }

@@ -27,6 +27,8 @@ CREATE TABLE `users` (
     `onboarding_completed` BOOLEAN NOT NULL DEFAULT false,
     `token_balance` INTEGER NOT NULL DEFAULT 0,
     `status` ENUM('ACTIVE', 'SUSPENDED', 'DELETION_REQUESTED') NOT NULL DEFAULT 'ACTIVE',
+    `suspended_until` DATETIME(3) NULL,
+    `suspended_reason` VARCHAR(500) NULL,
     `is_persona` BOOLEAN NOT NULL DEFAULT false,
     `last_seen_at` DATETIME(3) NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -159,9 +161,13 @@ CREATE TABLE `reports` (
     `target_user_id` CHAR(36) NOT NULL,
     `context` ENUM('PROFILE', 'CHAT', 'CALL', 'ROOM', 'VIBE', 'GROUP', 'POST') NOT NULL,
     `conversation_id` CHAR(36) NULL,
+    `content_id` CHAR(36) NULL,
     `reason` ENUM('HARASSMENT', 'HATE_SPEECH', 'NUDITY', 'UNDERAGE', 'SPAM', 'SCAM', 'VIOLENCE', 'IMPERSONATION', 'OTHER') NOT NULL,
     `details` VARCHAR(1000) NULL,
     `status` ENUM('OPEN', 'REVIEWING', 'ACTIONED', 'DISMISSED') NOT NULL DEFAULT 'OPEN',
+    `resolution` VARCHAR(32) NULL,
+    `admin_note` VARCHAR(1000) NULL,
+    `resolved_at` DATETIME(3) NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -177,8 +183,10 @@ CREATE TABLE `account_deletion_requests` (
     `reason` VARCHAR(1000) NULL,
     `status` ENUM('PENDING', 'COMPLETED', 'CANCELLED') NOT NULL DEFAULT 'PENDING',
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `purge_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `processed_at` DATETIME(3) NULL,
 
-    INDEX `account_deletion_requests_status_idx`(`status`),
+    INDEX `account_deletion_requests_status_purge_at_idx`(`status`, `purge_at`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -375,6 +383,22 @@ CREATE TABLE `room_join_requests` (
     `updated_at` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `room_join_requests_room_id_user_id_key`(`room_id`, `user_id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `admin_actions` (
+    `id` CHAR(36) NOT NULL,
+    `actor` VARCHAR(100) NOT NULL,
+    `action` VARCHAR(32) NOT NULL,
+    `target_user_id` CHAR(36) NULL,
+    `target_label` VARCHAR(100) NULL,
+    `report_id` CHAR(36) NULL,
+    `note` VARCHAR(1000) NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    INDEX `admin_actions_target_user_id_idx`(`target_user_id`),
+    INDEX `admin_actions_created_at_idx`(`created_at`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

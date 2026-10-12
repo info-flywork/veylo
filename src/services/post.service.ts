@@ -344,8 +344,9 @@ async function report(viewerId: string, postId: string, input: { reason: ReportR
     reporterId: viewerId,
     targetUserId: p.authorId,
     context: 'POST',
+    contentId: p.id,
     reason: input.reason,
-    details: [`post:${p.id}`, input.details].filter(Boolean).join('\n').slice(0, 1000),
+    details: input.details,
   });
 }
 

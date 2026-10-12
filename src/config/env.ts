@@ -32,6 +32,10 @@ const envSchema = z
     OPENAI_MODEL: z.string().default('gpt-4o-mini'),
     /** Test için değiştirilebilir (ör. yerel sahte sunucu). */
     OPENAI_BASE_URL: z.string().default('https://api.openai.com/v1'),
+    /** Yönetim paneli API anahtarı (x-admin-key). Boşsa /admin kapalıdır. */
+    ADMIN_API_KEY: z.string().min(32).optional().or(z.literal('').transform(() => undefined)),
+    /** Silme isteğinden kalıcı silmeye kadar geçen gün (bu sürede giriş yapan hesabını geri alır). */
+    ACCOUNT_DELETION_GRACE_DAYS: z.coerce.number().int().min(0).default(30),
     /** Bir kullanıcının AI karakterlerden günde alabileceği en fazla cevap. */
     PERSONA_USER_DAILY_REPLIES: z.coerce.number().int().positive().default(60),
     /** Tüm sistemde günlük en fazla OpenAI çağrısı (maliyet tavanı). */
