@@ -1,0 +1,5 @@
+.DS_Store
+# APNs sertifikaları ve anahtarlar asla repoya girmez
+apns-cert/
+*.p8
+*.p12
