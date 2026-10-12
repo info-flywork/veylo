@@ -6,6 +6,11 @@ import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/core/errors/error_messages.dart';
+import 'package:veylo/data/remote/chat_repository.dart';
+import 'package:veylo/data/remote/chat_store.dart';
+import 'package:veylo/data/remote/match_repository.dart';
+import 'package:veylo/screens/chat/anonymous_chat_page.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/screens/discover/rooms/group_chat_page.dart';
 
@@ -19,12 +24,18 @@ class _MatchProfile {
     required this.name,
     required this.age,
     required this.vibePercent,
+    this.bio,
+    this.userId,
   });
 
   final String imageAsset;
   final String name;
+
+  /// 0: bilinmiyor (profilde doğum tarihi yok) → sadece ad gösterilir.
   final int age;
   final int vibePercent;
+  final String? bio;
+  final String? userId;
 }
 
 const _kMatches = [
@@ -56,7 +67,10 @@ const _kMatches = [
 
 /// AI Match sonucu — Your Match ekranı.
 class YourMatchPage extends StatefulWidget {
-  const YourMatchPage({super.key});
+  const YourMatchPage({super.key, this.matches});
+
+  /// Sunucudan gelen eşleşmeler (null: örnek kartlar).
+  final List<MatchCandidate>? matches;
 
   @override
   State<YourMatchPage> createState() => _YourMatchPageState();
@@ -65,6 +79,24 @@ class YourMatchPage extends StatefulWidget {
 class _YourMatchPageState extends State<YourMatchPage> {
   late final PageController _pageController;
   bool _showSwipeHint = true;
+  bool _opening = false;
+
+  /// Gösterilen kartlar: gerçek eşleşmeler ya da (önizlemede) örnekler.
+  late final List<_MatchProfile> _cards = widget.matches == null
+      ? _kMatches
+      : [
+          for (final m in widget.matches!)
+            _MatchProfile(
+              imageAsset: (m.avatarUrl?.isNotEmpty ?? false)
+                  ? m.avatarUrl!
+                  : AppAssets.strangerAvatar,
+              name: m.displayName,
+              age: 0,
+              vibePercent: m.vibePercent,
+              bio: m.bio,
+              userId: m.userId,
+            ),
+        ];
 
   @override
   void initState() {
@@ -80,7 +112,7 @@ class _YourMatchPageState extends State<YourMatchPage> {
 
   void _goToNextMatch() {
     final page = _pageController.page?.round() ?? 0;
-    if (page < _kMatches.length - 1) {
+    if (page < _cards.length - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 320),
         curve: Curves.easeOutCubic,
@@ -88,17 +120,34 @@ class _YourMatchPageState extends State<YourMatchPage> {
     }
   }
 
-  void _startChatting() {
+  Future<void> _startChatting() async {
+    if (_cards.isEmpty) return;
     final page = _pageController.hasClients
         ? (_pageController.page?.round() ?? 0)
         : 0;
-    final match = _kMatches[page.clamp(0, _kMatches.length - 1)];
-    GroupChatPage.open(
-      context,
-      title: match.name,
-      memberCount: 1,
-      avatars: [match.imageAsset],
-    );
+    final match = _cards[page.clamp(0, _cards.length - 1)];
+    final userId = match.userId;
+    if (userId == null) {
+      GroupChatPage.open(
+        context,
+        title: match.name,
+        memberCount: 1,
+        avatars: [match.imageAsset],
+      );
+      return;
+    }
+    // Gerçek eşleşme: anonim sohbet isteği.
+    if (_opening) return;
+    setState(() => _opening = true);
+    try {
+      final thread = await ChatRepository.instance.createAnonymous(userId);
+      ChatStore.instance.replace(thread);
+      if (mounted) await AnonymousChatPage.open(context, thread);
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    } finally {
+      if (mounted) setState(() => _opening = false);
+    }
   }
 
   @override
@@ -125,23 +174,35 @@ class _YourMatchPageState extends State<YourMatchPage> {
             ),
             const SizedBox(height: 28),
             Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: _kMatches.length,
-                itemBuilder: (context, index) {
-                  final match = _kMatches[index];
-                  return _MatchCard(
-                    imageAsset: match.imageAsset,
-                    vibeLabel: t.vibeMatch(percent: match.vibePercent),
-                    nameAge: t.matchNameAge(name: match.name, age: match.age),
-                    bio: t.matchBio,
-                    showSwipeHint: _showSwipeHint,
-                    swipePreviousLabel: t.swipePrevious,
-                    swipeNextLabel: t.swipeNext,
-                    swipeFingerLabel: t.swipeFinger,
-                  );
-                },
-              ),
+              child: _cards.isEmpty
+                  ? Center(
+                      child: AppText(
+                        t.noMatch,
+                        style: AppTextStyles.yourMatchSubtitle,
+                        textAlign: TextAlign.center,
+                      ),
+                    )
+                  : PageView.builder(
+                      controller: _pageController,
+                      itemCount: _cards.length,
+                      itemBuilder: (context, index) {
+                        final match = _cards[index];
+                        return _MatchCard(
+                          imageAsset: match.imageAsset,
+                          vibeLabel: t.vibeMatch(percent: match.vibePercent),
+                          nameAge: match.age > 0
+                              ? t.matchNameAge(name: match.name, age: match.age)
+                              : match.name,
+                          bio: match.userId == null
+                              ? t.matchBio
+                              : (match.bio ?? ''),
+                          showSwipeHint: _showSwipeHint,
+                          swipePreviousLabel: t.swipePrevious,
+                          swipeNextLabel: t.swipeNext,
+                          swipeFingerLabel: t.swipeFinger,
+                        );
+                      },
+                    ),
             ),
             Padding(
               padding: EdgeInsets.fromLTRB(0, 13, 0, 13 + bottomInset),
@@ -149,7 +210,10 @@ class _YourMatchPageState extends State<YourMatchPage> {
                 children: [
                   _CircleAction(
                     background: AppColors.textPrimary.withValues(alpha: 0.10),
-                    onTap: () => setState(() => _showSwipeHint = false),
+                    // İpucu açıksa kapatır; değilse (ya da sonuç yoksa) ekrandan çıkar.
+                    onTap: () => _showSwipeHint && _cards.isNotEmpty
+                        ? setState(() => _showSwipeHint = false)
+                        : Navigator.of(context).maybePop(),
                     child: SvgPicture.asset(
                       AppAssets.iconClose,
                       width: 32,
@@ -220,12 +284,22 @@ class _MatchCard extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(
-            imageAsset,
-            fit: BoxFit.cover,
-            alignment: Alignment.topCenter,
-            filterQuality: FilterQuality.high,
-          ),
+          if (imageAsset.startsWith('assets/'))
+            Image.asset(
+              imageAsset,
+              fit: BoxFit.cover,
+              alignment: Alignment.topCenter,
+              filterQuality: FilterQuality.high,
+            )
+          else
+            Image.network(
+              imageAsset,
+              fit: BoxFit.cover,
+              alignment: Alignment.topCenter,
+              filterQuality: FilterQuality.high,
+              errorBuilder: (_, _, _) =>
+                  const ColoredBox(color: AppColors.inputFill),
+            ),
           const DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -305,11 +379,7 @@ class _SwipeHintOverlay extends StatelessWidget {
     height: 1,
     color: AppColors.white,
     shadows: [
-      Shadow(
-        color: Color(0x80000000),
-        blurRadius: 8,
-        offset: Offset(0, 2),
-      ),
+      Shadow(color: Color(0x80000000), blurRadius: 8, offset: Offset(0, 2)),
     ],
   );
 
@@ -320,11 +390,7 @@ class _SwipeHintOverlay extends StatelessWidget {
     height: 1,
     color: AppColors.white,
     shadows: [
-      Shadow(
-        color: Color(0x80000000),
-        blurRadius: 8,
-        offset: Offset(0, 2),
-      ),
+      Shadow(color: Color(0x80000000), blurRadius: 8, offset: Offset(0, 2)),
     ],
   );
 

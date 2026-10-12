@@ -13,6 +13,11 @@ class ChatMessage {
     this.body,
     this.mediaUrl,
     this.status = ChatMessageStatus.sent,
+    this.senderId,
+    this.senderName,
+    this.senderAvatarUrl,
+    this.senderBlurred = false,
+    this.senderIsAi = false,
   });
 
   /// Sunucu kaydı oluşmadan (gönderiliyor) null.
@@ -28,7 +33,15 @@ class ChatMessage {
   final DateTime createdAt;
   final ChatMessageStatus status;
 
+  /// Grup mesajında gönderen. Anonim üyede [senderId] null, ad maskeli, foto bulanık.
+  final String? senderId;
+  final String? senderName;
+  final String? senderAvatarUrl;
+  final bool senderBlurred;
+  final bool senderIsAi;
+
   factory ChatMessage.fromJson(Map<String, dynamic> j) {
+    final sender = j['sender'] as Map<String, dynamic>?;
     return ChatMessage(
       id: j['id'] as String?,
       seq: (j['seq'] as num?)?.toInt(),
@@ -40,6 +53,11 @@ class ChatMessage {
       createdAt:
           DateTime.tryParse(j['createdAt'] as String? ?? '')?.toLocal() ??
           DateTime.now(),
+      senderId: sender?['id'] as String?,
+      senderName: sender?['displayName'] as String?,
+      senderAvatarUrl: sender?['avatarUrl'] as String?,
+      senderBlurred: sender?['avatarBlurred'] as bool? ?? false,
+      senderIsAi: sender?['isAi'] as bool? ?? false,
     );
   }
 
@@ -53,6 +71,11 @@ class ChatMessage {
     mediaUrl: mediaUrl,
     createdAt: createdAt,
     status: status ?? this.status,
+    senderId: senderId,
+    senderName: senderName,
+    senderAvatarUrl: senderAvatarUrl,
+    senderBlurred: senderBlurred,
+    senderIsAi: senderIsAi,
   );
 
   /// Balonda gösterilecek metin (görsel/ses için kısa etiket).

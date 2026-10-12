@@ -1,6 +1,8 @@
 import 'package:veylo/data/remote/api_client.dart';
 import 'package:veylo/data/remote/session_store.dart';
+import 'package:veylo/models/profile/follow_user.dart';
 import 'package:veylo/models/profile/me.dart';
+import 'package:veylo/models/profile/profile_user.dart';
 
 class UsernameAvailability {
   const UsernameAvailability({
@@ -18,6 +20,29 @@ class UserRepository {
   static final UserRepository instance = UserRepository._();
 
   final _api = ApiClient.instance;
+
+  /// Başka kullanıcının profili (engellenmişse 404).
+  Future<ProfileUser> profile(String userId) async => ProfileUser.fromPublicJson(
+    Map<String, dynamic>.from(await _api.get('/users/$userId') as Map),
+  );
+
+  Future<void> follow(String userId) => _api.post('/users/$userId/follow');
+
+  Future<void> unfollow(String userId) => _api.delete('/users/$userId/follow');
+
+  /// Beni takip edeni takipçilerimden çıkarır.
+  Future<void> removeFollower(String userId) =>
+      _api.delete('/users/me/followers/$userId');
+
+  /// kind: followers | following
+  Future<List<FollowUser>> follows(String userId, String kind) async {
+    final res =
+        await _api.get('/users/$userId/$kind', query: {'limit': '50'}) as Map;
+    return [
+      for (final j in (res['items'] as List).cast<Map>())
+        FollowUser.fromApi(Map<String, dynamic>.from(j)),
+    ];
+  }
 
   Future<UsernameAvailability> usernameAvailability(String username) async {
     final res =

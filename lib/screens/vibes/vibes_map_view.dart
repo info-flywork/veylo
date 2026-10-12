@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
+import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/widgets/avatar_ripple.dart';
 import 'package:veylo/data/local/local_profile_store.dart';
 import 'package:veylo/data/mock/profile_mock_repository.dart';
-import 'package:veylo/data/mock/vibes_mock_repository.dart';
+import 'package:veylo/data/remote/vibe_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/vibes/vibe_post.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
@@ -79,6 +80,7 @@ const _specs = <_BubbleSpec>[
 const _kGap = 4.0;
 const _kMapShift = 48.0;
 const _kSelfAvatar = 80.0;
+
 /// Sadece avatar gövdesi için boşluk — dalgalar diğer balonların üstüne binebilir.
 const _kSelfClearRadius = _kSelfAvatar * 0.62;
 
@@ -141,14 +143,30 @@ List<_PlacedBubble> _pack(double width, double height) {
     _BubbleSpec(92, AppAssets.fakePerson02, true),
   ];
   if (width > 140 && height > 160) {
-    tryPlace(edgeSpecs[0], edgeSpecs[0].size * 0.10, height * 0.09,
-        _specs.length);
-    tryPlace(edgeSpecs[1], edgeSpecs[1].size * 0.06, height * 0.52,
-        _specs.length + 1);
-    tryPlace(edgeSpecs[2], edgeSpecs[2].size * 0.14, height * 0.90,
-        _specs.length + 2);
-    tryPlace(edgeSpecs[3], width - edgeSpecs[3].size * 0.14, height * 0.86,
-        _specs.length + 3);
+    tryPlace(
+      edgeSpecs[0],
+      edgeSpecs[0].size * 0.10,
+      height * 0.09,
+      _specs.length,
+    );
+    tryPlace(
+      edgeSpecs[1],
+      edgeSpecs[1].size * 0.06,
+      height * 0.52,
+      _specs.length + 1,
+    );
+    tryPlace(
+      edgeSpecs[2],
+      edgeSpecs[2].size * 0.14,
+      height * 0.90,
+      _specs.length + 2,
+    );
+    tryPlace(
+      edgeSpecs[3],
+      width - edgeSpecs[3].size * 0.14,
+      height * 0.86,
+      _specs.length + 3,
+    );
   }
 
   // Orta halka — boş Atlantik bölgesini doldur (self etrafında 2 ring).
@@ -161,12 +179,7 @@ List<_PlacedBubble> _pack(double width, double height) {
       final angle = -math.pi / 2 + (k / count) * math.pi * 2 + ring * 0.18;
       final cx = selfCx + math.cos(angle) * ringR;
       final cy = selfCy + math.sin(angle) * ringR * 0.92;
-      if (tryPlace(
-        spec,
-        cx,
-        cy,
-        _specs.length + 10 + centerIdx,
-      )) {
+      if (tryPlace(spec, cx, cy, _specs.length + 10 + centerIdx)) {
         centerIdx++;
       }
     }
@@ -204,8 +217,8 @@ List<_PlacedBubble> _pack(double width, double height) {
       final cx = preferCenter
           ? width * (0.22 + random.nextDouble() * 0.56)
           : radius +
-              edge +
-              random.nextDouble() * (width - spec.size - edge * 2);
+                edge +
+                random.nextDouble() * (width - spec.size - edge * 2);
       final cy = yMin + random.nextDouble() * math.max(1, yMax - yMin);
       if (tryPlace(spec, cx, cy, i)) break;
     }
@@ -215,10 +228,26 @@ List<_PlacedBubble> _pack(double width, double height) {
 
 /// Siyah zemin saydam, mor kıtalar soluk lavanta kalsın.
 const _kMapColor = ColorFilter.matrix(<double>[
-  1, 0, 0, 0, 0,
-  0, 1, 0, 0, 0,
-  0, 0, 1, 0, 0,
-  1, 1, 1, 0, 0,
+  1,
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  0,
+  0,
+  0,
+  0,
+  0,
+  1,
+  0,
+  0,
+  1,
+  1,
+  1,
+  0,
+  0,
 ]);
 
 /// Vibes haritası — balona basınca önizleme kartı açılır.
@@ -230,13 +259,29 @@ class VibesMapView extends StatefulWidget {
 }
 
 class _VibesMapViewState extends State<VibesMapView> {
-  int? _selected;
-  final Set<String> _likedIds = {};
+  final _store = VibeStore.instance;
+  String? _selected;
+
+  @override
+  void initState() {
+    super.initState();
+    _store.addListener(_onStore);
+  }
+
+  @override
+  void dispose() {
+    _store.removeListener(_onStore);
+    super.dispose();
+  }
+
+  void _onStore() {
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     final safeBottom = MediaQuery.paddingOf(context).bottom;
-    final posts = VibesMockRepository.posts();
+    final posts = _store.posts;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -244,22 +289,30 @@ class _VibesMapViewState extends State<VibesMapView> {
         final mapH = constraints.maxHeight;
         final bottomGap = safeBottom + 12;
         final usableH = (mapH - _kMapShift - bottomGap).clamp(0.0, mapH);
-        final bubbles = _pack(mapW, usableH)
-            .map(
-              (b) => _PlacedBubble(
-                b.cx,
-                b.cy + _kMapShift,
-                b.spec,
-                b.postIndex,
-              ),
-            )
-            .toList();
-        final _PlacedBubble? selected = _selected == null
-            ? null
-            : bubbles.where((b) => b.postIndex == _selected).firstOrNull;
+        // Yerleşim aynı; vibe'lar büyükten küçüğe balonlara dağıtılır (en yeni en büyük).
+        final placed =
+            _pack(mapW, usableH)
+                .map(
+                  (b) => _PlacedBubble(
+                    b.cx,
+                    b.cy + _kMapShift,
+                    b.spec,
+                    b.postIndex,
+                  ),
+                )
+                .toList()
+              ..sort((a, b) => b.spec.size.compareTo(a.spec.size));
+        final bubbles = [
+          for (var i = 0; i < math.min(placed.length, posts.length); i++)
+            (bubble: placed[i], post: posts[i]),
+        ];
+        final selected = bubbles
+            .where((b) => b.post.id == _selected)
+            .firstOrNull;
 
-        final self = LocalProfileStore.instance
-            .apply(ProfileMockRepository.currentUser());
+        final self = LocalProfileStore.instance.apply(
+          ProfileMockRepository.currentUser(),
+        );
         final selfCx = mapW / 2;
         final selfCy = _kMapShift + usableH * 0.48;
         // Dalgalar taşsın diye clip yok; harita katmanı kendi alanında kalır.
@@ -289,7 +342,7 @@ class _VibesMapViewState extends State<VibesMapView> {
                 ),
               ),
             ),
-            for (final bubble in bubbles)
+            for (final (:bubble, :post) in bubbles)
               Positioned(
                 left: bubble.cx - bubble.spec.size / 2,
                 top: bubble.cy - bubble.spec.size / 2,
@@ -297,11 +350,13 @@ class _VibesMapViewState extends State<VibesMapView> {
                 height: bubble.spec.size,
                 child: GestureDetector(
                   onTap: () => setState(() {
-                    _selected = _selected == bubble.postIndex
-                        ? null
-                        : bubble.postIndex;
+                    _selected = _selected == post.id ? null : post.id;
                   }),
-                  child: _PersonBubble(spec: bubble.spec),
+                  child: _PersonBubble(
+                    size: bubble.spec.size,
+                    url: post.avatarAsset,
+                    blurred: post.blurred,
+                  ),
                 ),
               ),
             // Figma: merkez kullanıcı + lavanta radar dalgaları
@@ -327,25 +382,20 @@ class _VibesMapViewState extends State<VibesMapView> {
             ),
             if (selected != null)
               Positioned(
-                left: _cardLeft(selected, mapW),
-                top: _cardTop(selected, mapH - bottomGap),
+                left: _cardLeft(selected.bubble, mapW),
+                top: _cardTop(selected.bubble, mapH - bottomGap),
                 width: _cardWidth(mapW),
                 child: Builder(
-                  builder: (context) {
-                    final post = posts[selected.postIndex % posts.length];
-                    final liked = _likedIds.contains(post.id);
+                  builder: (_) {
+                    final post = selected.post;
                     return _VibePreviewCard(
                       post: post,
-                      liked: liked,
+                      liked: post.likedByMe,
                       sendLabel: Translations.of(context).vibes.sendMessage,
-                      onLike: () => setState(() {
-                        if (liked) {
-                          _likedIds.remove(post.id);
-                        } else {
-                          _likedIds.add(post.id);
-                        }
-                      }),
-                      onSend: () => showVibeTalkSheet(context, post),
+                      onLike: () => _store.toggleLike(post),
+                      onSend: post.isMine
+                          ? () {}
+                          : () => showVibeTalkSheet(context, post),
                     );
                   },
                 ),
@@ -404,7 +454,7 @@ class _VibePreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final likes = post.likeCount + (liked ? 1 : 0);
+    final likes = post.likeCount;
     return DecoratedBox(
       decoration: BoxDecoration(
         color: AppColors.white,
@@ -426,11 +476,18 @@ class _VibePreviewCard extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: AppText(
-                    post.name,
-                    style: AppTextStyles.vibesName,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: AppText(
+                          post.name,
+                          style: AppTextStyles.vibesName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (post.isAi) const AiBadge(),
+                    ],
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -499,25 +556,26 @@ class _VibePreviewCard extends StatelessWidget {
 }
 
 class _PersonBubble extends StatelessWidget {
-  const _PersonBubble({required this.spec});
+  const _PersonBubble({
+    required this.size,
+    required this.url,
+    required this.blurred,
+  });
 
-  final _BubbleSpec spec;
+  final double size;
+  final String url;
+  final bool blurred;
 
   @override
   Widget build(BuildContext context) {
-    final image = Image.asset(
-      spec.asset,
-      width: spec.size,
-      height: spec.size,
-      fit: BoxFit.cover, // daire tam dolsun (yuvarlak kalsın)
-      alignment: const Alignment(0, -0.55), // üstten kırp -> kafalar kesilmesin
-    );
+    // daire tam dolsun (yuvarlak kalsın)
+    final image = ChatAvatarImage(url: url, size: size);
 
     return ClipOval(
       child: SizedBox(
-        width: spec.size,
-        height: spec.size,
-        child: spec.blurred
+        width: size,
+        height: size,
+        child: blurred
             ? ImageFiltered(
                 imageFilter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
                 child: Transform.scale(scale: 1.35, child: image),

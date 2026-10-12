@@ -22,6 +22,14 @@ String errorMessage(BuildContext context, Object error) {
       'TOO_MANY_ATTEMPTS' => e.tooManyAttempts,
       'UNSUPPORTED_IMAGE' => e.unsupportedImage,
       'FILE_TOO_LARGE' => e.fileTooLarge,
+      'VIBE_DAILY_LIMIT' => e.vibeDailyLimit,
+      'SOCIAL_ACCOUNT' => e.socialAccount,
+      'GROUP_FULL' => e.groupFull,
+      'GROUP_CREATE_LIMIT' => e.groupCreateLimit,
+      'VIBE_NOT_FOUND' ||
+      'GROUP_NOT_FOUND' ||
+      'CONVERSATION_NOT_FOUND' ||
+      'REQUEST_NOT_FOUND' => e.notFound,
       _ => e.generic,
     };
   }
@@ -37,6 +45,7 @@ String errorMessage(BuildContext context, Object error) {
       'too-many-requests' => e.tooManyAttempts,
       'user-disabled' => e.accountSuspended,
       'network-request-failed' => e.network,
+      'requires-recent-login' => e.recentLogin,
       _ => e.generic,
     };
   }

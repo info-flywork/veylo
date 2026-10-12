@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/navigation/session_navigation.dart';
+import 'package:veylo/data/remote/chat_repository.dart';
+import 'package:veylo/data/remote/chat_store.dart';
+import 'package:veylo/data/remote/push_service.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
@@ -39,20 +42,67 @@ class AccountManagementPage extends StatefulWidget {
 }
 
 class _AccountManagementPageState extends State<AccountManagementPage> {
-  String _email = SessionStore.instance.me?.email ?? '';
+  final String _email = SessionStore.instance.me?.email ?? '';
   bool _notificationsEnabled = true;
 
+  @override
+  void initState() {
+    super.initState();
+    PushService.instance.isEnabled().then((v) {
+      if (mounted) setState(() => _notificationsEnabled = v);
+    });
+  }
+
+  Future<void> _setNotifications(bool on) async {
+    setState(() => _notificationsEnabled = on);
+    await PushService.instance.setEnabled(on);
+  }
+
+  void _snack(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(msg), behavior: SnackBarBehavior.floating),
+    );
+  }
+
   Future<void> _openEmail() async {
+    final session = SessionStore.instance;
+    if (!session.hasPasswordLogin) {
+      return _snack(Translations.of(context).errors.socialAccount);
+    }
     final result = await showChangeEmailSheet(
       context,
       initialEmail: _email,
     );
-    if (result == null || !mounted) return;
-    setState(() => _email = result);
+    if (result == null || result == _email || !mounted) return;
+    try {
+      await session.changeEmail(result);
+      if (mounted) {
+        _snack(
+          Translations.of(context).profile.emailVerificationSent(email: result),
+        );
+      }
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    }
   }
 
   Future<void> _openPassword() async {
-    await showChangePasswordSheet(context);
+    final session = SessionStore.instance;
+    if (!session.hasPasswordLogin) {
+      return _snack(Translations.of(context).errors.socialAccount);
+    }
+    final result = await showChangePasswordSheet(context);
+    if (result == null || !mounted) return;
+    final t = Translations.of(context);
+    if (result.password != result.confirm) {
+      return _snack(t.profile.passwordMismatch);
+    }
+    try {
+      await session.changePassword(result.password);
+      if (mounted) _snack(t.profile.passwordChanged);
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    }
   }
 
   Future<void> _toWelcome() async {
@@ -81,7 +131,14 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
   Future<void> _openDeleteConversations() async {
     final ok = await showDeleteConversationSheet(context);
     if (!ok || !mounted) return;
-    // TODO: backend'de tüm sohbetleri sil.
+    try {
+      await ChatRepository.instance.deleteAll();
+      await ChatStore.instance.refresh();
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+      return;
+    }
+    if (!mounted) return;
     final msg = Translations.of(context).profile.conversationsDeleted;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -92,8 +149,10 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
     );
   }
 
+  /// Token'lar tüketilebilir ürün: bakiye sunucuda tutulur, "geri yükleme" bakiyeyi yeniler.
   Future<void> _restorePurchases() async {
-    // TODO: StoreKit / Play Billing restore.
+    await SessionStore.instance.refreshMe().catchError((_) {});
+    if (!mounted) return;
     final msg = Translations.of(context).profile.restorePurchasesDone;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -159,7 +218,7 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                       value: _notificationsEnabled,
                       activeTrackColor: AppColors.toggleActive,
                       onChanged: (v) =>
-                          setState(() => _notificationsEnabled = v),
+                          _setNotifications(v),
                     ),
                   ),
                   const SizedBox(height: 8),

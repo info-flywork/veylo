@@ -117,12 +117,14 @@ class _CreateRoomOrGroupSheetState extends State<_CreateRoomOrGroupSheet> {
             label: t.create,
             onPressed: () {
               final type = _type;
+              final hideAccount = _hideAccount;
               final navigator = Navigator.of(context);
               navigator.pop();
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 showCreateRoomNameSheet(
                   navigator.context,
                   type: type,
+                  hideAccount: hideAccount,
                 );
               });
             },
@@ -135,7 +137,10 @@ class _CreateRoomOrGroupSheetState extends State<_CreateRoomOrGroupSheet> {
               width: double.infinity,
               height: 30,
               child: Center(
-                child: AppText(t.cancel, style: AppTextStyles.privateRoomCancel),
+                child: AppText(
+                  t.cancel,
+                  style: AppTextStyles.privateRoomCancel,
+                ),
               ),
             ),
           ),
@@ -201,10 +206,7 @@ class _TypeOption extends StatelessWidget {
 
 /// Figma notifications.svg — 45.29×28, on: #33C658.
 class _NotificationsToggle extends StatelessWidget {
-  const _NotificationsToggle({
-    required this.value,
-    required this.onChanged,
-  });
+  const _NotificationsToggle({required this.value, required this.onChanged});
 
   final bool value;
   final ValueChanged<bool> onChanged;

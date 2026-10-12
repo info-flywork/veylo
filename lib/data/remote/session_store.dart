@@ -6,7 +6,11 @@ import 'package:veylo/core/config/app_config.dart';
 import 'package:veylo/data/local/local_profile_store.dart';
 import 'package:veylo/data/remote/api_client.dart';
 import 'package:veylo/data/remote/chat_store.dart';
+import 'package:veylo/data/remote/discover_store.dart';
+import 'package:veylo/data/remote/group_store.dart';
+import 'package:veylo/data/remote/note_store.dart';
 import 'package:veylo/data/remote/push_service.dart';
+import 'package:veylo/data/remote/vibe_store.dart';
 import 'package:veylo/models/profile/me.dart';
 
 /// Girişten sonra nereye gidileceği.
@@ -145,6 +149,32 @@ class SessionStore extends ChangeNotifier {
     return _afterFirebaseSignIn();
   }
 
+  /// Şifre girişli hesap mı (Google/Apple değil).
+  bool get hasPasswordLogin =>
+      FirebaseAuth.instance.currentUser?.providerData.any(
+        (p) => p.providerId == 'password',
+      ) ??
+      false;
+
+  /// Firebase şifresini değiştirir. Oturum eskiyse `requires-recent-login` fırlatır.
+  Future<void> changePassword(String newPassword) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null || !hasPasswordLogin) {
+      throw const ApiException(code: 'SOCIAL_ACCOUNT');
+    }
+    await user.updatePassword(newPassword);
+  }
+
+  /// Yeni adrese doğrulama bağlantısı gönderir; onaylanınca e-posta değişir
+  /// (backend bir sonraki oturumda günceller).
+  Future<void> changeEmail(String newEmail) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null || !hasPasswordLogin) {
+      throw const ApiException(code: 'SOCIAL_ACCOUNT');
+    }
+    await user.verifyBeforeUpdateEmail(newEmail);
+  }
+
   Future<void> sendPasswordReset(String email) =>
       FirebaseAuth.instance.sendPasswordResetEmail(email: email);
 
@@ -200,6 +230,10 @@ class SessionStore extends ChangeNotifier {
     await PushService.instance.stop();
     _me = null;
     ChatStore.instance.stop();
+    VibeStore.instance.clear();
+    GroupStore.instance.clear();
+    NoteStore.instance.clear();
+    DiscoverStore.instance.clear();
     try {
       if (_googleReady) await GoogleSignIn.instance.signOut();
     } catch (_) {}

@@ -25,6 +25,9 @@ class SocketService {
     'message:new',
     'conversation:updated',
     'conversation:read',
+    'conversation:removed',
+    'group:request',
+    'group:approved',
     'typing',
     'presence:update',
     'tokens:updated',
@@ -72,7 +75,9 @@ class SocketService {
         // paket o zaman veriyi [veri, sıraNo] listesi olarak iletir.
         final payload = data is List && data.isNotEmpty ? data.first : data;
         if (payload is Map) {
-          _controller.add(SocketEvent(name, Map<String, dynamic>.from(payload)));
+          _controller.add(
+            SocketEvent(name, Map<String, dynamic>.from(payload)),
+          );
         }
       });
     }

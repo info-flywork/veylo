@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:veylo/core/theme/theme.dart';
+import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/models/chat/chat_note.dart';
 
@@ -68,12 +69,20 @@ class ChatNoteCard extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  AppText(
-                    note.displayName,
-                    style: AppTextStyles.chatsNoteName,
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: AppText(
+                          note.displayName,
+                          style: AppTextStyles.chatsNoteName,
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (note.isAi) const AiBadge(compact: true),
+                    ],
                   ),
                   const SizedBox(height: 6),
                   AppText(
@@ -106,6 +115,17 @@ class ChatAvatarImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Fotoğrafı olmayan kullanıcı: dairenin tamamını dolduran yer tutucu.
+    if (url.isEmpty) {
+      return SizedBox(
+        width: size,
+        height: size,
+        child: ColoredBox(
+          color: AppColors.inputFill,
+          child: Icon(Icons.person, size: size * 0.5),
+        ),
+      );
+    }
     if (url.startsWith('assets/')) {
       return Image.asset(url, width: size, height: size, fit: fit);
     }

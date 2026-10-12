@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
+import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/widgets/profile_tappable_avatar.dart';
 import 'package:veylo/models/chat/chat_thread.dart';
@@ -204,12 +205,15 @@ class _ThreadContent extends StatelessWidget {
       child: Row(
         children: [
           ProfileTappableAvatar(
-            avatarUrl: thread.avatarUrl,
+            // Grupta ilk üye fotoğrafı (sohbet başlığındakiyle aynı).
+            avatarUrl: thread.isGroup
+                ? (thread.groupAvatarUrls?.firstOrNull ?? '')
+                : thread.avatarUrl,
             size: _kThreadAvatarSize,
             userId: thread.peerUserId,
             displayName: thread.isAnonymous ? thread.maskedName : thread.title,
             username: thread.peerUsername,
-            enabled: !thread.isAnonymous,
+            enabled: !thread.isAnonymous && !thread.isGroup,
             blurred: thread.isAnonymous,
           ),
           const SizedBox(width: 10),
@@ -221,10 +225,17 @@ class _ThreadContent extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: AppText(
-                        title,
-                        style: AppTextStyles.chatsThreadName,
-                        maxLines: 1,
+                      child: Row(
+                        children: [
+                          Flexible(
+                            child: AppText(
+                              title,
+                              style: AppTextStyles.chatsThreadName,
+                              maxLines: 1,
+                            ),
+                          ),
+                          if (thread.peerIsAi) const AiBadge(compact: true),
+                        ],
                       ),
                     ),
                     if (thread.lastMessageAt != null)

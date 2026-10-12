@@ -196,6 +196,24 @@ class Translations$chats$tr {
 
 	/// tr: 'yazıyor…'
 	String get typing => 'yazıyor…';
+
+	/// tr: 'Sen'
+	String get noteYou => 'Sen';
+
+	/// tr: 'Not paylaş'
+	String get noteSheetTitle => 'Not paylaş';
+
+	/// tr: 'Notun 24 saat görünür'
+	String get noteSheetSubtitle => 'Notun 24 saat görünür';
+
+	/// tr: 'Aklında ne var?'
+	String get noteHint => 'Aklında ne var?';
+
+	/// tr: 'Paylaş'
+	String get noteShare => 'Paylaş';
+
+	/// tr: 'Notu sil'
+	String get noteDelete => 'Notu sil';
 }
 
 // Path: profile
@@ -640,6 +658,15 @@ class Translations$profile$tr {
 
 	/// tr: 'Teşekkürler, raporunu aldık.'
 	String get reportSent => 'Teşekkürler, raporunu aldık.';
+
+	/// tr: '{email} adresine onay bağlantısı gönderdik. Onaylayınca e-postan değişir.'
+	String emailVerificationSent({required Object email}) => '${email} adresine onay bağlantısı gönderdik. Onaylayınca e-postan değişir.';
+
+	/// tr: 'Şifren güncellendi.'
+	String get passwordChanged => 'Şifren güncellendi.';
+
+	/// tr: 'Şifreler eşleşmiyor.'
+	String get passwordMismatch => 'Şifreler eşleşmiyor.';
 }
 
 // Path: nav
@@ -757,6 +784,18 @@ class Translations$vibes$tr {
 
 	/// tr: 'Anonim olarak paylaş'
 	String get shareAnonymous => 'Anonim olarak paylaş';
+
+	/// tr: 'Son 24 saatte vibe yok. İlkini sen paylaş!'
+	String get empty => 'Son 24 saatte vibe yok. İlkini sen paylaş!';
+
+	/// tr: 'Bu vibe silinsin mi?'
+	String get deleteTitle => 'Bu vibe silinsin mi?';
+
+	/// tr: 'Sil'
+	String get delete => 'Sil';
+
+	/// tr: 'Vazgeç'
+	String get cancel => 'Vazgeç';
 }
 
 // Path: discover
@@ -1228,6 +1267,24 @@ class Translations$errors$tr {
 
 	/// tr: 'Bu hesap artık kullanılamıyor.'
 	String get peerUnavailable => 'Bu hesap artık kullanılamıyor.';
+
+	/// tr: 'Bugün çok vibe paylaştın. Biraz sonra tekrar dene.'
+	String get vibeDailyLimit => 'Bugün çok vibe paylaştın. Biraz sonra tekrar dene.';
+
+	/// tr: 'Bu grup dolu.'
+	String get groupFull => 'Bu grup dolu.';
+
+	/// tr: 'Bugün çok grup oluşturdun. Biraz sonra tekrar dene.'
+	String get groupCreateLimit => 'Bugün çok grup oluşturdun. Biraz sonra tekrar dene.';
+
+	/// tr: 'Bu artık mevcut değil.'
+	String get notFound => 'Bu artık mevcut değil.';
+
+	/// tr: 'Güvenliğin için çıkış yapıp tekrar giriş yap, sonra yeniden dene.'
+	String get recentLogin => 'Güvenliğin için çıkış yapıp tekrar giriş yap, sonra yeniden dene.';
+
+	/// tr: 'E-posta ve şifren Google ya da Apple hesabın tarafından yönetiliyor.'
+	String get socialAccount => 'E-posta ve şifren Google ya da Apple hesabın tarafından yönetiliyor.';
 }
 
 // Path: discover.aiMatch
@@ -1348,6 +1405,9 @@ class Translations$discover$aiMatch$tr {
 
 	/// tr: 'Swipe Finger'
 	String get swipeFinger => 'Swipe Finger';
+
+	/// tr: 'Şu an uygun kimse yok. Biraz sonra tekrar dene.'
+	String get noMatch => 'Şu an uygun kimse yok. Biraz sonra tekrar dene.';
 }
 
 // Path: discover.privateRoom
@@ -1579,6 +1639,39 @@ class Translations$discover$groupInfo$tr {
 
 	/// tr: 'Gruptan ayrıl'
 	String get leaveGroup => 'Gruptan ayrıl';
+
+	/// tr: 'Katılma istekleri'
+	String get requests => 'Katılma istekleri';
+
+	/// tr: 'Onayla'
+	String get approve => 'Onayla';
+
+	/// tr: 'Reddet'
+	String get reject => 'Reddet';
+
+	/// tr: 'Gruba eklemek için önce birilerini takip et.'
+	String get addPeopleEmpty => 'Gruba eklemek için önce birilerini takip et.';
+
+	/// tr: 'Ekle'
+	String get add => 'Ekle';
+
+	/// tr: 'Yönetici yap'
+	String get makeAdmin => 'Yönetici yap';
+
+	/// tr: 'Yöneticilikten al'
+	String get removeAdmin => 'Yöneticilikten al';
+
+	/// tr: 'Gruptan çıkar'
+	String get remove => 'Gruptan çıkar';
+
+	/// tr: 'Bu gruptan ayrılmak istiyor musun?'
+	String get leaveConfirm => 'Bu gruptan ayrılmak istiyor musun?';
+
+	/// tr: 'Ayrıl'
+	String get leave => 'Ayrıl';
+
+	/// tr: 'Vazgeç'
+	String get cancel => 'Vazgeç';
 }
 
 // Path: discover.filters
@@ -1654,6 +1747,15 @@ class Translations$discover$post$tr {
 
 	/// tr: '{hours}s'
 	String hoursAgo({required Object hours}) => '${hours}s';
+
+	/// tr: '{minutes}dk'
+	String minutesAgo({required Object minutes}) => '${minutes}dk';
+
+	/// tr: '{days}g'
+	String daysAgo({required Object days}) => '${days}g';
+
+	/// tr: 'Bu yorum silinsin mi?'
+	String get deleteCommentTitle => 'Bu yorum silinsin mi?';
 }
 
 // Path: discover.story
@@ -1756,6 +1858,9 @@ class Translations$discover$stats$tr {
 
 	/// tr: '1 gün boyunca öne çıkar - 100 token'
 	String get boostCta => '1 gün boyunca öne çıkar - 100 token';
+
+	/// tr: 'Öne çıkarıldı! Gönderin 24 saat boyunca en üstte.'
+	String get boosted => 'Öne çıkarıldı! Gönderin 24 saat boyunca en üstte.';
 }
 
 // Path: createProfile.interests
@@ -1879,6 +1984,12 @@ extension on Translations {
 			'chats.revealNotYet' => 'Not Yet',
 			'chats.seen' => 'Görüldü',
 			'chats.typing' => 'yazıyor…',
+			'chats.noteYou' => 'Sen',
+			'chats.noteSheetTitle' => 'Not paylaş',
+			'chats.noteSheetSubtitle' => 'Notun 24 saat görünür',
+			'chats.noteHint' => 'Aklında ne var?',
+			'chats.noteShare' => 'Paylaş',
+			'chats.noteDelete' => 'Notu sil',
 			'profile.eyebrow' => 'Profile',
 			'profile.title' => 'Settings',
 			'profile.editProfile' => 'Edit Profile',
@@ -2024,6 +2135,9 @@ extension on Translations {
 			'profile.sendReport' => 'Send Report',
 			'profile.notSet' => 'Belirtilmedi',
 			'profile.reportSent' => 'Teşekkürler, raporunu aldık.',
+			'profile.emailVerificationSent' => ({required Object email}) => '${email} adresine onay bağlantısı gönderdik. Onaylayınca e-postan değişir.',
+			'profile.passwordChanged' => 'Şifren güncellendi.',
+			'profile.passwordMismatch' => 'Şifreler eşleşmiyor.',
 			'nav.discover' => 'Discover',
 			'nav.chat' => 'Chat',
 			'nav.call' => 'Call',
@@ -2054,6 +2168,10 @@ extension on Translations {
 			'vibes.replyTitle' => 'Vibe\'a Cevap Ver',
 			'vibes.shareHint' => 'Bir şeyler yaz',
 			'vibes.shareAnonymous' => 'Anonim olarak paylaş',
+			'vibes.empty' => 'Son 24 saatte vibe yok. İlkini sen paylaş!',
+			'vibes.deleteTitle' => 'Bu vibe silinsin mi?',
+			'vibes.delete' => 'Sil',
+			'vibes.cancel' => 'Vazgeç',
 			'discover.title' => 'Discover',
 			'discover.tabRooms' => 'Rooms',
 			'discover.tabDiscover' => 'Discover',
@@ -2095,6 +2213,7 @@ extension on Translations {
 			'discover.aiMatch.swipePrevious' => 'Previous',
 			'discover.aiMatch.swipeNext' => 'Next',
 			'discover.aiMatch.swipeFinger' => 'Swipe Finger',
+			'discover.aiMatch.noMatch' => 'Şu an uygun kimse yok. Biraz sonra tekrar dene.',
 			'discover.searchHint' => 'Search',
 			'discover.allRooms' => 'All Rooms',
 			'discover.allGroups' => 'All Groups',
@@ -2160,6 +2279,17 @@ extension on Translations {
 			'discover.groupInfo.you' => 'Sen',
 			'discover.groupInfo.admin' => 'Admin',
 			'discover.groupInfo.leaveGroup' => 'Gruptan ayrıl',
+			'discover.groupInfo.requests' => 'Katılma istekleri',
+			'discover.groupInfo.approve' => 'Onayla',
+			'discover.groupInfo.reject' => 'Reddet',
+			'discover.groupInfo.addPeopleEmpty' => 'Gruba eklemek için önce birilerini takip et.',
+			'discover.groupInfo.add' => 'Ekle',
+			'discover.groupInfo.makeAdmin' => 'Yönetici yap',
+			'discover.groupInfo.removeAdmin' => 'Yöneticilikten al',
+			'discover.groupInfo.remove' => 'Gruptan çıkar',
+			'discover.groupInfo.leaveConfirm' => 'Bu gruptan ayrılmak istiyor musun?',
+			'discover.groupInfo.leave' => 'Ayrıl',
+			'discover.groupInfo.cancel' => 'Vazgeç',
 			'discover.filters.title' => 'Filters',
 			'discover.filters.ageRange' => 'Yaş aralığı',
 			'discover.filters.ageRangeValue' => ({required Object min, required Object max}) => '${min}-${max}',
@@ -2179,6 +2309,9 @@ extension on Translations {
 			'discover.post.commentsTitle' => 'Yorumlar',
 			'discover.post.sampleCaption' => 'There\'s nothing quite like having a cup of coffee after a beautiful day. <3',
 			'discover.post.hoursAgo' => ({required Object hours}) => '${hours}s',
+			'discover.post.minutesAgo' => ({required Object minutes}) => '${minutes}dk',
+			'discover.post.daysAgo' => ({required Object days}) => '${days}g',
+			'discover.post.deleteCommentTitle' => 'Bu yorum silinsin mi?',
 			'discover.story.draft' => 'DRAFT',
 			'discover.story.story' => 'STORY',
 			'discover.story.share' => 'Paylaş',
@@ -2204,6 +2337,7 @@ extension on Translations {
 			'discover.stats.comments' => 'Yorum',
 			'discover.stats.likes' => 'Beğeni',
 			'discover.stats.boostCta' => '1 gün boyunca öne çıkar - 100 token',
+			'discover.stats.boosted' => 'Öne çıkarıldı! Gönderin 24 saat boyunca en üstte.',
 			'common.loading' => 'Yükleniyor…',
 			'common.retry' => 'Tekrar dene',
 			'common.cancel' => 'İptal',
@@ -2324,6 +2458,8 @@ extension on Translations {
 			'errors.network' => 'Veylo’ya ulaşılamadı. Bağlantını kontrol edip tekrar dene.',
 			'errors.generic' => 'Bir şeyler ters gitti. Lütfen tekrar dene.',
 			'errors.signInFailed' => 'Giriş yapılamadı. Lütfen tekrar dene.',
+			_ => null,
+		} ?? switch (path) {
 			'errors.sessionExpired' => 'Oturumun sona erdi. Lütfen tekrar giriş yap.',
 			'errors.accountSuspended' => 'Bu hesap askıya alındı.',
 			'errors.unsupportedImage' => 'Lütfen JPEG, PNG veya WebP bir fotoğraf seç.',
@@ -2340,6 +2476,12 @@ extension on Translations {
 			'errors.requestPendingLimit' => 'İsteğini kabul ettiğinde daha fazla mesaj gönderebilirsin.',
 			'errors.blocked' => 'Bu kişiye mesaj gönderemezsin.',
 			'errors.peerUnavailable' => 'Bu hesap artık kullanılamıyor.',
+			'errors.vibeDailyLimit' => 'Bugün çok vibe paylaştın. Biraz sonra tekrar dene.',
+			'errors.groupFull' => 'Bu grup dolu.',
+			'errors.groupCreateLimit' => 'Bugün çok grup oluşturdun. Biraz sonra tekrar dene.',
+			'errors.notFound' => 'Bu artık mevcut değil.',
+			'errors.recentLogin' => 'Güvenliğin için çıkış yapıp tekrar giriş yap, sonra yeniden dene.',
+			'errors.socialAccount' => 'E-posta ve şifren Google ya da Apple hesabın tarafından yönetiliyor.',
 			_ => null,
 		};
 	}

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
+import 'package:veylo/core/errors/error_messages.dart';
+import 'package:veylo/data/remote/group_repository.dart';
+import 'package:veylo/data/remote/group_store.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
@@ -13,6 +16,7 @@ Future<void> showPrivateRoomRequestSheet(
   required String roomTitle,
   required int memberCount,
   bool isGroup = false,
+  String? groupId,
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -22,6 +26,7 @@ Future<void> showPrivateRoomRequestSheet(
       roomTitle: roomTitle,
       memberCount: memberCount,
       isGroup: isGroup,
+      groupId: groupId,
     ),
   );
 }
@@ -31,11 +36,15 @@ class _PrivateRoomRequestSheet extends StatefulWidget {
     required this.roomTitle,
     required this.memberCount,
     this.isGroup = false,
+    this.groupId,
   });
 
   final String roomTitle;
   final int memberCount;
   final bool isGroup;
+
+  /// Gerçek gizli grup: istek yöneticilere gider, onaylanınca bildirim gelir.
+  final String? groupId;
 
   @override
   State<_PrivateRoomRequestSheet> createState() =>
@@ -118,7 +127,22 @@ class _PrivateRoomRequestSheetState extends State<_PrivateRoomRequestSheet> {
                   const SizedBox(height: 16),
                   AppPrimaryButton(
                     label: t.sendRequest,
-                    onPressed: () {
+                    onPressed: () async {
+                      final groupId = widget.groupId;
+                      if (groupId != null) {
+                        final navigator = Navigator.of(context);
+                        try {
+                          await GroupRepository.instance.requestJoin(
+                            groupId,
+                            message: _messageController.text.trim(),
+                          );
+                          GroupStore.instance.markRequested(groupId);
+                          navigator.pop();
+                        } catch (e) {
+                          if (context.mounted) showErrorSnackBar(context, e);
+                        }
+                        return;
+                      }
                       final title = widget.roomTitle;
                       final navigator = Navigator.of(context);
                       navigator.pop();

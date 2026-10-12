@@ -4,26 +4,98 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
+import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/data/remote/post_repository.dart';
+import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
 
 /// Paylaşım sonrası İstatistik bottom sheet (Figma).
+/// [postId] verilirse gerçek istatistikler ve token'lı öne çıkarma.
 Future<void> showPostStatsSheet(
   BuildContext context, {
   required String imagePath,
+  String? postId,
 }) {
   return showModalBottomSheet<void>(
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
-    builder: (context) => _PostStatsSheet(imagePath: imagePath),
+    builder: (context) => _PostStatsSheet(imagePath: imagePath, postId: postId),
   );
 }
 
-class _PostStatsSheet extends StatelessWidget {
-  const _PostStatsSheet({required this.imagePath});
+class _PostStatsSheet extends StatefulWidget {
+  const _PostStatsSheet({required this.imagePath, this.postId});
 
   final String imagePath;
+  final String? postId;
+
+  @override
+  State<_PostStatsSheet> createState() => _PostStatsSheetState();
+}
+
+class _PostStatsSheetState extends State<_PostStatsSheet> {
+  ({int views, int likes, int comments, DateTime? boostedUntil})? _stats;
+  bool _boosting = false;
+
+  String get imagePath => widget.imagePath;
+
+  @override
+  void initState() {
+    super.initState();
+    final id = widget.postId;
+    if (id != null) {
+      PostRepository.instance
+          .stats(id)
+          .then((s) {
+            if (mounted) setState(() => _stats = s);
+          })
+          .catchError((Object _) {});
+    }
+  }
+
+  /// 1.8k gibi kısa gösterim.
+  static String _count(int n) {
+    if (n >= 1000000) return '${(n / 1000000).toStringAsFixed(1)}M';
+    if (n >= 1000) return '${(n / 1000).toStringAsFixed(1)}k';
+    return '$n';
+  }
+
+  String _value(
+    int Function(
+      ({int views, int likes, int comments, DateTime? boostedUntil}) s,
+    )
+    pick,
+    String sample,
+  ) {
+    final s = _stats;
+    if (widget.postId == null) return sample;
+    return s == null ? '–' : _count(pick(s));
+  }
+
+  Future<void> _boost() async {
+    final id = widget.postId;
+    if (id == null) return Navigator.of(context).pop();
+    if (_boosting) return;
+    setState(() => _boosting = true);
+    final messenger = ScaffoldMessenger.of(context);
+    final text = Translations.of(context).discover.stats.boosted;
+    try {
+      final balance = await PostRepository.instance.boost(id);
+      SessionStore.instance.updateTokenBalance(balance);
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      messenger.showSnackBar(
+        SnackBar(content: Text(text), behavior: SnackBarBehavior.floating),
+      );
+    } catch (e) {
+      if (mounted) {
+        setState(() => _boosting = false);
+        showErrorSnackBar(context, e);
+      }
+    }
+  }
 
   static const _avatarSize = 100.0;
 
@@ -79,7 +151,7 @@ class _PostStatsSheet extends StatelessWidget {
                 const SizedBox(height: 20),
                 _StatRow(
                   label: t.viewers,
-                  value: '1.8k',
+                  value: _value((s) => s.views, '1.8k'),
                   icon: SvgPicture.asset(
                     AppAssets.iconStatsEye,
                     width: 24,
@@ -89,7 +161,7 @@ class _PostStatsSheet extends StatelessWidget {
                 const SizedBox(height: 10),
                 _StatRow(
                   label: t.comments,
-                  value: '140',
+                  value: _value((s) => s.comments, '140'),
                   icon: Image.asset(
                     AppAssets.iconAiCommentary,
                     width: 24,
@@ -99,7 +171,7 @@ class _PostStatsSheet extends StatelessWidget {
                 const SizedBox(height: 10),
                 _StatRow(
                   label: t.likes,
-                  value: '550',
+                  value: _value((s) => s.likes, '550'),
                   icon: SvgPicture.asset(
                     AppAssets.iconStatsLike,
                     width: 24,
@@ -107,10 +179,7 @@ class _PostStatsSheet extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                _BoostButton(
-                  label: t.boostCta,
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
+                _BoostButton(label: t.boostCta, onPressed: _boost),
               ],
             ),
           ),
@@ -121,11 +190,7 @@ class _PostStatsSheet extends StatelessWidget {
           child: GestureDetector(
             onTap: () => Navigator.of(context).pop(),
             behavior: HitTestBehavior.opaque,
-            child: SvgPicture.asset(
-              AppAssets.iconClose,
-              width: 32,
-              height: 32,
-            ),
+            child: SvgPicture.asset(AppAssets.iconClose, width: 32, height: 32),
           ),
         ),
         Positioned(
@@ -149,10 +214,8 @@ class _PostStatsSheet extends StatelessWidget {
               child: Image.file(
                 File(imagePath),
                 fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => Image.asset(
-                  AppAssets.fakePerson01,
-                  fit: BoxFit.cover,
-                ),
+                errorBuilder: (_, _, _) =>
+                    Image.asset(AppAssets.fakePerson01, fit: BoxFit.cover),
               ),
             ),
           ),
@@ -233,10 +296,7 @@ class _BoostButton extends StatelessWidget {
           gradient: const LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              AppColors.brandPurpleSoft,
-              AppColors.brandPurpleDeep,
-            ],
+            colors: [AppColors.brandPurpleSoft, AppColors.brandPurpleDeep],
           ),
         ),
         child: Padding(
@@ -252,10 +312,7 @@ class _BoostButton extends StatelessWidget {
                   gradient: const LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [
-                      AppColors.brandPurple,
-                      AppColors.brandPurpleLight,
-                    ],
+                    colors: [AppColors.brandPurple, AppColors.brandPurpleLight],
                   ),
                   border: Border.all(
                     width: AppBorders.buttonBorderWidth,
@@ -275,11 +332,7 @@ class _BoostButton extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      Image.asset(
-                        AppAssets.iconTokens,
-                        width: 22,
-                        height: 22,
-                      ),
+                      Image.asset(AppAssets.iconTokens, width: 22, height: 22),
                     ],
                   ),
                 ),

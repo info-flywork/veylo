@@ -5,14 +5,19 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
+import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/core/errors/error_messages.dart';
+import 'package:veylo/data/remote/chat_store.dart';
+import 'package:veylo/data/remote/vibe_repository.dart';
 import 'package:veylo/i18n/strings.g.dart';
-import 'package:veylo/models/chat/chat_thread.dart';
 import 'package:veylo/models/vibes/vibe_post.dart';
 import 'package:veylo/screens/chat/anonymous_chat_page.dart';
+import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 import 'package:veylo/screens/vibes/vibe_share_sheet.dart';
 
-/// Vibe kartı → Mesaj Gönder → Vibe'a Cevap Ver → chat.
+/// Vibe kartı → Mesaj Gönder → Vibe'a Cevap Ver → anonim sohbet.
+/// Cevap yazara mesaj isteği olarak gider; onaylarsa sohbet devam eder.
 Future<void> showVibeTalkSheet(BuildContext context, VibePost post) async {
   final wantsReply = await showModalBottomSheet<bool>(
     context: context,
@@ -28,27 +33,25 @@ Future<void> showVibeTalkSheet(BuildContext context, VibePost post) async {
   if (wantsReply != true || !context.mounted) return;
 
   final reply = await showVibeReplySheet(context);
-  if (reply == null || !context.mounted) return;
+  if (reply == null || reply.trim().isEmpty || !context.mounted) return;
 
-  final thread = ChatThread(
-    id: 'vibe_${post.id}',
-    peerUserId: post.id,
-    title: post.name,
-    lastMessagePreview: reply,
-    avatarUrl: post.avatarAsset,
-    lastMessageAt: DateTime.now(),
-    isAnonymous: true,
-    maskedName: post.name,
-    peerUsername: post.name,
-    connectionProgress: 18,
-    isOnline: true,
+  // Sohbet açılana kadar ekran kilitlenir (çift gönderimi de engeller).
+  final navigator = Navigator.of(context);
+  showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => const Center(child: CircularProgressIndicator()),
   );
-  await AnonymousChatPage.open(
-    context,
-    thread,
-    vibeQuote: post.body,
-    initialOutgoingMessage: reply,
-  );
+  try {
+    final thread = await VibeRepository.instance.reply(post.id, reply.trim());
+    ChatStore.instance.replace(thread);
+    navigator.pop();
+    if (!context.mounted) return;
+    await AnonymousChatPage.open(context, thread);
+  } catch (e) {
+    navigator.pop();
+    if (context.mounted) showErrorSnackBar(context, e);
+  }
 }
 
 class _VibeTalkSheet extends StatelessWidget {
@@ -102,10 +105,18 @@ class _VibeTalkSheet extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                AppText(
-                  post.name,
-                  style: _nameStyle,
-                  textAlign: TextAlign.center,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: AppText(
+                        post.name,
+                        style: _nameStyle,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    if (post.isAi) const AiBadge(),
+                  ],
                 ),
                 const SizedBox(height: 10),
                 AppText(
@@ -120,10 +131,7 @@ class _VibeTalkSheet extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
-                AppPrimaryButton(
-                  label: t.vibes.sendMessage,
-                  onPressed: onSend,
-                ),
+                AppPrimaryButton(label: t.vibes.sendMessage, onPressed: onSend),
               ],
             ),
           ),
@@ -150,7 +158,7 @@ class _SheetAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget image = Image.asset(asset, fit: BoxFit.cover);
+    Widget image = ChatAvatarImage(url: asset, size: 100);
     if (blurred) {
       image = ImageFiltered(
         imageFilter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
@@ -181,11 +189,7 @@ class _SheetCloseButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
-      child: SvgPicture.asset(
-        AppAssets.iconClose,
-        width: 26.67,
-        height: 26.67,
-      ),
+      child: SvgPicture.asset(AppAssets.iconClose, width: 26.67, height: 26.67),
     );
   }
 }

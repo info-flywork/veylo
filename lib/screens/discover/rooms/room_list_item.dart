@@ -2,6 +2,13 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:veylo/core/assets/app_assets.dart';
+import 'package:veylo/core/errors/error_messages.dart';
+import 'package:veylo/data/remote/chat_repository.dart';
+import 'package:veylo/data/remote/chat_store.dart';
+import 'package:veylo/data/remote/group_repository.dart';
+import 'package:veylo/data/remote/group_store.dart';
+import 'package:veylo/models/group/group_models.dart';
+import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
@@ -16,67 +23,39 @@ class RoomListItem {
     required this.isPrivate,
     required this.avatars,
     this.isRequested = false,
+    this.id,
+    this.memberCount,
+    this.isMember = false,
   });
+
+  /// Backend grubu (`GET /groups`): açık grupta [count] aktif üye sayısıdır.
+  factory RoomListItem.fromGroup(GroupSummary g) => RoomListItem(
+    id: g.id,
+    title: g.title,
+    count: g.isPrivate ? g.memberCount : g.activeCount,
+    memberCount: g.memberCount,
+    isPrivate: g.isPrivate,
+    isRequested: g.requested,
+    isMember: g.isMember,
+    // Fotoğrafı olmayan üyeler varsayılan avatarla (kart boş kalmasın).
+    avatars: [
+      ...g.avatars,
+      for (var i = g.avatars.length; i < g.memberCount.clamp(0, 5); i++)
+        AppAssets.strangerAvatar,
+    ],
+  );
 
   final String title;
   final int count;
   final bool isPrivate;
   final bool isRequested;
   final List<String> avatars;
-}
 
-/// Dummy All Groups listesi.
-const defaultGroups = <RoomListItem>[
-  RoomListItem(
-    title: 'Nighttime Chats',
-    count: 92,
-    isPrivate: false,
-    avatars: [
-      AppAssets.fakePerson01,
-      AppAssets.fakePerson02,
-      AppAssets.fakePerson03,
-      AppAssets.fakePerson04,
-      AppAssets.fakePerson05,
-    ],
-  ),
-  RoomListItem(
-    title: 'Movies & TV Shows',
-    count: 156,
-    isPrivate: true,
-    avatars: [
-      AppAssets.fakePerson06,
-      AppAssets.fakePerson07,
-      AppAssets.fakePerson08,
-      AppAssets.fakePerson03,
-      AppAssets.fakePerson01,
-    ],
-  ),
-  RoomListItem(
-    title: 'Music',
-    count: 89,
-    isPrivate: false,
-    avatars: [
-      AppAssets.fakePerson02,
-      AppAssets.fakePerson05,
-      AppAssets.fakePerson04,
-      AppAssets.fakePerson08,
-      AppAssets.fakePerson07,
-    ],
-  ),
-  RoomListItem(
-    title: 'Late Night Circle',
-    count: 23,
-    isPrivate: true,
-    isRequested: true,
-    avatars: [
-      AppAssets.fakePerson03,
-      AppAssets.fakePerson01,
-      AppAssets.fakePerson06,
-      AppAssets.fakePerson02,
-      AppAssets.fakePerson04,
-    ],
-  ),
-];
+  /// Gerçek grupta id (demo kartlarda null).
+  final String? id;
+  final int? memberCount;
+  final bool isMember;
+}
 
 /// Dummy All Rooms listesi.
 const defaultRooms = <RoomListItem>[
@@ -119,11 +98,7 @@ const defaultRooms = <RoomListItem>[
 ];
 
 class RoomListCard extends StatelessWidget {
-  const RoomListCard({
-    super.key,
-    required this.item,
-    this.isGroup = false,
-  });
+  const RoomListCard({super.key, required this.item, this.isGroup = false});
 
   final RoomListItem item;
   final bool isGroup;
@@ -139,6 +114,10 @@ class RoomListCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         if (item.isRequested) return;
+        if (isGroup && item.id != null) {
+          _openGroup(context, item);
+          return;
+        }
         if (isGroup) {
           if (locked) {
             showPrivateRoomRequestSheet(
@@ -201,7 +180,10 @@ class RoomListCard extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(999),
-                            border: Border.all(color: AppColors.white, width: 1),
+                            border: Border.all(
+                              color: AppColors.white,
+                              width: 1,
+                            ),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -253,9 +235,7 @@ class RoomListCard extends StatelessWidget {
               ),
               alignment: Alignment.center,
               child: AppText(
-                locked
-                    ? (item.isRequested ? t.requested : t.request)
-                    : t.join,
+                locked ? (item.isRequested ? t.requested : t.request) : t.join,
                 style: AppTextStyles.allRoomAction.copyWith(
                   color: AppColors.white,
                 ),
@@ -268,12 +248,35 @@ class RoomListCard extends StatelessWidget {
   }
 }
 
+/// Gerçek grup: üyeysem sohbet, açıksa katıl + sohbet, gizliyse katılma isteği.
+Future<void> _openGroup(BuildContext context, RoomListItem item) async {
+  final id = item.id!;
+  if (item.isPrivate && !item.isMember) {
+    await showPrivateRoomRequestSheet(
+      context,
+      roomTitle: item.title,
+      memberCount: item.memberCount ?? item.count,
+      isGroup: true,
+      groupId: id,
+    );
+    return;
+  }
+  try {
+    final thread = item.isMember
+        ? await ChatRepository.instance.get(id)
+        : await GroupRepository.instance.join(id);
+    GroupStore.instance.markJoined(id);
+    ChatStore.instance.replace(thread);
+    if (context.mounted) await GroupChatPage.openThread(context, thread);
+    // Dönüşte üye sayısı / ayrılma güncel görünsün.
+    GroupStore.instance.refresh();
+  } catch (e) {
+    if (context.mounted) showErrorSnackBar(context, e);
+  }
+}
+
 class RoomListColumn extends StatelessWidget {
-  const RoomListColumn({
-    super.key,
-    required this.items,
-    this.isGroup = false,
-  });
+  const RoomListColumn({super.key, required this.items, this.isGroup = false});
 
   final List<RoomListItem> items;
   final bool isGroup;
@@ -292,10 +295,7 @@ class RoomListColumn extends StatelessWidget {
 }
 
 class _AvatarBubbles extends StatelessWidget {
-  const _AvatarBubbles({
-    required this.avatars,
-    required this.blurred,
-  });
+  const _AvatarBubbles({required this.avatars, required this.blurred});
 
   final List<String> avatars;
   final bool blurred;
@@ -346,12 +346,7 @@ class _Bubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget photo = Image.asset(
-      asset,
-      width: size,
-      height: size,
-      fit: BoxFit.cover,
-    );
+    Widget photo = ChatAvatarImage(url: asset, size: size);
 
     if (blurred) {
       photo = ImageFiltered(

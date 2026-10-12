@@ -40,6 +40,12 @@ class ChatStore extends ChangeNotifier {
       ..add(_socket.on('message:new').listen((e) => _upsert(e['conversation'])))
       ..add(_socket.on('conversation:updated').listen(_upsert))
       ..add(_socket.on('conversation:read').listen(_onRead))
+      // Gruptan çıkarıldım.
+      ..add(
+        _socket
+            .on('conversation:removed')
+            .listen((e) => remove(e['conversationId'] as String? ?? '')),
+      )
       ..add(_socket.on('presence:update').listen(_onPresence))
       ..add(
         _socket.on('tokens:updated').listen((e) {
@@ -186,6 +192,7 @@ class ChatStore extends ChangeNotifier {
       'username': t.peerUsername,
       'displayName': t.maskedName ?? t.title,
       'avatarUrl': t.avatarUrl.isEmpty ? null : t.avatarUrl,
+      'isAi': t.peerIsAi,
     },
     'isOnline': t.isOnline,
     'memberCount': t.memberCount,
@@ -196,6 +203,13 @@ class ChatStore extends ChangeNotifier {
       'peerConsent': t.peerRevealConsent,
     },
     'contextQuote': t.contextQuote,
+    'group': t.isGroup
+        ? {
+            'isPrivate': t.groupIsPrivate,
+            'myRole': t.groupRole,
+            'avatars': t.groupAvatarUrls ?? const <String>[],
+          }
+        : null,
     'lastMessage': {
       'preview': t.lastMessagePreview,
       'at': t.lastMessageAt?.toUtc().toIso8601String(),

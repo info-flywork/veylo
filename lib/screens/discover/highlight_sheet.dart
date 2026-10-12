@@ -166,7 +166,11 @@ class DiscoverSharedSuccessBanner extends StatelessWidget {
         return Material(
           color: AppColors.sharedSuccessStrip,
           child: InkWell(
-            onTap: () => showPostStatsSheet(context, imagePath: path),
+            onTap: () => showPostStatsSheet(
+              context,
+              imagePath: path,
+              postId: DiscoverHighlight.instance.postId,
+            ),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               child: SizedBox(

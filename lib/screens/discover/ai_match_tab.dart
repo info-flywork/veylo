@@ -5,6 +5,7 @@ import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/data/remote/match_repository.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/screens/discover/finding_match_page.dart';
 
@@ -44,6 +45,20 @@ class _AiMatchTabState extends State<AiMatchTab> {
   String _moodId = 'bored';
   String _lookingId = 'cultures';
 
+  /// Gerçek çevrimiçi sayısı (yüklenene kadar null).
+  int? _online;
+
+  @override
+  void initState() {
+    super.initState();
+    MatchRepository.instance
+        .onlineCount()
+        .then((n) {
+          if (mounted) setState(() => _online = n);
+        })
+        .catchError((Object _) {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = Translations.of(context).discover.aiMatch;
@@ -75,29 +90,15 @@ class _AiMatchTabState extends State<AiMatchTab> {
     // Figma satırları: 1) friends+venting  2) flirty+fun+cultures  3) language
     final lookingRows = <List<_LookingOption>>[
       [
-        _LookingOption(
-          id: 'friends',
-          emoji: '🤝',
-          label: t.lookingNewFriends,
-        ),
+        _LookingOption(id: 'friends', emoji: '🤝', label: t.lookingNewFriends),
         _LookingOption(id: 'venting', emoji: '💬', label: t.lookingVenting),
       ],
       [
         _LookingOption(id: 'flirty', emoji: '💕', label: t.lookingFlirty),
         _LookingOption(id: 'fun', emoji: '😄', label: t.lookingFun),
-        _LookingOption(
-          id: 'cultures',
-          emoji: '🌎',
-          label: t.lookingCultures,
-        ),
+        _LookingOption(id: 'cultures', emoji: '🌎', label: t.lookingCultures),
       ],
-      [
-        _LookingOption(
-          id: 'language',
-          emoji: '🗣️',
-          label: t.lookingLanguage,
-        ),
-      ],
+      [_LookingOption(id: 'language', emoji: '🗣️', label: t.lookingLanguage)],
     ];
 
     return Stack(
@@ -107,19 +108,13 @@ class _AiMatchTabState extends State<AiMatchTab> {
         const Positioned(
           left: -142 - _BlurOrb.pad,
           top: 20 - _BlurOrb.pad,
-          child: _BlurOrb(
-            size: 404,
-            color: Color(0x80FFD2B4),
-          ),
+          child: _BlurOrb(size: 404, color: Color(0x80FFD2B4)),
         ),
         // Figma Ellipse 2393 — #7C6CD6 @ 50%, 404, left 182 (sağda kalsın)
         const Positioned(
           left: 182 - _BlurOrb.pad,
           top: 20 - _BlurOrb.pad,
-          child: _BlurOrb(
-            size: 404,
-            color: Color(0x807C6CD6),
-          ),
+          child: _BlurOrb(size: 404, color: Color(0x807C6CD6)),
         ),
         ListView(
           padding: const EdgeInsets.fromLTRB(0, 12, 0, 120),
@@ -187,8 +182,7 @@ class _AiMatchTabState extends State<AiMatchTab> {
                           _LookingChip(
                             option: option,
                             selected: option.id == _lookingId,
-                            onTap: () =>
-                                setState(() => _lookingId = option.id),
+                            onTap: () => setState(() => _lookingId = option.id),
                           ),
                       ],
                     ),
@@ -203,7 +197,7 @@ class _AiMatchTabState extends State<AiMatchTab> {
                 children: [
                   Expanded(
                     child: _StatCard(
-                      value: t.statActiveValue,
+                      value: _online?.toString() ?? '–',
                       label: t.statActiveUsers,
                     ),
                   ),
@@ -232,12 +226,13 @@ class _AiMatchTabState extends State<AiMatchTab> {
                 onPressed: () {
                   Navigator.of(context).push(
                     PageRouteBuilder<void>(
-                      pageBuilder: (_, _, _) => const FindingMatchPage(),
+                      pageBuilder: (_, _, _) => FindingMatchPage(
+                        mood: _moodId,
+                        intent: _lookingId,
+                        onlineCount: _online,
+                      ),
                       transitionsBuilder: (_, animation, _, child) {
-                        return FadeTransition(
-                          opacity: animation,
-                          child: child,
-                        );
+                        return FadeTransition(opacity: animation, child: child);
                       },
                       transitionDuration: const Duration(milliseconds: 280),
                     ),
@@ -399,10 +394,7 @@ class _BlurOrb extends StatelessWidget {
         child: Container(
           width: size,
           height: size,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: color,
-          ),
+          decoration: BoxDecoration(shape: BoxShape.circle, color: color),
         ),
       ),
     );

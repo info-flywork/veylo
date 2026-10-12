@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
+import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/widgets/profile_tappable_avatar.dart';
-import 'package:veylo/data/local/local_profile_store.dart';
-import 'package:veylo/data/mock/profile_mock_repository.dart';
-import 'package:veylo/data/mock/vibes_mock_repository.dart';
+import 'package:veylo/core/errors/error_messages.dart';
+import 'package:veylo/data/remote/vibe_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/vibes/vibe_post.dart';
 import 'package:veylo/screens/vibes/vibe_share_sheet.dart';
@@ -19,9 +19,7 @@ const _kAvatar = 58.0;
 
 /// Vibes — başlık, arama ve konuşma kartları.
 class VibesPage extends StatefulWidget {
-  const VibesPage({super.key, this.posts});
-
-  final List<VibePost>? posts;
+  const VibesPage({super.key});
 
   @override
   State<VibesPage> createState() => _VibesPageState();
@@ -29,27 +27,33 @@ class VibesPage extends StatefulWidget {
 
 class _VibesPageState extends State<VibesPage> {
   final _searchCtrl = TextEditingController();
-  late final List<VibePost> _posts;
-  final Set<String> _likedIds = {};
+  final _store = VibeStore.instance;
   bool _mapOpen = false;
 
   @override
   void initState() {
     super.initState();
-    _posts = widget.posts ?? VibesMockRepository.posts();
     _searchCtrl.addListener(() => setState(() {}));
+    _store.addListener(_onStore);
+    if (!_store.loaded) _store.refresh();
   }
 
   @override
   void dispose() {
+    _store.removeListener(_onStore);
     _searchCtrl.dispose();
     super.dispose();
   }
 
+  void _onStore() {
+    if (mounted) setState(() {});
+  }
+
   List<VibePost> get _visible {
     final q = _searchCtrl.text.trim().toLowerCase();
-    if (q.isEmpty) return _posts;
-    return _posts
+    final posts = _store.posts;
+    if (q.isEmpty) return posts;
+    return posts
         .where(
           (p) =>
               p.name.toLowerCase().contains(q) ||
@@ -61,18 +65,39 @@ class _VibesPageState extends State<VibesPage> {
   Future<void> _shareVibe() async {
     final draft = await showVibeShareSheet(context);
     if (draft == null || !mounted) return;
-    final self = LocalProfileStore.instance
-        .apply(ProfileMockRepository.currentUser());
-    final post = VibesMockRepository.addShared(
-      body: draft.body,
-      anonymous: draft.anonymous,
-      displayName: self.displayName,
-      avatarAsset: self.avatarUrl,
+    try {
+      await _store.share(body: draft.body, anonymous: draft.anonymous);
+      if (mounted) setState(() => _mapOpen = false);
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    }
+  }
+
+  /// Kendi vibe'ına uzun basınca silme onayı.
+  Future<void> _confirmDelete(VibePost post) async {
+    final t = Translations.of(context).vibes;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(t.deleteTitle),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(t.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(t.delete),
+          ),
+        ],
+      ),
     );
-    setState(() {
-      _posts.insert(0, post);
-      _mapOpen = false;
-    });
+    if (ok != true || !mounted) return;
+    try {
+      await _store.delete(post);
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    }
   }
 
   @override
@@ -108,36 +133,56 @@ class _VibesPageState extends State<VibesPage> {
           Expanded(
             child: _mapOpen
                 ? const VibesMapView()
-                : ListView.builder(
-                    padding: EdgeInsets.fromLTRB(16, 0, 16, 16 + bottom + 64),
-                    itemCount: items.isEmpty ? 0 : items.length * 2 - 1,
-                    itemBuilder: (context, index) {
-                      if (index.isOdd) {
-                        return const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10),
-                          child: Divider(
-                            height: 1,
-                            thickness: 1,
-                            color: _kDivider,
-                          ),
-                        );
-                      }
-                      final post = items[index ~/ 2];
-                      final liked = _likedIds.contains(post.id);
-                      return _VibeCard(
-                        post: post,
-                        liked: liked,
-                        sendLabel: t.vibes.sendMessage,
-                        onLike: () => setState(() {
-                          if (liked) {
-                            _likedIds.remove(post.id);
-                          } else {
-                            _likedIds.add(post.id);
+                : _store.loaded && _store.posts.isEmpty
+                ? _VibesEmpty(text: t.vibes.empty, onRefresh: _store.refresh)
+                : RefreshIndicator(
+                    onRefresh: _store.refresh,
+                    color: AppColors.brandPurple,
+                    child: NotificationListener<ScrollNotification>(
+                      onNotification: (n) {
+                        if (n.metrics.extentAfter < 400) _store.loadMore();
+                        return false;
+                      },
+                      child: ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: EdgeInsets.fromLTRB(
+                          16,
+                          0,
+                          16,
+                          16 + bottom + 64,
+                        ),
+                        itemCount: items.isEmpty ? 0 : items.length * 2 - 1,
+                        // Sayfanın context'i: liste yenilense de sheet akışı yarıda kalmaz.
+                        itemBuilder: (_, index) {
+                          if (index.isOdd) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: Divider(
+                                height: 1,
+                                thickness: 1,
+                                color: _kDivider,
+                              ),
+                            );
                           }
-                        }),
-                        onSend: () => showVibeTalkSheet(context, post),
-                      );
-                    },
+                          final post = items[index ~/ 2];
+                          return GestureDetector(
+                            onLongPress: post.isMine
+                                ? () => _confirmDelete(post)
+                                : null,
+                            child: _VibeCard(
+                              post: post,
+                              liked: post.likedByMe,
+                              sendLabel: t.vibes.sendMessage,
+                              onLike: () => _store.toggleLike(post),
+                              // Kendi vibe'ına mesaj gönderilmez.
+                              onSend: post.isMine
+                                  ? () {}
+                                  : () => showVibeTalkSheet(context, post),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   ),
           ),
         ],
@@ -198,10 +243,7 @@ class _VibesHeader extends StatelessWidget {
 }
 
 class _VibesSearchField extends StatelessWidget {
-  const _VibesSearchField({
-    required this.controller,
-    required this.hint,
-  });
+  const _VibesSearchField({required this.controller, required this.hint});
 
   final TextEditingController controller;
   final String hint;
@@ -267,7 +309,7 @@ class _VibeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final likes = post.likeCount + (liked ? 1 : 0);
+    final likes = post.likeCount;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -276,7 +318,8 @@ class _VibeCard extends StatelessWidget {
           ProfileTappableAvatar(
             avatarUrl: post.avatarAsset,
             size: _kAvatar,
-            userId: post.id,
+            userId: post.authorId,
+            username: post.username,
             displayName: post.name,
             enabled: !post.blurred,
             blurred: post.blurred,
@@ -290,11 +333,18 @@ class _VibeCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
-                      child: AppText(
-                        post.name,
-                        style: AppTextStyles.vibesName,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                      child: Row(
+                        children: [
+                          Flexible(
+                            child: AppText(
+                              post.name,
+                              style: AppTextStyles.vibesName,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          if (post.isAi) const AiBadge(),
+                        ],
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -364,3 +414,28 @@ class _VibeCard extends StatelessWidget {
   }
 }
 
+class _VibesEmpty extends StatelessWidget {
+  const _VibesEmpty({required this.text, required this.onRefresh});
+
+  final String text;
+  final Future<void> Function() onRefresh;
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      color: AppColors.brandPurple,
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(32, 120, 32, 0),
+        children: [
+          AppText(
+            text,
+            style: AppTextStyles.vibesDate,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}

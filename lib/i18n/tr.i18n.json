@@ -41,7 +41,13 @@
     "revealCta": "Reveal my profile",
     "revealNotYet": "Not Yet",
     "seen": "Görüldü",
-    "typing": "yazıyor…"
+    "typing": "yazıyor…",
+    "noteYou": "Sen",
+    "noteSheetTitle": "Not paylaş",
+    "noteSheetSubtitle": "Notun 24 saat görünür",
+    "noteHint": "Aklında ne var?",
+    "noteShare": "Paylaş",
+    "noteDelete": "Notu sil"
   },
   "profile": {
     "eyebrow": "Profile",
@@ -188,7 +194,10 @@
     "reportCancel": "Cancel",
     "sendReport": "Send Report",
     "notSet": "Belirtilmedi",
-    "reportSent": "Teşekkürler, raporunu aldık."
+    "reportSent": "Teşekkürler, raporunu aldık.",
+    "emailVerificationSent": "{email} adresine onay bağlantısı gönderdik. Onaylayınca e-postan değişir.",
+    "passwordChanged": "Şifren güncellendi.",
+    "passwordMismatch": "Şifreler eşleşmiyor."
   },
   "nav": {
     "discover": "Discover",
@@ -224,7 +233,11 @@
     "shareTitle": "Vibe Paylaş",
     "replyTitle": "Vibe'a Cevap Ver",
     "shareHint": "Bir şeyler yaz",
-    "shareAnonymous": "Anonim olarak paylaş"
+    "shareAnonymous": "Anonim olarak paylaş",
+    "empty": "Son 24 saatte vibe yok. İlkini sen paylaş!",
+    "deleteTitle": "Bu vibe silinsin mi?",
+    "delete": "Sil",
+    "cancel": "Vazgeç"
   },
   "discover": {
     "title": "Discover",
@@ -268,7 +281,8 @@
       "matchBio": "I'll make you feel things you didn't know you could feel.",
       "swipePrevious": "Previous",
       "swipeNext": "Next",
-      "swipeFinger": "Swipe Finger"
+      "swipeFinger": "Swipe Finger",
+      "noMatch": "Şu an uygun kimse yok. Biraz sonra tekrar dene."
     },
     "searchHint": "Search",
     "allRooms": "All Rooms",
@@ -349,7 +363,18 @@
       "addPeople": "Kişi Ekle",
       "you": "Sen",
       "admin": "Admin",
-      "leaveGroup": "Gruptan ayrıl"
+      "leaveGroup": "Gruptan ayrıl",
+      "requests": "Katılma istekleri",
+      "approve": "Onayla",
+      "reject": "Reddet",
+      "addPeopleEmpty": "Gruba eklemek için önce birilerini takip et.",
+      "add": "Ekle",
+      "makeAdmin": "Yönetici yap",
+      "removeAdmin": "Yöneticilikten al",
+      "remove": "Gruptan çıkar",
+      "leaveConfirm": "Bu gruptan ayrılmak istiyor musun?",
+      "leave": "Ayrıl",
+      "cancel": "Vazgeç"
     },
     "filters": {
       "title": "Filters",
@@ -372,7 +397,10 @@
       "addComment": "Yorum ekle...",
       "commentsTitle": "Yorumlar",
       "sampleCaption": "There's nothing quite like having a cup of coffee after a beautiful day. <3",
-      "hoursAgo": "{hours}s"
+      "hoursAgo": "{hours}s",
+      "minutesAgo": "{minutes}dk",
+      "daysAgo": "{days}g",
+      "deleteCommentTitle": "Bu yorum silinsin mi?"
     },
     "story": {
       "draft": "DRAFT",
@@ -403,7 +431,8 @@
       "viewers": "Görüntüleyenler",
       "comments": "Yorum",
       "likes": "Beğeni",
-      "boostCta": "1 gün boyunca öne çıkar - 100 token"
+      "boostCta": "1 gün boyunca öne çıkar - 100 token",
+      "boosted": "Öne çıkarıldı! Gönderin 24 saat boyunca en üstte."
     }
   },
   "common": {
@@ -554,6 +583,12 @@
     "requestNotAccepted": "Cevap vermek için isteği onayla.",
     "requestPendingLimit": "İsteğini kabul ettiğinde daha fazla mesaj gönderebilirsin.",
     "blocked": "Bu kişiye mesaj gönderemezsin.",
-    "peerUnavailable": "Bu hesap artık kullanılamıyor."
+    "peerUnavailable": "Bu hesap artık kullanılamıyor.",
+    "vibeDailyLimit": "Bugün çok vibe paylaştın. Biraz sonra tekrar dene.",
+    "groupFull": "Bu grup dolu.",
+    "groupCreateLimit": "Bugün çok grup oluşturdun. Biraz sonra tekrar dene.",
+    "notFound": "Bu artık mevcut değil.",
+    "recentLogin": "Güvenliğin için çıkış yapıp tekrar giriş yap, sonra yeniden dene.",
+    "socialAccount": "E-posta ve şifren Google ya da Apple hesabın tarafından yönetiliyor."
   }
 }

@@ -30,6 +30,9 @@ class ChatThread {
     this.muted = false,
     this.peerLastReadSeq,
     this.contextQuote,
+    this.groupIsPrivate = false,
+    this.groupRole,
+    this.peerIsAi = false,
   }) : _isGroup = isGroup,
        _isAnonymous = isAnonymous,
        _connectionProgress = connectionProgress,
@@ -73,6 +76,17 @@ class ChatThread {
   /// Vibes'tan başladıysa paylaşım metni.
   final String? contextQuote;
 
+  /// Grup: katılmak için yönetici onayı gerekiyor mu.
+  final bool groupIsPrivate;
+
+  /// Gruptaki rolüm: OWNER | ADMIN | MEMBER (grup değilse null).
+  final String? groupRole;
+
+  /// Karşı taraf Veylo'nun AI karakteri (anonimken de bilinir, "AI" rozeti).
+  final bool peerIsAi;
+
+  bool get isGroupAdmin => groupRole == 'OWNER' || groupRole == 'ADMIN';
+
   /// Backend'de karşılığı olmayan yerel sohbet (ör. Vibes demo akışı).
   bool get isLocalOnly => id.startsWith('vibe_');
 
@@ -81,6 +95,7 @@ class ChatThread {
     final peer = j['peer'] as Map<String, dynamic>?;
     final connection = j['connection'] as Map<String, dynamic>?;
     final last = j['lastMessage'] as Map<String, dynamic>?;
+    final group = j['group'] as Map<String, dynamic>?;
     final isAnonymous = j['type'] == 'ANONYMOUS';
     final revealed = connection?['revealed'] as bool? ?? false;
     final title =
@@ -96,6 +111,10 @@ class ChatThread {
       unreadCount: (j['unreadCount'] as num?)?.toInt() ?? 0,
       isGroup: j['type'] == 'GROUP',
       memberCount: (j['memberCount'] as num?)?.toInt() ?? 2,
+      groupAvatarUrls: (group?['avatars'] as List?)?.cast<String>(),
+      groupIsPrivate: group?['isPrivate'] as bool? ?? false,
+      groupRole: group?['myRole'] as String?,
+      peerIsAi: peer?['isAi'] as bool? ?? false,
       // Profiller açılınca normal sohbet gibi gösterilir.
       isAnonymous: isAnonymous && !revealed,
       maskedName: isAnonymous && !revealed ? title : null,
@@ -144,6 +163,9 @@ class ChatThread {
     muted: muted,
     peerLastReadSeq: peerLastReadSeq ?? this.peerLastReadSeq,
     contextQuote: contextQuote,
+    groupIsPrivate: groupIsPrivate,
+    groupRole: groupRole,
+    peerIsAi: peerIsAi,
   );
 
   bool get isGroup => _isGroup ?? false;

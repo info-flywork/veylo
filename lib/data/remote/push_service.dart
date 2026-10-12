@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:veylo/core/i18n/notification_texts.dart';
 import 'package:veylo/data/local/language_store.dart';
 import 'package:veylo/data/remote/api_client.dart';
@@ -22,6 +23,9 @@ class PushService {
 
   /// Backend'deki ANDROID_CHANNEL_ID ve AndroidManifest ile aynı.
   static const _channelId = 'messages';
+
+  /// Ayarlar > Bildirimler anahtarı.
+  static const _kEnabled = 'push.enabled';
 
   final _messaging = FirebaseMessaging.instance;
   final _local = FlutterLocalNotificationsPlugin();
@@ -65,7 +69,9 @@ class PushService {
       _pendingTap = launch!.notificationResponse?.payload;
     }
     final initial = await _messaging.getInitialMessage();
-    if (initial != null) _pendingTap = initial.data['conversationId'] as String?;
+    if (initial != null) {
+      _pendingTap = initial.data['conversationId'] as String?;
+    }
 
     FirebaseMessaging.onMessageOpenedApp.listen(
       (m) => _onTap(m.data['conversationId'] as String?),
@@ -73,13 +79,36 @@ class PushService {
     FirebaseMessaging.onMessage.listen(_onForegroundPush);
   }
 
+  Future<bool> isEnabled() async =>
+      (await SharedPreferences.getInstance()).getBool(_kEnabled) ?? true;
+
+  /// Kapatınca cihaz kaydı silinir (push gelmez) ve uygulama içi bildirimler durur.
+  Future<void> setEnabled(bool enabled) async {
+    await (await SharedPreferences.getInstance()).setBool(_kEnabled, enabled);
+    if (enabled) {
+      await start();
+    } else {
+      await stop();
+    }
+  }
+
   /// Girişten sonra: izin ister, cihazı backend'e kaydeder, socket mesajlarını dinler.
   Future<void> start() async {
-    if (_started) return;
+    if (_started || !await isEnabled()) return;
     _started = true;
-    _subs.add(
-      SocketService.instance.on('message:new').listen(_onSocketMessage),
-    );
+    _subs
+      ..add(SocketService.instance.on('message:new').listen(_onSocketMessage))
+      // Yöneticiyim: gizli grubuma katılma isteği geldi.
+      ..add(
+        SocketService.instance.on('group:request').listen((e) {
+          final t = NotificationTexts.of(_language);
+          _show(
+            conversationId: e['conversationId'] as String? ?? '',
+            title: t.groupRequestTitle(e['title'] as String? ?? ''),
+            body: t.groupRequestBody(e['name'] as String? ?? '?'),
+          );
+        }),
+      );
     try {
       final settings = await _messaging.requestPermission();
       if (settings.authorizationStatus == AuthorizationStatus.denied) {
@@ -88,7 +117,11 @@ class PushService {
       }
       // iOS'ta FCM token'ı APNs token'ı gelmeden alınamaz.
       if (Platform.isIOS) {
-        for (var i = 0; i < 10 && await _messaging.getAPNSToken() == null; i++) {
+        for (
+          var i = 0;
+          i < 10 && await _messaging.getAPNSToken() == null;
+          i++
+        ) {
           await Future<void>.delayed(const Duration(seconds: 1));
         }
         if (await _messaging.getAPNSToken() == null) {
@@ -192,9 +225,13 @@ class PushService {
       'VOICE' => t.voice,
       _ => (message['body'] as String?) ?? '',
     };
+    final sender = (message['sender'] as Map?)?['displayName'] as String?;
+    final title = thread.isGroup && sender != null
+        ? '$sender · ${thread.title}'
+        : thread.title;
     _show(
       conversationId: thread.id,
-      title: thread.isStrangerRequest ? t.messageRequestTitle : thread.title,
+      title: thread.isStrangerRequest ? t.messageRequestTitle : title,
       body: thread.isStrangerRequest
           ? t.messageRequestBody(thread.title)
           : body,

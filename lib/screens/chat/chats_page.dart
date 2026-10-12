@@ -5,15 +5,17 @@ import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_screen_title.dart';
 import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/widgets/app_text.dart';
-import 'package:veylo/data/mock/chat_mock_repository.dart';
 import 'package:veylo/data/remote/chat_repository.dart';
 import 'package:veylo/data/remote/chat_store.dart';
+import 'package:veylo/data/remote/note_store.dart';
+import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/chat/chat_note.dart';
 import 'package:veylo/models/chat/chat_thread.dart';
 import 'package:veylo/models/profile/profile_user.dart';
 import 'package:veylo/screens/chat/anonymous_chat_page.dart';
 import 'package:veylo/screens/chat/direct_chat_page.dart';
+import 'package:veylo/screens/chat/note_sheet.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 import 'package:veylo/screens/chat/widgets/chat_thread_tile.dart';
 import 'package:veylo/screens/discover/rooms/group_chat_page.dart';
@@ -66,6 +68,30 @@ class _ChatsPageState extends State<ChatsPage> {
     _reloadThreads();
     _searchCtrl.addListener(() => setState(() {}));
     ChatStore.instance.addListener(_onStoreChanged);
+    NoteStore.instance.addListener(_onNotesChanged);
+    NoteStore.instance.refresh();
+  }
+
+  void _onNotesChanged() {
+    if (mounted) setState(() {});
+  }
+
+  /// Benim kartım (ilk sırada) + görebildiğim notlar.
+  List<ChatNote> _notes(Translations tr) {
+    final me = SessionStore.instance.me;
+    final mine = NoteStore.instance.mine;
+    return [
+      ChatNote(
+        id: 'note_self',
+        userId: me?.id ?? 'user_self',
+        displayName: tr.chats.noteYou,
+        statusText: mine ?? tr.chats.noteAdd,
+        avatarUrl: me?.avatarUrl ?? '',
+        isSelf: true,
+        showAddBadge: mine == null,
+      ),
+      ...NoteStore.instance.items,
+    ];
   }
 
   void _onStoreChanged() {
@@ -75,6 +101,7 @@ class _ChatsPageState extends State<ChatsPage> {
   @override
   void dispose() {
     ChatStore.instance.removeListener(_onStoreChanged);
+    NoteStore.instance.removeListener(_onNotesChanged);
     _searchCtrl.dispose();
     _searchFocus.dispose();
     super.dispose();
@@ -133,7 +160,7 @@ class _ChatsPageState extends State<ChatsPage> {
   Widget build(BuildContext context) {
     final t = Translations.of(context).chats;
     final top = MediaQuery.paddingOf(context).top;
-    final noteItems = widget.notes ?? ChatMockRepository.notes();
+    final noteItems = widget.notes ?? _notes(Translations.of(context));
     final threads = _visibleThreads;
 
     return Material(
@@ -172,12 +199,15 @@ class _ChatsPageState extends State<ChatsPage> {
                 final note = noteItems[index];
                 return ChatNoteCard(
                   note: note,
-                  onTap: () => openUserProfile(
-                    context,
-                    userId: note.userId,
-                    displayName: note.displayName,
-                    avatarUrl: note.avatarUrl,
-                  ),
+                  onTap: note.isSelf
+                      ? () => showNoteSheet(context)
+                      : () => openUserProfile(
+                          context,
+                          userId: note.userId,
+                          displayName: note.displayName,
+                          avatarUrl: note.avatarUrl,
+                          username: note.username,
+                        ),
                 );
               },
             ),
@@ -312,12 +342,7 @@ class _ChatsPageState extends State<ChatsPage> {
       return;
     }
     if (thread.isGroup) {
-      GroupChatPage.open(
-        context,
-        title: thread.title,
-        memberCount: thread.memberCount,
-        avatars: thread.groupAvatarUrls,
-      );
+      GroupChatPage.openThread(context, thread);
       return;
     }
     DirectChatPage.open(context, thread);

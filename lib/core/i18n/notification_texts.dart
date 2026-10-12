@@ -9,6 +9,8 @@ class NotificationTexts {
     required this.photo,
     required this.voice,
     required this.channelName,
+    required this.groupRequestTitle,
+    required this.groupRequestBody,
   });
 
   final String messageRequestTitle;
@@ -19,6 +21,10 @@ class NotificationTexts {
   /// Android bildirim ayarlarında görünen kanal adı.
   final String channelName;
 
+  /// Gizli gruba katılma isteği (yöneticiye).
+  final String Function(String group) groupRequestTitle;
+  final String Function(String name) groupRequestBody;
+
   static NotificationTexts of(String code) => _texts[code] ?? _texts['en']!;
 
   static final Map<String, NotificationTexts> _texts = {
@@ -28,6 +34,8 @@ class NotificationTexts {
       photo: '📷 Photo',
       voice: '🎤 Voice message',
       channelName: 'Messages',
+      groupRequestTitle: (g) => '$g: join request',
+      groupRequestBody: (n) => '$n wants to join',
     ),
     'tr': NotificationTexts(
       messageRequestTitle: 'Yeni mesaj isteği',
@@ -35,6 +43,8 @@ class NotificationTexts {
       photo: '📷 Fotoğraf',
       voice: '🎤 Sesli mesaj',
       channelName: 'Mesajlar',
+      groupRequestTitle: (g) => '$g: katılma isteği',
+      groupRequestBody: (n) => '$n katılmak istiyor',
     ),
     'de': NotificationTexts(
       messageRequestTitle: 'Neue Nachrichtenanfrage',
@@ -42,6 +52,8 @@ class NotificationTexts {
       photo: '📷 Foto',
       voice: '🎤 Sprachnachricht',
       channelName: 'Nachrichten',
+      groupRequestTitle: (g) => '$g: Beitrittsanfrage',
+      groupRequestBody: (n) => '$n möchte beitreten',
     ),
     'it': NotificationTexts(
       messageRequestTitle: 'Nuova richiesta di messaggio',
@@ -49,6 +61,8 @@ class NotificationTexts {
       photo: '📷 Foto',
       voice: '🎤 Messaggio vocale',
       channelName: 'Messaggi',
+      groupRequestTitle: (g) => '$g: richiesta di accesso',
+      groupRequestBody: (n) => '$n vuole unirsi',
     ),
     'fr': NotificationTexts(
       messageRequestTitle: 'Nouvelle demande de message',
@@ -56,6 +70,8 @@ class NotificationTexts {
       photo: '📷 Photo',
       voice: '🎤 Message vocal',
       channelName: 'Messages',
+      groupRequestTitle: (g) => '$g : demande d’adhésion',
+      groupRequestBody: (n) => '$n veut rejoindre le groupe',
     ),
     'ja': NotificationTexts(
       messageRequestTitle: '新しいメッセージリクエスト',
@@ -63,6 +79,8 @@ class NotificationTexts {
       photo: '📷 写真',
       voice: '🎤 ボイスメッセージ',
       channelName: 'メッセージ',
+      groupRequestTitle: (g) => '$g：参加リクエスト',
+      groupRequestBody: (n) => '$nさんが参加を希望しています',
     ),
     'es': NotificationTexts(
       messageRequestTitle: 'Nueva solicitud de mensaje',
@@ -70,6 +88,8 @@ class NotificationTexts {
       photo: '📷 Foto',
       voice: '🎤 Mensaje de voz',
       channelName: 'Mensajes',
+      groupRequestTitle: (g) => '$g: solicitud para unirse',
+      groupRequestBody: (n) => '$n quiere unirse',
     ),
     'ru': NotificationTexts(
       messageRequestTitle: 'Новый запрос на переписку',
@@ -77,6 +97,8 @@ class NotificationTexts {
       photo: '📷 Фото',
       voice: '🎤 Голосовое сообщение',
       channelName: 'Сообщения',
+      groupRequestTitle: (g) => '$g: заявка на вступление',
+      groupRequestBody: (n) => '$n хочет вступить',
     ),
     'ko': NotificationTexts(
       messageRequestTitle: '새 메시지 요청',
@@ -84,6 +106,8 @@ class NotificationTexts {
       photo: '📷 사진',
       voice: '🎤 음성 메시지',
       channelName: '메시지',
+      groupRequestTitle: (g) => '$g: 가입 요청',
+      groupRequestBody: (n) => '$n님이 참여를 원해요',
     ),
     'hi': NotificationTexts(
       messageRequestTitle: 'नया मैसेज अनुरोध',
@@ -91,6 +115,8 @@ class NotificationTexts {
       photo: '📷 फ़ोटो',
       voice: '🎤 वॉइस मैसेज',
       channelName: 'मैसेज',
+      groupRequestTitle: (g) => '$g: जुड़ने का अनुरोध',
+      groupRequestBody: (n) => '$n जुड़ना चाहते हैं',
     ),
     'pt': NotificationTexts(
       messageRequestTitle: 'Nova solicitação de mensagem',
@@ -98,6 +124,8 @@ class NotificationTexts {
       photo: '📷 Foto',
       voice: '🎤 Mensagem de voz',
       channelName: 'Mensagens',
+      groupRequestTitle: (g) => '$g: pedido para entrar',
+      groupRequestBody: (n) => '$n quer entrar',
     ),
     'zh': NotificationTexts(
       messageRequestTitle: '新的消息请求',
@@ -105,6 +133,8 @@ class NotificationTexts {
       photo: '📷 照片',
       voice: '🎤 语音消息',
       channelName: '消息',
+      groupRequestTitle: (g) => '$g：入群申请',
+      groupRequestBody: (n) => '$n 想加入群组',
     ),
   };
 }

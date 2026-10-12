@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/theme/theme.dart';
+import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/widgets/profile_tappable_avatar.dart';
 import 'package:veylo/i18n/strings.g.dart';
@@ -132,17 +133,24 @@ class _DirectChatPageState extends State<DirectChatPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            AppText(
-                              thread.title,
-                              style: const TextStyle(
-                                fontFamily: AppFonts.poppins,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16,
-                                height: 24 / 16,
-                                letterSpacing: 16 * -0.02,
-                                color: AppColors.black,
-                              ),
-                              maxLines: 1,
+                            Row(
+                              children: [
+                                Flexible(
+                                  child: AppText(
+                                    thread.title,
+                                    style: const TextStyle(
+                                      fontFamily: AppFonts.poppins,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 16,
+                                      height: 24 / 16,
+                                      letterSpacing: 16 * -0.02,
+                                      color: AppColors.black,
+                                    ),
+                                    maxLines: 1,
+                                  ),
+                                ),
+                                if (thread.peerIsAi) const AiBadge(),
+                              ],
                             ),
                             const SizedBox(height: 2),
                             Row(

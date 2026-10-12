@@ -6,6 +6,7 @@ import 'package:veylo/core/widgets/app_interest_chip.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/models/discover/post.dart';
 
 class _InterestItem {
   const _InterestItem(this.id, this.iconAsset);
@@ -14,21 +15,27 @@ class _InterestItem {
   final String iconAsset;
 }
 
-Future<void> showFiltersSheet(BuildContext context) {
-  return showModalBottomSheet<void>(
+/// Uygulanan filtreleri döner (kapatılırsa null). Açılışta mevcut filtreler seçili gelir.
+Future<DiscoverFilters?> showFiltersSheet(
+  BuildContext context, {
+  DiscoverFilters initial = const DiscoverFilters(),
+}) {
+  return showModalBottomSheet<DiscoverFilters>(
     context: context,
     isScrollControlled: true,
     backgroundColor: AppColors.white,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
-    builder: (context) => const FiltersSheet(),
+    builder: (context) => FiltersSheet(initial: initial),
   );
 }
 
 /// Discover Filters — Figma bottom sheet.
 class FiltersSheet extends StatefulWidget {
-  const FiltersSheet({super.key});
+  const FiltersSheet({super.key, this.initial = const DiscoverFilters()});
+
+  final DiscoverFilters initial;
 
   @override
   State<FiltersSheet> createState() => _FiltersSheetState();
@@ -61,9 +68,9 @@ class _FiltersSheetState extends State<FiltersSheet> {
 
   RangeValues _age = const RangeValues(18, 35);
   double _distance = 25;
-  String _showMe = 'women';
-  final Set<String> _interests = {'painting'};
-  bool _activeNow = true;
+  late String _showMe = widget.initial.gender;
+  late final Set<String> _interests = {...widget.initial.interests};
+  late bool _activeNow = widget.initial.onlineOnly;
 
   String _labelFor(Translations t, String id) {
     final i = t.createProfile.interests;
@@ -360,7 +367,13 @@ class _FiltersSheetState extends State<FiltersSheet> {
               const SizedBox(height: 10),
               AppPrimaryButton(
                 label: f.showResult,
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () => Navigator.of(context).pop(
+                  DiscoverFilters(
+                    gender: _showMe,
+                    interests: {..._interests},
+                    onlineOnly: _activeNow,
+                  ),
+                ),
               ),
             ],
           ),

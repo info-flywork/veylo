@@ -3,6 +3,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/core/widgets/ai_badge.dart';
+import 'package:veylo/data/remote/discover_store.dart';
+import 'package:veylo/models/discover/post.dart';
+import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/screens/discover/ai_match_tab.dart';
 import 'package:veylo/screens/discover/discover_post_page.dart';
@@ -11,18 +15,6 @@ import 'package:veylo/screens/discover/highlight_sheet.dart';
 import 'package:veylo/screens/discover/rooms/create_room_or_group_sheet.dart';
 import 'package:veylo/screens/discover/rooms/rooms_tab.dart';
 import 'package:veylo/screens/discover/story_camera_page.dart';
-
-class _DiscoverProfile {
-  const _DiscoverProfile({
-    required this.image,
-    required this.avatar,
-    required this.username,
-  });
-
-  final String image;
-  final String avatar;
-  final String username;
-}
 
 /// Discover — header, tabs, search+filter, 3 kolon grid.
 class DiscoverPage extends StatefulWidget {
@@ -33,53 +25,29 @@ class DiscoverPage extends StatefulWidget {
 }
 
 class _DiscoverPageState extends State<DiscoverPage> {
-  static const _profiles = <_DiscoverProfile>[
-    _DiscoverProfile(
-      image: AppAssets.fakePerson01,
-      avatar: AppAssets.fakePerson01,
-      username: 'natalie_pnk',
-    ),
-    _DiscoverProfile(
-      image: AppAssets.fakePerson02,
-      avatar: AppAssets.fakePerson02,
-      username: 'christian.samuel',
-    ),
-    _DiscoverProfile(
-      image: AppAssets.fakePerson03,
-      avatar: AppAssets.fakePerson03,
-      username: 'adnan___adn',
-    ),
-    _DiscoverProfile(
-      image: AppAssets.fakePerson04,
-      avatar: AppAssets.fakePerson04,
-      username: 'sophievargas',
-    ),
-    _DiscoverProfile(
-      image: AppAssets.fakePerson05,
-      avatar: AppAssets.fakePerson05,
-      username: 'clara.clr',
-    ),
-    _DiscoverProfile(
-      image: AppAssets.fakePerson06,
-      avatar: AppAssets.fakePerson06,
-      username: 'sam_black',
-    ),
-    _DiscoverProfile(
-      image: AppAssets.fakePerson07,
-      avatar: AppAssets.fakePerson07,
-      username: 'kyrie.lee',
-    ),
-    _DiscoverProfile(
-      image: AppAssets.fakePerson08,
-      avatar: AppAssets.fakePerson08,
-      username: 'lara.wtson',
-    ),
-    _DiscoverProfile(
-      image: AppAssets.fakePerson02,
-      avatar: AppAssets.fakePerson02,
-      username: 'samuel_',
-    ),
-  ];
+  final _store = DiscoverStore.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    _store.addListener(_onStore);
+    if (!_store.loaded) _store.refresh();
+  }
+
+  @override
+  void dispose() {
+    _store.removeListener(_onStore);
+    super.dispose();
+  }
+
+  void _onStore() {
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _openFilters() async {
+    final f = await showFiltersSheet(context, initial: _store.filters);
+    if (f != null) _store.applyFilters(f);
+  }
 
   int _tabIndex = 1; // Discover
 
@@ -89,9 +57,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
         showCreateRoomOrGroupSheet(context);
       case 1:
         Navigator.of(context).push<void>(
-          MaterialPageRoute<void>(
-            builder: (_) => const StoryCameraPage(),
-          ),
+          MaterialPageRoute<void>(builder: (_) => const StoryCameraPage()),
         );
       case 2:
         break;
@@ -170,8 +136,10 @@ class _DiscoverPageState extends State<DiscoverPage> {
                           const SizedBox(width: 8),
                           Expanded(
                             child: TextField(
-                              style: AppTextStyles.discoverSearchHint
-                                  .copyWith(color: AppColors.textOnLight),
+                              onChanged: _store.search,
+                              style: AppTextStyles.discoverSearchHint.copyWith(
+                                color: AppColors.textOnLight,
+                              ),
                               cursorColor: AppColors.selectionBorder,
                               decoration: InputDecoration(
                                 isDense: true,
@@ -187,7 +155,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                   ),
                   const SizedBox(width: 10),
                   GestureDetector(
-                    onTap: () => showFiltersSheet(context),
+                    onTap: _openFilters,
                     behavior: HitTestBehavior.opaque,
                     child: SizedBox(
                       width: 44,
@@ -210,32 +178,34 @@ class _DiscoverPageState extends State<DiscoverPage> {
             ),
             const DiscoverSharedSuccessBanner(),
             Expanded(
-              child: GridView.builder(
-                padding: const EdgeInsets.only(bottom: 110),
-                gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  mainAxisSpacing: 2,
-                  crossAxisSpacing: 2,
-                  childAspectRatio: 142 / 175,
-                ),
-                itemCount: _profiles.length,
-                itemBuilder: (context, index) {
-                  final profile = _profiles[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (_) => DiscoverPostPage(
-                            avatar: profile.avatar,
-                            username: profile.username,
-                          ),
+              child: RefreshIndicator(
+                onRefresh: _store.refresh,
+                color: AppColors.brandPurple,
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (n) {
+                    if (n.metrics.extentAfter < 600) _store.loadMore();
+                    return false;
+                  },
+                  child: GridView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: const EdgeInsets.only(bottom: 110),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 2,
+                          crossAxisSpacing: 2,
+                          childAspectRatio: 142 / 175,
                         ),
+                    itemCount: _store.posts.length,
+                    itemBuilder: (_, index) {
+                      final post = _store.posts[index];
+                      return GestureDetector(
+                        onTap: () => DiscoverPostPage.openPost(context, post),
+                        child: _DiscoverCard(post: post),
                       );
                     },
-                    child: _DiscoverCard(profile: profile),
-                  );
-                },
+                  ),
+                ),
               ),
             ),
           ] else if (_tabIndex == 0) ...[
@@ -308,9 +278,9 @@ class _DiscoverTabs extends StatelessWidget {
 }
 
 class _DiscoverCard extends StatelessWidget {
-  const _DiscoverCard({required this.profile});
+  const _DiscoverCard({required this.post});
 
-  final _DiscoverProfile profile;
+  final Post post;
 
   @override
   Widget build(BuildContext context) {
@@ -320,11 +290,13 @@ class _DiscoverCard extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Positioned.fill(
-            child: Image.asset(
-              profile.image,
+            child: Image.network(
+              post.thumbUrl,
               fit: BoxFit.cover,
               alignment: Alignment.center,
               filterQuality: FilterQuality.high,
+              errorBuilder: (_, _, _) =>
+                  const ColoredBox(color: AppColors.inputFill),
             ),
           ),
           const Positioned.fill(
@@ -357,18 +329,22 @@ class _DiscoverCard extends StatelessWidget {
                     border: Border.all(color: AppColors.white, width: 1),
                   ),
                   child: ClipOval(
-                    child: Image.asset(profile.avatar, fit: BoxFit.cover),
+                    child: ChatAvatarImage(
+                      url: post.authorAvatarUrl ?? '',
+                      size: 18,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 4),
-                Expanded(
+                Flexible(
                   child: AppText(
-                    profile.username,
+                    post.handle,
                     style: AppTextStyles.discoverCardUsername,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
+                if (post.authorIsAi) const AiBadge(compact: true),
               ],
             ),
           ),

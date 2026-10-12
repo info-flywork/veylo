@@ -41,7 +41,13 @@
     "revealCta": "Reveal my profile",
     "revealNotYet": "Not Yet",
     "seen": "Seen",
-    "typing": "typing…"
+    "typing": "typing…",
+    "noteYou": "You",
+    "noteSheetTitle": "Share a note",
+    "noteSheetSubtitle": "Your note stays for 24 hours",
+    "noteHint": "What’s on your mind?",
+    "noteShare": "Share",
+    "noteDelete": "Delete note"
   },
   "profile": {
     "eyebrow": "Profile",
@@ -188,7 +194,10 @@
     "reportCancel": "Cancel",
     "sendReport": "Send Report",
     "notSet": "Not set",
-    "reportSent": "Thanks, we received your report."
+    "reportSent": "Thanks, we received your report.",
+    "emailVerificationSent": "We sent a confirmation link to {email}. Your email changes after you confirm.",
+    "passwordChanged": "Your password has been updated.",
+    "passwordMismatch": "Passwords don’t match."
   },
   "nav": {
     "discover": "Discover",
@@ -224,7 +233,11 @@
     "shareTitle": "Share Vibe",
     "replyTitle": "Reply to Vibe",
     "shareHint": "Write something",
-    "shareAnonymous": "Share anonymously"
+    "shareAnonymous": "Share anonymously",
+    "empty": "No vibes in the last 24 hours. Share the first one!",
+    "deleteTitle": "Delete this vibe?",
+    "delete": "Delete",
+    "cancel": "Cancel"
   },
   "discover": {
     "title": "Discover",
@@ -268,7 +281,8 @@
       "matchBio": "I'll make you feel things you didn't know you could feel.",
       "swipePrevious": "Previous",
       "swipeNext": "Next",
-      "swipeFinger": "Swipe Finger"
+      "swipeFinger": "Swipe Finger",
+      "noMatch": "No one matches right now. Try again in a little while."
     },
     "searchHint": "Search",
     "allRooms": "All Rooms",
@@ -349,7 +363,18 @@
       "addPeople": "Add people",
       "you": "You",
       "admin": "Admin",
-      "leaveGroup": "Leave the group"
+      "leaveGroup": "Leave the group",
+      "requests": "Join requests",
+      "approve": "Approve",
+      "reject": "Reject",
+      "addPeopleEmpty": "Follow people to add them to the group.",
+      "add": "Add",
+      "makeAdmin": "Make admin",
+      "removeAdmin": "Remove admin",
+      "remove": "Remove from group",
+      "leaveConfirm": "Leave this group?",
+      "leave": "Leave",
+      "cancel": "Cancel"
     },
     "filters": {
       "title": "Filters",
@@ -372,7 +397,10 @@
       "addComment": "Add comment...",
       "commentsTitle": "Comments",
       "sampleCaption": "There's nothing quite like having a cup of coffee after a beautiful day. <3",
-      "hoursAgo": "{hours}h"
+      "hoursAgo": "{hours}h",
+      "minutesAgo": "{minutes}m",
+      "daysAgo": "{days}d",
+      "deleteCommentTitle": "Delete this comment?"
     },
     "story": {
       "draft": "DRAFT",
@@ -403,7 +431,8 @@
       "viewers": "Viewers",
       "comments": "Comments",
       "likes": "Likes",
-      "boostCta": "Boost for 1 day - 100 tokens"
+      "boostCta": "Boost for 1 day - 100 tokens",
+      "boosted": "Boosted! Your post is at the top for 24 hours."
     }
   },
   "common": {
@@ -554,6 +583,12 @@
     "requestNotAccepted": "Accept the request to reply.",
     "requestPendingLimit": "You can send more messages after they accept your request.",
     "blocked": "You can’t message this person.",
-    "peerUnavailable": "This account is no longer available."
+    "peerUnavailable": "This account is no longer available.",
+    "vibeDailyLimit": "You’ve shared a lot of vibes today. Try again later.",
+    "groupFull": "This group is full.",
+    "groupCreateLimit": "You’ve created too many groups today. Try again later.",
+    "notFound": "This is no longer available.",
+    "recentLogin": "For your security, log out and log in again, then try once more.",
+    "socialAccount": "Your email and password are managed by your Google or Apple account."
   }
 }

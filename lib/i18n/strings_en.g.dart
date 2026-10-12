@@ -118,6 +118,12 @@ class _Translations$chats$en extends Translations$chats$tr {
 	@override String get revealNotYet => 'Not Yet';
 	@override String get seen => 'Seen';
 	@override String get typing => 'typing…';
+	@override String get noteYou => 'You';
+	@override String get noteSheetTitle => 'Share a note';
+	@override String get noteSheetSubtitle => 'Your note stays for 24 hours';
+	@override String get noteHint => 'What’s on your mind?';
+	@override String get noteShare => 'Share';
+	@override String get noteDelete => 'Delete note';
 }
 
 // Path: profile
@@ -272,6 +278,9 @@ class _Translations$profile$en extends Translations$profile$tr {
 	@override String get sendReport => 'Send Report';
 	@override String get notSet => 'Not set';
 	@override String get reportSent => 'Thanks, we received your report.';
+	@override String emailVerificationSent({required Object email}) => 'We sent a confirmation link to ${email}. Your email changes after you confirm.';
+	@override String get passwordChanged => 'Your password has been updated.';
+	@override String get passwordMismatch => 'Passwords don’t match.';
 }
 
 // Path: nav
@@ -329,6 +338,10 @@ class _Translations$vibes$en extends Translations$vibes$tr {
 	@override String get replyTitle => 'Reply to Vibe';
 	@override String get shareHint => 'Write something';
 	@override String get shareAnonymous => 'Share anonymously';
+	@override String get empty => 'No vibes in the last 24 hours. Share the first one!';
+	@override String get deleteTitle => 'Delete this vibe?';
+	@override String get delete => 'Delete';
+	@override String get cancel => 'Cancel';
 }
 
 // Path: discover
@@ -537,6 +550,12 @@ class _Translations$errors$en extends Translations$errors$tr {
 	@override String get requestPendingLimit => 'You can send more messages after they accept your request.';
 	@override String get blocked => 'You can’t message this person.';
 	@override String get peerUnavailable => 'This account is no longer available.';
+	@override String get vibeDailyLimit => 'You’ve shared a lot of vibes today. Try again later.';
+	@override String get groupFull => 'This group is full.';
+	@override String get groupCreateLimit => 'You’ve created too many groups today. Try again later.';
+	@override String get notFound => 'This is no longer available.';
+	@override String get recentLogin => 'For your security, log out and log in again, then try once more.';
+	@override String get socialAccount => 'Your email and password are managed by your Google or Apple account.';
 }
 
 // Path: discover.aiMatch
@@ -583,6 +602,7 @@ class _Translations$discover$aiMatch$en extends Translations$discover$aiMatch$tr
 	@override String get swipePrevious => 'Previous';
 	@override String get swipeNext => 'Next';
 	@override String get swipeFinger => 'Swipe Finger';
+	@override String get noMatch => 'No one matches right now. Try again in a little while.';
 }
 
 // Path: discover.privateRoom
@@ -708,6 +728,17 @@ class _Translations$discover$groupInfo$en extends Translations$discover$groupInf
 	@override String get you => 'You';
 	@override String get admin => 'Admin';
 	@override String get leaveGroup => 'Leave the group';
+	@override String get requests => 'Join requests';
+	@override String get approve => 'Approve';
+	@override String get reject => 'Reject';
+	@override String get addPeopleEmpty => 'Follow people to add them to the group.';
+	@override String get add => 'Add';
+	@override String get makeAdmin => 'Make admin';
+	@override String get removeAdmin => 'Remove admin';
+	@override String get remove => 'Remove from group';
+	@override String get leaveConfirm => 'Leave this group?';
+	@override String get leave => 'Leave';
+	@override String get cancel => 'Cancel';
 }
 
 // Path: discover.filters
@@ -745,6 +776,9 @@ class _Translations$discover$post$en extends Translations$discover$post$tr {
 	@override String get commentsTitle => 'Comments';
 	@override String get sampleCaption => 'There\'s nothing quite like having a cup of coffee after a beautiful day. <3';
 	@override String hoursAgo({required Object hours}) => '${hours}h';
+	@override String minutesAgo({required Object minutes}) => '${minutes}m';
+	@override String daysAgo({required Object days}) => '${days}d';
+	@override String get deleteCommentTitle => 'Delete this comment?';
 }
 
 // Path: discover.story
@@ -797,6 +831,7 @@ class _Translations$discover$stats$en extends Translations$discover$stats$tr {
 	@override String get comments => 'Comments';
 	@override String get likes => 'Likes';
 	@override String get boostCta => 'Boost for 1 day - 100 tokens';
+	@override String get boosted => 'Boosted! Your post is at the top for 24 hours.';
 }
 
 // Path: createProfile.interests
@@ -876,6 +911,12 @@ extension on TranslationsEn {
 			'chats.revealNotYet' => 'Not Yet',
 			'chats.seen' => 'Seen',
 			'chats.typing' => 'typing…',
+			'chats.noteYou' => 'You',
+			'chats.noteSheetTitle' => 'Share a note',
+			'chats.noteSheetSubtitle' => 'Your note stays for 24 hours',
+			'chats.noteHint' => 'What’s on your mind?',
+			'chats.noteShare' => 'Share',
+			'chats.noteDelete' => 'Delete note',
 			'profile.eyebrow' => 'Profile',
 			'profile.title' => 'Settings',
 			'profile.editProfile' => 'Edit Profile',
@@ -1021,6 +1062,9 @@ extension on TranslationsEn {
 			'profile.sendReport' => 'Send Report',
 			'profile.notSet' => 'Not set',
 			'profile.reportSent' => 'Thanks, we received your report.',
+			'profile.emailVerificationSent' => ({required Object email}) => 'We sent a confirmation link to ${email}. Your email changes after you confirm.',
+			'profile.passwordChanged' => 'Your password has been updated.',
+			'profile.passwordMismatch' => 'Passwords don’t match.',
 			'nav.discover' => 'Discover',
 			'nav.chat' => 'Chat',
 			'nav.call' => 'Call',
@@ -1051,6 +1095,10 @@ extension on TranslationsEn {
 			'vibes.replyTitle' => 'Reply to Vibe',
 			'vibes.shareHint' => 'Write something',
 			'vibes.shareAnonymous' => 'Share anonymously',
+			'vibes.empty' => 'No vibes in the last 24 hours. Share the first one!',
+			'vibes.deleteTitle' => 'Delete this vibe?',
+			'vibes.delete' => 'Delete',
+			'vibes.cancel' => 'Cancel',
 			'discover.title' => 'Discover',
 			'discover.tabRooms' => 'Rooms',
 			'discover.tabDiscover' => 'Discover',
@@ -1092,6 +1140,7 @@ extension on TranslationsEn {
 			'discover.aiMatch.swipePrevious' => 'Previous',
 			'discover.aiMatch.swipeNext' => 'Next',
 			'discover.aiMatch.swipeFinger' => 'Swipe Finger',
+			'discover.aiMatch.noMatch' => 'No one matches right now. Try again in a little while.',
 			'discover.searchHint' => 'Search',
 			'discover.allRooms' => 'All Rooms',
 			'discover.allGroups' => 'All Groups',
@@ -1157,6 +1206,17 @@ extension on TranslationsEn {
 			'discover.groupInfo.you' => 'You',
 			'discover.groupInfo.admin' => 'Admin',
 			'discover.groupInfo.leaveGroup' => 'Leave the group',
+			'discover.groupInfo.requests' => 'Join requests',
+			'discover.groupInfo.approve' => 'Approve',
+			'discover.groupInfo.reject' => 'Reject',
+			'discover.groupInfo.addPeopleEmpty' => 'Follow people to add them to the group.',
+			'discover.groupInfo.add' => 'Add',
+			'discover.groupInfo.makeAdmin' => 'Make admin',
+			'discover.groupInfo.removeAdmin' => 'Remove admin',
+			'discover.groupInfo.remove' => 'Remove from group',
+			'discover.groupInfo.leaveConfirm' => 'Leave this group?',
+			'discover.groupInfo.leave' => 'Leave',
+			'discover.groupInfo.cancel' => 'Cancel',
 			'discover.filters.title' => 'Filters',
 			'discover.filters.ageRange' => 'Age Range',
 			'discover.filters.ageRangeValue' => ({required Object min, required Object max}) => '${min}-${max}',
@@ -1176,6 +1236,9 @@ extension on TranslationsEn {
 			'discover.post.commentsTitle' => 'Comments',
 			'discover.post.sampleCaption' => 'There\'s nothing quite like having a cup of coffee after a beautiful day. <3',
 			'discover.post.hoursAgo' => ({required Object hours}) => '${hours}h',
+			'discover.post.minutesAgo' => ({required Object minutes}) => '${minutes}m',
+			'discover.post.daysAgo' => ({required Object days}) => '${days}d',
+			'discover.post.deleteCommentTitle' => 'Delete this comment?',
 			'discover.story.draft' => 'DRAFT',
 			'discover.story.story' => 'STORY',
 			'discover.story.share' => 'Share',
@@ -1201,6 +1264,7 @@ extension on TranslationsEn {
 			'discover.stats.comments' => 'Comments',
 			'discover.stats.likes' => 'Likes',
 			'discover.stats.boostCta' => 'Boost for 1 day - 100 tokens',
+			'discover.stats.boosted' => 'Boosted! Your post is at the top for 24 hours.',
 			'common.loading' => 'Loading…',
 			'common.retry' => 'Retry',
 			'common.cancel' => 'Cancel',
@@ -1321,6 +1385,8 @@ extension on TranslationsEn {
 			'errors.network' => 'Couldn’t reach Veylo. Check your connection and try again.',
 			'errors.generic' => 'Something went wrong. Please try again.',
 			'errors.signInFailed' => 'Sign in failed. Please try again.',
+			_ => null,
+		} ?? switch (path) {
 			'errors.sessionExpired' => 'Your session has ended. Please sign in again.',
 			'errors.accountSuspended' => 'This account has been suspended.',
 			'errors.unsupportedImage' => 'Please choose a JPEG, PNG or WebP photo.',
@@ -1337,6 +1403,12 @@ extension on TranslationsEn {
 			'errors.requestPendingLimit' => 'You can send more messages after they accept your request.',
 			'errors.blocked' => 'You can’t message this person.',
 			'errors.peerUnavailable' => 'This account is no longer available.',
+			'errors.vibeDailyLimit' => 'You’ve shared a lot of vibes today. Try again later.',
+			'errors.groupFull' => 'This group is full.',
+			'errors.groupCreateLimit' => 'You’ve created too many groups today. Try again later.',
+			'errors.notFound' => 'This is no longer available.',
+			'errors.recentLogin' => 'For your security, log out and log in again, then try once more.',
+			'errors.socialAccount' => 'Your email and password are managed by your Google or Apple account.',
 			_ => null,
 		};
 	}

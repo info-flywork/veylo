@@ -3,13 +3,17 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gal/gal.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/state/discover_highlight.dart';
 import 'package:veylo/core/theme/theme.dart';
+import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/data/remote/discover_store.dart';
+import 'package:veylo/data/remote/post_repository.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/screens/discover/story_editor/story_draft_sheet.dart';
 import 'package:veylo/screens/discover/story_editor/story_music_sheet.dart';
@@ -35,6 +39,13 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
   Offset _textOffset = const Offset(0, -80);
   StoryMusicTrack? _music;
 
+  /// Görsel + yazı katmanı: paylaşırken tek görsele çevrilir.
+  final _canvasKey = GlobalKey();
+
+  /// Çekim sırasında "buraya yaz" ipucu görsele girmesin.
+  bool _capturing = false;
+  bool _busy = false;
+
   @override
   void dispose() {
     _musicPosSub?.cancel();
@@ -46,10 +57,72 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
     final result = await showStoryDraftSheet(context);
     if (!mounted) return;
     if (result == true) {
-      // Draft: şimdilik sadece geri (backend yok)
-      Navigator.of(context).pop();
+      // Taslak: sunucuya taslak olarak kaydedilir (akışta görünmez).
+      final ok = await _publish(draft: true);
+      if (ok && mounted) Navigator.of(context).pop();
     } else if (result == false) {
       Navigator.of(context).pop();
+    }
+  }
+
+  /// Görsel ve üzerindeki yazıyı ekran çözünürlüğünde tek PNG'ye çevirir.
+  Future<File> _renderCanvas() async {
+    final ratio = MediaQuery.devicePixelRatioOf(context).clamp(1.0, 3.0);
+    setState(() => _capturing = true);
+    await WidgetsBinding.instance.endOfFrame;
+    try {
+      final boundary =
+          _canvasKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+      final image = await boundary.toImage(pixelRatio: ratio);
+      final bytes = await image.toByteData(format: ImageByteFormat.png);
+      final dir = await Directory.systemTemp.createTemp('veylo_post');
+      final file = File('${dir.path}/post.png');
+      await file.writeAsBytes(bytes!.buffer.asUint8List());
+      return file;
+    } finally {
+      if (mounted) setState(() => _capturing = false);
+    }
+  }
+
+  /// Gönderiyi oluşturur (yayın ya da taslak). Başarılıysa true.
+  Future<bool> _publish({required bool draft}) async {
+    if (_busy) return false;
+    setState(() => _busy = true);
+    final navigator = Navigator.of(context);
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+    try {
+      final file = _textDraft.hasContent ? await _renderCanvas() : widget.file;
+      final music = _music;
+      final post = await PostRepository.instance.create(
+        imagePath: file.path,
+        draft: draft,
+        music: music == null
+            ? null
+            : {
+                'title': music.title,
+                if (music.artist.isNotEmpty) 'artist': music.artist,
+                'coverUrl': ?music.imageUrl,
+                'audioUrl': ?music.audioUrl,
+                'clipStartSec': music.clipStartSec,
+                'clipEndSec': music.clipEndSec,
+              },
+      );
+      navigator.pop(); // yükleniyor
+      if (!draft) {
+        DiscoverHighlight.instance.set(file.path, postId: post.id);
+        DiscoverStore.instance.refresh();
+      }
+      return true;
+    } catch (e) {
+      navigator.pop();
+      if (mounted) showErrorSnackBar(context, e);
+      return false;
+    } finally {
+      if (mounted) setState(() => _busy = false);
     }
   }
 
@@ -120,8 +193,10 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
     }
   }
 
-  void _share() {
-    DiscoverHighlight.instance.set(widget.file.path);
+  Future<void> _share() async {
+    await _audio.pause();
+    final ok = await _publish(draft: false);
+    if (!ok || !mounted) return;
     Navigator.of(context)
       ..pop() // editor
       ..pop(); // camera
@@ -143,10 +218,32 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.file(
-            widget.file,
-            fit: BoxFit.cover,
-            filterQuality: FilterQuality.high,
+          RepaintBoundary(
+            key: _canvasKey,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.file(
+                  widget.file,
+                  fit: BoxFit.cover,
+                  filterQuality: FilterQuality.high,
+                ),
+                // Paylaşırken görsele işlenen yazı (editörde aşağıdaki katman görünür).
+                if (_capturing && hasText)
+                  Positioned(
+                    left: 24,
+                    right: 56,
+                    top: size.height / 2 + _textOffset.dy,
+                    child: Text(
+                      displayText,
+                      textAlign: _textDraft.align,
+                      style: _textDraft.textStyle.copyWith(
+                        color: _textDraft.color,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
 
           // Top chrome — Figma/Zovi: close + music pill | settings + tools
@@ -238,7 +335,7 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
           ),
 
           // Canvas text — overlay açıkken gizle (çift placeholder olmasın)
-          if (!_textEditorOpen)
+          if (!_textEditorOpen && !_capturing)
             Positioned(
               left: 24,
               right: 56,

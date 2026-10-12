@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
+import 'package:veylo/data/remote/chat_repository.dart';
+import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
@@ -14,6 +16,7 @@ Future<void> showRoomApprovedSheet(
   required String roomTitle,
   bool isGroup = false,
   int memberCount = 1,
+  String? conversationId,
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -23,6 +26,7 @@ Future<void> showRoomApprovedSheet(
       roomTitle: roomTitle,
       isGroup: isGroup,
       memberCount: memberCount,
+      conversationId: conversationId,
     ),
   );
 }
@@ -32,11 +36,15 @@ class _RoomApprovedSheet extends StatelessWidget {
     required this.roomTitle,
     this.isGroup = false,
     this.memberCount = 1,
+    this.conversationId,
   });
 
   final String roomTitle;
   final bool isGroup;
   final int memberCount;
+
+  /// Gerçek grup: Continue grubu sunucudan yükleyip açar.
+  final String? conversationId;
 
   static const _sheetBg = Color(0xFFF6F6FB);
 
@@ -83,6 +91,21 @@ class _RoomApprovedSheet extends StatelessWidget {
                       final count = memberCount;
                       final navigator = Navigator.of(context);
                       navigator.pop();
+                      final id = conversationId;
+                      if (id != null) {
+                        ChatRepository.instance
+                            .get(id)
+                            .then((thread) {
+                              ChatStore.instance.replace(thread);
+                              if (!navigator.mounted) return null;
+                              return GroupChatPage.openThread(
+                                navigator.context,
+                                thread,
+                              );
+                            })
+                            .catchError((_) {});
+                        return;
+                      }
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         if (group) {
                           GroupChatPage.open(

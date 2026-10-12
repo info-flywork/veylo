@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/core/errors/error_messages.dart';
+import 'package:veylo/data/remote/match_repository.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/screens/create_profile/preparing_map_scene.dart';
 import 'package:veylo/screens/discover/your_match_page.dart';
@@ -17,7 +19,16 @@ enum _StepStatus { pending, active, done }
 
 /// AI Match — Finding your match animasyon ekranı.
 class FindingMatchPage extends StatefulWidget {
-  const FindingMatchPage({super.key});
+  const FindingMatchPage({
+    super.key,
+    this.mood = 'bored',
+    this.intent = 'cultures',
+    this.onlineCount,
+  });
+
+  final String mood;
+  final String intent;
+  final int? onlineCount;
 
   @override
   State<FindingMatchPage> createState() => _FindingMatchPageState();
@@ -32,17 +43,20 @@ class _FindingMatchPageState extends State<FindingMatchPage>
   late final AnimationController _spinController;
   bool _navigated = false;
 
+  /// Animasyonla aynı anda başlayan gerçek arama.
+  late final Future<List<MatchCandidate>> _search = MatchRepository.instance
+      .search(mood: widget.mood, intent: widget.intent);
+
   @override
   void initState() {
     super.initState();
-    _progressController = AnimationController(
-      vsync: this,
-      duration: _matchDuration,
-    )..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          _goToYourMatch();
-        }
-      });
+    _progressController =
+        AnimationController(vsync: this, duration: _matchDuration)
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              _goToYourMatch();
+            }
+          });
 
     _floatController = AnimationController(
       vsync: this,
@@ -55,6 +69,8 @@ class _FindingMatchPageState extends State<FindingMatchPage>
     )..repeat();
 
     _progressController.forward();
+    // Hata animasyon bitince gösterilir; burada yakalanmazsa uyarı düşer.
+    _search.catchError((Object _) => const <MatchCandidate>[]);
   }
 
   @override
@@ -81,14 +97,23 @@ class _FindingMatchPageState extends State<FindingMatchPage>
     super.dispose();
   }
 
-  void _goToYourMatch() {
+  Future<void> _goToYourMatch() async {
     if (!mounted || _navigated) return;
     _navigated = true;
+    final List<MatchCandidate> matches;
+    try {
+      matches = await _search;
+    } catch (e) {
+      if (!mounted) return;
+      showErrorSnackBar(context, e);
+      Navigator.of(context).pop();
+      return;
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
       Navigator.of(context, rootNavigator: true).pushReplacement(
         PageRouteBuilder<void>(
-          pageBuilder: (_, _, _) => const YourMatchPage(),
+          pageBuilder: (_, _, _) => YourMatchPage(matches: matches),
           transitionsBuilder: (_, animation, _, child) {
             return FadeTransition(opacity: animation, child: child);
           },
@@ -207,7 +232,7 @@ class _FindingMatchPageState extends State<FindingMatchPage>
           Padding(
             padding: EdgeInsets.fromLTRB(hPad, 0, hPad, 24 + bottomInset),
             child: AppText(
-              t.findingOnline(count: t.statActiveValue),
+              t.findingOnline(count: '${widget.onlineCount ?? '–'}'),
               style: AppTextStyles.aiMatchFindingOnline,
               textAlign: TextAlign.center,
             ),
@@ -275,8 +300,8 @@ class _FindingStepRow extends StatelessWidget {
     final textStyle = isDone
         ? AppTextStyles.aiMatchFindingStepDone
         : isActive
-            ? AppTextStyles.aiMatchFindingStepActive
-            : AppTextStyles.aiMatchFindingStepPending;
+        ? AppTextStyles.aiMatchFindingStepActive
+        : AppTextStyles.aiMatchFindingStepPending;
 
     return Opacity(
       opacity: isPending ? 0.35 : 1,
@@ -296,11 +321,7 @@ class _FindingStepRow extends StatelessWidget {
             ),
             const SizedBox(width: 10),
           ],
-          AppText(
-            label,
-            style: textStyle,
-            textAlign: TextAlign.center,
-          ),
+          AppText(label, style: textStyle, textAlign: TextAlign.center),
         ],
       ),
     );
@@ -318,11 +339,7 @@ class _CheckIcon extends StatelessWidget {
         color: AppColors.textPrimary,
       ),
       child: const Center(
-        child: Icon(
-          Icons.check,
-          size: 14,
-          color: AppColors.white,
-        ),
+        child: Icon(Icons.check, size: 14, color: AppColors.white),
       ),
     );
   }
@@ -356,13 +373,7 @@ class _SpinnerPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
 
     final rect = Offset.zero & size;
-    canvas.drawArc(
-      rect.deflate(2),
-      -math.pi / 2,
-      math.pi * 1.4,
-      false,
-      paint,
-    );
+    canvas.drawArc(rect.deflate(2), -math.pi / 2, math.pi * 1.4, false, paint);
   }
 
   @override

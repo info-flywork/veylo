@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
+import 'package:veylo/core/errors/error_messages.dart';
+import 'package:veylo/core/widgets/ai_badge.dart';
+import 'package:veylo/data/remote/safety_repository.dart';
+import 'package:veylo/data/remote/user_repository.dart';
+import 'package:veylo/core/state/discover_highlight.dart';
+import 'package:veylo/data/remote/post_repository.dart';
+import 'package:veylo/models/discover/post.dart';
+import 'package:veylo/screens/discover/discover_post_page.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_back_button.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
@@ -65,6 +73,119 @@ class _ProfilePageState extends State<ProfilePage> {
   _ProfileMediaTab _tab = _ProfileMediaTab.video;
   bool _following = false;
 
+  /// Başka kullanıcının sunucudan yüklenen profili.
+  ProfileUser? _remote;
+  bool _followBusy = false;
+
+  /// Gerçek gönderiler (null: örnek/mock profil).
+  List<Post>? _posts;
+  List<Post>? _saved;
+
+  /// Profil sahibinin backend id'si (mock profilde null).
+  String? get _ownerId {
+    final user = widget.user;
+    if (user == null || user.isSelf) return SessionStore.instance.me?.id;
+    return SafetyRepository.isRealUser(user.id) ? user.id : null;
+  }
+
+  bool get _isSelfProfile => widget.user == null || widget.user!.isSelf;
+
+  @override
+  void initState() {
+    super.initState();
+    final user = widget.user;
+    if (user == null || user.isSelf) {
+      // Kendi profilim: sayılar (takip/takipçi) güncel olsun.
+      SessionStore.instance.refreshMe().catchError((_) {});
+      // Yeni paylaşım yapınca gönderilerim yenilensin.
+      DiscoverHighlight.instance.imagePath.addListener(_loadMedia);
+    } else if (SafetyRepository.isRealUser(user.id)) {
+      _loadRemote(user.id);
+    }
+    _loadMedia();
+  }
+
+  @override
+  void dispose() {
+    DiscoverHighlight.instance.imagePath.removeListener(_loadMedia);
+    super.dispose();
+  }
+
+  Future<void> _loadMedia() async {
+    final id = _ownerId;
+    if (id == null) return;
+    final repo = PostRepository.instance;
+    try {
+      final posts = await repo.byUser(id);
+      final saved = _isSelfProfile ? await repo.saved() : null;
+      if (!mounted) return;
+      setState(() {
+        _posts = posts.items;
+        _saved = saved?.items ?? const [];
+      });
+    } catch (_) {}
+  }
+
+  /// Seçili sekmenin gerçek gönderileri (video şimdilik yok).
+  List<Post>? get _tabPosts {
+    final posts = _posts;
+    if (posts == null) return null;
+    return switch (_tab) {
+      _ProfileMediaTab.posts => posts,
+      _ProfileMediaTab.video => const [],
+      _ProfileMediaTab.saved => _isSelfProfile ? (_saved ?? const []) : const [],
+    };
+  }
+
+  Future<void> _loadRemote(String id) async {
+    try {
+      final p = await UserRepository.instance.profile(id);
+      if (!mounted) return;
+      setState(() {
+        _remote = p;
+        _following = p.iFollow;
+      });
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    }
+  }
+
+  /// Takip et / bırak: ekranda hemen değişir, hata olursa geri alınır.
+  Future<void> _toggleFollow() async {
+    final remote = _remote;
+    if (remote == null) {
+      // Örnek (backend'de olmayan) profil: yalnızca görünüm.
+      setState(() => _following = !_following);
+      widget.onFollowTap?.call();
+      return;
+    }
+    if (_followBusy) return;
+    final follow = !_following;
+    setState(() {
+      _followBusy = true;
+      _following = follow;
+      _remote = remote.copyWith(
+        iFollow: follow,
+        followerCount: remote.followerCount + (follow ? 1 : -1),
+      );
+    });
+    try {
+      final repo = UserRepository.instance;
+      await (follow ? repo.follow(remote.id) : repo.unfollow(remote.id));
+      SessionStore.instance.refreshMe().catchError((_) {});
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _following = !follow;
+        _remote = remote;
+      });
+      showErrorSnackBar(context, e);
+    } finally {
+      if (mounted) setState(() => _followBusy = false);
+    }
+    widget.onFollowTap?.call();
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = Translations.of(context).profile;
@@ -78,7 +199,8 @@ class _ProfilePageState extends State<ProfilePage> {
         SessionStore.instance,
       ]),
       builder: (context, _) {
-        final base = widget.user ?? ProfileMockRepository.currentUser();
+        final base =
+            _remote ?? widget.user ?? ProfileMockRepository.currentUser();
         final profile = base.isSelf
             ? LocalProfileStore.instance.apply(base)
             : base;
@@ -119,10 +241,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 onFollowTap: () => FollowPage.open(
                   context,
                   initialTab: FollowTab.following,
+                  userId: isSelf ? null : _remote?.id,
                 ),
                 onFollowerTap: () => FollowPage.open(
                   context,
                   initialTab: FollowTab.followers,
+                  userId: isSelf ? null : _remote?.id,
                 ),
               ),
               const SizedBox(height: 18),
@@ -144,10 +268,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ] else ...[
                 AppPrimaryButton(
                   label: _following ? t.following : t.follow,
-                  onPressed: () {
-                    setState(() => _following = !_following);
-                    widget.onFollowTap?.call();
-                  },
+                  onPressed: _toggleFollow,
                 ),
                 const SizedBox(height: 18),
               ],
@@ -159,7 +280,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 onChanged: (tab) => setState(() => _tab = tab),
               ),
               const SizedBox(height: 6),
-              _ProfileMediaGrid(assets: media),
+              if (_tabPosts case final posts?)
+                _ProfilePostGrid(
+                  posts: posts,
+                  onTap: (p) => DiscoverPostPage.openPost(context, p),
+                )
+              else
+                _ProfileMediaGrid(assets: media),
             ],
           ),
         ),
@@ -338,7 +465,17 @@ class _ProfileSummary extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppText(profile.displayName, style: AppTextStyles.profileName),
+              Row(
+                children: [
+                  Flexible(
+                    child: AppText(
+                      profile.displayName,
+                      style: AppTextStyles.profileName,
+                    ),
+                  ),
+                  if (profile.isAi) const AiBadge(),
+                ],
+              ),
               if (showUsername && handle != null && handle.isNotEmpty) ...[
                 const SizedBox(height: 4),
                 AppText('@$handle', style: AppTextStyles.profileUsername),
@@ -730,6 +867,60 @@ class _ProfileMediaGrid extends StatelessWidget {
             if (i > 0) const SizedBox(width: _kPostGap),
             Expanded(
               child: _ProfilePostTile(asset: items[i]),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Gerçek gönderiler: 3'lü satırlar, boş yer sahte görselle doldurulmaz.
+class _ProfilePostGrid extends StatelessWidget {
+  const _ProfilePostGrid({required this.posts, required this.onTap});
+
+  final List<Post> posts;
+  final ValueChanged<Post> onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        children: [
+          for (var row = 0; row * 3 < posts.length; row++) ...[
+            if (row > 0) const SizedBox(height: _kPostGap),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (var i = 0; i < 3; i++) ...[
+                  if (i > 0) const SizedBox(width: _kPostGap),
+                  Expanded(
+                    child: row * 3 + i < posts.length
+                        ? GestureDetector(
+                            onTap: () => onTap(posts[row * 3 + i]),
+                            child: SizedBox(
+                              height: _kPostHeight,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                  _kPostRadius,
+                                ),
+                                child: Image.network(
+                                  posts[row * 3 + i].thumbUrl,
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: _kPostHeight,
+                                  errorBuilder: (_, _, _) => const ColoredBox(
+                                    color: AppColors.inputFill,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        : const SizedBox(height: _kPostHeight),
+                  ),
+                ],
+              ],
             ),
           ],
         ],

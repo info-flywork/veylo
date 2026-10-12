@@ -55,6 +55,14 @@ class ChatRepository {
     ),
   );
 
+  /// Anonim sohbet (AI Match): karşı tarafa mesaj isteği olarak düşer.
+  Future<ChatThread> createAnonymous(String userId) async => ChatThread.fromApi(
+    Map<String, dynamic>.from(
+      await _api.post('/conversations/anonymous', body: {'userId': userId})
+          as Map,
+    ),
+  );
+
   Future<ChatThread> approve(String id) async => ChatThread.fromApi(
     Map<String, dynamic>.from(
       await _api.post('/conversations/$id/approve') as Map,
@@ -75,6 +83,9 @@ class ChatRepository {
 
   Future<void> setPinned(String id, bool pinned) =>
       _api.patch('/conversations/$id/settings', body: {'pinned': pinned});
+
+  Future<void> setMuted(String id, bool muted) =>
+      _api.patch('/conversations/$id/settings', body: {'muted': muted});
 
   /// Anonim sohbette karşı tarafın id'si bilinmediği için sohbet üzerinden.
   Future<void> blockPeer(String id) => _api.post('/conversations/$id/block');

@@ -79,6 +79,14 @@ class ApiClient {
     ),
   );
 
+  Future<dynamic> put(String path, {Object? body}) => _send(
+    (extra) => _dio.put(
+      path,
+      data: body,
+      options: Options(extra: extra),
+    ),
+  );
+
   Future<dynamic> delete(String path, {Object? body}) => _send(
     (extra) => _dio.delete(
       path,

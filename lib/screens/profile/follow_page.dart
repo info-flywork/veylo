@@ -3,8 +3,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_back_button.dart';
+import 'package:veylo/core/errors/error_messages.dart';
+import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
-import 'package:veylo/data/mock/follow_mock_repository.dart';
+import 'package:veylo/data/remote/session_store.dart';
+import 'package:veylo/data/remote/user_repository.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/core/widgets/profile_tappable_avatar.dart';
 import 'package:veylo/models/profile/follow_user.dart';
@@ -30,17 +33,22 @@ class FollowPage extends StatefulWidget {
   const FollowPage({
     super.key,
     this.initialTab = FollowTab.followers,
+    this.userId,
   });
 
   final FollowTab initialTab;
 
+  /// Kimin listesi; null = giriş yapan kullanıcı.
+  final String? userId;
+
   static Future<void> open(
     BuildContext context, {
     FollowTab initialTab = FollowTab.followers,
+    String? userId,
   }) {
     return Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => FollowPage(initialTab: initialTab),
+        builder: (_) => FollowPage(initialTab: initialTab, userId: userId),
       ),
     );
   }
@@ -56,12 +64,42 @@ class _FollowPageState extends State<FollowPage> {
   FollowSortFilter _sortFilter = FollowSortFilter.recent;
   final Set<String> _removedIds = {};
   final Set<String> _hiddenBadgeIds = {};
+  List<FollowUser> _following = const [];
+  List<FollowUser> _followers = const [];
+  final _repo = UserRepository.instance;
+
+  String? get _userId => widget.userId ?? SessionStore.instance.me?.id;
+
+  /// Kendi listem: kaydırınca takibi bırak / takipçiden çıkar.
+  bool get _mine {
+    final me = SessionStore.instance.me?.id;
+    return me != null && _userId == me;
+  }
 
   @override
   void initState() {
     super.initState();
     _tab = widget.initialTab;
     _searchCtrl = TextEditingController();
+    _load();
+  }
+
+  Future<void> _load() async {
+    final id = _userId;
+    if (id == null) return;
+    try {
+      final results = await Future.wait([
+        _repo.follows(id, 'following'),
+        _repo.follows(id, 'followers'),
+      ]);
+      if (!mounted) return;
+      setState(() {
+        _following = results[0];
+        _followers = results[1];
+      });
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    }
   }
 
   @override
@@ -71,9 +109,7 @@ class _FollowPageState extends State<FollowPage> {
   }
 
   List<FollowUser> get _source {
-    final base = _tab == FollowTab.following
-        ? FollowMockRepository.following
-        : FollowMockRepository.followers;
+    final base = _tab == FollowTab.following ? _following : _followers;
     return base.where((u) => !_removedIds.contains(u.id)).toList();
   }
 
@@ -114,13 +150,26 @@ class _FollowPageState extends State<FollowPage> {
     });
   }
 
-  void _unfollow(String id) {
+  /// Takip ettiklerim: takibi bırak. Takipçilerim: takipçiden çıkar.
+  Future<void> _unfollow(String id) async {
+    if (!_mine) return;
+    final followingTab = _tab == FollowTab.following;
     setState(() {
-      // Following / Followers: Unfollow → satır listeden kalksın (mock).
       _removedIds.add(id);
       _hiddenBadgeIds.add(id);
       if (_openSwipeId == id) _openSwipeId = null;
     });
+    try {
+      await (followingTab ? _repo.unfollow(id) : _repo.removeFollower(id));
+      SessionStore.instance.refreshMe().catchError((_) {});
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _removedIds.remove(id);
+        _hiddenBadgeIds.remove(id);
+      });
+      showErrorSnackBar(context, e);
+    }
   }
 
   @override
@@ -210,6 +259,8 @@ class _FollowPageState extends State<FollowPage> {
                         isOpen: _openSwipeId == user.id,
                         showBadge: !_hiddenBadgeIds.contains(user.id),
                         onOpenChanged: (open) {
+                          // Başkasının listesinde kaydırma işlemi yok.
+                          if (!_mine) return;
                           setState(
                             () => _openSwipeId = open ? user.id : null,
                           );
@@ -418,9 +469,10 @@ class _FollowRowState extends State<_FollowRow>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
 
-  String get _badgeAsset => switch (widget.user.badge) {
+  String? get _badgeAsset => switch (widget.user.badge) {
         FollowBadge.goldenDiamond => AppAssets.iconGoldenDiamond,
         FollowBadge.crown => AppAssets.iconCrown,
+        null => null,
       };
 
   @override
@@ -487,7 +539,9 @@ class _FollowRowState extends State<_FollowRow>
                 final openProgress = _ctrl.value;
                 final open = openProgress > 0.02;
                 // Rozet: swipe açıkken veya unfollow sonrası gizle
-                final badgeVisible = widget.showBadge && openProgress < 0.15;
+                final badgeVisible = widget.showBadge &&
+                    _badgeAsset != null &&
+                    openProgress < 0.15;
                 return Stack(
                   children: [
                     // Tek zemin — kapalı: beyaz, açık: lavanta
@@ -552,17 +606,24 @@ class _FollowRowState extends State<_FollowRow>
                               ),
                               const SizedBox(width: 10),
                               Expanded(
-                                child: AppText(
-                                  widget.user.displayName,
-                                  style: AppTextStyles.followListName,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                                child: Row(
+                                  children: [
+                                    Flexible(
+                                      child: AppText(
+                                        widget.user.displayName,
+                                        style: AppTextStyles.followListName,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    if (widget.user.isAi) const AiBadge(),
+                                  ],
                                 ),
                               ),
                               if (badgeVisible) ...[
                                 const SizedBox(width: 10),
                                 Image.asset(
-                                  _badgeAsset,
+                                  _badgeAsset!,
                                   width: _kBadgeSize,
                                   height: _kBadgeSize,
                                   fit: BoxFit.contain,
