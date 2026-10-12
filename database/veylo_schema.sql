@@ -2,7 +2,7 @@
 CREATE TABLE `users` (
     `id` CHAR(36) NOT NULL,
     `firebase_uid` VARCHAR(128) NOT NULL,
-    `auth_provider` ENUM('GOOGLE', 'APPLE', 'PASSWORD', 'DEV') NOT NULL,
+    `auth_provider` ENUM('GOOGLE', 'APPLE', 'PASSWORD', 'DEV', 'PERSONA') NOT NULL,
     `email` VARCHAR(255) NULL,
     `full_name` VARCHAR(100) NULL,
     `username` VARCHAR(30) NULL,
@@ -27,6 +27,7 @@ CREATE TABLE `users` (
     `onboarding_completed` BOOLEAN NOT NULL DEFAULT false,
     `token_balance` INTEGER NOT NULL DEFAULT 0,
     `status` ENUM('ACTIVE', 'SUSPENDED', 'DELETION_REQUESTED') NOT NULL DEFAULT 'ACTIVE',
+    `is_persona` BOOLEAN NOT NULL DEFAULT false,
     `last_seen_at` DATETIME(3) NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
@@ -40,7 +41,7 @@ CREATE TABLE `users` (
 CREATE TABLE `media` (
     `id` CHAR(36) NOT NULL,
     `owner_id` CHAR(36) NOT NULL,
-    `kind` ENUM('AVATAR', 'AVATAR_BLUR', 'VOICE_INTRO', 'CHAT_IMAGE', 'CHAT_VOICE') NOT NULL,
+    `kind` ENUM('AVATAR', 'AVATAR_BLUR', 'VOICE_INTRO', 'CHAT_IMAGE', 'CHAT_VOICE', 'POST_IMAGE', 'POST_THUMB') NOT NULL,
     `path` VARCHAR(255) NOT NULL,
     `url` VARCHAR(512) NOT NULL,
     `content_type` VARCHAR(64) NOT NULL,
@@ -89,6 +90,7 @@ CREATE TABLE `conversations` (
     `connection_progress` TINYINT NOT NULL DEFAULT 0,
     `revealed_at` DATETIME(3) NULL,
     `context_quote` VARCHAR(160) NULL,
+    `is_private` BOOLEAN NOT NULL DEFAULT false,
     `last_seq` INTEGER NOT NULL DEFAULT 0,
     `last_sender_id` CHAR(36) NULL,
     `last_message_at` DATETIME(3) NULL,
@@ -113,6 +115,7 @@ CREATE TABLE `conversation_members` (
     `pinned` BOOLEAN NOT NULL DEFAULT false,
     `muted` BOOLEAN NOT NULL DEFAULT false,
     `reveal_consent` BOOLEAN NOT NULL DEFAULT false,
+    `anonymous` BOOLEAN NOT NULL DEFAULT false,
     `joined_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     INDEX `conversation_members_user_id_idx`(`user_id`),
@@ -154,7 +157,7 @@ CREATE TABLE `reports` (
     `id` CHAR(36) NOT NULL,
     `reporter_id` CHAR(36) NOT NULL,
     `target_user_id` CHAR(36) NOT NULL,
-    `context` ENUM('PROFILE', 'CHAT', 'CALL', 'ROOM') NOT NULL,
+    `context` ENUM('PROFILE', 'CHAT', 'CALL', 'ROOM', 'VIBE', 'GROUP', 'POST') NOT NULL,
     `conversation_id` CHAR(36) NULL,
     `reason` ENUM('HARASSMENT', 'HATE_SPEECH', 'NUDITY', 'UNDERAGE', 'SPAM', 'SCAM', 'VIOLENCE', 'IMPERSONATION', 'OTHER') NOT NULL,
     `details` VARCHAR(1000) NULL,
@@ -205,6 +208,128 @@ CREATE TABLE `owned_items` (
     PRIMARY KEY (`user_id`, `item_type`, `item_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `group_join_requests` (
+    `id` CHAR(36) NOT NULL,
+    `conversation_id` CHAR(36) NOT NULL,
+    `user_id` CHAR(36) NOT NULL,
+    `message` VARCHAR(200) NULL,
+    `anonymous` BOOLEAN NOT NULL DEFAULT false,
+    `status` ENUM('PENDING', 'APPROVED', 'REJECTED') NOT NULL DEFAULT 'PENDING',
+    `decided_by_id` CHAR(36) NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    INDEX `group_join_requests_conversation_id_status_idx`(`conversation_id`, `status`),
+    UNIQUE INDEX `group_join_requests_conversation_id_user_id_key`(`conversation_id`, `user_id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `vibes` (
+    `id` CHAR(36) NOT NULL,
+    `author_id` CHAR(36) NOT NULL,
+    `body` VARCHAR(280) NOT NULL,
+    `anonymous` BOOLEAN NOT NULL DEFAULT true,
+    `like_count` INTEGER NOT NULL DEFAULT 0,
+    `expires_at` DATETIME(3) NOT NULL,
+    `deleted_at` DATETIME(3) NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    INDEX `vibes_expires_at_created_at_idx`(`expires_at`, `created_at`),
+    INDEX `vibes_author_id_created_at_idx`(`author_id`, `created_at`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `vibe_likes` (
+    `vibe_id` CHAR(36) NOT NULL,
+    `user_id` CHAR(36) NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    INDEX `vibe_likes_user_id_idx`(`user_id`),
+    PRIMARY KEY (`vibe_id`, `user_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `notes` (
+    `user_id` CHAR(36) NOT NULL,
+    `text` VARCHAR(60) NOT NULL,
+    `expires_at` DATETIME(3) NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    INDEX `notes_expires_at_idx`(`expires_at`),
+    PRIMARY KEY (`user_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `posts` (
+    `id` CHAR(36) NOT NULL,
+    `author_id` CHAR(36) NOT NULL,
+    `status` ENUM('DRAFT', 'PUBLISHED') NOT NULL DEFAULT 'PUBLISHED',
+    `media_url` VARCHAR(512) NOT NULL,
+    `thumb_url` VARCHAR(512) NOT NULL,
+    `width` SMALLINT NULL,
+    `height` SMALLINT NULL,
+    `caption` VARCHAR(500) NULL,
+    `music` JSON NULL,
+    `like_count` INTEGER NOT NULL DEFAULT 0,
+    `comment_count` INTEGER NOT NULL DEFAULT 0,
+    `view_count` INTEGER NOT NULL DEFAULT 0,
+    `boosted_until` DATETIME(3) NULL,
+    `deleted_at` DATETIME(3) NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+
+    INDEX `posts_status_created_at_idx`(`status`, `created_at`),
+    INDEX `posts_boosted_until_idx`(`boosted_until`),
+    INDEX `posts_author_id_status_created_at_idx`(`author_id`, `status`, `created_at`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `post_likes` (
+    `post_id` CHAR(36) NOT NULL,
+    `user_id` CHAR(36) NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    INDEX `post_likes_user_id_idx`(`user_id`),
+    PRIMARY KEY (`post_id`, `user_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `post_saves` (
+    `post_id` CHAR(36) NOT NULL,
+    `user_id` CHAR(36) NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    INDEX `post_saves_user_id_created_at_idx`(`user_id`, `created_at`),
+    PRIMARY KEY (`post_id`, `user_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `post_views` (
+    `post_id` CHAR(36) NOT NULL,
+    `user_id` CHAR(36) NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    PRIMARY KEY (`post_id`, `user_id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `comments` (
+    `id` CHAR(36) NOT NULL,
+    `post_id` CHAR(36) NOT NULL,
+    `author_id` CHAR(36) NOT NULL,
+    `body` VARCHAR(500) NOT NULL,
+    `deleted_at` DATETIME(3) NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
+    INDEX `comments_post_id_created_at_idx`(`post_id`, `created_at`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `media` ADD CONSTRAINT `media_owner_id_fkey` FOREIGN KEY (`owner_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -249,4 +374,49 @@ ALTER TABLE `token_ledger` ADD CONSTRAINT `token_ledger_user_id_fkey` FOREIGN KE
 
 -- AddForeignKey
 ALTER TABLE `owned_items` ADD CONSTRAINT `owned_items_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `group_join_requests` ADD CONSTRAINT `group_join_requests_conversation_id_fkey` FOREIGN KEY (`conversation_id`) REFERENCES `conversations`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `group_join_requests` ADD CONSTRAINT `group_join_requests_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `vibes` ADD CONSTRAINT `vibes_author_id_fkey` FOREIGN KEY (`author_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `vibe_likes` ADD CONSTRAINT `vibe_likes_vibe_id_fkey` FOREIGN KEY (`vibe_id`) REFERENCES `vibes`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `vibe_likes` ADD CONSTRAINT `vibe_likes_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `notes` ADD CONSTRAINT `notes_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `posts` ADD CONSTRAINT `posts_author_id_fkey` FOREIGN KEY (`author_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `post_likes` ADD CONSTRAINT `post_likes_post_id_fkey` FOREIGN KEY (`post_id`) REFERENCES `posts`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `post_likes` ADD CONSTRAINT `post_likes_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `post_saves` ADD CONSTRAINT `post_saves_post_id_fkey` FOREIGN KEY (`post_id`) REFERENCES `posts`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `post_saves` ADD CONSTRAINT `post_saves_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `post_views` ADD CONSTRAINT `post_views_post_id_fkey` FOREIGN KEY (`post_id`) REFERENCES `posts`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `post_views` ADD CONSTRAINT `post_views_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `comments` ADD CONSTRAINT `comments_post_id_fkey` FOREIGN KEY (`post_id`) REFERENCES `posts`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `comments` ADD CONSTRAINT `comments_author_id_fkey` FOREIGN KEY (`author_id`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 

@@ -17,6 +17,10 @@ export async function removeVoiceIntro(req: Request, res: Response) {
   res.json(await mediaService.removeVoiceIntro(req.user!));
 }
 
+export async function uploadPostImage(req: Request, res: Response) {
+  res.status(201).json(await mediaService.uploadPostImage(req.user!.id, req.file!.buffer));
+}
+
 export async function uploadChatMedia(req: Request, res: Response) {
   res.status(201).json(await mediaService.uploadChatMedia(req.user!.id, req.valid.query.kind, req.file!.buffer));
 }

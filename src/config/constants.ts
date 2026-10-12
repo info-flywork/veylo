@@ -29,6 +29,40 @@ export const BORDER_CATALOG: Record<string, number> = {
   sapphire: 70,
 };
 
+export const GROUP = {
+  titleMaxLength: 50,
+  maxMembers: 200,
+  requestMessageMaxLength: 200,
+  /** Keşfet listesinde gösterilen grup sayısı. */
+  listLimit: 50,
+} as const;
+
+export const VIBE = {
+  maxLength: 280,
+  ttlHours: 24,
+  /** Kullanıcı başına 24 saatte en fazla paylaşım. */
+  dailyLimit: 10,
+  pageSize: 30,
+} as const;
+
+export const POST = {
+  captionMaxLength: 500,
+  commentMaxLength: 500,
+  imageMaxPx: 1600,
+  /** Discover ızgarası ve profil sekmeleri için küçük görsel. */
+  thumbPx: 480,
+  feedPageSize: 30,
+  boostCost: 100,
+  boostHours: 24,
+  /** Kullanıcı başına 24 saatte en fazla paylaşım. */
+  dailyLimit: 20,
+} as const;
+
+export const NOTE = {
+  maxLength: 60,
+  ttlHours: 24,
+} as const;
+
 export const CHAT = {
   maxMessageLength: 2000,
   /** Mesaj isteği onaylanmadan başlatanın atabileceği mesaj sayısı. */

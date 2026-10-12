@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import type { MediaKind, User } from '@prisma/client';
 import sharp from 'sharp';
-import { MEDIA } from '../config/constants';
+import { MEDIA, POST } from '../config/constants';
 import { AppError } from '../errors/AppError';
 import { logger } from '../lib/logger';
 import { prisma } from '../lib/prisma';
@@ -23,6 +23,8 @@ const FOLDERS: Record<MediaKind, string> = {
   VOICE_INTRO: 'voice-intros',
   CHAT_IMAGE: 'chat/images',
   CHAT_VOICE: 'chat/voice',
+  POST_IMAGE: 'posts',
+  POST_THUMB: 'posts/thumbs',
 };
 
 /** Rastgele yol: kullanıcı id'si içermez, tahmin edilemez (anonim önizleme orijinalden türetilemez). */
@@ -173,6 +175,36 @@ async function uploadChatMedia(userId: string, kind: 'image' | 'voice', input: B
   };
 }
 
+// ───────────────────────────── gönderi ─────────────────────────────
+
+/** Gönderi görseli: tam boy + ızgara için küçük önizleme. Dönen mediaId ile gönderi oluşturulur. */
+async function uploadPostImage(userId: string, input: Buffer) {
+  const full = await prepareImage(input, POST.imageMaxPx);
+  const thumb = await prepareImage(input, POST.thumbPx);
+  const media = await store(userId, 'POST_IMAGE', full);
+  const thumbMedia = await store(userId, 'POST_THUMB', thumb);
+  return {
+    mediaId: media.id,
+    thumbId: thumbMedia.id,
+    url: media.url,
+    thumbUrl: thumbMedia.url,
+    width: media.width,
+    height: media.height,
+  };
+}
+
+/** Gönderi oluştururken: medya bu kullanıcıya ait ve doğru türde mi? */
+async function resolveForPost(userId: string, mediaId: string, thumbId: string) {
+  const [media, thumb] = await Promise.all([
+    prisma.media.findUnique({ where: { id: mediaId } }),
+    prisma.media.findUnique({ where: { id: thumbId } }),
+  ]);
+  if (!media || media.ownerId !== userId || media.kind !== 'POST_IMAGE' || !thumb || thumb.ownerId !== userId || thumb.kind !== 'POST_THUMB') {
+    throw AppError.badRequest('INVALID_MEDIA', 'Medya bulunamadı veya gönderi görseli değil');
+  }
+  return { media, thumb };
+}
+
 /** Mesajdaki mediaId gönderene ait ve mesaj türüyle uyumlu mu? */
 async function resolveForMessage(userId: string, mediaId: string, type: 'IMAGE' | 'VOICE') {
   const media = await prisma.media.findUnique({ where: { id: mediaId } });
@@ -190,4 +222,6 @@ export const mediaService = {
   removeVoiceIntro,
   uploadChatMedia,
   resolveForMessage,
+  uploadPostImage,
+  resolveForPost,
 };

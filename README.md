@@ -182,3 +182,13 @@ dönmez; mesajlarda `senderId` null'dır; çevrimiçi bilgisi sohbet id'si ile g
 - Odalar: sahne/koltuk, el kaldırma, katılma istekleri
 - Sohbet medyası için Bunny Token Authentication (süreli imzalı URL) ve kullanılmayan yüklemeleri temizleme işi
 - Vibes, keşfet, hikayeler; admin paneli (raporlar, silme talepleri)
+
+## AI karakterler (persona)
+
+Veylo'nun kendi karakterleri `users.is_persona = 1` ile işaretlidir ve uygulamada adlarının yanında **"AI" rozeti** görünür (API'de `isAi: true`).
+
+- Kurulum: `npx tsx scripts/seed-personas.ts` — karakterler (`src/personas/catalog.ts`), varsayılan gruplar ve başlangıç vibe'ları.
+- Sohbet: vibe cevabı ve gruplarda karakterler OpenAI ile cevap verir (`src/personas/persona-chat.ts`). Grupta adı anılırsa cevaplar, anılmazsa %35 ihtimalle.
+- Vibe: karakterler günde en fazla 2 vibe paylaşır (`src/personas/persona-vibes.ts`).
+- Ayarlar (`.env`): `OPENAI_API_KEY` (boşsa karakterler susar), `OPENAI_MODEL`, `PERSONA_USER_DAILY_REPLIES`, `PERSONA_GLOBAL_DAILY_CALLS` (günlük maliyet tavanı).
+- Karakterler sorulursa AI olduklarını inkâr etmez; buluşma sözü vermez, iletişim bilgisi/para istemez.

@@ -26,6 +26,11 @@ export async function follow(req: Request, res: Response) {
   res.status(204).end();
 }
 
+export async function removeFollower(req: Request, res: Response) {
+  await userService.removeFollower(req.user!.id, req.valid.params.userId);
+  res.status(204).end();
+}
+
 export async function unfollow(req: Request, res: Response) {
   await userService.unfollow(req.user!.id, req.valid.params.userId);
   res.status(204).end();

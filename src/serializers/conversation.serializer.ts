@@ -1,4 +1,4 @@
-import type { Message, Prisma } from '@prisma/client';
+import type { Message, Prisma, User } from '@prisma/client';
 import { CONNECTION } from '../config/constants';
 import { maskName } from '../utils/mask';
 import { serializeUserSummary } from './user.serializer';
@@ -34,7 +34,43 @@ function anonymousPeer(c: ConversationFull, peerMember: NonNullable<ReturnType<t
     avatarUrl: progress >= CONNECTION.milestones.blurredPhoto ? peerMember.user.avatarBlurUrl : null,
     avatarBlurred: true,
     borderId: null,
+    // Kimlik gizli olsa da AI karakter olduğu her zaman belli.
+    isAi: peerMember.user.isPersona,
   };
+}
+
+type MemberWithUser = ConversationFull['members'][number];
+
+/** Grup üyesi: "Hesabımı gizle" açıksa maskeli ad + bulanık fotoğraf, id/kullanıcı adı yok. */
+export function serializeGroupMember(m: Pick<MemberWithUser, 'anonymous' | 'user'>) {
+  const name = m.user.displayName ?? m.user.username;
+  if (m.anonymous) {
+    return {
+      id: null,
+      username: null,
+      displayName: maskName(name),
+      avatarUrl: m.user.avatarBlurUrl,
+      avatarBlurred: true,
+      isAi: m.user.isPersona,
+    };
+  }
+  return {
+    id: m.user.id,
+    username: m.user.username,
+    displayName: name,
+    avatarUrl: m.user.avatarUrl,
+    avatarBlurred: false,
+    isAi: m.user.isPersona,
+  };
+}
+
+/** Grup kartı/başlığı için en fazla 3 üye fotoğrafı (izleyen hariç). */
+export function groupAvatars(c: ConversationFull, viewerId?: string) {
+  return c.members
+    .filter((m) => m.userId !== viewerId)
+    .map((m) => serializeGroupMember(m).avatarUrl)
+    .filter((u): u is string => Boolean(u))
+    .slice(0, 3);
 }
 
 export function serializeConversation(c: ConversationFull, viewerId: string, ctx: ViewerContext) {
@@ -76,6 +112,10 @@ export function serializeConversation(c: ConversationFull, viewerId: string, ctx
           }
         : null,
     contextQuote: c.contextQuote,
+    group:
+      c.type === 'GROUP'
+        ? { isPrivate: c.isPrivate, myRole: me.role, anonymous: me.anonymous, avatars: groupAvatars(c, viewerId) }
+        : null,
     lastMessage: lastVisible
       ? {
           preview: c.lastMessagePreview,
@@ -92,8 +132,21 @@ export function serializeConversation(c: ConversationFull, viewerId: string, ctx
   };
 }
 
-export function serializeMessage(m: Message, c: { type: string; revealedAt: Date | null }, viewerId: string) {
+export function serializeMessage(
+  m: Message,
+  c: { type: string; revealedAt: Date | null; members?: MemberWithUser[] },
+  viewerId: string,
+  /** Gruptan ayrılmış göndericiler (messages() doldurur). */
+  formerMembers?: Map<string, User>,
+) {
   const isMine = m.senderId === viewerId;
+  let sender = null;
+  if (c.type === 'GROUP' && !isMine) {
+    const member = c.members?.find((x) => x.userId === m.senderId);
+    const former = formerMembers?.get(m.senderId);
+    if (member) sender = serializeGroupMember(member);
+    else if (former) sender = serializeGroupMember({ anonymous: true, user: former });
+  }
   return {
     id: m.id,
     conversationId: m.conversationId,
@@ -103,7 +156,8 @@ export function serializeMessage(m: Message, c: { type: string; revealedAt: Date
     body: m.body,
     mediaUrl: m.mediaUrl,
     isMine,
-    senderId: isIdentityHidden(c) && !isMine ? null : m.senderId,
+    senderId: (isIdentityHidden(c) || (sender && sender.id === null)) && !isMine ? null : m.senderId,
+    sender,
     createdAt: m.createdAt,
   };
 }

@@ -3,14 +3,20 @@ import { BORDER_CATALOG, RESERVED_USERNAMES } from '../config/constants';
 import { AppError } from '../errors/AppError';
 import { prisma } from '../lib/prisma';
 import { serializeMe, serializePublicProfile, serializeUserSummary } from '../serializers/user.serializer';
+import { notificationService } from './notification.service';
 import { safetyService } from './safety.service';
 
 async function followCounts(userId: string) {
-  const [followerCount, followingCount] = await Promise.all([
+  const [followerCount, followingCount, likes] = await Promise.all([
     prisma.follow.count({ where: { followingId: userId } }),
     prisma.follow.count({ where: { followerId: userId } }),
+    // Profildeki "Like": yayındaki gönderilerin aldığı toplam beğeni.
+    prisma.post.aggregate({
+      where: { authorId: userId, status: 'PUBLISHED', deletedAt: null },
+      _sum: { likeCount: true },
+    }),
   ]);
-  return { followerCount, followingCount };
+  return { followerCount, followingCount, likeCount: likes._sum.likeCount ?? 0 };
 }
 
 async function getMe(user: User) {
@@ -109,11 +115,24 @@ async function follow(viewerId: string, targetId: string) {
   if (!target || target.status !== 'ACTIVE' || (await safetyService.isBlockedBetween(viewerId, targetId))) {
     throw AppError.notFound('USER_NOT_FOUND');
   }
-  await prisma.follow.upsert({
+  const existing = await prisma.follow.findUnique({
     where: { followerId_followingId: { followerId: viewerId, followingId: targetId } },
-    create: { followerId: viewerId, followingId: targetId },
-    update: {},
   });
+  if (existing) return;
+  await prisma.follow.create({ data: { followerId: viewerId, followingId: targetId } });
+
+  const follower = await prisma.user.findUniqueOrThrow({ where: { id: viewerId } });
+  const name = follower.displayName ?? follower.username ?? 'Veylo';
+  void notificationService.pushToUser(targetId, (t) => ({
+    title: t.newFollowerTitle,
+    body: t.newFollowerBody(name),
+    data: { type: 'follow', userId: viewerId },
+  }));
+}
+
+/** Beni takip edeni takipçilerimden çıkarır. */
+async function removeFollower(viewerId: string, followerId: string) {
+  await prisma.follow.deleteMany({ where: { followerId, followingId: viewerId } });
 }
 
 async function unfollow(viewerId: string, targetId: string) {
@@ -206,6 +225,7 @@ export const userService = {
   getPublicProfile,
   follow,
   unfollow,
+  removeFollower,
   listFollows,
   registerDevice,
   removeDevice,

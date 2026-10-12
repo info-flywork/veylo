@@ -20,6 +20,9 @@ mediaRoutes.delete('/avatar', media.removeAvatar);
 mediaRoutes.put('/voice-intro', requireOnboarded, uploadRateLimit, singleFile, media.uploadVoiceIntro);
 mediaRoutes.delete('/voice-intro', requireOnboarded, media.removeVoiceIntro);
 
+// Gönderi: önce görsel yüklenir (tam boy + önizleme), dönen id'lerle POST /posts.
+mediaRoutes.post('/post', requireOnboarded, uploadRateLimit, singleFile, media.uploadPostImage);
+
 // Sohbet: önce yükle (?kind=image|voice), dönen mediaId ile mesaj gönder.
 mediaRoutes.post(
   '/chat',

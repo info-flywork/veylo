@@ -1,7 +1,8 @@
 import { randomUUID } from 'node:crypto';
-import { Prisma, type ConversationType, type Message, type MessageType } from '@prisma/client';
+import { Prisma, type ConversationType, type Message, type MessageType, type User } from '@prisma/client';
 import { CHAT, CONNECTION } from '../config/constants';
 import { AppError } from '../errors/AppError';
+import { chatEvents } from '../events/chat.events';
 import { logger } from '../lib/logger';
 import { prisma } from '../lib/prisma';
 import { emitToUser } from '../realtime/emitter';
@@ -285,6 +286,7 @@ async function send(viewerId: string, conversationId: string, input: SendInput) 
   };
   // İletim ve push arka planda: gönderenin onayı bunları beklemez.
   void fanOutMessage(fresh, message, viewerId).catch((err) => logger.warn({ err }, 'Mesaj iletimi başarısız'));
+  chatEvents.emit('message:sent', { conversation: fresh, message, senderId: viewerId });
   return { message: serializeMessage(message, fresh, viewerId), duplicate: false };
 }
 
@@ -308,8 +310,10 @@ async function assertCanSend(c: ConversationFull, viewerId: string) {
 
 /** Mesajı üyelere iletir (her biri kendi bakış açısıyla), çevrimdışı olanlara push atar. */
 async function fanOutMessage(c: ConversationFull, message: Parameters<typeof serializeMessage>[0], senderId: string) {
-  const sender = c.members.find((m) => m.userId === senderId)!.user;
-  const hidden = isIdentityHidden(c);
+  const senderMember = c.members.find((m) => m.userId === senderId)!;
+  const sender = senderMember.user;
+  // Anonim sohbet ya da grupta "Hesabımı gizle": bildirimde de maskeli ad.
+  const hidden = isIdentityHidden(c) || senderMember.anonymous;
   // Üyeler arasındaki kısıtlamalar tek sorguda (üye başına ayrı sorgu yerine).
   const memberIds = c.members.map((m) => m.userId);
   const restrictions = await prisma.block.findMany({
@@ -337,7 +341,7 @@ async function fanOutMessage(c: ConversationFull, message: Parameters<typeof ser
       const name = hidden ? maskName(sender.displayName ?? sender.username) : (sender.displayName ?? sender.username ?? 'Veylo');
       const isRequest = c.status === 'PENDING';
       await notificationService.pushToUser(m.userId, (t) => {
-        const title = c.type === 'GROUP' && !hidden ? `${name} · ${c.title ?? t.group}` : name;
+        const title = c.type === 'GROUP' ? `${name} · ${c.title ?? t.group}` : name;
         const body =
           message.type === 'IMAGE' ? t.photo : message.type === 'VOICE' ? t.voice : previewOf(message.type, message.body);
         return {
@@ -379,8 +383,18 @@ async function messages(
     rows.reverse();
   }
 
+  // Grupta ayrılmış üyelerin eski mesajları da gönderen bilgisiyle (maskeli) gösterilir.
+  let former: Map<string, User> | undefined;
+  if (c.type === 'GROUP') {
+    const memberIds = new Set(c.members.map((m) => m.userId));
+    const missing = [...new Set(rows.map((m) => m.senderId))].filter((id) => !memberIds.has(id));
+    if (missing.length) {
+      former = new Map((await prisma.user.findMany({ where: { id: { in: missing } } })).map((u) => [u.id, u]));
+    }
+  }
+
   return {
-    items: rows.map((m) => serializeMessage(m, c, viewerId)),
+    items: rows.map((m) => serializeMessage(m, c, viewerId, former)),
     lastSeq: c.lastSeq,
     hasMore: q.afterSeq !== undefined ? rows.length === q.limit : (rows[0]?.seq ?? 0) > floor + 1,
   };
@@ -454,6 +468,7 @@ async function reveal(viewerId: string, conversationId: string) {
 
   const fresh = await loadForMember(conversationId, viewerId);
   await broadcastConversation(fresh);
+  if (!fresh.revealedAt) chatEvents.emit('reveal:consent', { conversationId: c.id, userId: viewerId });
   if (fresh.revealedAt) {
     await Promise.all(
       fresh.members.map((m) =>
@@ -551,6 +566,9 @@ async function recipientsFor(viewerId: string, conversationId: string): Promise<
 }
 
 export const conversationService = {
+  loadForMember,
+  serializeFor,
+  broadcastConversation,
   list,
   get,
   createDirect,

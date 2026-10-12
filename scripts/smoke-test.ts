@@ -212,6 +212,141 @@ async function main() {
   const bal = await call(alice.token, 'GET', '/tokens/balance');
   check(bal.data.balance === 430, 'webhook iki kez geldi ama 400 token bir kez eklendi');
 
+  // ── Vibes
+  const carol = await newUser('carol');
+  const vibe = await call(bob.token, 'POST', '/vibes', { body: 'gece 3 kulübü 🌙', anonymous: true });
+  check(vibe.status === 201 && vibe.data.isMine, 'bob anonim vibe paylaştı');
+  const feed = await call(carol.token, 'GET', '/vibes');
+  const seen = feed.data.items.find((v: any) => v.id === vibe.data.id);
+  check(seen && seen.author.id === null && /^B\*+$/.test(seen.author.displayName), 'anonim vibe akışta maskeli, yazar id gizli');
+  await call(carol.token, 'POST', `/vibes/${vibe.data.id}/like`);
+  const liked = await call(carol.token, 'POST', `/vibes/${vibe.data.id}/like`);
+  check(liked.data.likeCount === 1 && liked.data.likedByMe, 'iki kez beğenince sayaç 1 arttı');
+  const unliked = await call(carol.token, 'DELETE', `/vibes/${vibe.data.id}/like`);
+  check(unliked.data.likeCount === 0 && !unliked.data.likedByMe, 'beğeni geri alındı');
+  const own = await call(bob.token, 'POST', `/vibes/${vibe.data.id}/reply`, { body: 'x', clientMsgId: randomUUID() });
+  check(own.data.error?.code === 'CANNOT_REPLY_OWN_VIBE', 'kendi vibe’ına cevap verilemiyor');
+  const vr = await call(carol.token, 'POST', `/vibes/${vibe.data.id}/reply`, { body: 'Ben de uyuyamıyorum', clientMsgId: randomUUID() });
+  check(vr.status === 201 && vr.data.type === 'ANONYMOUS' && vr.data.status === 'PENDING', 'vibe cevabı anonim mesaj isteği açtı');
+  check(vr.data.contextQuote === 'gece 3 kulübü 🌙', 'sohbette vibe metni alıntı olarak duruyor');
+  const bobReqs = await call(bob.token, 'GET', '/conversations?box=requests');
+  check(bobReqs.data.items.some((c: any) => c.id === vr.data.id), 'bob vibe cevabını istekler kutusunda görüyor');
+  await call(bob.token, 'DELETE', `/vibes/${vibe.data.id}`);
+  const feed2 = await call(carol.token, 'GET', '/vibes');
+  check(!feed2.data.items.some((v: any) => v.id === vibe.data.id), 'silinen vibe akıştan kalktı');
+
+  // ── Gruplar
+  const g = await call(alice.token, 'POST', '/groups', { title: `Gece Kuşları ${run}`, anonymous: true });
+  check(g.status === 201 && g.data.type === 'GROUP' && g.data.group.myRole === 'OWNER', 'alice anonim olarak grup kurdu (sahip)');
+  const gid = g.data.id;
+  const list = await call(carol.token, 'GET', `/groups?q=${run}`);
+  check(list.data.items.some((x: any) => x.id === gid && !x.isMember), 'carol grubu keşfette görüyor');
+  const joined = await call(carol.token, 'POST', `/groups/${gid}/join`, { anonymous: false });
+  check(joined.data.memberCount === 2, 'carol açık gruba katıldı');
+  await call(carol.token, 'POST', `/conversations/${gid}/messages`, { clientMsgId: randomUUID(), body: 'Selam grup!' });
+  await call(alice.token, 'POST', `/conversations/${gid}/messages`, { clientMsgId: randomUUID(), body: 'Hoş geldin' });
+  const carolView = await call(carol.token, 'GET', `/conversations/${gid}/messages`);
+  const fromAlice = carolView.data.items.find((m: any) => !m.isMine);
+  check(fromAlice.senderId === null && /^A\*+$/.test(fromAlice.sender.displayName), 'anonim üyenin mesajında ad maskeli, id gizli');
+  const aliceView = await call(alice.token, 'GET', `/conversations/${gid}/messages`);
+  check(aliceView.data.items.find((m: any) => !m.isMine).sender.id === carol.id, 'anonim olmayan üye kimliğiyle görünüyor');
+
+  await call(alice.token, 'PATCH', `/groups/${gid}`, { isPrivate: true });
+  const blockedJoin = await call(bob.token, 'POST', `/groups/${gid}/join`, {});
+  check(blockedJoin.data.error?.code === 'GROUP_PRIVATE', 'gizli gruba direkt katılınamıyor');
+  const req = await call(bob.token, 'POST', `/groups/${gid}/requests`, { message: 'Ben de geleyim mi?' });
+  check(req.status === 201 && req.data.status === 'PENDING', 'bob katılma isteği gönderdi');
+  const notAdmin = await call(carol.token, 'GET', `/groups/${gid}/requests`);
+  check(notAdmin.data.error?.code === 'NOT_GROUP_ADMIN', 'yönetici olmayan istekleri göremiyor');
+  const pending = await call(alice.token, 'GET', `/groups/${gid}/requests`);
+  check(pending.data.items.length === 1 && pending.data.items[0].message === 'Ben de geleyim mi?', 'alice isteği görüyor');
+  const decided = await call(alice.token, 'POST', `/groups/${gid}/requests/${pending.data.items[0].id}`, { approve: true });
+  check(decided.data.items.length === 0, 'istek onaylandı');
+  const ginfo = await call(alice.token, 'GET', `/groups/${gid}`);
+  check(ginfo.data.memberCount === 3 && ginfo.data.members[0].isYou, 'bob gruba girdi, 3 üye');
+  const carolMember = ginfo.data.members.find((m: any) => m.id === carol.id);
+  const kickDenied = await call(carol.token, 'DELETE', `/groups/${gid}/members/${ginfo.data.members[0].memberId}`);
+  check(kickDenied.data.error?.code === 'NOT_GROUP_ADMIN', 'üye kimseyi çıkaramıyor');
+  const kicked = await call(alice.token, 'DELETE', `/groups/${gid}/members/${carolMember.memberId}`);
+  check(kicked.data.memberCount === 2, 'yönetici carol’ı çıkardı');
+  const carolGone = await call(carol.token, 'GET', `/conversations/${gid}`);
+  check(carolGone.status === 404, 'çıkarılan üye grubu artık göremiyor');
+  await call(alice.token, 'DELETE', `/groups/${gid}/members/me`);
+  const bobInfo = await call(bob.token, 'GET', `/groups/${gid}`);
+  check(bobInfo.data.myRole === 'OWNER', 'sahip ayrılınca kalan üye sahip oldu');
+  await call(bob.token, 'DELETE', `/groups/${gid}/members/me`);
+  check((await call(bob.token, 'GET', `/groups/${gid}`)).status === 404, 'son üye ayrılınca grup silindi');
+
+  // ── Takip ve notlar
+  const fol = await call(carol.token, 'POST', `/users/${alice.id}/follow`);
+  check(fol.status === 204, 'carol alice’i takip etti');
+  const aliceProf = await call(carol.token, 'GET', `/users/${alice.id}`);
+  check(aliceProf.data.iFollow === true && aliceProf.data.stats.followerCount >= 1, 'profilde takip durumu ve sayı güncel');
+  const aliceFollowers = await call(alice.token, 'GET', `/users/${alice.id}/followers?limit=50`);
+  check(aliceFollowers.data.items.some((u: any) => u.id === carol.id), 'alice takipçilerinde carol’ı görüyor');
+  await call(alice.token, 'DELETE', `/users/me/followers/${carol.id}`);
+  const afterRemove = await call(carol.token, 'GET', `/users/${alice.id}`);
+  check(afterRemove.data.iFollow === false, 'alice carol’ı takipçilerinden çıkardı');
+  await call(carol.token, 'POST', `/users/${alice.id}/follow`);
+  const note = await call(alice.token, 'PUT', '/notes/me', { text: 'Can’t sleep 🌙' });
+  check(note.status === 200 && note.data.text === 'Can’t sleep 🌙', 'alice not paylaştı');
+  const carolNotes = await call(carol.token, 'GET', '/notes');
+  check(carolNotes.data.items.some((n: any) => n.user.id === alice.id), 'takip eden carol alice’in notunu görüyor');
+  const tooLong = await call(alice.token, 'PUT', '/notes/me', { text: 'x'.repeat(61) });
+  check(tooLong.status === 400, '60 karakterden uzun not reddedildi');
+  await call(alice.token, 'DELETE', '/notes/me');
+  check((await call(alice.token, 'GET', '/notes')).data.mine === null, 'not silindi');
+
+  // ── Gönderiler (Discover)
+  const pimg = await upload(alice.token, 'POST', '/media/post', await photoWithGps(), 'post.jpg');
+  check(pimg.status === 201 && pimg.data.mediaId && pimg.data.thumbId, 'gönderi görseli yüklendi (tam boy + önizleme)');
+  const post = await call(alice.token, 'POST', '/posts', {
+    mediaId: pimg.data.mediaId, thumbId: pimg.data.thumbId, caption: `Merhaba ${run}`,
+    music: { title: 'Song', artist: 'Artist', clipStartSec: 10, clipEndSec: 40 },
+  });
+  check(post.status === 201 && post.data.status === 'PUBLISHED', 'gönderi paylaşıldı');
+  const stolenPost = await call(carol.token, 'POST', '/posts', { mediaId: pimg.data.mediaId, thumbId: pimg.data.thumbId });
+  check(stolenPost.data.error?.code === 'INVALID_MEDIA', 'başkasının görseliyle gönderi oluşturulamıyor');
+  const pf = await call(carol.token, 'GET', `/posts/feed?q=${run}`);
+  check(pf.data.items.some((x: any) => x.id === post.data.id), 'gönderi akışta (arama ile) görünüyor');
+  await call(carol.token, 'POST', `/posts/${post.data.id}/like`);
+  const liked2 = await call(carol.token, 'POST', `/posts/${post.data.id}/like`);
+  check(liked2.data.likeCount === 1 && liked2.data.likedByMe, 'iki kez beğeni = 1');
+  const sv = await call(carol.token, 'POST', `/posts/${post.data.id}/save`);
+  check(sv.data.savedByMe, 'gönderi kaydedildi');
+  const savedList = await call(carol.token, 'GET', '/posts/saved');
+  check(savedList.data.items.some((x: any) => x.id === post.data.id), 'kaydedilenlerde görünüyor');
+  await call(carol.token, 'POST', `/posts/${post.data.id}/view`);
+  await call(carol.token, 'POST', `/posts/${post.data.id}/view`);
+  const cm = await call(carol.token, 'POST', `/posts/${post.data.id}/comments`, { body: 'Çok güzel 🔥' });
+  check(cm.status === 201, 'yorum yapıldı');
+  const st = await call(alice.token, 'GET', `/posts/${post.data.id}/stats`);
+  check(st.data.viewCount === 1 && st.data.likeCount === 1 && st.data.commentCount === 1, 'istatistik: 1 görüntülenme, 1 beğeni, 1 yorum');
+  const stOther = await call(carol.token, 'GET', `/posts/${post.data.id}/stats`);
+  check(stOther.status === 404, 'başkası istatistikleri göremiyor');
+  const prof2 = await call(carol.token, 'GET', `/users/${alice.id}`);
+  check(prof2.data.stats.likeCount === 1, 'profildeki Like sayısı gönderi beğenilerinden');
+  const balBefore = (await call(alice.token, 'GET', '/users/me')).data.tokenBalance;
+  const boosted = await call(alice.token, 'POST', `/posts/${post.data.id}/boost`);
+  check(boosted.data.balance === balBefore - 100 && boosted.data.boostedUntil, 'boost: 100 token düştü');
+  const pf2 = await call(carol.token, 'GET', '/posts/feed');
+  check(pf2.data.items[0]?.id === post.data.id && pf2.data.items[0].boosted, 'boost edilen gönderi akışta en üstte');
+  await call(alice.token, 'DELETE', `/posts/comments/${cm.data.id}`);
+  const afterDel = await call(alice.token, 'GET', `/posts/${post.data.id}`);
+  check(afterDel.data.commentCount === 0, 'gönderi sahibi yorumu sildi');
+  const draft = await call(alice.token, 'POST', '/posts', { mediaId: pimg.data.mediaId, thumbId: pimg.data.thumbId, draft: true });
+  check((await call(carol.token, 'GET', `/posts/${draft.data.id}`)).status === 404, 'taslak başkasına görünmüyor');
+  const pub = await call(alice.token, 'PATCH', `/posts/${draft.data.id}`, { publish: true });
+  check(pub.data.status === 'PUBLISHED', 'taslak yayınlandı');
+  await call(alice.token, 'DELETE', `/posts/${draft.data.id}`);
+  const mine2 = await call(carol.token, 'GET', `/posts/user/${alice.id}`);
+  check(mine2.data.items.length === 1, 'silinen gönderi profilde görünmüyor');
+
+  // ── AI Match
+  const ms = await call(carol.token, 'POST', '/match/search', { mood: 'bored', intent: 'friends' });
+  check(ms.status === 200 && Array.isArray(ms.data.items), 'AI Match sonuç döndü');
+  check(ms.data.items.every((x: any) => x.userId !== carol.id && x.vibePercent >= 60 && x.vibePercent <= 98), 'kendisi yok, vibe %60-98');
+
   // ── Engelleme
   await call(alice.token, 'POST', `/conversations/${anonId}/block`);
   const afterBlock = await emit(sb, 'message:send', { conversationId: convId, clientMsgId: randomUUID(), body: 'hey?' });

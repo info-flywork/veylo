@@ -22,6 +22,15 @@ const envSchema = z
     /** Boş = Falkenstein (DE). Diğerleri: uk, ny, la, sg, se, br, jh, syd */
     BUNNY_STORAGE_REGION: z.string().optional(),
     BUNNY_CDN_URL: z.string().optional(),
+    /** AI karakterler (persona). Boşsa karakterler cevap vermez, vibe paylaşmaz. */
+    OPENAI_API_KEY: z.string().optional(),
+    OPENAI_MODEL: z.string().default('gpt-4o-mini'),
+    /** Test için değiştirilebilir (ör. yerel sahte sunucu). */
+    OPENAI_BASE_URL: z.string().default('https://api.openai.com/v1'),
+    /** Bir kullanıcının AI karakterlerden günde alabileceği en fazla cevap. */
+    PERSONA_USER_DAILY_REPLIES: z.coerce.number().int().positive().default(60),
+    /** Tüm sistemde günlük en fazla OpenAI çağrısı (maliyet tavanı). */
+    PERSONA_GLOBAL_DAILY_CALLS: z.coerce.number().int().positive().default(3000),
   })
   .refine((e) => !e.BUNNY_STORAGE_ZONE || (e.BUNNY_STORAGE_PASSWORD && e.BUNNY_CDN_URL), {
     message: 'BUNNY_STORAGE_ZONE ayarlıysa BUNNY_STORAGE_PASSWORD ve BUNNY_CDN_URL de gerekli',

@@ -27,6 +27,9 @@ userRoutes.post('/me/deletion-request', validate({ body: deletionRequestBody }),
 // Kullanıcı adı kontrolü (profil oluşturma sırasında, onboarding bitmeden de çalışır)
 userRoutes.get('/username-available', validate({ query: usernameAvailableQuery }), users.usernameAvailable);
 
+// Beni takip edeni takipçilerimden çıkar
+userRoutes.delete('/me/followers/:userId', requireOnboarded, validate({ params: userIdParams }), users.removeFollower);
+
 // Diğer kullanıcılar
 userRoutes.get('/:userId', requireOnboarded, validate({ params: userIdParams }), users.getProfile);
 userRoutes.post('/:userId/follow', requireOnboarded, validate({ params: userIdParams }), users.follow);

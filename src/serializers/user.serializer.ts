@@ -8,13 +8,15 @@ export function serializeUserSummary(u: User) {
     displayName: u.displayName ?? u.username,
     avatarUrl: u.avatarUrl,
     borderId: u.borderId,
+    /** Veylo'nun AI karakteri: uygulamada "AI" rozetiyle gösterilir. */
+    isAi: u.isPersona,
   };
 }
 
 /** Başkasının profili. fullName, email, token bakiyesi gibi alanlar asla dönmez. */
 export function serializePublicProfile(
   u: User,
-  extra: { followerCount: number; followingCount: number; iFollow: boolean; followsMe: boolean },
+  extra: { followerCount: number; followingCount: number; iFollow: boolean; followsMe: boolean; likeCount?: number },
 ) {
   const visible = u.profileVisible;
   return {
@@ -37,14 +39,14 @@ export function serializePublicProfile(
           voiceIntroUrl: u.voiceIntroUrl,
         }
       : null,
-    stats: { likeCount: 0, followerCount: extra.followerCount, followingCount: extra.followingCount },
+    stats: { likeCount: extra.likeCount ?? 0, followerCount: extra.followerCount, followingCount: extra.followingCount },
     iFollow: extra.iFollow,
     followsMe: extra.followsMe,
   };
 }
 
 /** Kullanıcının kendi profili: her şey. */
-export function serializeMe(u: User, extra: { followerCount: number; followingCount: number }) {
+export function serializeMe(u: User, extra: { followerCount: number; followingCount: number; likeCount?: number }) {
   return {
     id: u.id,
     email: u.email,
@@ -71,7 +73,7 @@ export function serializeMe(u: User, extra: { followerCount: number; followingCo
     onboardingCompleted: u.onboardingCompleted,
     tokenBalance: u.tokenBalance,
     status: u.status,
-    stats: { likeCount: 0, followerCount: extra.followerCount, followingCount: extra.followingCount },
+    stats: { likeCount: extra.likeCount ?? 0, followerCount: extra.followerCount, followingCount: extra.followingCount },
     createdAt: u.createdAt,
   };
 }

@@ -27,6 +27,8 @@ enum AuthProvider {
   APPLE
   PASSWORD
   DEV
+  /// Uygulamanın kendi karakterleri (giriş yapmaz; scripts/seed-personas.ts).
+  PERSONA
 }
 
 model User {
@@ -41,7 +43,7 @@ model User {
   avatarUrl           String?      @map("avatar_url") @db.VarChar(512)
   /// Anonim sohbette %70'te gösterilen, sunucuda bulanıklaştırılmış küçük sürüm (ayrı rastgele yol).
   avatarBlurUrl       String?      @map("avatar_blur_url") @db.VarChar(512)
-  bio                String?      @db.VarChar(160)
+  bio                 String?      @db.VarChar(160)
   gender              Gender?
   interests           Json?
   chatGoal            String?      @map("chat_goal") @db.VarChar(32)
@@ -59,6 +61,8 @@ model User {
   onboardingCompleted Boolean      @default(false) @map("onboarding_completed")
   tokenBalance        Int          @default(0) @map("token_balance")
   status              UserStatus   @default(ACTIVE)
+  /// Uygulamanın kendi karakteri (AI / tanıtım). Gerçek kullanıcılardan ayrı tutulur.
+  isPersona           Boolean      @default(false) @map("is_persona")
   lastSeenAt          DateTime?    @map("last_seen_at")
   createdAt           DateTime     @default(now()) @map("created_at")
   updatedAt           DateTime     @updatedAt @map("updated_at")
@@ -76,6 +80,15 @@ model User {
   devices          DeviceToken[]
   deletionRequests AccountDeletionRequest[]
   media            Media[]
+  vibes            Vibe[]
+  vibeLikes        VibeLike[]
+  groupRequests    GroupJoinRequest[]
+  note             Note?
+  posts            Post[]
+  postLikes        PostLike[]
+  postSaves        PostSave[]
+  postViews        PostView[]
+  comments         Comment[]
 
   @@map("users")
 }
@@ -88,6 +101,8 @@ enum MediaKind {
   VOICE_INTRO
   CHAT_IMAGE
   CHAT_VOICE
+  POST_IMAGE
+  POST_THUMB
 }
 
 model Media {
@@ -178,6 +193,8 @@ model Conversation {
   revealedAt         DateTime?          @map("revealed_at")
   /// Anonim sohbetin Vibes paylaşımından başladıysa alıntı.
   contextQuote       String?            @map("context_quote") @db.VarChar(160)
+  /// Grup: gizliyse katılmak için yönetici onayı gerekir.
+  isPrivate          Boolean            @default(false) @map("is_private")
   lastSeq            Int                @default(0) @map("last_seq")
   lastSenderId       String?            @map("last_sender_id") @db.Char(36)
   lastMessageAt      DateTime?          @map("last_message_at")
@@ -185,8 +202,9 @@ model Conversation {
   createdAt          DateTime           @default(now()) @map("created_at")
   updatedAt          DateTime           @updatedAt @map("updated_at")
 
-  members  ConversationMember[]
-  messages Message[]
+  members      ConversationMember[]
+  messages     Message[]
+  joinRequests GroupJoinRequest[]
 
   @@unique([type, pairKey])
   @@index([lastMessageAt])
@@ -206,6 +224,8 @@ model ConversationMember {
   pinned         Boolean    @default(false)
   muted          Boolean    @default(false)
   revealConsent  Boolean    @default(false) @map("reveal_consent")
+  /// Grupta "Hesabımı gizle": maskeli ad + bulanık fotoğraf, profil açılmaz.
+  anonymous      Boolean    @default(false)
   joinedAt       DateTime   @default(now()) @map("joined_at")
 
   conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
@@ -269,6 +289,9 @@ enum ReportContext {
   CHAT
   CALL
   ROOM
+  VIBE
+  GROUP
+  POST
 }
 
 model Block {
@@ -375,4 +398,170 @@ model OwnedItem {
 
   @@id([userId, itemType, itemId])
   @@map("owned_items")
+}
+
+enum JoinRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+/// Gizli gruba katılma isteği; yöneticiler onaylar.
+model GroupJoinRequest {
+  id             String            @id @default(uuid()) @db.Char(36)
+  conversationId String            @map("conversation_id") @db.Char(36)
+  userId         String            @map("user_id") @db.Char(36)
+  message        String?           @db.VarChar(200)
+  /// İstek sahibi grupta anonim görünmek istiyor mu.
+  anonymous      Boolean           @default(false)
+  status         JoinRequestStatus @default(PENDING)
+  decidedById    String?           @map("decided_by_id") @db.Char(36)
+  createdAt      DateTime          @default(now()) @map("created_at")
+  updatedAt      DateTime          @updatedAt @map("updated_at")
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([conversationId, userId])
+  @@index([conversationId, status])
+  @@map("group_join_requests")
+}
+
+/// Vibes: 24 saat yayında kalan kısa paylaşım.
+model Vibe {
+  id        String    @id @default(uuid()) @db.Char(36)
+  authorId  String    @map("author_id") @db.Char(36)
+  body      String    @db.VarChar(280)
+  anonymous Boolean   @default(true)
+  likeCount Int       @default(0) @map("like_count")
+  expiresAt DateTime  @map("expires_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  author User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  likes  VibeLike[]
+
+  @@index([expiresAt, createdAt])
+  @@index([authorId, createdAt])
+  @@map("vibes")
+}
+
+model VibeLike {
+  vibeId    String   @map("vibe_id") @db.Char(36)
+  userId    String   @map("user_id") @db.Char(36)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  vibe Vibe @relation(fields: [vibeId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([vibeId, userId])
+  @@index([userId])
+  @@map("vibe_likes")
+}
+
+/// Sohbetler ekranının üstündeki kısa durum notu (kişi başına bir tane, 24 saat).
+model Note {
+  userId    String   @id @map("user_id") @db.Char(36)
+  text      String   @db.VarChar(60)
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([expiresAt])
+  @@map("notes")
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+/// Discover gönderisi (şimdilik fotoğraf). Yazı katmanı istemcide görsele işlenmiş gelir.
+model Post {
+  id           String     @id @default(uuid()) @db.Char(36)
+  authorId     String     @map("author_id") @db.Char(36)
+  status       PostStatus @default(PUBLISHED)
+  mediaUrl     String     @map("media_url") @db.VarChar(512)
+  thumbUrl     String     @map("thumb_url") @db.VarChar(512)
+  width        Int?       @db.SmallInt
+  height       Int?       @db.SmallInt
+  caption      String?    @db.VarChar(500)
+  /// Seçilen müzik: { title, artist, coverUrl, audioUrl, clipStartSec, clipEndSec }
+  music        Json?
+  likeCount    Int        @default(0) @map("like_count")
+  commentCount Int        @default(0) @map("comment_count")
+  viewCount    Int        @default(0) @map("view_count")
+  /// Token ile öne çıkarıldıysa bu zamana kadar akışta üstte.
+  boostedUntil DateTime?  @map("boosted_until")
+  deletedAt    DateTime?  @map("deleted_at")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+
+  author   User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  likes    PostLike[]
+  saves    PostSave[]
+  views    PostView[]
+  comments Comment[]
+
+  @@index([status, createdAt])
+  @@index([boostedUntil])
+  @@index([authorId, status, createdAt])
+  @@map("posts")
+}
+
+model PostLike {
+  postId    String   @map("post_id") @db.Char(36)
+  userId    String   @map("user_id") @db.Char(36)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([postId, userId])
+  @@index([userId])
+  @@map("post_likes")
+}
+
+/// Kaydedilenler (sadece kullanıcının kendisi görür).
+model PostSave {
+  postId    String   @map("post_id") @db.Char(36)
+  userId    String   @map("user_id") @db.Char(36)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([postId, userId])
+  @@index([userId, createdAt])
+  @@map("post_saves")
+}
+
+/// Görüntülenme: kullanıcı başına bir kez sayılır.
+model PostView {
+  postId    String   @map("post_id") @db.Char(36)
+  userId    String   @map("user_id") @db.Char(36)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([postId, userId])
+  @@map("post_views")
+}
+
+model Comment {
+  id        String    @id @default(uuid()) @db.Char(36)
+  postId    String    @map("post_id") @db.Char(36)
+  authorId  String    @map("author_id") @db.Char(36)
+  body      String    @db.VarChar(500)
+  deletedAt DateTime? @map("deleted_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([postId, createdAt])
+  @@map("comments")
 }
