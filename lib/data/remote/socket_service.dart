@@ -31,6 +31,23 @@ class SocketService {
     'typing',
     'presence:update',
     'tokens:updated',
+    'call:matched',
+    'call:times_up',
+    'call:peer_kept',
+    'call:revealed',
+    'call:video_requested',
+    'call:video_declined',
+    'call:video_started',
+    'call:video_ended',
+    'call:ended',
+    'call:error',
+    'room:participant_joined',
+    'room:participant_left',
+    'room:participant_updated',
+    'room:message',
+    'room:ended',
+    'room:request',
+    'room:approved',
   ];
 
   io.Socket? _socket;

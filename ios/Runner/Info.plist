@@ -43,9 +43,9 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Veylo needs camera access to take photos for stories and your profile.</string>
+	<string>Veylo needs camera access for photos, stories and video calls.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Veylo needs microphone access when recording video.</string>
+	<string>Veylo needs microphone access for voice calls, rooms and video.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Veylo needs permission to save photos to your library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

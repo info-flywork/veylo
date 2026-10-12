@@ -1,76 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
-import 'package:veylo/screens/discover/rooms/room_token_sheet.dart';
+import 'package:veylo/data/remote/room_store.dart';
+import 'package:veylo/models/room/live_room.dart';
+import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
+import 'package:veylo/screens/discover/rooms/room_list_item.dart';
 
-class FeaturedRoom {
-  const FeaturedRoom({
-    required this.title,
-    required this.subtitle,
-    required this.color,
-    required this.avatars,
-    required this.moreCount,
-  });
-
-  final String title;
-  final String subtitle;
-  final Color color;
-  final List<String> avatars;
-  final int moreCount;
-}
-
-/// Üstteki 3 renkli Live room kartı (yatay carousel, ortadaki büyür).
+/// Üstteki renkli Live room kartları (yatay carousel, ortadaki büyür).
+/// En kalabalık 3 canlı oda; hiç oda yoksa gizlenir.
 class FeaturedRoomsCarousel extends StatefulWidget {
-  const FeaturedRoomsCarousel({
-    super.key,
-    this.rooms = FeaturedRoomsCarousel.defaultRooms,
-  });
+  const FeaturedRoomsCarousel({super.key});
 
-  static const defaultRooms = <FeaturedRoom>[
-    FeaturedRoom(
-      title: 'Morning Vibes',
-      subtitle: 'Early birds, coffee chats, sunrise talks',
-      color: Color(0xFFCDD7F2),
-      avatars: [
-        AppAssets.fakePerson01,
-        AppAssets.fakePerson02,
-        AppAssets.fakePerson03,
-        AppAssets.fakePerson04,
-        AppAssets.fakePerson05,
-      ],
-      moreCount: 8,
-    ),
-    FeaturedRoom(
-      title: 'Nighttime Chats',
-      subtitle: 'Night shift workers, insomniacs, night owls',
-      color: Color(0xFFE2F2CD),
-      avatars: [
-        AppAssets.fakePerson06,
-        AppAssets.fakePerson07,
-        AppAssets.fakePerson08,
-        AppAssets.fakePerson03,
-        AppAssets.fakePerson01,
-      ],
-      moreCount: 12,
-    ),
-    FeaturedRoom(
-      title: 'Night Owls',
-      subtitle: 'Night night deep talks and soft music',
-      color: Color(0xFFECCDF2),
-      avatars: [
-        AppAssets.fakePerson02,
-        AppAssets.fakePerson05,
-        AppAssets.fakePerson04,
-        AppAssets.fakePerson08,
-        AppAssets.fakePerson07,
-      ],
-      moreCount: 5,
-    ),
+  static const colors = <Color>[
+    Color(0xFFCDD7F2),
+    Color(0xFFE2F2CD),
+    Color(0xFFECCDF2),
   ];
-
-  final List<FeaturedRoom> rooms;
 
   @override
   State<FeaturedRoomsCarousel> createState() => _FeaturedRoomsCarouselState();
@@ -78,11 +24,13 @@ class FeaturedRoomsCarousel extends StatefulWidget {
 
 class _FeaturedRoomsCarouselState extends State<FeaturedRoomsCarousel> {
   late final PageController _controller;
+  final _store = RoomStore.instance;
   double _page = 1;
 
   @override
   void initState() {
     super.initState();
+    _store.addListener(_onStore);
     _controller = PageController(viewportFraction: 0.86, initialPage: 1);
     _controller.addListener(() {
       final p = _controller.page;
@@ -92,17 +40,24 @@ class _FeaturedRoomsCarouselState extends State<FeaturedRoomsCarousel> {
 
   @override
   void dispose() {
+    _store.removeListener(_onStore);
     _controller.dispose();
     super.dispose();
   }
 
+  void _onStore() {
+    if (mounted) setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
+    final rooms = _store.rooms.take(3).toList();
+    if (rooms.isEmpty) return const SizedBox.shrink();
     return SizedBox(
       height: 215,
       child: PageView.builder(
         controller: _controller,
-        itemCount: widget.rooms.length,
+        itemCount: rooms.length,
         itemBuilder: (context, index) {
           final distance = (_page - index).abs().clamp(0.0, 1.0);
           final scale = 1.0 - (distance * 0.08);
@@ -111,7 +66,11 @@ class _FeaturedRoomsCarouselState extends State<FeaturedRoomsCarousel> {
             child: Transform.scale(
               scale: scale,
               alignment: Alignment.center,
-              child: _FeaturedRoomCard(room: widget.rooms[index]),
+              child: _FeaturedRoomCard(
+                room: rooms[index],
+                color: FeaturedRoomsCarousel
+                    .colors[index % FeaturedRoomsCarousel.colors.length],
+              ),
             ),
           );
         },
@@ -121,20 +80,24 @@ class _FeaturedRoomsCarouselState extends State<FeaturedRoomsCarousel> {
 }
 
 class _FeaturedRoomCard extends StatelessWidget {
-  const _FeaturedRoomCard({required this.room});
+  const _FeaturedRoomCard({required this.room, required this.color});
 
-  final FeaturedRoom room;
+  final LiveRoomSummary room;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
     final t = Translations.of(context).discover;
+    final item = RoomListItem.fromRoom(room);
+    final avatars = item.avatars;
+    final more = (room.participantCount - avatars.length).clamp(0, 1 << 30);
 
     return Container(
       width: 344,
       height: 175,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: room.color,
+        color: color,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -154,7 +117,7 @@ class _FeaturedRoomCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     AppText(
-                      room.subtitle,
+                      t.hostedBy(name: room.host.displayName),
                       style: AppTextStyles.roomCardSubtitle,
                       maxLines: 2,
                     ),
@@ -181,11 +144,11 @@ class _FeaturedRoomCard extends StatelessWidget {
                 child: Row(
                   children: [
                     SizedBox(
-                      width: 34.0 + (room.avatars.length - 1) * 22.0,
+                      width: 34.0 + (avatars.length - 1) * 22.0,
                       height: 34,
                       child: Stack(
                         children: [
-                          for (var i = 0; i < room.avatars.length; i++)
+                          for (var i = 0; i < avatars.length; i++)
                             Positioned(
                               left: i * 22.0,
                               child: Container(
@@ -194,14 +157,14 @@ class _FeaturedRoomCard extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border: Border.all(
-                                    color: room.color,
+                                    color: color,
                                     width: 2,
                                   ),
                                 ),
                                 child: ClipOval(
-                                  child: Image.asset(
-                                    room.avatars[i],
-                                    fit: BoxFit.cover,
+                                  child: ChatAvatarImage(
+                                    url: avatars[i],
+                                    size: 30,
                                   ),
                                 ),
                               ),
@@ -210,9 +173,10 @@ class _FeaturedRoomCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 8),
+                    if (more > 0)
                     Flexible(
                       child: AppText(
-                        t.moreCount(count: room.moreCount.toString()),
+                        t.moreCount(count: more.toString()),
                         style: AppTextStyles.roomMoreCount,
                         maxLines: 1,
                       ),
@@ -221,7 +185,7 @@ class _FeaturedRoomCard extends StatelessWidget {
                 ),
               ),
               GestureDetector(
-                onTap: () => showRoomTokenSheet(context, roomTitle: room.title),
+                onTap: () => openLiveRoom(context, item),
                 behavior: HitTestBehavior.opaque,
                 child: Container(
                   height: 40,

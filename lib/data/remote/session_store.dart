@@ -8,6 +8,7 @@ import 'package:veylo/data/remote/api_client.dart';
 import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/data/remote/discover_store.dart';
 import 'package:veylo/data/remote/group_store.dart';
+import 'package:veylo/data/remote/room_store.dart';
 import 'package:veylo/data/remote/note_store.dart';
 import 'package:veylo/data/remote/push_service.dart';
 import 'package:veylo/data/remote/vibe_store.dart';
@@ -232,6 +233,7 @@ class SessionStore extends ChangeNotifier {
     ChatStore.instance.stop();
     VibeStore.instance.clear();
     GroupStore.instance.clear();
+    RoomStore.instance.clear();
     NoteStore.instance.clear();
     DiscoverStore.instance.clear();
     try {

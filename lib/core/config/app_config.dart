@@ -25,3 +25,10 @@ abstract final class AppConfig {
   static const googleServerClientId =
       '619173059299-qd0o6eji37no6q7me3ugo4qnr1vdl7jd.apps.googleusercontent.com';
 }
+
+/// Backend'deki TOKENS ile aynı (fiyatlar sunucuda uygulanır; burada sadece gösterim).
+abstract final class TokenCosts {
+  static const callGenderFilter = 10;
+  static const videoCallPer15Min = 20;
+  static const roomCreate = 50;
+}

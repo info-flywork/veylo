@@ -224,7 +224,14 @@
     "timesUpSubtitle": "Want to keep talking? If you both say yes, chat unlocks.",
     "keepTalking": "Keep Talking",
     "endCall": "End Call",
-    "waitingOther": "Waiting for the other person..."
+    "waitingOther": "Waiting for the other person...",
+    "callStrangerFree": "Yabancıyı Ara",
+    "peerLeft": "Karşı taraf aramayı bitirdi.",
+    "noKeep": "Bu sefer sohbet açılmadı.",
+    "videoWaiting": "Görüntülü aramayı kabul etmesi bekleniyor...",
+    "videoDeclined": "Görüntülü aramayı reddetti.",
+    "micDenied": "Arama için mikrofon izni gerekli. Ayarlar'dan açabilirsin.",
+    "videoCost": "Görüntülü arama: 15 dk / 20 token"
   },
   "vibes": {
     "search": "Search",
@@ -335,7 +342,8 @@
       "createRoomTitle": "Create Room",
       "createGroupTitle": "Create Group",
       "nameSubtitle": "Give the group you created a name",
-      "nameHint": "Night Owl"
+      "nameHint": "Night Owl",
+      "createRoomFor": "{count} tokene oluştur"
     },
     "liveRoom": {
       "adminSuffix": "(Admin)",
@@ -344,7 +352,10 @@
       "quickReplyTopic": "Konu ne?",
       "quickReplyNew": "Ben yeniyim!",
       "sampleChatName": "Sona",
-      "sampleChatBody": "Ne yapabiliriz? Aklında ne var?"
+      "sampleChatBody": "Ne yapabiliriz? Aklında ne var?",
+      "roomEnded": "Oda kapandı.",
+      "wantsToJoin": "{name} katılmak istiyor",
+      "approve": "Onayla"
     },
     "groupChat": {
       "usersCount": "{count} Kullanıcı",
@@ -433,7 +444,8 @@
       "likes": "Beğeni",
       "boostCta": "1 gün boyunca öne çıkar - 100 token",
       "boosted": "Öne çıkarıldı! Gönderin 24 saat boyunca en üstte."
-    }
+    },
+    "hostedBy": "{name} sunuyor"
   },
   "common": {
     "loading": "Yükleniyor…",
@@ -589,6 +601,9 @@
     "groupCreateLimit": "Bugün çok grup oluşturdun. Biraz sonra tekrar dene.",
     "notFound": "Bu artık mevcut değil.",
     "recentLogin": "Güvenliğin için çıkış yapıp tekrar giriş yap, sonra yeniden dene.",
-    "socialAccount": "E-posta ve şifren Google ya da Apple hesabın tarafından yönetiliyor."
+    "socialAccount": "E-posta ve şifren Google ya da Apple hesabın tarafından yönetiliyor.",
+    "alreadyInCall": "Zaten bir aramadasın.",
+    "roomPrivate": "Bu oda gizli. Katılmak için istek gönder.",
+    "roomFull": "Oda dolu."
   }
 }

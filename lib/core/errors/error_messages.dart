@@ -26,10 +26,15 @@ String errorMessage(BuildContext context, Object error) {
       'SOCIAL_ACCOUNT' => e.socialAccount,
       'GROUP_FULL' => e.groupFull,
       'GROUP_CREATE_LIMIT' => e.groupCreateLimit,
+      'ALREADY_IN_CALL' => e.alreadyInCall,
+      'ROOM_PRIVATE' => e.roomPrivate,
+      'ROOM_FULL' => e.roomFull,
       'VIBE_NOT_FOUND' ||
       'GROUP_NOT_FOUND' ||
       'CONVERSATION_NOT_FOUND' ||
-      'REQUEST_NOT_FOUND' => e.notFound,
+      'REQUEST_NOT_FOUND' ||
+      'ROOM_NOT_FOUND' ||
+      'CALL_NOT_FOUND' => e.notFound,
       _ => e.generic,
     };
   }

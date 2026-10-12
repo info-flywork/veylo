@@ -754,6 +754,27 @@ class Translations$call$tr {
 
 	/// tr: 'Waiting for the other person...'
 	String get waitingOther => 'Waiting for the other person...';
+
+	/// tr: 'Yabancıyı Ara'
+	String get callStrangerFree => 'Yabancıyı Ara';
+
+	/// tr: 'Karşı taraf aramayı bitirdi.'
+	String get peerLeft => 'Karşı taraf aramayı bitirdi.';
+
+	/// tr: 'Bu sefer sohbet açılmadı.'
+	String get noKeep => 'Bu sefer sohbet açılmadı.';
+
+	/// tr: 'Görüntülü aramayı kabul etmesi bekleniyor...'
+	String get videoWaiting => 'Görüntülü aramayı kabul etmesi bekleniyor...';
+
+	/// tr: 'Görüntülü aramayı reddetti.'
+	String get videoDeclined => 'Görüntülü aramayı reddetti.';
+
+	/// tr: 'Arama için mikrofon izni gerekli. Ayarlar'dan açabilirsin.'
+	String get micDenied => 'Arama için mikrofon izni gerekli. Ayarlar\'dan açabilirsin.';
+
+	/// tr: 'Görüntülü arama: 15 dk / 20 token'
+	String get videoCost => 'Görüntülü arama: 15 dk / 20 token';
 }
 
 // Path: vibes
@@ -869,6 +890,9 @@ class Translations$discover$tr {
 	late final Translations$discover$story$tr story = Translations$discover$story$tr.internal(_root);
 	late final Translations$discover$highlight$tr highlight = Translations$discover$highlight$tr.internal(_root);
 	late final Translations$discover$stats$tr stats = Translations$discover$stats$tr.internal(_root);
+
+	/// tr: '{name} sunuyor'
+	String hostedBy({required Object name}) => '${name} sunuyor';
 }
 
 // Path: common
@@ -1285,6 +1309,15 @@ class Translations$errors$tr {
 
 	/// tr: 'E-posta ve şifren Google ya da Apple hesabın tarafından yönetiliyor.'
 	String get socialAccount => 'E-posta ve şifren Google ya da Apple hesabın tarafından yönetiliyor.';
+
+	/// tr: 'Zaten bir aramadasın.'
+	String get alreadyInCall => 'Zaten bir aramadasın.';
+
+	/// tr: 'Bu oda gizli. Katılmak için istek gönder.'
+	String get roomPrivate => 'Bu oda gizli. Katılmak için istek gönder.';
+
+	/// tr: 'Oda dolu.'
+	String get roomFull => 'Oda dolu.';
 }
 
 // Path: discover.aiMatch
@@ -1546,6 +1579,9 @@ class Translations$discover$createSpace$tr {
 
 	/// tr: 'Night Owl'
 	String get nameHint => 'Night Owl';
+
+	/// tr: '{count} tokene oluştur'
+	String createRoomFor({required Object count}) => '${count} tokene oluştur';
 }
 
 // Path: discover.liveRoom
@@ -1576,6 +1612,15 @@ class Translations$discover$liveRoom$tr {
 
 	/// tr: 'Ne yapabiliriz? Aklında ne var?'
 	String get sampleChatBody => 'Ne yapabiliriz? Aklında ne var?';
+
+	/// tr: 'Oda kapandı.'
+	String get roomEnded => 'Oda kapandı.';
+
+	/// tr: '{name} katılmak istiyor'
+	String wantsToJoin({required Object name}) => '${name} katılmak istiyor';
+
+	/// tr: 'Onayla'
+	String get approve => 'Onayla';
 }
 
 // Path: discover.groupChat
@@ -2161,6 +2206,13 @@ extension on Translations {
 			'call.keepTalking' => 'Keep Talking',
 			'call.endCall' => 'End Call',
 			'call.waitingOther' => 'Waiting for the other person...',
+			'call.callStrangerFree' => 'Yabancıyı Ara',
+			'call.peerLeft' => 'Karşı taraf aramayı bitirdi.',
+			'call.noKeep' => 'Bu sefer sohbet açılmadı.',
+			'call.videoWaiting' => 'Görüntülü aramayı kabul etmesi bekleniyor...',
+			'call.videoDeclined' => 'Görüntülü aramayı reddetti.',
+			'call.micDenied' => 'Arama için mikrofon izni gerekli. Ayarlar\'dan açabilirsin.',
+			'call.videoCost' => 'Görüntülü arama: 15 dk / 20 token',
 			'vibes.search' => 'Search',
 			'vibes.sendMessage' => 'Mesaj Gönder',
 			'vibes.wantsToTalk' => 'Wants to talk about this right now',
@@ -2257,6 +2309,7 @@ extension on Translations {
 			'discover.createSpace.createGroupTitle' => 'Create Group',
 			'discover.createSpace.nameSubtitle' => 'Give the group you created a name',
 			'discover.createSpace.nameHint' => 'Night Owl',
+			'discover.createSpace.createRoomFor' => ({required Object count}) => '${count} tokene oluştur',
 			'discover.liveRoom.adminSuffix' => '(Admin)',
 			'discover.liveRoom.messageHint' => 'Mesaj',
 			'discover.liveRoom.quickReplyHey' => 'Herkese merhaba!',
@@ -2264,6 +2317,9 @@ extension on Translations {
 			'discover.liveRoom.quickReplyNew' => 'Ben yeniyim!',
 			'discover.liveRoom.sampleChatName' => 'Sona',
 			'discover.liveRoom.sampleChatBody' => 'Ne yapabiliriz? Aklında ne var?',
+			'discover.liveRoom.roomEnded' => 'Oda kapandı.',
+			'discover.liveRoom.wantsToJoin' => ({required Object name}) => '${name} katılmak istiyor',
+			'discover.liveRoom.approve' => 'Onayla',
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} Kullanıcı',
 			'discover.groupChat.sampleVictoria' => 'Çok sıkıldım. Bir şeyler yapalım mı?',
 			'discover.groupChat.sampleSona' => 'Ne yapabiliriz? Aklında ne var?',
@@ -2338,6 +2394,7 @@ extension on Translations {
 			'discover.stats.likes' => 'Beğeni',
 			'discover.stats.boostCta' => '1 gün boyunca öne çıkar - 100 token',
 			'discover.stats.boosted' => 'Öne çıkarıldı! Gönderin 24 saat boyunca en üstte.',
+			'discover.hostedBy' => ({required Object name}) => '${name} sunuyor',
 			'common.loading' => 'Yükleniyor…',
 			'common.retry' => 'Tekrar dene',
 			'common.cancel' => 'İptal',
@@ -2446,6 +2503,8 @@ extension on Translations {
 			'createProfile.chatGoalFlirtyChat' => 'Flört sohbeti — hafif, eğlenceli muhabbet',
 			'createProfile.chatGoalMoodMatch' => 'Ruh hali eşleşmesi — nasıl hissettiğine göre',
 			'createProfile.chatGoalLateNight' => 'Gece sohbeti — dünya uyurken derin konuşmalar',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.chatGoalMeetSomeoneNew' => 'Yeni biriyle tanış — özel hedef yok, keşfet',
 			'createProfile.getStarted' => 'Başla',
 			'createProfile.preparingTitleLine1' => 'Sana uygun',
@@ -2458,8 +2517,6 @@ extension on Translations {
 			'errors.network' => 'Veylo’ya ulaşılamadı. Bağlantını kontrol edip tekrar dene.',
 			'errors.generic' => 'Bir şeyler ters gitti. Lütfen tekrar dene.',
 			'errors.signInFailed' => 'Giriş yapılamadı. Lütfen tekrar dene.',
-			_ => null,
-		} ?? switch (path) {
 			'errors.sessionExpired' => 'Oturumun sona erdi. Lütfen tekrar giriş yap.',
 			'errors.accountSuspended' => 'Bu hesap askıya alındı.',
 			'errors.unsupportedImage' => 'Lütfen JPEG, PNG veya WebP bir fotoğraf seç.',
@@ -2482,6 +2539,9 @@ extension on Translations {
 			'errors.notFound' => 'Bu artık mevcut değil.',
 			'errors.recentLogin' => 'Güvenliğin için çıkış yapıp tekrar giriş yap, sonra yeniden dene.',
 			'errors.socialAccount' => 'E-posta ve şifren Google ya da Apple hesabın tarafından yönetiliyor.',
+			'errors.alreadyInCall' => 'Zaten bir aramadasın.',
+			'errors.roomPrivate' => 'Bu oda gizli. Katılmak için istek gönder.',
+			'errors.roomFull' => 'Oda dolu.',
 			_ => null,
 		};
 	}

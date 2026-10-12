@@ -8,13 +8,14 @@ import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/data/remote/group_repository.dart';
 import 'package:veylo/data/remote/group_store.dart';
 import 'package:veylo/models/group/group_models.dart';
+import 'package:veylo/models/room/live_room.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/screens/discover/rooms/group_chat_page.dart';
 import 'package:veylo/screens/discover/rooms/private_room_request_sheet.dart';
-import 'package:veylo/screens/discover/rooms/room_token_sheet.dart';
+import 'package:veylo/screens/discover/rooms/room_live_page.dart';
 
 class RoomListItem {
   const RoomListItem({
@@ -45,6 +46,21 @@ class RoomListItem {
     ],
   );
 
+  /// Canlı oda (`GET /rooms`). Gizli odada [isMember] = girme izni var.
+  factory RoomListItem.fromRoom(LiveRoomSummary r) => RoomListItem(
+    id: r.id,
+    title: r.title,
+    count: r.participantCount,
+    isPrivate: r.isPrivate,
+    isRequested: r.requested,
+    isMember: r.hasAccess,
+    avatars: [
+      ...r.avatars,
+      for (var i = r.avatars.length; i < r.participantCount.clamp(0, 5); i++)
+        AppAssets.strangerAvatar,
+    ],
+  );
+
   final String title;
   final int count;
   final bool isPrivate;
@@ -56,46 +72,6 @@ class RoomListItem {
   final int? memberCount;
   final bool isMember;
 }
-
-/// Dummy All Rooms listesi.
-const defaultRooms = <RoomListItem>[
-  RoomListItem(
-    title: 'World Chat',
-    count: 120,
-    isPrivate: false,
-    avatars: [
-      AppAssets.fakePerson08,
-      AppAssets.fakePerson07,
-      AppAssets.fakePerson05,
-      AppAssets.fakePerson01,
-      AppAssets.fakePerson03,
-    ],
-  ),
-  RoomListItem(
-    title: 'The World of Gaming',
-    count: 218,
-    isPrivate: false,
-    avatars: [
-      AppAssets.fakePerson04,
-      AppAssets.fakePerson06,
-      AppAssets.fakePerson02,
-      AppAssets.fakePerson08,
-      AppAssets.fakePerson05,
-    ],
-  ),
-  RoomListItem(
-    title: 'Heart-to-Heart',
-    count: 46,
-    isPrivate: false,
-    avatars: [
-      AppAssets.fakePerson07,
-      AppAssets.fakePerson01,
-      AppAssets.fakePerson03,
-      AppAssets.fakePerson05,
-      AppAssets.fakePerson02,
-    ],
-  ),
-];
 
 class RoomListCard extends StatelessWidget {
   const RoomListCard({super.key, required this.item, this.isGroup = false});
@@ -116,6 +92,10 @@ class RoomListCard extends StatelessWidget {
         if (item.isRequested) return;
         if (isGroup && item.id != null) {
           _openGroup(context, item);
+          return;
+        }
+        if (item.id != null) {
+          openLiveRoom(context, item);
           return;
         }
         if (isGroup) {
@@ -142,8 +122,6 @@ class RoomListCard extends StatelessWidget {
             roomTitle: item.title,
             memberCount: item.count,
           );
-        } else {
-          showRoomTokenSheet(context, roomTitle: item.title);
         }
       },
       behavior: HitTestBehavior.opaque,
@@ -235,7 +213,9 @@ class RoomListCard extends StatelessWidget {
               ),
               alignment: Alignment.center,
               child: AppText(
-                locked ? (item.isRequested ? t.requested : t.request) : t.join,
+                locked && !item.isMember
+                    ? (item.isRequested ? t.requested : t.request)
+                    : t.join,
                 style: AppTextStyles.allRoomAction.copyWith(
                   color: AppColors.white,
                 ),
@@ -273,6 +253,22 @@ Future<void> _openGroup(BuildContext context, RoomListItem item) async {
   } catch (e) {
     if (context.mounted) showErrorSnackBar(context, e);
   }
+}
+
+/// Canlı oda: gizliyse ve iznim yoksa istek, değilse doğrudan gir (katılım ücretsiz).
+Future<void> openLiveRoom(BuildContext context, RoomListItem item) async {
+  final id = item.id!;
+  if (item.isRequested) return;
+  if (item.isPrivate && !item.isMember) {
+    await showPrivateRoomRequestSheet(
+      context,
+      roomTitle: item.title,
+      memberCount: item.count,
+      roomId: id,
+    );
+    return;
+  }
+  await RoomLivePage.open(context, roomId: id, roomTitle: item.title);
 }
 
 class RoomListColumn extends StatelessWidget {

@@ -224,7 +224,14 @@
     "timesUpSubtitle": "Want to keep talking? If you both say yes, chat unlocks.",
     "keepTalking": "Keep Talking",
     "endCall": "End Call",
-    "waitingOther": "Waiting for the other person..."
+    "waitingOther": "Waiting for the other person...",
+    "callStrangerFree": "Call Stranger",
+    "peerLeft": "The other person ended the call.",
+    "noKeep": "Chat didn't unlock this time.",
+    "videoWaiting": "Waiting for them to accept the video call...",
+    "videoDeclined": "They declined the video call.",
+    "micDenied": "Microphone access is needed for calls. You can enable it in Settings.",
+    "videoCost": "Video call: 20 tokens / 15 min"
   },
   "vibes": {
     "search": "Search",
@@ -335,7 +342,8 @@
       "createRoomTitle": "Create Room",
       "createGroupTitle": "Create Group",
       "nameSubtitle": "Give the group you created a name",
-      "nameHint": "Night Owl"
+      "nameHint": "Night Owl",
+      "createRoomFor": "Create for {count} tokens"
     },
     "liveRoom": {
       "adminSuffix": "(Admin)",
@@ -344,7 +352,10 @@
       "quickReplyTopic": "What's the topic?",
       "quickReplyNew": "I'm new here!",
       "sampleChatName": "Sona",
-      "sampleChatBody": "What can we do? What do you have in mind?"
+      "sampleChatBody": "What can we do? What do you have in mind?",
+      "roomEnded": "The room has ended.",
+      "wantsToJoin": "{name} wants to join",
+      "approve": "Approve"
     },
     "groupChat": {
       "usersCount": "{count} Users",
@@ -433,7 +444,8 @@
       "likes": "Likes",
       "boostCta": "Boost for 1 day - 100 tokens",
       "boosted": "Boosted! Your post is at the top for 24 hours."
-    }
+    },
+    "hostedBy": "Hosted by {name}"
   },
   "common": {
     "loading": "Loading…",
@@ -589,6 +601,9 @@
     "groupCreateLimit": "You’ve created too many groups today. Try again later.",
     "notFound": "This is no longer available.",
     "recentLogin": "For your security, log out and log in again, then try once more.",
-    "socialAccount": "Your email and password are managed by your Google or Apple account."
+    "socialAccount": "Your email and password are managed by your Google or Apple account.",
+    "alreadyInCall": "You are already in a call.",
+    "roomPrivate": "This room is private. Ask the host to join.",
+    "roomFull": "This room is full."
   }
 }

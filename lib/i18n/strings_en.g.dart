@@ -322,6 +322,13 @@ class _Translations$call$en extends Translations$call$tr {
 	@override String get keepTalking => 'Keep Talking';
 	@override String get endCall => 'End Call';
 	@override String get waitingOther => 'Waiting for the other person...';
+	@override String get callStrangerFree => 'Call Stranger';
+	@override String get peerLeft => 'The other person ended the call.';
+	@override String get noKeep => 'Chat didn\'t unlock this time.';
+	@override String get videoWaiting => 'Waiting for them to accept the video call...';
+	@override String get videoDeclined => 'They declined the video call.';
+	@override String get micDenied => 'Microphone access is needed for calls. You can enable it in Settings.';
+	@override String get videoCost => 'Video call: 20 tokens / 15 min';
 }
 
 // Path: vibes
@@ -381,6 +388,7 @@ class _Translations$discover$en extends Translations$discover$tr {
 	@override late final _Translations$discover$story$en story = _Translations$discover$story$en._(_root);
 	@override late final _Translations$discover$highlight$en highlight = _Translations$discover$highlight$en._(_root);
 	@override late final _Translations$discover$stats$en stats = _Translations$discover$stats$en._(_root);
+	@override String hostedBy({required Object name}) => 'Hosted by ${name}';
 }
 
 // Path: common
@@ -556,6 +564,9 @@ class _Translations$errors$en extends Translations$errors$tr {
 	@override String get notFound => 'This is no longer available.';
 	@override String get recentLogin => 'For your security, log out and log in again, then try once more.';
 	@override String get socialAccount => 'Your email and password are managed by your Google or Apple account.';
+	@override String get alreadyInCall => 'You are already in a call.';
+	@override String get roomPrivate => 'This room is private. Ask the host to join.';
+	@override String get roomFull => 'This room is full.';
 }
 
 // Path: discover.aiMatch
@@ -679,6 +690,7 @@ class _Translations$discover$createSpace$en extends Translations$discover$create
 	@override String get createGroupTitle => 'Create Group';
 	@override String get nameSubtitle => 'Give the group you created a name';
 	@override String get nameHint => 'Night Owl';
+	@override String createRoomFor({required Object count}) => 'Create for ${count} tokens';
 }
 
 // Path: discover.liveRoom
@@ -695,6 +707,9 @@ class _Translations$discover$liveRoom$en extends Translations$discover$liveRoom$
 	@override String get quickReplyNew => 'I\'m new here!';
 	@override String get sampleChatName => 'Sona';
 	@override String get sampleChatBody => 'What can we do? What do you have in mind?';
+	@override String get roomEnded => 'The room has ended.';
+	@override String wantsToJoin({required Object name}) => '${name} wants to join';
+	@override String get approve => 'Approve';
 }
 
 // Path: discover.groupChat
@@ -1088,6 +1103,13 @@ extension on TranslationsEn {
 			'call.keepTalking' => 'Keep Talking',
 			'call.endCall' => 'End Call',
 			'call.waitingOther' => 'Waiting for the other person...',
+			'call.callStrangerFree' => 'Call Stranger',
+			'call.peerLeft' => 'The other person ended the call.',
+			'call.noKeep' => 'Chat didn\'t unlock this time.',
+			'call.videoWaiting' => 'Waiting for them to accept the video call...',
+			'call.videoDeclined' => 'They declined the video call.',
+			'call.micDenied' => 'Microphone access is needed for calls. You can enable it in Settings.',
+			'call.videoCost' => 'Video call: 20 tokens / 15 min',
 			'vibes.search' => 'Search',
 			'vibes.sendMessage' => 'Send Message',
 			'vibes.wantsToTalk' => 'Wants to talk about this right now',
@@ -1184,6 +1206,7 @@ extension on TranslationsEn {
 			'discover.createSpace.createGroupTitle' => 'Create Group',
 			'discover.createSpace.nameSubtitle' => 'Give the group you created a name',
 			'discover.createSpace.nameHint' => 'Night Owl',
+			'discover.createSpace.createRoomFor' => ({required Object count}) => 'Create for ${count} tokens',
 			'discover.liveRoom.adminSuffix' => '(Admin)',
 			'discover.liveRoom.messageHint' => 'Message',
 			'discover.liveRoom.quickReplyHey' => 'Hey, everyone!',
@@ -1191,6 +1214,9 @@ extension on TranslationsEn {
 			'discover.liveRoom.quickReplyNew' => 'I\'m new here!',
 			'discover.liveRoom.sampleChatName' => 'Sona',
 			'discover.liveRoom.sampleChatBody' => 'What can we do? What do you have in mind?',
+			'discover.liveRoom.roomEnded' => 'The room has ended.',
+			'discover.liveRoom.wantsToJoin' => ({required Object name}) => '${name} wants to join',
+			'discover.liveRoom.approve' => 'Approve',
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} Users',
 			'discover.groupChat.sampleVictoria' => 'I\'m really bored. Should we do something, guys?',
 			'discover.groupChat.sampleSona' => 'What can we do? What do you have in mind?',
@@ -1265,6 +1291,7 @@ extension on TranslationsEn {
 			'discover.stats.likes' => 'Likes',
 			'discover.stats.boostCta' => 'Boost for 1 day - 100 tokens',
 			'discover.stats.boosted' => 'Boosted! Your post is at the top for 24 hours.',
+			'discover.hostedBy' => ({required Object name}) => 'Hosted by ${name}',
 			'common.loading' => 'Loading…',
 			'common.retry' => 'Retry',
 			'common.cancel' => 'Cancel',
@@ -1373,6 +1400,8 @@ extension on TranslationsEn {
 			'createProfile.chatGoalFlirtyChat' => 'Flirty chat — light, playful\nconversations',
 			'createProfile.chatGoalMoodMatch' => 'Mood match — match based on how you\'re\nfeeling',
 			'createProfile.chatGoalLateNight' => 'Late night talk — deep chats when the world\'s\nasleep',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.chatGoalMeetSomeoneNew' => 'Meet someone new — no specific goal, just\nexplore',
 			'createProfile.getStarted' => 'Get Started',
 			'createProfile.preparingTitleLine1' => 'We\'re preparing',
@@ -1385,8 +1414,6 @@ extension on TranslationsEn {
 			'errors.network' => 'Couldn’t reach Veylo. Check your connection and try again.',
 			'errors.generic' => 'Something went wrong. Please try again.',
 			'errors.signInFailed' => 'Sign in failed. Please try again.',
-			_ => null,
-		} ?? switch (path) {
 			'errors.sessionExpired' => 'Your session has ended. Please sign in again.',
 			'errors.accountSuspended' => 'This account has been suspended.',
 			'errors.unsupportedImage' => 'Please choose a JPEG, PNG or WebP photo.',
@@ -1409,6 +1436,9 @@ extension on TranslationsEn {
 			'errors.notFound' => 'This is no longer available.',
 			'errors.recentLogin' => 'For your security, log out and log in again, then try once more.',
 			'errors.socialAccount' => 'Your email and password are managed by your Google or Apple account.',
+			'errors.alreadyInCall' => 'You are already in a call.',
+			'errors.roomPrivate' => 'This room is private. Ask the host to join.',
+			'errors.roomFull' => 'This room is full.',
 			_ => null,
 		};
 	}
