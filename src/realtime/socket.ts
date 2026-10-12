@@ -6,7 +6,11 @@ import { logger } from '../lib/logger';
 import { prisma } from '../lib/prisma';
 import { authService } from '../services/auth.service';
 import { setIo, userRoom, emitToUser } from './emitter';
+import { callService } from '../services/call.service';
+import { roomService } from '../services/room.service';
+import { registerCallHandlers } from './handlers/call.handler';
 import { registerChatHandlers } from './handlers/chat.handler';
+import { registerRoomHandlers } from './handlers/room.handler';
 import { presence } from './presence.store';
 
 /**
@@ -43,9 +47,14 @@ export function initSocket(httpServer: HttpServer) {
     if (presence.add(userId, socket.id)) void broadcastPresence(userId, true);
 
     registerChatHandlers(socket);
+    registerCallHandlers(socket);
+    registerRoomHandlers(socket);
+    callService.onConnect(userId);
 
     socket.on('disconnect', () => {
       if (presence.remove(userId, socket.id)) {
+        callService.onDisconnect(userId);
+        roomService.onDisconnect(userId);
         void prisma.user.update({ where: { id: userId }, data: { lastSeenAt: new Date() } }).catch(() => undefined);
         void broadcastPresence(userId, false);
       }

@@ -22,6 +22,11 @@ const envSchema = z
     /** Boş = Falkenstein (DE). Diğerleri: uk, ny, la, sg, se, br, jh, syd */
     BUNNY_STORAGE_REGION: z.string().optional(),
     BUNNY_CDN_URL: z.string().optional(),
+    /** Agora (sesli/görüntülü arama ve canlı odalar). Boşsa aramalar ses/görüntü olmadan çalışmaz. */
+    AGORA_APP_ID: z.string().optional(),
+    AGORA_APP_CERTIFICATE: z.string().optional(),
+    /** Sadece test: anonim arama süresi (sn). Production'da her zaman 60. */
+    CALL_ANON_SECONDS: z.coerce.number().int().min(1).max(60).optional(),
     /** AI karakterler (persona). Boşsa karakterler cevap vermez, vibe paylaşmaz. */
     OPENAI_API_KEY: z.string().optional(),
     OPENAI_MODEL: z.string().default('gpt-4o-mini'),
