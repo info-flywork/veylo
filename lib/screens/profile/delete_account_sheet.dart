@@ -52,28 +52,16 @@ class _DeleteAccountSheetState extends State<DeleteAccountSheet> {
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
-    final tr = LocaleSettings.currentLocale == AppLocale.tr;
-
-    final title =
-        tr ? 'Hesap silme talebi gönder' : 'Submit an account deletion request';
-    final subtitle = tr
-        ? 'Hesabını silmek istediğinden emin misin?'
-        : 'Are you sure you want to delete your account?';
-    final reasonTitle = tr
-        ? 'Gitmeni istemiyoruz ama seni anlıyoruz.'
-        : "We don't want you to leave, but we understand.";
-    final reasonSubtitleBefore = tr
-        ? ''
-        : 'Would you tell us why you want to leave so we can improve the ';
-    final reasonSubtitleAfter = tr
-        ? ' deneyimini iyileştirmemiz için bize neden ayrılmak istediğini söyler misin?'
-        : ' experience?';
-    final reasonLabel = tr
-        ? 'Hesabını neden silmek istiyorsun'
-        : 'Why do you want to delete your account';
-    final reasonHint = tr ? 'Mesajınızı yazın' : 'Type your message';
-    final cancel = tr ? 'İptal' : 'Cancel';
-    final createRequest = tr ? 'Talep Oluştur' : 'Create a Request';
+    final t = Translations.of(context).deleteAccount;
+    final title = t.title;
+    final subtitle = t.subtitle;
+    final reasonTitle = t.reasonTitle;
+    final reasonSubtitleBefore = t.reasonBefore;
+    final reasonSubtitleAfter = t.reasonAfter;
+    final reasonLabel = t.reasonLabel;
+    final reasonHint = t.reasonHint;
+    final cancel = t.cancel;
+    final createRequest = t.createRequest;
 
     return Padding(
       padding: EdgeInsets.only(bottom: bottomInset),
@@ -147,20 +135,12 @@ class _DeleteAccountSheetState extends State<DeleteAccountSheet> {
                         color: AppColors.textSecondary,
                       ),
                       children: [
-                        if (tr) ...[
-                          const TextSpan(
-                            text: 'Veylo',
-                            style: TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                          TextSpan(text: reasonSubtitleAfter),
-                        ] else ...[
-                          TextSpan(text: reasonSubtitleBefore),
-                          const TextSpan(
-                            text: 'Veylo',
-                            style: TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                          TextSpan(text: reasonSubtitleAfter),
-                        ],
+                        TextSpan(text: reasonSubtitleBefore),
+                        const TextSpan(
+                          text: 'Veylo',
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        TextSpan(text: reasonSubtitleAfter),
                       ],
                     ),
                     textAlign: TextAlign.center,
@@ -311,15 +291,10 @@ class DeleteAccountConfirmSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bottom = MediaQuery.paddingOf(context).bottom;
-    final tr = LocaleSettings.currentLocale == AppLocale.tr;
-
-    final title = tr
-        ? 'Hesap silme talebini göndermek istediğinden emin misin?'
-        : 'Are you sure you want to submit a deletion request?';
-    final subtitle = tr
-        ? 'Onaylarsan hesap silme talebin oluşturulacak'
-        : 'If you confirm, your account deletion request will be submitted';
-    final delete = tr ? 'Sil' : 'Delete';
+    final t = Translations.of(context).deleteAccount;
+    final title = t.confirmTitle;
+    final subtitle = t.confirmSubtitle;
+    final delete = t.delete;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(16, 10, 16, 10 + bottom),

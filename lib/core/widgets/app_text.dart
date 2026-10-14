@@ -24,7 +24,8 @@ class AppText extends StatelessWidget {
       style: style,
       textAlign: textAlign,
       maxLines: maxLines,
-      overflow: overflow,
+      // Satır sınırı varsa uzun çeviriler kelime ortasında kesilmesin.
+      overflow: overflow ?? (maxLines != null ? TextOverflow.ellipsis : null),
     );
   }
 }

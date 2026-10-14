@@ -597,12 +597,11 @@ class _NamedCallBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tr = LocaleSettings.currentLocale == AppLocale.tr;
     return Column(
       children: [
         _PeerName(name: name, isAi: isAi),
         Text(
-          tr ? 'Aranıyor' : 'Calling',
+          Translations.of(context).call.calling,
           textAlign: TextAlign.center,
           style: const TextStyle(
             fontFamily: AppFonts.poppins,
@@ -673,12 +672,9 @@ class _VideoCallSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tr = LocaleSettings.currentLocale == AppLocale.tr;
     final bottom = MediaQuery.paddingOf(context).bottom;
-    final title = tr
-        ? 'Görüntülü aramaya geçmek ister misin?'
-        : 'Would you like to switch to a video call?';
-    final accept = tr ? 'Kabul et' : 'Accept';
+    final title = Translations.of(context).call.switchToVideo;
+    final accept = Translations.of(context).call.accept;
 
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
@@ -820,7 +816,6 @@ class _VideoIncomingBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tr = LocaleSettings.currentLocale == AppLocale.tr;
     return Column(
       children: [
         _PeerName(name: name, isAi: isAi),
@@ -838,7 +833,7 @@ class _VideoIncomingBody extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Text(
-              tr ? 'Aranıyor' : 'Calling',
+              Translations.of(context).call.calling,
               style: const TextStyle(
                 fontFamily: AppFonts.poppins,
                 fontSize: 20,
@@ -859,7 +854,7 @@ class _VideoIncomingBody extends StatelessWidget {
               child: _VideoAnswerAction(
                 asset: AppAssets.iconDeclineCall,
                 background: const Color(0xFFFC4F41),
-                label: tr ? 'Reddet' : 'Decline',
+                label: Translations.of(context).call.decline,
                 onTap: onDecline,
               ),
             ),
@@ -867,7 +862,7 @@ class _VideoIncomingBody extends StatelessWidget {
               child: _VideoAnswerAction(
                 asset: AppAssets.iconAcceptCall,
                 background: const Color(0xFF4CD964),
-                label: tr ? 'Kabul et' : 'Accept',
+                label: Translations.of(context).call.accept,
                 onTap: onAccept,
               ),
             ),
