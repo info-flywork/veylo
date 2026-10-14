@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
@@ -22,6 +24,9 @@ class _RoomsCatalogState extends State<RoomsCatalog> {
   final _store = GroupStore.instance;
   final _rooms = RoomStore.instance;
 
+  /// Canlı odalar sık değişir: liste ekranda görünürken yenilenir.
+  Timer? _poll;
+
   @override
   void initState() {
     super.initState();
@@ -29,10 +34,14 @@ class _RoomsCatalogState extends State<RoomsCatalog> {
     _rooms.addListener(_onStore);
     _store.refresh();
     _rooms.refresh();
+    _poll = Timer.periodic(const Duration(seconds: 15), (_) {
+      if (mounted && TickerMode.valuesOf(context).enabled) _rooms.refresh();
+    });
   }
 
   @override
   void dispose() {
+    _poll?.cancel();
     _store.removeListener(_onStore);
     _rooms.removeListener(_onStore);
     super.dispose();

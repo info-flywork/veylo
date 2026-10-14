@@ -65,6 +65,10 @@ class AgoraService {
     );
     engine.registerEventHandler(
       RtcEngineEventHandler(
+        onJoinChannelSuccess: (c, _) =>
+            debugPrint('Agora: kanala girildi (${c.channelId})'),
+        onConnectionStateChanged: (_, state, reason) =>
+            debugPrint('Agora bağlantı: ${state.name} (${reason.name})'),
         onUserJoined: (_, uid, _) =>
             remoteUids.value = {...remoteUids.value, uid},
         onUserOffline: (_, uid, _) {
