@@ -19,8 +19,7 @@ export async function requireUser(req: Request, res: Response, next: NextFunctio
   await authenticate(req, res, () => undefined);
   const user = await prisma.user.findUnique({ where: { firebaseUid: req.identity!.uid } });
   if (!user) throw AppError.unauthorized('USER_NOT_REGISTERED', 'Önce POST /auth/session çağrılmalı');
-  if (user.status === 'SUSPENDED') throw AppError.forbidden('ACCOUNT_SUSPENDED');
-  req.user = user;
+  req.user = await authService.ensureNotSuspended(user);
   next();
 }
 

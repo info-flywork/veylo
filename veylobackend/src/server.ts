@@ -4,6 +4,7 @@ import { env } from './config/env';
 import { getFirebaseApp } from './lib/firebase';
 import { logger } from './lib/logger';
 import { prisma } from './lib/prisma';
+import { startAccountDeletionJob } from './jobs/account-deletion.job';
 import { startPersonas } from './personas';
 import { initSocket } from './realtime/socket';
 
@@ -20,6 +21,7 @@ async function main() {
   const server = http.createServer(createApp());
   const io = initSocket(server);
   startPersonas();
+  startAccountDeletionJob();
 
   server.listen(env.PORT, () => logger.info(`Veylo API http://localhost:${env.PORT}/api/v1 (${env.NODE_ENV})`));
 

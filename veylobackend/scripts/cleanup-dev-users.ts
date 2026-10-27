@@ -3,7 +3,7 @@
  * Firebase ile açılmış gerçek hesaplara dokunmaz.
  *   npx tsx scripts/cleanup-dev-users.ts          → sadece listeler
  *   npx tsx scripts/cleanup-dev-users.ts --yes    → siler
- *   --smoke  → sadece smoke testin açtığı alice_/bob_/carol_ hesapları (diğer test kullanıcıları kalır)
+ *   --smoke  → sadece smoke testin açtığı alice_/bob_/carol_/dave_/erin_ hesapları (diğer test kullanıcıları kalır)
  */
 import 'dotenv/config';
 import { prisma } from '../src/lib/prisma';
@@ -15,7 +15,7 @@ async function main() {
     where: { authProvider: 'DEV', firebaseUid: { startsWith: 'dev_' } },
     select: { id: true, username: true, media: { select: { path: true } } },
   });
-  const users = smokeOnly ? all.filter((u) => /^(alice|bob|carol)_[0-9a-f]{6}$/.test(u.username ?? '')) : all;
+  const users = smokeOnly ? all.filter((u) => /^(alice|bob|carol|dave|erin)_[0-9a-f]{6}$/.test(u.username ?? '')) : all;
   const files = users.flatMap((u) => u.media.map((m) => m.path));
   console.log(`${users.length} test kullanıcısı, ${files.length} dosya (${storage.name})`);
   if (!process.argv.includes('--yes')) {

@@ -347,6 +347,73 @@ async function main() {
   check(ms.status === 200 && Array.isArray(ms.data.items), 'AI Match sonuç döndü');
   check(ms.data.items.every((x: any) => x.userId !== carol.id && x.vibePercent >= 60 && x.vibePercent <= 98), 'kendisi yok, vibe %60-98');
 
+  // ── Rastgele arama (sunucu CALL_ANON_SECONDS=2 ile çalışırken)
+  const dave = await newUser('dave');
+  const erin = await newUser('erin');
+  const sd = await connect(dave.token);
+  const se = await connect(erin.token);
+  const q1 = await emit(sd, 'call:queue', { target: 'any' });
+  check(q1.ok && q1.data.status === 'searching', 'dave sırada bekliyor (rastgele, ücretsiz)');
+  const matchedD = once(sd, 'call:matched');
+  const matchedE = once(se, 'call:matched');
+  const q2 = await emit(se, 'call:queue', { target: 'female' });
+  check(q2.ok && q2.data.status === 'matched', 'erin (kadın filtresi) dave ile eşleşti');
+  const [md, me2] = await Promise.all([matchedD, matchedE]);
+  check(md.callId === me2.callId && md.peerUid !== me2.peerUid, 'iki taraf aynı görüşmede');
+  check(!('peer' in md), 'anonim görüşmede karşı tarafın kimliği gelmiyor');
+  const erinBal = (await call(erin.token, 'GET', '/users/me')).data.tokenBalance;
+  check(erinBal === 90, 'cinsiyet filtresi 10 token düştü');
+  const daveBal = (await call(dave.token, 'GET', '/users/me')).data.tokenBalance;
+  check(daveBal === 100, 'rastgele arama ücretsiz');
+  const early = await emit(sd, 'call:keep', { callId: md.callId });
+  check(!early.ok && early.error.code === 'NOT_VOTING', 'süre dolmadan devam oyu verilemez');
+  await Promise.all([once(sd, 'call:times_up', 6000), once(se, 'call:times_up', 6000)]);
+  const revD = once(sd, 'call:revealed');
+  const revE = once(se, 'call:revealed');
+  const k1 = await emit(sd, 'call:keep', { callId: md.callId });
+  check(k1.ok && k1.data.waiting, 'dave devam dedi, erin bekleniyor');
+  await emit(se, 'call:keep', { callId: md.callId });
+  const [rd, re] = await Promise.all([revD, revE]);
+  check(rd.peer.id === erin.id && re.peer.id === dave.id && rd.conversationId, 'ikisi de devam dedi: kimlikler açıldı, sohbet oluştu');
+  const convAfter = await call(dave.token, 'GET', `/conversations/${rd.conversationId}`);
+  check(convAfter.data.status === 'ACCEPTED', 'aramadan açılan sohbet kabul edilmiş');
+  const vreq = once(se, 'call:video_requested');
+  await emit(sd, 'call:video_request', { callId: md.callId });
+  await vreq;
+  const vstart = once(sd, 'call:video_started');
+  await emit(se, 'call:video_respond', { callId: md.callId, accept: true });
+  const vs = await vstart;
+  check(Boolean(vs.until), 'görüntülüye geçildi');
+  check((await call(dave.token, 'GET', '/users/me')).data.tokenBalance === 80, 'görüntülü: isteyen 20 token ödedi');
+  const ended = once(se, 'call:ended');
+  await emit(sd, 'call:end', { callId: md.callId });
+  check((await ended).byPeer === true, 'dave kapattı, erin bilgilendirildi');
+
+  // ── Canlı odalar
+  const room = await call(dave.token, 'POST', '/rooms', { title: `Gece Odası ${run}`, isPrivate: false });
+  check(room.status === 201, 'dave oda açtı');
+  check((await call(dave.token, 'GET', '/users/me')).data.tokenBalance === 30, 'oda açmak 50 token');
+  const dj = await emit(sd, 'room:join', { roomId: room.data.id });
+  check(dj.ok && dj.data.room.isHost && dj.data.me.micOn, 'sahip odaya girdi, mikrofon açık');
+  const joinedEvt = once(sd, 'room:participant_joined');
+  const ej = await emit(se, 'room:join', { roomId: room.data.id, anonymous: true });
+  check(ej.ok && !ej.data.me.micOn && ej.data.participants.length === 2, 'erin anonim katıldı (ücretsiz), mikrofon kapalı');
+  const jp = await joinedEvt;
+  check(jp.participant.userId === null && jp.participant.blurred, 'anonim katılımcının kimliği gizli');
+  const micEvt = once(sd, 'room:participant_updated');
+  await emit(se, 'room:mic', { roomId: room.data.id, on: true });
+  check((await micEvt).participant.micOn === true, 'mikrofon açma herkese iletildi');
+  const msgEvt = once(sd, 'room:message');
+  await emit(se, 'room:message', { roomId: room.data.id, body: 'Selam oda!' });
+  check((await msgEvt).message.body === 'Selam oda!', 'oda sohbeti iletildi');
+  const rlist = await call(carol.token, 'GET', '/rooms');
+  check(rlist.data.items.some((r: any) => r.id === room.data.id && r.participantCount === 2), 'oda listede 2 kişiyle görünüyor');
+  const endedEvt = once(se, 'room:ended');
+  await emit(sd, 'room:leave', { roomId: room.data.id });
+  check((await endedEvt).reason === 'HOST_LEFT', 'sahip çıkınca oda kapandı');
+  sd.close();
+  se.close();
+
   // ── Engelleme
   await call(alice.token, 'POST', `/conversations/${anonId}/block`);
   const afterBlock = await emit(sb, 'message:send', { conversationId: convId, clientMsgId: randomUUID(), body: 'hey?' });

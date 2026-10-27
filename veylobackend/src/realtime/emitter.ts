@@ -15,3 +15,22 @@ export const userRoom = (userId: string) => `user:${userId}`;
 export function emitToUser(userId: string, event: string, payload: unknown) {
   io?.to(userRoom(userId)).emit(event, payload);
 }
+
+/** Socket.IO odası (ör. canlı oda `live:<id>`) içindeki herkese. */
+export function emitToChannel(channel: string, event: string, payload: unknown) {
+  io?.to(channel).emit(event, payload);
+}
+
+/** Kullanıcının tüm bağlantılarını bir yayın kanalına ekler / çıkarır. */
+export function joinChannel(userId: string, channel: string) {
+  io?.in(userRoom(userId)).socketsJoin(channel);
+}
+
+export function leaveChannel(userId: string, channel: string) {
+  io?.in(userRoom(userId)).socketsLeave(channel);
+}
+
+/** Kullanıcının tüm bağlantılarını kapatır (askıya alma / hesap silme). */
+export function disconnectUser(userId: string) {
+  io?.in(userRoom(userId)).disconnectSockets(true);
+}
