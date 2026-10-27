@@ -23,6 +23,7 @@ import 'package:veylo/screens/profile/profile_border_sheet.dart';
 import 'package:veylo/screens/profile/relationship_goals_sheet.dart';
 import 'package:veylo/screens/profile/smoking_sheet.dart';
 import 'package:veylo/screens/profile/widgets/profile_framed_avatar.dart';
+import 'package:veylo/screens/profile/voice_record_sheet.dart';
 import 'package:veylo/screens/profile/zodiac_sheet.dart';
 
 const _kContentWidth = 398.0;
@@ -500,7 +501,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   const SizedBox(height: 8),
                   _ProfileFieldRow(
                     iconAsset: AppAssets.iconEpAddVoice,
-                    label: t.addVoice,
+                    label: (SessionStore.instance.me?.voiceIntroUrl ?? '')
+                            .isEmpty
+                        ? t.addVoice
+                        : 'Voice added',
+                    onTap: () => showVoiceRecordSheet(context),
                   ),
                   const SizedBox(height: 24),
                   AppText(t.lifestyle, style: AppTextStyles.editProfileSection),

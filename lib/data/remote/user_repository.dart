@@ -26,13 +26,21 @@ class UserRepository {
     Map<String, dynamic>.from(await _api.get('/users/$userId') as Map),
   );
 
-  Future<void> follow(String userId) => _api.post('/users/$userId/follow');
+  Future<void> follow(String userId) async {
+    await _api.post('/users/$userId/follow');
+    SessionStore.instance.adjustFollowCounts(followingDelta: 1);
+  }
 
-  Future<void> unfollow(String userId) => _api.delete('/users/$userId/follow');
+  Future<void> unfollow(String userId) async {
+    await _api.delete('/users/$userId/follow');
+    SessionStore.instance.adjustFollowCounts(followingDelta: -1);
+  }
 
   /// Beni takip edeni takipçilerimden çıkarır.
-  Future<void> removeFollower(String userId) =>
-      _api.delete('/users/me/followers/$userId');
+  Future<void> removeFollower(String userId) async {
+    await _api.delete('/users/me/followers/$userId');
+    SessionStore.instance.adjustFollowCounts(followerDelta: -1);
+  }
 
   /// kind: followers | following
   Future<List<FollowUser>> follows(String userId, String kind) async {
@@ -55,6 +63,26 @@ class UserRepository {
       available: res['available'] as bool,
       suggestions: (res['suggestions'] as List).cast<String>(),
     );
+  }
+
+  /// Ses kaydını yükler ve profilde paylaşır. Güncel kullanıcıyı döner.
+  Future<Me> uploadVoiceIntro(String filePath) async {
+    final res = await _api.upload(
+      '/media/voice-intro',
+      filePath,
+      method: 'PUT',
+    );
+    final me = Me.fromJson(Map<String, dynamic>.from(res as Map));
+    SessionStore.instance.setMe(me);
+    return me;
+  }
+
+  /// Profildeki ses kaydını kaldırır.
+  Future<Me> removeVoiceIntro() async {
+    final res = await _api.delete('/media/voice-intro');
+    final me = Me.fromJson(Map<String, dynamic>.from(res as Map));
+    SessionStore.instance.setMe(me);
+    return me;
   }
 
   /// Profil fotoğrafı (onboarding sırasında da çalışır). Güncel kullanıcıyı döner.

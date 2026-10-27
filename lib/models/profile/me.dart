@@ -81,7 +81,11 @@ class Me {
     );
   }
 
-  Me copyWith({int? tokenBalance}) => Me(
+  Me copyWith({
+    int? tokenBalance,
+    int? followerCount,
+    int? followingCount,
+  }) => Me(
     id: id,
     onboardingCompleted: onboardingCompleted,
     tokenBalance: tokenBalance ?? this.tokenBalance,
@@ -103,7 +107,7 @@ class Me {
     voiceIntroUrl: voiceIntroUrl,
     profileVisible: profileVisible,
     likeCount: likeCount,
-    followerCount: followerCount,
-    followingCount: followingCount,
+    followerCount: followerCount ?? this.followerCount,
+    followingCount: followingCount ?? this.followingCount,
   );
 }

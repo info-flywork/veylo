@@ -26,22 +26,38 @@ class DiscoverPage extends StatefulWidget {
 
 class _DiscoverPageState extends State<DiscoverPage> {
   final _store = DiscoverStore.instance;
+  final _scroll = ScrollController();
 
   @override
   void initState() {
     super.initState();
     _store.addListener(_onStore);
-    if (!_store.loaded) _store.refresh();
+    _scroll.addListener(_onScroll);
+    if (!_store.loaded || _store.posts.isEmpty) _store.refresh();
   }
 
   @override
   void dispose() {
     _store.removeListener(_onStore);
+    _scroll.removeListener(_onScroll);
+    _scroll.dispose();
     super.dispose();
   }
 
   void _onStore() {
     if (mounted) setState(() {});
+  }
+
+  void _onScroll() => _maybeLoadMore();
+
+  bool _maybeLoadMore([ScrollMetrics? metrics]) {
+    if (metrics != null) {
+      if (metrics.extentAfter < 900) _store.loadMore();
+      return false;
+    }
+    if (!_scroll.hasClients) return false;
+    if (_scroll.position.extentAfter < 900) _store.loadMore();
+    return false;
   }
 
   Future<void> _openFilters() async {
@@ -183,10 +199,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 color: AppColors.brandPurple,
                 child: NotificationListener<ScrollNotification>(
                   onNotification: (n) {
-                    if (n.metrics.extentAfter < 600) _store.loadMore();
+                    if (n.metrics.axis == Axis.vertical) _maybeLoadMore(n.metrics);
                     return false;
                   },
                   child: GridView.builder(
+                    controller: _scroll,
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: const EdgeInsets.only(bottom: 110),
                     gridDelegate:
@@ -200,7 +217,12 @@ class _DiscoverPageState extends State<DiscoverPage> {
                     itemBuilder: (_, index) {
                       final post = _store.posts[index];
                       return GestureDetector(
-                        onTap: () => DiscoverPostPage.openPost(context, post),
+                        onTap: () => DiscoverPostPage.openPost(
+                          context,
+                          post,
+                          index: index,
+                          liveFeed: true,
+                        ),
                         child: _DiscoverCard(post: post),
                       );
                     },

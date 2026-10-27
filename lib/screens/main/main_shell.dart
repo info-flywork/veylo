@@ -12,6 +12,7 @@ import 'package:veylo/data/remote/room_store.dart';
 import 'package:veylo/data/remote/socket_service.dart';
 import 'package:veylo/data/remote/vibe_store.dart';
 import 'package:veylo/screens/discover/rooms/room_approved_sheet.dart';
+import 'package:veylo/data/remote/discover_store.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/screens/call/call_stranger_page.dart';
 import 'package:veylo/screens/chat/chat_request_page.dart';
@@ -68,6 +69,14 @@ class _MainShellState extends State<MainShell> {
         roomId: id,
       );
     });
+    AppShell.bind(
+      current: () => _tab,
+      select: (tab) {
+        if (!mounted) return;
+        Navigator.of(context).popUntil((route) => route.isFirst);
+        _onNavChanged(tab);
+      },
+    );
     final pending = PushService.instance.takePendingTap();
     if (pending != null) {
       WidgetsBinding.instance.addPostFrameCallback(
@@ -78,6 +87,7 @@ class _MainShellState extends State<MainShell> {
 
   @override
   void dispose() {
+    AppShell.unbind();
     _pushTaps?.cancel();
     _groupApproved?.cancel();
     _roomApproved?.cancel();
@@ -109,6 +119,7 @@ class _MainShellState extends State<MainShell> {
     if (tab == AppNavTab.discover && _tab != tab) {
       GroupStore.instance.refresh();
       RoomStore.instance.refresh();
+      DiscoverStore.instance.refresh();
     }
     if (tab == AppNavTab.chat && _tab != tab) NoteStore.instance.refresh();
     // Profil: takip/takipçi sayıları ve token bakiyesi güncel olsun.

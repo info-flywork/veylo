@@ -221,6 +221,18 @@ class SessionStore extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Takip / takibi bırak sonrası profildeki sayılar sunucu cevabını beklemeden değişsin.
+  void adjustFollowCounts({int followingDelta = 0, int followerDelta = 0}) {
+    final me = _me;
+    if (me == null) return;
+    setMe(
+      me.copyWith(
+        followingCount: me.followingCount + followingDelta,
+        followerCount: me.followerCount + followerDelta,
+      ),
+    );
+  }
+
   void updateTokenBalance(int balance) {
     if (_me == null) return;
     setMe(_me!.copyWith(tokenBalance: balance));

@@ -16,11 +16,13 @@ class ProfileUser {
     this.followsMe = false,
     this.isAi = false,
     this.loaded = false,
+    this.voiceIntroUrl,
   });
 
   /// `GET /users/:id` cevabı.
   factory ProfileUser.fromPublicJson(Map<String, dynamic> j) {
     final stats = j['stats'] as Map<String, dynamic>? ?? const {};
+    final details = j['details'] as Map<String, dynamic>?;
     return ProfileUser(
       id: j['id'] as String,
       displayName:
@@ -36,6 +38,7 @@ class ProfileUser {
       followsMe: j['followsMe'] as bool? ?? false,
       isAi: j['isAi'] as bool? ?? false,
       loaded: true,
+      voiceIntroUrl: details?['voiceIntroUrl'] as String?,
     );
   }
 
@@ -55,6 +58,7 @@ class ProfileUser {
     followsMe: followsMe,
     isAi: isAi,
     loaded: loaded,
+    voiceIntroUrl: voiceIntroUrl,
   );
 
   final String id;
@@ -81,4 +85,7 @@ class ProfileUser {
 
   /// Sunucudan yüklendi (false: ekran açılırken eldeki özet).
   final bool loaded;
+
+  /// Profilde paylaşılan ses kaydı. Yoksa profilde gösterilmez.
+  final String? voiceIntroUrl;
 }

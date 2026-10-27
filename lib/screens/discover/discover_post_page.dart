@@ -25,6 +25,9 @@ class DiscoverPostPage extends StatefulWidget {
     this.caption,
     this.imageFilePath,
     this.post,
+    this.feed,
+    this.initialIndex = 0,
+    this.liveFeed = false,
   });
 
   final String avatar;
@@ -35,7 +38,23 @@ class DiscoverPostPage extends StatefulWidget {
   /// Sunucudaki gönderi (verilmezse yerel önizleme).
   final Post? post;
 
-  static Future<void> openPost(BuildContext context, Post post) {
+  /// Discover akışı: aşağı kaydırınca sıradaki gönderi.
+  final bool liveFeed;
+
+  /// Profil gibi sabit bir liste. Verilmezse tek gönderi.
+  final List<Post>? feed;
+
+  final int initialIndex;
+
+  static Future<void> openPost(
+    BuildContext context,
+    Post post, {
+    List<Post>? feed,
+    int? index,
+    bool liveFeed = false,
+  }) {
+    final source = liveFeed ? DiscoverStore.instance.posts : (feed ?? [post]);
+    final i = index ?? source.indexWhere((p) => p.id == post.id);
     return Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => DiscoverPostPage(
@@ -43,6 +62,9 @@ class DiscoverPostPage extends StatefulWidget {
           username: post.handle,
           caption: post.caption,
           post: post,
+          feed: liveFeed ? null : source,
+          initialIndex: i < 0 ? 0 : i,
+          liveFeed: liveFeed,
         ),
       ),
     );
@@ -53,6 +75,121 @@ class DiscoverPostPage extends StatefulWidget {
 }
 
 class _DiscoverPostPageState extends State<DiscoverPostPage> {
+  final _store = DiscoverStore.instance;
+  PageController? _pages;
+
+  List<Post> get _posts {
+    if (widget.liveFeed) return _store.posts;
+    return widget.feed ?? (widget.post == null ? const [] : [widget.post!]);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (_posts.isEmpty) return;
+    final last = _posts.length - 1;
+    final initial = widget.initialIndex.clamp(0, last);
+    _pages = PageController(initialPage: initial);
+    if (widget.liveFeed) {
+      _store.addListener(_onStore);
+      if (initial >= last - 3) _store.loadMore();
+    }
+  }
+
+  void _onStore() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    if (widget.liveFeed) _store.removeListener(_onStore);
+    _pages?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final top = MediaQuery.paddingOf(context).top;
+    final posts = _posts;
+    final pages = _pages;
+
+    final Widget body = posts.isEmpty || pages == null
+        ? _FeedPostSlide(
+            avatar: widget.avatar,
+            username: widget.username,
+            caption: widget.caption,
+            imageFilePath: widget.imageFilePath,
+          )
+        : PageView.builder(
+            controller: pages,
+            scrollDirection: Axis.vertical,
+            itemCount: posts.length,
+            onPageChanged: (i) {
+              if (widget.liveFeed && i >= posts.length - 4) _store.loadMore();
+            },
+            itemBuilder: (_, i) => _FeedPostSlide(post: posts[i]),
+          );
+
+    return Scaffold(
+      backgroundColor: AppColors.black,
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          body,
+          Positioned(
+            top: top + 8,
+            left: 8,
+            child: GestureDetector(
+              onTap: () => Navigator.of(context).pop(),
+              behavior: HitTestBehavior.opaque,
+              child: const SizedBox(
+                width: 44,
+                height: 44,
+                child: Center(
+                  child: _CloseMark(),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CloseMark extends StatelessWidget {
+  const _CloseMark();
+
+  @override
+  Widget build(BuildContext context) {
+    return SvgPicture.asset(
+      AppAssets.iconCloseWithoutBorder,
+      width: 32,
+      height: 32,
+    );
+  }
+}
+
+class _FeedPostSlide extends StatefulWidget {
+  const _FeedPostSlide({
+    this.post,
+    this.avatar = '',
+    this.username = '',
+    this.caption,
+    this.imageFilePath,
+  });
+
+  final Post? post;
+  final String avatar;
+  final String username;
+  final String? caption;
+  final String? imageFilePath;
+
+  @override
+  State<_FeedPostSlide> createState() => _FeedPostSlideState();
+}
+
+class _FeedPostSlideState extends State<_FeedPostSlide> {
   bool _following = false;
   bool _liked = false;
   bool _saved = false;
@@ -194,7 +331,6 @@ class _DiscoverPostPageState extends State<DiscoverPostPage> {
   Widget build(BuildContext context) {
     final t = Translations.of(context).discover.post;
     final bottom = MediaQuery.paddingOf(context).bottom;
-    final top = MediaQuery.paddingOf(context).top;
     final post = _post;
     final caption = post != null
         ? (post.caption ?? '')
@@ -219,25 +355,6 @@ class _DiscoverPostPageState extends State<DiscoverPostPage> {
                   Color(0xE6000000),
                 ],
                 stops: [0, 0.45, 0.72, 1],
-              ),
-            ),
-          ),
-          Positioned(
-            top: top + 8,
-            left: 8,
-            child: GestureDetector(
-              onTap: () => Navigator.of(context).pop(),
-              behavior: HitTestBehavior.opaque,
-              child: SizedBox(
-                width: 44,
-                height: 44,
-                child: Center(
-                  child: SvgPicture.asset(
-                    AppAssets.iconCloseWithoutBorder,
-                    width: 32,
-                    height: 32,
-                  ),
-                ),
               ),
             ),
           ),
@@ -278,7 +395,7 @@ class _DiscoverPostPageState extends State<DiscoverPostPage> {
                                   const SizedBox(width: 8),
                                   Flexible(
                                     child: AppText(
-                                      widget.username,
+                                      post?.handle ?? widget.username,
                                       style: AppTextStyles.postUsername,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,

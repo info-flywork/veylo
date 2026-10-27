@@ -6,11 +6,13 @@ import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/data/remote/safety_repository.dart';
 import 'package:veylo/data/remote/user_repository.dart';
 import 'package:veylo/core/state/discover_highlight.dart';
+import 'package:veylo/data/remote/discover_store.dart';
 import 'package:veylo/data/remote/post_repository.dart';
 import 'package:veylo/models/discover/post.dart';
 import 'package:veylo/screens/discover/discover_post_page.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_back_button.dart';
+import 'package:veylo/core/widgets/app_bottom_nav.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/data/local/local_profile_store.dart';
@@ -22,6 +24,7 @@ import 'package:veylo/models/profile/profile_user.dart';
 import 'package:veylo/screens/profile/follow_page.dart';
 import 'package:veylo/screens/profile/profile_actions_sheet.dart';
 import 'package:veylo/screens/profile/share_profile_sheet.dart';
+import 'package:veylo/screens/profile/voice_record_sheet.dart';
 import 'package:veylo/screens/profile/widgets/profile_framed_avatar.dart';
 
 const _kAvatarSize = 88.0;
@@ -80,6 +83,7 @@ class _ProfilePageState extends State<ProfilePage> {
   /// Gerçek gönderiler (null: örnek/mock profil).
   List<Post>? _posts;
   List<Post>? _saved;
+  int _savedEpoch = 0;
 
   /// Profil sahibinin backend id'si (mock profilde null).
   String? get _ownerId {
@@ -99,6 +103,7 @@ class _ProfilePageState extends State<ProfilePage> {
       SessionStore.instance.refreshMe().catchError((_) {});
       // Yeni paylaşım yapınca gönderilerim yenilensin.
       DiscoverHighlight.instance.imagePath.addListener(_loadMedia);
+      DiscoverStore.instance.addListener(_onSavedChanged);
     } else if (SafetyRepository.isRealUser(user.id)) {
       _loadRemote(user.id);
     }
@@ -108,7 +113,16 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void dispose() {
     DiscoverHighlight.instance.imagePath.removeListener(_loadMedia);
+    DiscoverStore.instance.removeListener(_onSavedChanged);
     super.dispose();
+  }
+
+  /// Gönderi kaydedilince Saved sekmesi uygulama açılışındaki listeye takılı kalmasın.
+  void _onSavedChanged() {
+    final epoch = DiscoverStore.instance.savedEpoch;
+    if (epoch == _savedEpoch) return;
+    _savedEpoch = epoch;
+    _loadMedia();
   }
 
   Future<void> _loadMedia() async {
@@ -152,8 +166,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   /// Takip et / bırak: ekranda hemen değişir, hata olursa geri alınır.
   Future<void> _toggleFollow() async {
-    final remote = _remote;
-    if (remote == null) {
+    final id = _remote?.id ?? widget.user?.id;
+    if (!SafetyRepository.isRealUser(id)) {
       // Örnek (backend'de olmayan) profil: yalnızca görünüm.
       setState(() => _following = !_following);
       widget.onFollowTap?.call();
@@ -161,28 +175,32 @@ class _ProfilePageState extends State<ProfilePage> {
     }
     if (_followBusy) return;
     final follow = !_following;
+    final previous = _remote;
     setState(() {
       _followBusy = true;
       _following = follow;
-      _remote = remote.copyWith(
-        iFollow: follow,
-        followerCount: remote.followerCount + (follow ? 1 : -1),
-      );
+      if (previous != null) {
+        _remote = previous.copyWith(
+          iFollow: follow,
+          followerCount: previous.followerCount + (follow ? 1 : -1),
+        );
+      }
     });
     try {
       final repo = UserRepository.instance;
-      await (follow ? repo.follow(remote.id) : repo.unfollow(remote.id));
-      SessionStore.instance.refreshMe().catchError((_) {});
+      await (follow ? repo.follow(id!) : repo.unfollow(id!));
     } catch (e) {
       if (!mounted) return;
       setState(() {
         _following = !follow;
-        _remote = remote;
+        _remote = previous;
       });
       showErrorSnackBar(context, e);
+      return;
     } finally {
       if (mounted) setState(() => _followBusy = false);
     }
+    if (mounted) await _loadRemote(id!);
     widget.onFollowTap?.call();
   }
 
@@ -206,7 +224,7 @@ class _ProfilePageState extends State<ProfilePage> {
             : base;
         final isSelf = profile.isSelf;
 
-        return Material(
+        final page = Material(
       color: AppColors.white,
       child: SafeArea(
         bottom: false,
@@ -251,6 +269,10 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               const SizedBox(height: 18),
               AppText(profile.bio, style: AppTextStyles.profileBio),
+              if ((profile.voiceIntroUrl ?? '').isNotEmpty) ...[
+                const SizedBox(height: 12),
+                VoiceIntroBar(url: profile.voiceIntroUrl!),
+              ],
               const SizedBox(height: 18),
               if (isSelf) ...[
                 _EditProfileButton(
@@ -277,13 +299,24 @@ class _ProfilePageState extends State<ProfilePage> {
                 videoLabel: t.tabVideo,
                 savedLabel: t.tabSaved,
                 selected: _tab,
-                onChanged: (tab) => setState(() => _tab = tab),
+                onChanged: (tab) {
+                  setState(() => _tab = tab);
+                  if (tab == _ProfileMediaTab.saved ||
+                      tab == _ProfileMediaTab.posts) {
+                    _loadMedia();
+                  }
+                },
               ),
               const SizedBox(height: 6),
               if (_tabPosts case final posts?)
                 _ProfilePostGrid(
                   posts: posts,
-                  onTap: (p) => DiscoverPostPage.openPost(context, p),
+                  onTap: (p) => DiscoverPostPage.openPost(
+                    context,
+                    p,
+                    feed: posts,
+                    index: posts.indexWhere((e) => e.id == p.id),
+                  ),
                 )
               else
                 _ProfileMediaGrid(assets: media),
@@ -291,6 +324,16 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
         ),
       ),
+        );
+        if (widget.user == null) return page;
+        return Scaffold(
+          backgroundColor: AppColors.white,
+          extendBody: true,
+          body: page,
+          bottomNavigationBar: AppBottomNav(
+            current: AppShell.current,
+            onChanged: AppShell.select,
+          ),
         );
       },
     );
