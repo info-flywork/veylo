@@ -39,6 +39,7 @@ interface Ticket {
   gender: Gender | null;
   target: CallTarget;
   blocked: Set<string>;
+  persona?: boolean;
 }
 
 interface LiveCall {
@@ -52,9 +53,12 @@ interface LiveCall {
   videoRequestedBy: string | null;
   videoUntil: Date | null;
   videoTimer: NodeJS.Timeout | null;
+  /** Karşı taraf AI karakterse oyunu kendisi vermiş sayılır. */
+  personaId: string | null;
 }
 
 const queue: Ticket[] = [];
+const personaWait = new Map<string, NodeJS.Timeout>();
 const calls = new Map<string, LiveCall>();
 const userCall = new Map<string, string>();
 const recentPair = new Map<string, number>();
@@ -96,14 +100,63 @@ async function joinQueue(userId: string, target: CallTarget) {
   const idx = queue.findIndex((t) => compatible(me, t));
   if (idx === -1) {
     queue.push(me);
+    schedulePersonaMatch(userId);
     return { status: 'searching' as const, onlineCount: presence.onlineCount };
   }
   const [other] = queue.splice(idx, 1);
+  clearPersonaWait(other!.userId);
+  clearPersonaWait(userId);
   await startCall(other!, me);
   return { status: 'matched' as const };
 }
 
+function clearPersonaWait(userId: string) {
+  const timer = personaWait.get(userId);
+  if (!timer) return;
+  clearTimeout(timer);
+  personaWait.delete(userId);
+}
+
+/** Başka kimse yoksa birkaç saniye sonra bir AI karakterle eşleştir. */
+function schedulePersonaMatch(userId: string) {
+  clearPersonaWait(userId);
+  personaWait.set(
+    userId,
+    setTimeout(() => {
+      personaWait.delete(userId);
+      void matchPersona(userId).catch((err) => logger.warn({ err, userId }, 'AI karakter eşleşmesi başarısız'));
+    }, 2500),
+  );
+}
+
+async function matchPersona(userId: string) {
+  const i = queue.findIndex((t) => t.userId === userId);
+  if (i === -1 || userCall.has(userId)) return;
+  const me = queue[i]!;
+  const gender = me.target === 'any' ? undefined : TARGET_GENDER[me.target];
+  const personas = await prisma.user.findMany({
+    where: {
+      isPersona: true,
+      status: 'ACTIVE',
+      ...(gender ? { gender } : {}),
+      id: { notIn: [userId, ...me.blocked] },
+    },
+    select: { id: true, gender: true },
+  });
+  const free = personas.filter((p) => !userCall.has(p.id));
+  const fresh = free.filter((p) => {
+    const last = recentPair.get(pairKey(userId, p.id));
+    return !last || Date.now() - last > CALL.rematchCooldownMs;
+  });
+  const pool = fresh.length ? fresh : free;
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  if (!pick) return;
+  queue.splice(i, 1);
+  await startCall(me, { userId: pick.id, gender: pick.gender, target: 'any', blocked: new Set(), persona: true });
+}
+
 function leaveQueue(userId: string) {
+  clearPersonaWait(userId);
   const i = queue.findIndex((t) => t.userId === userId);
   if (i >= 0) queue.splice(i, 1);
 }
@@ -130,7 +183,10 @@ async function startCall(a: Ticket, b: Ticket) {
       await prisma.call.update({ where: { id: call.id }, data: { endedAt: new Date(), endReason: 'HANGUP' } });
       emitToUser(t.userId, 'call:error', { code: err instanceof AppError ? err.code : 'INTERNAL' });
       const other = t === a ? b : a;
-      if (presence.isOnline(other.userId)) queue.unshift(other);
+      if (presence.isOnline(other.userId)) {
+        queue.unshift(other);
+        if (!other.persona) schedulePersonaMatch(other.userId);
+      }
       return;
     }
   }
@@ -146,6 +202,7 @@ async function startCall(a: Ticket, b: Ticket) {
     videoRequestedBy: null,
     videoUntil: null,
     videoTimer: null,
+    personaId: a.persona ? a.userId : b.persona ? b.userId : null,
   };
   calls.set(call.id, live);
   userCall.set(a.userId, call.id);
@@ -174,6 +231,7 @@ function timesUp(callId: string) {
   const c = calls.get(callId);
   if (!c || c.phase !== 'anon') return;
   c.phase = 'vote';
+  if (c.personaId) c.keep.add(c.personaId);
   const voteEndsAt = new Date(Date.now() + CALL.voteSeconds * 1000);
   for (const u of [c.a, c.b]) emitToUser(u, 'call:times_up', { callId, voteEndsAt });
   c.timers.push(
