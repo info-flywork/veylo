@@ -330,10 +330,15 @@ class _SettingsHeader extends StatelessWidget {
               children: [
                 AppText(eyebrow, style: AppTextStyles.profileEyebrow),
                 const SizedBox(height: 2),
-                AppText(
-                  title,
-                  style: AppTextStyles.profileTitle,
-                  maxLines: 1,
+                // Uzun çevirilerde başlık tek satırda küçülerek sığar.
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: AlignmentDirectional.centerStart,
+                  child: AppText(
+                    title,
+                    style: AppTextStyles.profileTitle,
+                    maxLines: 1,
+                  ),
                 ),
               ],
             ),

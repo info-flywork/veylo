@@ -53,6 +53,11 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$onboarding$en onboarding = _Translations$onboarding$en._(_root);
 	@override late final _Translations$createProfile$en createProfile = _Translations$createProfile$en._(_root);
 	@override late final _Translations$errors$en errors = _Translations$errors$en._(_root);
+	@override late final _Translations$faq$en faq = _Translations$faq$en._(_root);
+	@override late final _Translations$legal$en legal = _Translations$legal$en._(_root);
+	@override late final _Translations$logout$en logout = _Translations$logout$en._(_root);
+	@override late final _Translations$deleteAccount$en deleteAccount = _Translations$deleteAccount$en._(_root);
+	@override late final _Translations$storyText$en storyText = _Translations$storyText$en._(_root);
 }
 
 // Path: app
@@ -142,9 +147,9 @@ class _Translations$profile$en extends Translations$profile$tr {
 	@override String get promoTitle => 'Get More Messages!';
 	@override String get promoSubtitle => 'Stand out, appear at the top of the list';
 	@override String get standOut => 'Stand Out';
-	@override String get tabPosts => 'Gönderi';
+	@override String get tabPosts => 'Posts';
 	@override String get tabVideo => 'Video';
-	@override String get tabSaved => 'Kaydedilenler';
+	@override String get tabSaved => 'Saved';
 	@override String get save => 'Save';
 	@override String get changePhoto => 'Change Photo';
 	@override String get changeBorder => 'Change Border';
@@ -232,9 +237,9 @@ class _Translations$profile$en extends Translations$profile$tr {
 	@override String get profileVisibility => 'Profile Visibility';
 	@override String get language => 'Language';
 	@override String get borderTitle => 'Profile Border';
-	@override String get borderSubtitle => 'Profilinize çerçeve ekleyerek kendinizi öne\nçıkarabilirsiniz.';
-	@override String get borderBuySection => 'Çerçeve satın al';
-	@override String get borderBuyCta => 'Çerçeve Satın Al';
+	@override String get borderSubtitle => 'Add a border to your profile to make\nyourself stand out.';
+	@override String get borderBuySection => 'Buy a border';
+	@override String get borderBuyCta => 'Buy Border';
 	@override String borderToken({required Object count}) => '${count} Token';
 	@override String get borderAmethystWings => 'Amethyst Wings';
 	@override String get borderGoldenPhoenix => 'Golden Phoenix';
@@ -251,10 +256,10 @@ class _Translations$profile$en extends Translations$profile$tr {
 	@override String get followTabFollowers => 'Followers';
 	@override String get followSearch => 'Search';
 	@override String get unfollow => 'Unfollow';
-	@override String get followSortTitle => 'Sırala';
-	@override String get followSortRecent => 'En son takip ettiğim kişiler';
-	@override String get followSortNotFollowingMe => 'Beni takip etmeyenler';
-	@override String get followSortNotFollowedByMe => 'Benim takip etmediklerim';
+	@override String get followSortTitle => 'Sort';
+	@override String get followSortRecent => 'People I followed most recently';
+	@override String get followSortNotFollowingMe => 'People who don\'t follow me back';
+	@override String get followSortNotFollowedByMe => 'People I don\'t follow back';
 	@override String get followSortShowResult => 'Show Result';
 	@override String get followSortEmpty => 'No users match this filter';
 	@override String get shareTitle => 'Share with Friends';
@@ -270,10 +275,10 @@ class _Translations$profile$en extends Translations$profile$tr {
 	@override String restrictTitle({required Object username}) => 'Restrict ${username} ?';
 	@override String get restrictBody => 'They won\'t be able to see when you\'re online or that you\'ve read their messages. You can change this anytime.';
 	@override String get restrictAndReport => 'Restrict and report';
-	@override String get reportTitle => 'Report sebebini merak ediyoruz';
-	@override String get reportSubtitle => 'Sana daha iyi bir deneyim sunabilmek için kullanıcıyı neden report etmek istediğini açıklar mısın?';
-	@override String get reportMessageLabel => 'Report Mesajı';
-	@override String get reportMessageHint => 'Mesajınızı yazın';
+	@override String get reportTitle => 'We\'d like to know why';
+	@override String get reportSubtitle => 'To help us give you a better experience, could you tell us why you want to report this user?';
+	@override String get reportMessageLabel => 'Report Message';
+	@override String get reportMessageHint => 'Type your message';
 	@override String get reportCancel => 'Cancel';
 	@override String get sendReport => 'Send Report';
 	@override String get notSet => 'Not set';
@@ -322,6 +327,17 @@ class _Translations$call$en extends Translations$call$tr {
 	@override String get keepTalking => 'Keep Talking';
 	@override String get endCall => 'End Call';
 	@override String get waitingOther => 'Waiting for the other person...';
+	@override String get callStrangerFree => 'Call Stranger';
+	@override String get peerLeft => 'The other person ended the call.';
+	@override String get noKeep => 'Chat didn\'t unlock this time.';
+	@override String get videoWaiting => 'Waiting for them to accept the video call...';
+	@override String get videoDeclined => 'They declined the video call.';
+	@override String get micDenied => 'Microphone access is needed for calls. You can enable it in Settings.';
+	@override String get videoCost => 'Video call: 20 tokens / 15 min';
+	@override String get calling => 'Calling';
+	@override String get accept => 'Accept';
+	@override String get decline => 'Decline';
+	@override String get switchToVideo => 'Would you like to switch to a video call?';
 }
 
 // Path: vibes
@@ -381,6 +397,7 @@ class _Translations$discover$en extends Translations$discover$tr {
 	@override late final _Translations$discover$story$en story = _Translations$discover$story$en._(_root);
 	@override late final _Translations$discover$highlight$en highlight = _Translations$discover$highlight$en._(_root);
 	@override late final _Translations$discover$stats$en stats = _Translations$discover$stats$en._(_root);
+	@override String hostedBy({required Object name}) => 'Hosted by ${name}';
 }
 
 // Path: common
@@ -556,6 +573,108 @@ class _Translations$errors$en extends Translations$errors$tr {
 	@override String get notFound => 'This is no longer available.';
 	@override String get recentLogin => 'For your security, log out and log in again, then try once more.';
 	@override String get socialAccount => 'Your email and password are managed by your Google or Apple account.';
+	@override String get alreadyInCall => 'You are already in a call.';
+	@override String get roomPrivate => 'This room is private. Ask the host to join.';
+	@override String get roomFull => 'This room is full.';
+}
+
+// Path: faq
+class _Translations$faq$en extends Translations$faq$tr {
+	_Translations$faq$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get q1 => 'How does this app work?';
+	@override String get q2 => 'What is anonymous chat?';
+	@override String get q3 => 'What is Connection Progress?';
+	@override String get q4 => 'How do I reveal my profile?';
+	@override String get q5 => 'What is 60 Second Stranger?';
+	@override String get q6 => 'What are Vibes?';
+	@override String get q7 => 'How do I edit my profile?';
+	@override String get q8 => 'How do I manage notifications?';
+	@override String get q9 => 'How do I restore purchases?';
+	@override String get q10 => 'Can I delete all conversations?';
+	@override String get q11 => 'Is my data secure?';
+	@override String get q12 => 'How do I block or report someone?';
+	@override String get q13 => 'How do I share the app?';
+	@override String get q14 => 'How do I delete my account?';
+	@override String get a1 => 'On Veylo you can meet new people anonymously, chat, and gradually reveal your profile as your connection grows. Switch to text, voice, or face-to-face whenever you both feel ready.';
+	@override String get a2 => 'In anonymous chat your identity and photo stay hidden. As connection rises you unlock details like a name initial and a blurred photo. At 100%, both sides must agree to reveal full profiles.';
+	@override String get a3 => 'As you chat, your connection percentage grows. At certain milestones you unlock a name initial, a blurred photo, and full profile. Tap the Connection pill to see details.';
+	@override String get a4 => 'When connection reaches 100%, tap Reveal my profile. If the other person also accepts, both full profiles become visible.';
+	@override String get a5 => 'From the Call tab you can get a short random match. When time is up you can keep talking or end the call.';
+	@override String get a6 => 'Vibes lets you discover people nearby or around you on a map/list view and start a chat with someone you’re interested in.';
+	@override String get a7 => 'Open the Profile tab and go to Edit Profile to update your name, photos, bio, and interests. Changes appear after you save.';
+	@override String get a8 => 'Open Notifications in Settings to turn message, match, and other alerts on or off.';
+	@override String get a9 => 'Go to Settings → Account Management → Restore Purchases. Eligible buys on the same store account will be restored.';
+	@override String get a10 => 'Yes. Use Settings → Delete Conversation and confirm. All chats will be removed. This can’t be undone.';
+	@override String get a11 => 'Your account details and messages are stored on protected systems. You can also request account and data deletion from Account Management anytime.';
+	@override String get a12 => 'Use the menu on a profile or chat screen to block or report. Reports are reviewed by our team.';
+	@override String get a13 => 'Use Share App in Settings to copy the link and send it to friends.';
+	@override String get a14 => 'Go to Settings → Account Management → Delete Account and Data. After sharing a reason, confirm to submit your deletion request.';
+}
+
+// Path: legal
+class _Translations$legal$en extends Translations$legal$tr {
+	_Translations$legal$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get termsTitle => 'Terms of Service';
+	@override String get privacyTitle => 'Privacy Policy';
+	@override String get termsBody => 'Last updated: March 16, 2026\n\nWelcome to Veylo. By creating an account or using the app, you agree to these Terms of Service.\n\n1. What Veylo is\nVeylo is a social app where you can meet people, chat anonymously, build connection over time, and optionally move to voice or face-to-face calls when both sides agree.\n\n2. Your account\nYou must provide accurate information and keep your login secure. You are responsible for activity under your account. You must be old enough to use Veylo under the laws of your country.\n\n3. Respectful use\nDo not harass, threaten, scam, impersonate others, share illegal content, or try to bypass safety features. We may remove content, limit features, or suspend accounts that break these rules.\n\n4. Anonymous chat & profile reveal\nAnonymous chats may hide your name and photo until connection milestones are reached. Full profile reveal requires mutual consent. Do not pressure others to reveal identity.\n\n5. Purchases\nSome features may be paid. Purchases are handled by Apple App Store or Google Play. Restore Purchases recovers eligible buys on the same store account. Refunds follow the store’s policy.\n\n6. Content you share\nYou keep rights to your content, but grant Veylo a license to host and display it in the app as needed to operate the service. Do not post content you do not have rights to share.\n\n7. Ending use\nYou can stop using Veylo anytime and request account deletion from Settings. We may also end or change the service with reasonable notice when required.\n\n8. Contact\nQuestions about these terms: support@veylo.app';
+	@override String get privacyBody => 'Last updated: March 16, 2026\n\nThis Privacy Policy explains how Veylo collects, uses, and protects your information.\n\n1. Information we collect\n• Account data: email, display name, profile photos, bio, preferences\n• Usage data: chats, connection progress, call features you use, device/app basics\n• Purchases: store receipt data needed to unlock and restore paid features\n\n2. How we use it\nWe use your data to run Veylo, personalize matching and chat experiences, keep the community safe, process purchases, and improve the product. We do not sell your personal data.\n\n3. Anonymous mode\nIn anonymous chats we limit what others see (for example masked name or blurred photo) until unlock rules and mutual consent allow more. Behind the scenes we still need account identifiers to operate the feature securely.\n\n4. Sharing\nWe may share data with service providers that help us host, analyze, or process payments—only as needed. We may also disclose information if required by law or to protect users from harm.\n\n5. Retention\nWe keep data while your account is active and as needed for legal, safety, and billing reasons. After a deletion request is completed, we remove or anonymize personal data except where retention is required.\n\n6. Your choices\nYou can edit profile info, manage notifications, request account deletion, and contact us about your data. Store purchases are also managed through Apple or Google.\n\n7. Security\nWe use reasonable technical and organizational measures to protect your information. No system is perfectly secure; please use a strong password and keep your device updated.\n\n8. Contact\nPrivacy questions: privacy@veylo.app';
+}
+
+// Path: logout
+class _Translations$logout$en extends Translations$logout$tr {
+	_Translations$logout$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Log out';
+	@override String get subtitle => 'Are you sure you want to log out?';
+	@override String get cancel => 'Cancel';
+	@override String get confirm => 'Log out';
+}
+
+// Path: deleteAccount
+class _Translations$deleteAccount$en extends Translations$deleteAccount$tr {
+	_Translations$deleteAccount$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Submit an account deletion request';
+	@override String get subtitle => 'Are you sure you want to delete your account?';
+	@override String get reasonTitle => 'We don\'t want you to leave, but we understand.';
+	@override String get reasonBefore => 'Would you tell us why you want to leave so we can improve the ';
+	@override String get reasonAfter => ' experience?';
+	@override String get reasonLabel => 'Why do you want to delete your account';
+	@override String get reasonHint => 'Type your message';
+	@override String get cancel => 'Cancel';
+	@override String get createRequest => 'Create a Request';
+	@override String get confirmTitle => 'Are you sure you want to submit a deletion request?';
+	@override String get confirmSubtitle => 'If you confirm, your account deletion request will be submitted';
+	@override String get delete => 'Delete';
+}
+
+// Path: storyText
+class _Translations$storyText$en extends Translations$storyText$tr {
+	_Translations$storyText$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get bold => 'Bold';
+	@override String get italic => 'Italic';
+	@override String get uppercase => 'Uppercase';
+	@override String get underline => 'Underline';
+	@override String get cancel => 'Cancel';
+	@override String get galleryError => 'Could not open the gallery';
 }
 
 // Path: discover.aiMatch
@@ -669,7 +788,7 @@ class _Translations$discover$createSpace$en extends Translations$discover$create
 
 	// Translations
 	@override String get title => 'Create Room or Group';
-	@override String get subtitle => 'Grup veya canlı oda oluşturarak kitlelere hitap et';
+	@override String get subtitle => 'Reach more people by creating a group or a live room';
 	@override String get room => 'Room';
 	@override String get group => 'Group';
 	@override String get hideAccount => 'Hide Your Account';
@@ -679,6 +798,7 @@ class _Translations$discover$createSpace$en extends Translations$discover$create
 	@override String get createGroupTitle => 'Create Group';
 	@override String get nameSubtitle => 'Give the group you created a name';
 	@override String get nameHint => 'Night Owl';
+	@override String createRoomFor({required Object count}) => 'Create for ${count} tokens';
 }
 
 // Path: discover.liveRoom
@@ -695,6 +815,9 @@ class _Translations$discover$liveRoom$en extends Translations$discover$liveRoom$
 	@override String get quickReplyNew => 'I\'m new here!';
 	@override String get sampleChatName => 'Sona';
 	@override String get sampleChatBody => 'What can we do? What do you have in mind?';
+	@override String get roomEnded => 'The room has ended.';
+	@override String wantsToJoin({required Object name}) => '${name} wants to join';
+	@override String get approve => 'Approve';
 }
 
 // Path: discover.groupChat
@@ -770,7 +893,7 @@ class _Translations$discover$post$en extends Translations$discover$post$tr {
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get follow => 'Takip Et';
+	@override String get follow => 'Follow';
 	@override String get following => 'Following';
 	@override String get addComment => 'Add comment...';
 	@override String get commentsTitle => 'Comments';
@@ -926,9 +1049,9 @@ extension on TranslationsEn {
 			'profile.promoTitle' => 'Get More Messages!',
 			'profile.promoSubtitle' => 'Stand out, appear at the top of the list',
 			'profile.standOut' => 'Stand Out',
-			'profile.tabPosts' => 'Gönderi',
+			'profile.tabPosts' => 'Posts',
 			'profile.tabVideo' => 'Video',
-			'profile.tabSaved' => 'Kaydedilenler',
+			'profile.tabSaved' => 'Saved',
 			'profile.save' => 'Save',
 			'profile.changePhoto' => 'Change Photo',
 			'profile.changeBorder' => 'Change Border',
@@ -1016,9 +1139,9 @@ extension on TranslationsEn {
 			'profile.profileVisibility' => 'Profile Visibility',
 			'profile.language' => 'Language',
 			'profile.borderTitle' => 'Profile Border',
-			'profile.borderSubtitle' => 'Profilinize çerçeve ekleyerek kendinizi öne\nçıkarabilirsiniz.',
-			'profile.borderBuySection' => 'Çerçeve satın al',
-			'profile.borderBuyCta' => 'Çerçeve Satın Al',
+			'profile.borderSubtitle' => 'Add a border to your profile to make\nyourself stand out.',
+			'profile.borderBuySection' => 'Buy a border',
+			'profile.borderBuyCta' => 'Buy Border',
 			'profile.borderToken' => ({required Object count}) => '${count} Token',
 			'profile.borderAmethystWings' => 'Amethyst Wings',
 			'profile.borderGoldenPhoenix' => 'Golden Phoenix',
@@ -1035,10 +1158,10 @@ extension on TranslationsEn {
 			'profile.followTabFollowers' => 'Followers',
 			'profile.followSearch' => 'Search',
 			'profile.unfollow' => 'Unfollow',
-			'profile.followSortTitle' => 'Sırala',
-			'profile.followSortRecent' => 'En son takip ettiğim kişiler',
-			'profile.followSortNotFollowingMe' => 'Beni takip etmeyenler',
-			'profile.followSortNotFollowedByMe' => 'Benim takip etmediklerim',
+			'profile.followSortTitle' => 'Sort',
+			'profile.followSortRecent' => 'People I followed most recently',
+			'profile.followSortNotFollowingMe' => 'People who don\'t follow me back',
+			'profile.followSortNotFollowedByMe' => 'People I don\'t follow back',
 			'profile.followSortShowResult' => 'Show Result',
 			'profile.followSortEmpty' => 'No users match this filter',
 			'profile.shareTitle' => 'Share with Friends',
@@ -1054,10 +1177,10 @@ extension on TranslationsEn {
 			'profile.restrictTitle' => ({required Object username}) => 'Restrict ${username} ?',
 			'profile.restrictBody' => 'They won\'t be able to see when you\'re online or that you\'ve read their messages. You can change this anytime.',
 			'profile.restrictAndReport' => 'Restrict and report',
-			'profile.reportTitle' => 'Report sebebini merak ediyoruz',
-			'profile.reportSubtitle' => 'Sana daha iyi bir deneyim sunabilmek için kullanıcıyı neden report etmek istediğini açıklar mısın?',
-			'profile.reportMessageLabel' => 'Report Mesajı',
-			'profile.reportMessageHint' => 'Mesajınızı yazın',
+			'profile.reportTitle' => 'We\'d like to know why',
+			'profile.reportSubtitle' => 'To help us give you a better experience, could you tell us why you want to report this user?',
+			'profile.reportMessageLabel' => 'Report Message',
+			'profile.reportMessageHint' => 'Type your message',
 			'profile.reportCancel' => 'Cancel',
 			'profile.sendReport' => 'Send Report',
 			'profile.notSet' => 'Not set',
@@ -1088,6 +1211,17 @@ extension on TranslationsEn {
 			'call.keepTalking' => 'Keep Talking',
 			'call.endCall' => 'End Call',
 			'call.waitingOther' => 'Waiting for the other person...',
+			'call.callStrangerFree' => 'Call Stranger',
+			'call.peerLeft' => 'The other person ended the call.',
+			'call.noKeep' => 'Chat didn\'t unlock this time.',
+			'call.videoWaiting' => 'Waiting for them to accept the video call...',
+			'call.videoDeclined' => 'They declined the video call.',
+			'call.micDenied' => 'Microphone access is needed for calls. You can enable it in Settings.',
+			'call.videoCost' => 'Video call: 20 tokens / 15 min',
+			'call.calling' => 'Calling',
+			'call.accept' => 'Accept',
+			'call.decline' => 'Decline',
+			'call.switchToVideo' => 'Would you like to switch to a video call?',
 			'vibes.search' => 'Search',
 			'vibes.sendMessage' => 'Send Message',
 			'vibes.wantsToTalk' => 'Wants to talk about this right now',
@@ -1174,7 +1308,7 @@ extension on TranslationsEn {
 			'discover.roomApproved.subtitle' => ({required Object name}) => 'Your spot in ${name} is reserved',
 			'discover.roomApproved.continueLabel' => 'Continue',
 			'discover.createSpace.title' => 'Create Room or Group',
-			'discover.createSpace.subtitle' => 'Grup veya canlı oda oluşturarak kitlelere hitap et',
+			'discover.createSpace.subtitle' => 'Reach more people by creating a group or a live room',
 			'discover.createSpace.room' => 'Room',
 			'discover.createSpace.group' => 'Group',
 			'discover.createSpace.hideAccount' => 'Hide Your Account',
@@ -1184,6 +1318,7 @@ extension on TranslationsEn {
 			'discover.createSpace.createGroupTitle' => 'Create Group',
 			'discover.createSpace.nameSubtitle' => 'Give the group you created a name',
 			'discover.createSpace.nameHint' => 'Night Owl',
+			'discover.createSpace.createRoomFor' => ({required Object count}) => 'Create for ${count} tokens',
 			'discover.liveRoom.adminSuffix' => '(Admin)',
 			'discover.liveRoom.messageHint' => 'Message',
 			'discover.liveRoom.quickReplyHey' => 'Hey, everyone!',
@@ -1191,6 +1326,9 @@ extension on TranslationsEn {
 			'discover.liveRoom.quickReplyNew' => 'I\'m new here!',
 			'discover.liveRoom.sampleChatName' => 'Sona',
 			'discover.liveRoom.sampleChatBody' => 'What can we do? What do you have in mind?',
+			'discover.liveRoom.roomEnded' => 'The room has ended.',
+			'discover.liveRoom.wantsToJoin' => ({required Object name}) => '${name} wants to join',
+			'discover.liveRoom.approve' => 'Approve',
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} Users',
 			'discover.groupChat.sampleVictoria' => 'I\'m really bored. Should we do something, guys?',
 			'discover.groupChat.sampleSona' => 'What can we do? What do you have in mind?',
@@ -1230,7 +1368,7 @@ extension on TranslationsEn {
 			'discover.filters.activeNow' => 'Active now',
 			'discover.filters.activeNowSubtitle' => 'Only show people online right now',
 			'discover.filters.showResult' => 'Show Result',
-			'discover.post.follow' => 'Takip Et',
+			'discover.post.follow' => 'Follow',
 			'discover.post.following' => 'Following',
 			'discover.post.addComment' => 'Add comment...',
 			'discover.post.commentsTitle' => 'Comments',
@@ -1265,6 +1403,7 @@ extension on TranslationsEn {
 			'discover.stats.likes' => 'Likes',
 			'discover.stats.boostCta' => 'Boost for 1 day - 100 tokens',
 			'discover.stats.boosted' => 'Boosted! Your post is at the top for 24 hours.',
+			'discover.hostedBy' => ({required Object name}) => 'Hosted by ${name}',
 			'common.loading' => 'Loading…',
 			'common.retry' => 'Retry',
 			'common.cancel' => 'Cancel',
@@ -1369,6 +1508,8 @@ extension on TranslationsEn {
 			'createProfile.stepChatGoal' => '5/5 Chat goal',
 			'createProfile.chatGoalTitle' => 'What are you looking for today?',
 			'createProfile.chatGoalSubtitle' => 'This helps us find the right match for your mood right now.',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.chatGoalQuickMatch' => 'Quick match — jump straight into a\nconversation',
 			'createProfile.chatGoalFlirtyChat' => 'Flirty chat — light, playful\nconversations',
 			'createProfile.chatGoalMoodMatch' => 'Mood match — match based on how you\'re\nfeeling',
@@ -1385,8 +1526,6 @@ extension on TranslationsEn {
 			'errors.network' => 'Couldn’t reach Veylo. Check your connection and try again.',
 			'errors.generic' => 'Something went wrong. Please try again.',
 			'errors.signInFailed' => 'Sign in failed. Please try again.',
-			_ => null,
-		} ?? switch (path) {
 			'errors.sessionExpired' => 'Your session has ended. Please sign in again.',
 			'errors.accountSuspended' => 'This account has been suspended.',
 			'errors.unsupportedImage' => 'Please choose a JPEG, PNG or WebP photo.',
@@ -1409,6 +1548,63 @@ extension on TranslationsEn {
 			'errors.notFound' => 'This is no longer available.',
 			'errors.recentLogin' => 'For your security, log out and log in again, then try once more.',
 			'errors.socialAccount' => 'Your email and password are managed by your Google or Apple account.',
+			'errors.alreadyInCall' => 'You are already in a call.',
+			'errors.roomPrivate' => 'This room is private. Ask the host to join.',
+			'errors.roomFull' => 'This room is full.',
+			'faq.q1' => 'How does this app work?',
+			'faq.q2' => 'What is anonymous chat?',
+			'faq.q3' => 'What is Connection Progress?',
+			'faq.q4' => 'How do I reveal my profile?',
+			'faq.q5' => 'What is 60 Second Stranger?',
+			'faq.q6' => 'What are Vibes?',
+			'faq.q7' => 'How do I edit my profile?',
+			'faq.q8' => 'How do I manage notifications?',
+			'faq.q9' => 'How do I restore purchases?',
+			'faq.q10' => 'Can I delete all conversations?',
+			'faq.q11' => 'Is my data secure?',
+			'faq.q12' => 'How do I block or report someone?',
+			'faq.q13' => 'How do I share the app?',
+			'faq.q14' => 'How do I delete my account?',
+			'faq.a1' => 'On Veylo you can meet new people anonymously, chat, and gradually reveal your profile as your connection grows. Switch to text, voice, or face-to-face whenever you both feel ready.',
+			'faq.a2' => 'In anonymous chat your identity and photo stay hidden. As connection rises you unlock details like a name initial and a blurred photo. At 100%, both sides must agree to reveal full profiles.',
+			'faq.a3' => 'As you chat, your connection percentage grows. At certain milestones you unlock a name initial, a blurred photo, and full profile. Tap the Connection pill to see details.',
+			'faq.a4' => 'When connection reaches 100%, tap Reveal my profile. If the other person also accepts, both full profiles become visible.',
+			'faq.a5' => 'From the Call tab you can get a short random match. When time is up you can keep talking or end the call.',
+			'faq.a6' => 'Vibes lets you discover people nearby or around you on a map/list view and start a chat with someone you’re interested in.',
+			'faq.a7' => 'Open the Profile tab and go to Edit Profile to update your name, photos, bio, and interests. Changes appear after you save.',
+			'faq.a8' => 'Open Notifications in Settings to turn message, match, and other alerts on or off.',
+			'faq.a9' => 'Go to Settings → Account Management → Restore Purchases. Eligible buys on the same store account will be restored.',
+			'faq.a10' => 'Yes. Use Settings → Delete Conversation and confirm. All chats will be removed. This can’t be undone.',
+			'faq.a11' => 'Your account details and messages are stored on protected systems. You can also request account and data deletion from Account Management anytime.',
+			'faq.a12' => 'Use the menu on a profile or chat screen to block or report. Reports are reviewed by our team.',
+			'faq.a13' => 'Use Share App in Settings to copy the link and send it to friends.',
+			'faq.a14' => 'Go to Settings → Account Management → Delete Account and Data. After sharing a reason, confirm to submit your deletion request.',
+			'legal.termsTitle' => 'Terms of Service',
+			'legal.privacyTitle' => 'Privacy Policy',
+			'legal.termsBody' => 'Last updated: March 16, 2026\n\nWelcome to Veylo. By creating an account or using the app, you agree to these Terms of Service.\n\n1. What Veylo is\nVeylo is a social app where you can meet people, chat anonymously, build connection over time, and optionally move to voice or face-to-face calls when both sides agree.\n\n2. Your account\nYou must provide accurate information and keep your login secure. You are responsible for activity under your account. You must be old enough to use Veylo under the laws of your country.\n\n3. Respectful use\nDo not harass, threaten, scam, impersonate others, share illegal content, or try to bypass safety features. We may remove content, limit features, or suspend accounts that break these rules.\n\n4. Anonymous chat & profile reveal\nAnonymous chats may hide your name and photo until connection milestones are reached. Full profile reveal requires mutual consent. Do not pressure others to reveal identity.\n\n5. Purchases\nSome features may be paid. Purchases are handled by Apple App Store or Google Play. Restore Purchases recovers eligible buys on the same store account. Refunds follow the store’s policy.\n\n6. Content you share\nYou keep rights to your content, but grant Veylo a license to host and display it in the app as needed to operate the service. Do not post content you do not have rights to share.\n\n7. Ending use\nYou can stop using Veylo anytime and request account deletion from Settings. We may also end or change the service with reasonable notice when required.\n\n8. Contact\nQuestions about these terms: support@veylo.app',
+			'legal.privacyBody' => 'Last updated: March 16, 2026\n\nThis Privacy Policy explains how Veylo collects, uses, and protects your information.\n\n1. Information we collect\n• Account data: email, display name, profile photos, bio, preferences\n• Usage data: chats, connection progress, call features you use, device/app basics\n• Purchases: store receipt data needed to unlock and restore paid features\n\n2. How we use it\nWe use your data to run Veylo, personalize matching and chat experiences, keep the community safe, process purchases, and improve the product. We do not sell your personal data.\n\n3. Anonymous mode\nIn anonymous chats we limit what others see (for example masked name or blurred photo) until unlock rules and mutual consent allow more. Behind the scenes we still need account identifiers to operate the feature securely.\n\n4. Sharing\nWe may share data with service providers that help us host, analyze, or process payments—only as needed. We may also disclose information if required by law or to protect users from harm.\n\n5. Retention\nWe keep data while your account is active and as needed for legal, safety, and billing reasons. After a deletion request is completed, we remove or anonymize personal data except where retention is required.\n\n6. Your choices\nYou can edit profile info, manage notifications, request account deletion, and contact us about your data. Store purchases are also managed through Apple or Google.\n\n7. Security\nWe use reasonable technical and organizational measures to protect your information. No system is perfectly secure; please use a strong password and keep your device updated.\n\n8. Contact\nPrivacy questions: privacy@veylo.app',
+			'logout.title' => 'Log out',
+			'logout.subtitle' => 'Are you sure you want to log out?',
+			'logout.cancel' => 'Cancel',
+			'logout.confirm' => 'Log out',
+			'deleteAccount.title' => 'Submit an account deletion request',
+			'deleteAccount.subtitle' => 'Are you sure you want to delete your account?',
+			'deleteAccount.reasonTitle' => 'We don\'t want you to leave, but we understand.',
+			'deleteAccount.reasonBefore' => 'Would you tell us why you want to leave so we can improve the ',
+			'deleteAccount.reasonAfter' => ' experience?',
+			'deleteAccount.reasonLabel' => 'Why do you want to delete your account',
+			'deleteAccount.reasonHint' => 'Type your message',
+			'deleteAccount.cancel' => 'Cancel',
+			'deleteAccount.createRequest' => 'Create a Request',
+			'deleteAccount.confirmTitle' => 'Are you sure you want to submit a deletion request?',
+			'deleteAccount.confirmSubtitle' => 'If you confirm, your account deletion request will be submitted',
+			'deleteAccount.delete' => 'Delete',
+			'storyText.bold' => 'Bold',
+			'storyText.italic' => 'Italic',
+			'storyText.uppercase' => 'Uppercase',
+			'storyText.underline' => 'Underline',
+			'storyText.cancel' => 'Cancel',
+			'storyText.galleryError' => 'Could not open the gallery',
 			_ => null,
 		};
 	}

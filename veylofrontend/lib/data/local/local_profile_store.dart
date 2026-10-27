@@ -49,6 +49,7 @@ class LocalProfileStore extends ChangeNotifier {
       tokenBalance: base.tokenBalance,
       isSelf: base.isSelf,
       borderId: base.isSelf ? (_borderId ?? base.borderId) : base.borderId,
+      voiceIntroUrl: base.voiceIntroUrl,
     );
   }
 

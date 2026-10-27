@@ -1,144 +1,255 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
+import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/theme/theme.dart';
+import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/data/remote/agora_service.dart';
+import 'package:veylo/data/remote/api_client.dart';
+import 'package:veylo/data/remote/room_repository.dart';
+import 'package:veylo/data/remote/room_store.dart';
+import 'package:veylo/data/remote/socket_service.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/models/room/live_room.dart';
+import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 
-class _RoomMember {
-  const _RoomMember({
-    required this.name,
-    required this.avatar,
-    this.micOff = true,
-    this.blurred = false,
-    this.hiddenName = false,
-  });
-
-  final String name;
-  final String avatar;
-  final bool micOff;
-  final bool blurred;
-  final bool hiddenName;
-}
-
-class _ChatMessage {
-  const _ChatMessage({
-    required this.name,
-    required this.body,
-    required this.avatar,
-  });
-
-  final String name;
-  final String body;
-  final String avatar;
-}
-
-/// Odaya girince açılan canlı oda ekranı (mic off overlay + chat).
-class RoomLivePage extends StatelessWidget {
+/// Odaya girince açılan canlı oda ekranı (katılımcılar + mikrofon + sohbet).
+class RoomLivePage extends StatefulWidget {
   const RoomLivePage({
     super.key,
+    required this.roomId,
     required this.roomTitle,
-    this.adminName = 'Alex',
-    this.adminAvatar = AppAssets.fakePerson01,
+    this.anonymous = false,
   });
 
+  final String roomId;
   final String roomTitle;
-  final String adminName;
-  final String adminAvatar;
+
+  /// Katılımcı olarak "Hide Your Account" (sahibin tercihi oda açılırken verilir).
+  final bool anonymous;
 
   static Future<void> open(
     BuildContext context, {
+    required String roomId,
     required String roomTitle,
-  }) {
-    return Navigator.of(context).push(
+    bool anonymous = false,
+  }) async {
+    await Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => RoomLivePage(roomTitle: roomTitle),
+        builder: (_) => RoomLivePage(
+          roomId: roomId,
+          roomTitle: roomTitle,
+          anonymous: anonymous,
+        ),
+      ),
+    );
+    RoomStore.instance.refresh();
+  }
+
+  @override
+  State<RoomLivePage> createState() => _RoomLivePageState();
+}
+
+class _RoomLivePageState extends State<RoomLivePage> {
+  final _repo = RoomRepository.instance;
+  final _agora = AgoraService.instance;
+  final _socket = SocketService.instance;
+  final _input = TextEditingController();
+  final _scroll = ScrollController();
+  final List<StreamSubscription<Map<String, dynamic>>> _subs = [];
+
+  String _title = '';
+  bool _isHost = false;
+  RoomParticipant? _me;
+  List<RoomParticipant> _people = const [];
+  List<RoomChatLine> _messages = const [];
+  bool _joined = false;
+  bool _left = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _title = widget.roomTitle;
+    bool mine(Map<String, dynamic> e) => e['roomId'] == widget.roomId;
+    _subs.addAll([
+      _socket.on('room:participant_joined').where(mine).listen((e) {
+        _upsert(_participant(e['participant']));
+      }),
+      _socket.on('room:participant_updated').where(mine).listen((e) {
+        _upsert(_participant(e['participant']));
+      }),
+      _socket.on('room:participant_left').where(mine).listen((e) {
+        final uid = (e['uid'] as num).toInt();
+        setState(() => _people = [..._people.where((p) => p.uid != uid)]);
+      }),
+      _socket.on('room:message').where(mine).listen((e) {
+        _addMessage(
+          RoomChatLine.fromJson(Map<String, dynamic>.from(e['message'] as Map)),
+        );
+      }),
+      _socket.on('room:ended').where(mine).listen((_) => _onEnded()),
+      _socket.on('room:request').where(mine).listen(_onRequest),
+    ]);
+    // Bağlantı koptuysa geri gelince odaya yeniden katıl (sunucu kaldığı yerden devam eder).
+    _socket.reconnects.addListener(_rejoin);
+    _join();
+  }
+
+  @override
+  void dispose() {
+    for (final s in _subs) {
+      s.cancel();
+    }
+    _socket.reconnects.removeListener(_rejoin);
+    _input.dispose();
+    _scroll.dispose();
+    if (!_left) {
+      _repo.leave(widget.roomId).ignore();
+      _agora.leave();
+    }
+    super.dispose();
+  }
+
+  RoomParticipant _participant(Object? json) =>
+      RoomParticipant.fromJson(Map<String, dynamic>.from(json as Map));
+
+  Future<void> _join() async {
+    try {
+      final s = await _repo.join(widget.roomId, anonymous: widget.anonymous);
+      if (!mounted) return;
+      setState(() {
+        _title = s.title;
+        _isHost = s.isHost;
+        _me = s.me;
+        _people = s.participants;
+        _messages = s.messages;
+        _joined = true;
+      });
+      _scrollToEnd();
+      await _agora.join(s.rtc, micOn: s.me.micOn);
+    } catch (e) {
+      if (!mounted) return;
+      showErrorSnackBar(context, e);
+      _left = true;
+      Navigator.of(context).pop();
+    }
+  }
+
+  void _rejoin() {
+    if (_joined && !_left) _join();
+  }
+
+  void _upsert(RoomParticipant p) {
+    if (!mounted) return;
+    setState(() {
+      final i = _people.indexWhere((x) => x.uid == p.uid);
+      _people = i == -1
+          ? [..._people, p]
+          : [for (final x in _people) x.uid == p.uid ? p : x];
+      if (p.uid == _me?.uid) _me = p;
+    });
+  }
+
+  void _addMessage(RoomChatLine m) {
+    if (!mounted || _messages.any((x) => x.id == m.id)) return;
+    setState(() => _messages = [..._messages, m]);
+    _scrollToEnd();
+  }
+
+  void _scrollToEnd() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scroll.hasClients) {
+        _scroll.animateTo(
+          _scroll.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  Future<void> _send(String text) async {
+    final body = text.trim();
+    if (body.isEmpty) return;
+    _input.clear();
+    try {
+      await _repo.send(widget.roomId, body);
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    }
+  }
+
+  Future<void> _toggleMic() async {
+    final me = _me;
+    if (me == null) return;
+    final on = !me.micOn;
+    if (on && !await _agora.requestMic()) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(Translations.of(context).call.micDenied)),
+        );
+      }
+      return;
+    }
+    await _agora.setMic(on);
+    try {
+      await _repo.setMic(widget.roomId, on);
+    } catch (e) {
+      await _agora.setMic(!on);
+      if (mounted) showErrorSnackBar(context, e);
+    }
+  }
+
+  Future<void> _leave() async {
+    _left = true;
+    _repo.leave(widget.roomId).ignore();
+    await _agora.leave();
+    if (mounted) Navigator.of(context).pop();
+  }
+
+  void _onEnded() {
+    if (!mounted || _left) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(Translations.of(context).discover.liveRoom.roomEnded),
+      ),
+    );
+    _leave();
+  }
+
+  /// Sahibim: gizli odama katılma isteği.
+  void _onRequest(Map<String, dynamic> e) {
+    final requestId = e['requestId'] as String?;
+    if (!mounted || !_isHost || requestId == null) return;
+    final t = Translations.of(context).discover.liveRoom;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(seconds: 8),
+        content: Text(t.wantsToJoin(name: e['name'] as String? ?? '')),
+        action: SnackBarAction(
+          label: t.approve,
+          onPressed: () => ApiClient.instance
+              .post(
+                '/rooms/${widget.roomId}/requests/$requestId',
+                body: {'approve': true},
+              )
+              .ignore(),
+        ),
       ),
     );
   }
-
-  static const _members = <_RoomMember>[
-    // Row 1
-    _RoomMember(
-      name: 'Sona',
-      avatar: AppAssets.fakePerson03,
-      micOff: false,
-    ),
-    _RoomMember(
-      name: 'Victoria',
-      avatar: AppAssets.fakePerson05,
-      micOff: true,
-    ),
-    _RoomMember(
-      name: 'Lyra',
-      avatar: AppAssets.fakePerson06,
-      micOff: true,
-    ),
-    _RoomMember(
-      name: 'hidden',
-      avatar: AppAssets.fakePerson07,
-      micOff: true,
-      blurred: true,
-      hiddenName: true,
-    ),
-    // Row 2
-    _RoomMember(
-      name: 'Clara',
-      avatar: AppAssets.fakePerson02,
-      micOff: false,
-    ),
-    _RoomMember(
-      name: 'hidden',
-      avatar: AppAssets.fakePerson04,
-      micOff: true,
-      blurred: true,
-      hiddenName: true,
-    ),
-    _RoomMember(
-      name: 'hidden',
-      avatar: AppAssets.fakePerson08,
-      micOff: true,
-      blurred: true,
-      hiddenName: true,
-    ),
-    _RoomMember(
-      name: 'hidden',
-      avatar: AppAssets.fakePerson01,
-      micOff: true,
-      blurred: true,
-      hiddenName: true,
-    ),
-    // Row 3 (centered)
-    _RoomMember(
-      name: 'hidden',
-      avatar: AppAssets.fakePerson03,
-      micOff: true,
-      blurred: true,
-      hiddenName: true,
-    ),
-    _RoomMember(
-      name: 'hidden',
-      avatar: AppAssets.fakePerson05,
-      micOff: true,
-      blurred: true,
-      hiddenName: true,
-    ),
-    _RoomMember(
-      name: 'hidden',
-      avatar: AppAssets.fakePerson07,
-      micOff: true,
-      blurred: true,
-      hiddenName: true,
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
     final t = Translations.of(context).discover.liveRoom;
     final top = MediaQuery.paddingOf(context).top;
     final bottom = MediaQuery.paddingOf(context).bottom;
+    final host = _people.where((p) => p.isHost).firstOrNull;
+    final members = _people.where((p) => !p.isHost).toList();
 
     final quickReplies = [
       t.quickReplyHey,
@@ -146,169 +257,196 @@ class RoomLivePage extends StatelessWidget {
       t.quickReplyNew,
     ];
 
-    final messages = [
-      _ChatMessage(
-        name: t.sampleChatName,
-        body: t.sampleChatBody,
-        avatar: AppAssets.fakePerson03,
-      ),
-      _ChatMessage(
-        name: t.sampleChatName,
-        body: t.sampleChatBody,
-        avatar: AppAssets.fakePerson03,
-      ),
-    ];
-
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ColoredBox(
-            color: AppColors.white,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16, top + 8, 16, 16),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () => Navigator.of(context).pop(),
-                        behavior: HitTestBehavior.opaque,
-                        child: const Padding(
-                          padding: EdgeInsets.only(right: 8),
-                          child: Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            size: 18,
-                            color: AppColors.black,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _leave();
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.white,
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ColoredBox(
+              color: AppColors.white,
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(16, top + 8, 16, 16),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: _leave,
+                          behavior: HitTestBehavior.opaque,
+                          child: const Padding(
+                            padding: EdgeInsets.only(right: 8),
+                            child: Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              size: 18,
+                              color: AppColors.black,
+                            ),
                           ),
                         ),
-                      ),
-                      Expanded(
-                        child: AppText(
-                          roomTitle,
-                          style: AppTextStyles.liveRoomTitle,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  _AdminAvatar(avatar: adminAvatar, size: 72),
-                  const SizedBox(height: 8),
-                  Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: adminName,
-                          style: AppTextStyles.liveRoomMemberName,
-                        ),
-                        TextSpan(
-                          text: ' ${t.adminSuffix}',
-                          style: AppTextStyles.liveRoomAdminSuffix,
+                        Expanded(
+                          child: AppText(
+                            _title,
+                            style: AppTextStyles.liveRoomTitle,
+                          ),
                         ),
                       ],
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Container(
-            height: 1,
-            color: AppColors.black.withValues(alpha: 0.10),
-          ),
-          Expanded(
-            child: ColoredBox(
-              color: AppColors.white,
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  // Peach left + purple right — centers meet mid-screen (~50/50)
-                  const Positioned(
-                    left: -142 - _BlurOrb.pad,
-                    top: 20 - _BlurOrb.pad,
-                    child: _BlurOrb(
-                      size: 404,
-                      color: Color(0x80FFD2B4),
+                    const SizedBox(height: 20),
+                    ValueListenableBuilder<Set<int>>(
+                      valueListenable: _agora.speaking,
+                      builder: (context, speaking, _) => _AdminAvatar(
+                        avatar: host?.avatarUrl ?? '',
+                        blurred: host?.blurred ?? false,
+                        speaking: host != null && speaking.contains(host.uid),
+                        size: 72,
+                      ),
                     ),
-                  ),
-                  const Positioned(
-                    right: -142 - _BlurOrb.pad,
-                    top: 20 - _BlurOrb.pad,
-                    child: _BlurOrb(
-                      size: 404,
-                      color: Color(0x807C6CD6),
-                    ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                        child: LayoutBuilder(
-                          builder: (context, constraints) {
-                            const columns = 4;
-                            const spacing = 4.0;
-                            final tileWidth =
-                                (constraints.maxWidth -
-                                    spacing * (columns - 1)) /
-                                columns;
-                            return Wrap(
-                              alignment: WrapAlignment.center,
-                              spacing: spacing,
-                              runSpacing: 12,
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          child: Text.rich(
+                            TextSpan(
                               children: [
-                                for (final member in _members)
-                                  SizedBox(
-                                    width: tileWidth,
-                                    child: _MemberTile(member: member),
-                                  ),
+                                TextSpan(
+                                  text: host?.displayName ?? '',
+                                  style: AppTextStyles.liveRoomMemberName,
+                                ),
+                                TextSpan(
+                                  text: ' ${t.adminSuffix}',
+                                  style: AppTextStyles.liveRoomAdminSuffix,
+                                ),
                               ],
-                            );
-                          },
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        child: ListView.separated(
-                          padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
-                          itemCount: messages.length,
-                          separatorBuilder: (_, _) =>
-                              const SizedBox(height: 10),
-                          itemBuilder: (context, index) {
-                            return _ChatBubble(message: messages[index]);
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        height: 40,
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          itemCount: quickReplies.length,
-                          separatorBuilder: (_, _) =>
-                              const SizedBox(width: 8),
-                          itemBuilder: (context, index) {
-                            return _QuickReplyChip(label: quickReplies[index]);
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.fromLTRB(
-                          16,
-                          10,
-                          16,
-                          bottom > 0 ? bottom : 8,
-                        ),
-                        child: _MessageInput(hint: t.messageHint),
-                      ),
-                    ],
-                  ),
-                ],
+                        if (host?.isAi ?? false) const AiBadge(compact: true),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+            Container(
+              height: 1,
+              color: AppColors.black.withValues(alpha: 0.10),
+            ),
+            Expanded(
+              child: ColoredBox(
+                color: AppColors.white,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    // Peach left + purple right — centers meet mid-screen (~50/50)
+                    const Positioned(
+                      left: -142 - _BlurOrb.pad,
+                      top: 20 - _BlurOrb.pad,
+                      child: _BlurOrb(
+                        size: 404,
+                        color: Color(0x80FFD2B4),
+                      ),
+                    ),
+                    const Positioned(
+                      right: -142 - _BlurOrb.pad,
+                      top: 20 - _BlurOrb.pad,
+                      child: _BlurOrb(
+                        size: 404,
+                        color: Color(0x807C6CD6),
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              const columns = 4;
+                              const spacing = 4.0;
+                              final tileWidth =
+                                  (constraints.maxWidth -
+                                      spacing * (columns - 1)) /
+                                  columns;
+                              return ValueListenableBuilder<Set<int>>(
+                                valueListenable: _agora.speaking,
+                                builder: (context, speaking, _) => Wrap(
+                                  alignment: WrapAlignment.center,
+                                  spacing: spacing,
+                                  runSpacing: 12,
+                                  children: [
+                                    for (final member in members)
+                                      SizedBox(
+                                        width: tileWidth,
+                                        child: _MemberTile(
+                                          member: member,
+                                          speaking: speaking.contains(
+                                            member.uid,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          child: ListView.separated(
+                            controller: _scroll,
+                            padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
+                            itemCount: _messages.length,
+                            separatorBuilder: (_, _) =>
+                                const SizedBox(height: 10),
+                            itemBuilder: (context, index) {
+                              return _ChatBubble(message: _messages[index]);
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          height: 40,
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            itemCount: quickReplies.length,
+                            separatorBuilder: (_, _) =>
+                                const SizedBox(width: 8),
+                            itemBuilder: (context, index) {
+                              return _QuickReplyChip(
+                                label: quickReplies[index],
+                                onTap: () => _send(quickReplies[index]),
+                              );
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(
+                            16,
+                            10,
+                            16,
+                            bottom > 0 ? bottom : 8,
+                          ),
+                          child: _MessageInput(
+                            hint: t.messageHint,
+                            controller: _input,
+                            onSubmit: _send,
+                            micOn: _me?.micOn ?? false,
+                            onMic: _toggleMic,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -346,31 +484,47 @@ class _BlurOrb extends StatelessWidget {
 }
 
 class _AdminAvatar extends StatelessWidget {
-  const _AdminAvatar({required this.avatar, required this.size});
+  const _AdminAvatar({
+    required this.avatar,
+    required this.size,
+    this.blurred = false,
+    this.speaking = false,
+  });
 
   final String avatar;
   final double size;
+  final bool blurred;
+  final bool speaking;
 
   @override
   Widget build(BuildContext context) {
+    Widget photo = ChatAvatarImage(url: avatar, size: size);
+    if (blurred) {
+      photo = ImageFiltered(
+        imageFilter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+        child: photo,
+      );
+    }
     return Container(
       width: size,
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: AppColors.selectionBorder, width: 2),
+        border: Border.all(
+          color: AppColors.selectionBorder,
+          width: speaking ? 3 : 2,
+        ),
       ),
-      child: ClipOval(
-        child: Image.asset(avatar, fit: BoxFit.cover),
-      ),
+      child: ClipOval(child: photo),
     );
   }
 }
 
 class _MemberTile extends StatelessWidget {
-  const _MemberTile({required this.member});
+  const _MemberTile({required this.member, this.speaking = false});
 
-  final _RoomMember member;
+  final RoomParticipant member;
+  final bool speaking;
 
   @override
   Widget build(BuildContext context) {
@@ -383,6 +537,18 @@ class _MemberTile extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
+              if (speaking)
+                Container(
+                  width: 68,
+                  height: 68,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: AppColors.selectionBorder,
+                      width: 2,
+                    ),
+                  ),
+                ),
               ClipOval(
                 child: SizedBox(
                   width: 68,
@@ -391,15 +557,15 @@ class _MemberTile extends StatelessWidget {
                       ? ImageFiltered(
                           imageFilter:
                               ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                          child: Image.asset(
-                            member.avatar,
-                            fit: BoxFit.cover,
+                          child: ChatAvatarImage(
+                            url: member.avatarUrl,
+                            size: 68,
                           ),
                         )
-                      : Image.asset(member.avatar, fit: BoxFit.cover),
+                      : ChatAvatarImage(url: member.avatarUrl, size: 68),
                 ),
               ),
-              if (member.micOff) ...[
+              if (!member.micOn) ...[
                 Container(
                   width: 68,
                   height: 68,
@@ -418,11 +584,19 @@ class _MemberTile extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 6),
-        AppText(
-          member.hiddenName ? '******' : member.name,
-          style: AppTextStyles.liveRoomMemberName,
-          textAlign: TextAlign.center,
-          maxLines: 1,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Flexible(
+              child: AppText(
+                member.displayName,
+                style: AppTextStyles.liveRoomMemberName,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+              ),
+            ),
+            if (member.isAi) const AiBadge(compact: true),
+          ],
         ),
       ],
     );
@@ -432,7 +606,7 @@ class _MemberTile extends StatelessWidget {
 class _ChatBubble extends StatelessWidget {
   const _ChatBubble({required this.message});
 
-  final _ChatMessage message;
+  final RoomChatLine message;
 
   @override
   Widget build(BuildContext context) {
@@ -440,12 +614,15 @@ class _ChatBubble extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ClipOval(
-          child: Image.asset(
-            message.avatar,
-            width: 30,
-            height: 30,
-            fit: BoxFit.cover,
-          ),
+          child: message.sender.blurred
+              ? ImageFiltered(
+                  imageFilter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+                  child: ChatAvatarImage(
+                    url: message.sender.avatarUrl,
+                    size: 30,
+                  ),
+                )
+              : ChatAvatarImage(url: message.sender.avatarUrl, size: 30),
         ),
         const SizedBox(width: 10),
         Flexible(
@@ -459,7 +636,7 @@ class _ChatBubble extends StatelessWidget {
               TextSpan(
                 children: [
                   TextSpan(
-                    text: '${message.name}: ',
+                    text: '${message.sender.displayName}: ',
                     style: AppTextStyles.liveRoomChatName,
                   ),
                   TextSpan(
@@ -477,12 +654,21 @@ class _ChatBubble extends StatelessWidget {
 }
 
 class _QuickReplyChip extends StatelessWidget {
-  const _QuickReplyChip({required this.label});
+  const _QuickReplyChip({required this.label, required this.onTap});
 
   final String label;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: _chip(),
+    );
+  }
+
+  Widget _chip() {
     return Container(
       alignment: Alignment.center,
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -496,9 +682,19 @@ class _QuickReplyChip extends StatelessWidget {
 }
 
 class _MessageInput extends StatelessWidget {
-  const _MessageInput({required this.hint});
+  const _MessageInput({
+    required this.hint,
+    required this.controller,
+    required this.onSubmit,
+    required this.micOn,
+    required this.onMic,
+  });
 
   final String hint;
+  final TextEditingController controller;
+  final ValueChanged<String> onSubmit;
+  final bool micOn;
+  final VoidCallback onMic;
 
   @override
   Widget build(BuildContext context) {
@@ -513,6 +709,13 @@ class _MessageInput extends StatelessWidget {
         children: [
           Expanded(
             child: TextField(
+              controller: controller,
+              onSubmitted: onSubmit,
+              textInputAction: TextInputAction.send,
+              maxLength: 300,
+              buildCounter:
+                  (_, {required currentLength, required isFocused, maxLength}) =>
+                      null,
               style: AppTextStyles.liveRoomMessageHint,
               cursorColor: AppColors.selectionBorder,
               decoration: InputDecoration(
@@ -531,10 +734,18 @@ class _MessageInput extends StatelessWidget {
             height: 28,
           ),
           const SizedBox(width: 8),
-          SvgPicture.asset(
-            AppAssets.iconMicrophone,
-            width: 28,
-            height: 28,
+          // Mikrofonum: kapalıyken soluk.
+          GestureDetector(
+            onTap: onMic,
+            behavior: HitTestBehavior.opaque,
+            child: Opacity(
+              opacity: micOn ? 1 : 0.4,
+              child: SvgPicture.asset(
+                AppAssets.iconMicrophone,
+                width: 28,
+                height: 28,
+              ),
+            ),
           ),
         ],
       ),

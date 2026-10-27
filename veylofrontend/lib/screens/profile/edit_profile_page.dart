@@ -23,6 +23,7 @@ import 'package:veylo/screens/profile/profile_border_sheet.dart';
 import 'package:veylo/screens/profile/relationship_goals_sheet.dart';
 import 'package:veylo/screens/profile/smoking_sheet.dart';
 import 'package:veylo/screens/profile/widgets/profile_framed_avatar.dart';
+import 'package:veylo/screens/profile/voice_record_sheet.dart';
 import 'package:veylo/screens/profile/zodiac_sheet.dart';
 
 const _kContentWidth = 398.0;
@@ -500,7 +501,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   const SizedBox(height: 8),
                   _ProfileFieldRow(
                     iconAsset: AppAssets.iconEpAddVoice,
-                    label: t.addVoice,
+                    label: (SessionStore.instance.me?.voiceIntroUrl ?? '')
+                            .isEmpty
+                        ? t.addVoice
+                        : 'Voice added',
+                    onTap: () => showVoiceRecordSheet(context),
                   ),
                   const SizedBox(height: 24),
                   AppText(t.lifestyle, style: AppTextStyles.editProfileSection),
@@ -597,10 +602,15 @@ class _EditProfileHeader extends StatelessWidget {
               children: [
                 AppText(eyebrow, style: AppTextStyles.profileEyebrow),
                 const SizedBox(height: 2),
-                AppText(
-                  title,
-                  style: AppTextStyles.profileTitle,
-                  maxLines: 1,
+                // Uzun çevirilerde başlık tek satırda küçülerek sığar.
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: AlignmentDirectional.centerStart,
+                  child: AppText(
+                    title,
+                    style: AppTextStyles.profileTitle,
+                    maxLines: 1,
+                  ),
                 ),
               ],
             ),
@@ -753,11 +763,47 @@ class _ChangeBorderButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
-      child: Image.asset(
-        AppAssets.iconChangeBorder,
+      child: SizedBox(
         width: _kAvatarSize,
         height: _kAvatarSize,
-        fit: BoxFit.contain,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Image.asset(
+              AppAssets.iconChangeBorder,
+              width: _kAvatarSize,
+              height: _kAvatarSize,
+              fit: BoxFit.contain,
+            ),
+            // Görseldeki İngilizce yazının üstü kapatılır; metin seçili dilde yazılır.
+            Container(
+              width: _kAvatarSize * 0.68,
+              height: _kAvatarSize * 0.68,
+              decoration: const BoxDecoration(
+                color: AppColors.white,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(6),
+              // Kelimeler alt alta; uzun dillerde bölünmek yerine küçülür.
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  Translations.of(context).profile.changeBorder
+                      .replaceFirst(' ', '\n'),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontFamily: AppFonts.poppins,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    height: 1.15,
+                    color: Color(0xFF555555),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

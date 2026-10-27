@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:veylo/i18n/strings.g.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:veylo/core/assets/app_assets.dart';
@@ -650,7 +651,7 @@ final class _StylePanel extends StatelessWidget {
             Expanded(
               child: _StyleChip(
                 icon: AppAssets.iconStoryBold,
-                label: 'Bold',
+                label: Translations.of(context).storyText.bold,
                 selected: draft.bold,
                 onTap: () => onChanged(draft.copyWith(bold: !draft.bold)),
               ),
@@ -659,7 +660,7 @@ final class _StylePanel extends StatelessWidget {
             Expanded(
               child: _StyleChip(
                 icon: AppAssets.iconStoryItalic,
-                label: 'Italic',
+                label: Translations.of(context).storyText.italic,
                 selected: draft.italic,
                 onTap: () => onChanged(draft.copyWith(italic: !draft.italic)),
               ),
@@ -668,7 +669,7 @@ final class _StylePanel extends StatelessWidget {
             Expanded(
               child: _StyleChip(
                 icon: AppAssets.iconStoryUppercase,
-                label: 'Uppercase',
+                label: Translations.of(context).storyText.uppercase,
                 selected: draft.uppercase,
                 onTap: () =>
                     onChanged(draft.copyWith(uppercase: !draft.uppercase)),
@@ -679,7 +680,7 @@ final class _StylePanel extends StatelessWidget {
         const SizedBox(height: 10),
         _StyleChip(
           icon: AppAssets.iconStoryUnderline,
-          label: 'Underline',
+          label: Translations.of(context).storyText.underline,
           selected: draft.underline,
           onTap: () => onChanged(draft.copyWith(underline: !draft.underline)),
         ),
@@ -1176,7 +1177,7 @@ final class _CustomColorPickerDialogState extends State<_CustomColorPickerDialog
                                   borderRadius: BorderRadius.circular(14),
                                 ),
                               ),
-                              child: Text('Cancel'),
+                              child: Text(Translations.of(context).storyText.cancel),
                             ),
                           ),
                         ),

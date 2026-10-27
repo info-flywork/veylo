@@ -8,9 +8,11 @@ import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/data/remote/group_store.dart';
 import 'package:veylo/data/remote/note_store.dart';
 import 'package:veylo/data/remote/push_service.dart';
+import 'package:veylo/data/remote/room_store.dart';
 import 'package:veylo/data/remote/socket_service.dart';
 import 'package:veylo/data/remote/vibe_store.dart';
 import 'package:veylo/screens/discover/rooms/room_approved_sheet.dart';
+import 'package:veylo/data/remote/discover_store.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/screens/call/call_stranger_page.dart';
 import 'package:veylo/screens/chat/chat_request_page.dart';
@@ -33,6 +35,7 @@ class _MainShellState extends State<MainShell> {
   AppNavTab _tab = AppNavTab.discover;
   StreamSubscription<String>? _pushTaps;
   StreamSubscription<Map<String, dynamic>>? _groupApproved;
+  StreamSubscription<Map<String, dynamic>>? _roomApproved;
 
   @override
   void initState() {
@@ -55,6 +58,25 @@ class _MainShellState extends State<MainShell> {
         conversationId: id,
       );
     });
+    // Gizli canlı odaya katılma isteğim onaylandı.
+    _roomApproved = SocketService.instance.on('room:approved').listen((e) {
+      final id = e['roomId'] as String?;
+      if (id == null || !mounted) return;
+      RoomStore.instance.refresh();
+      showRoomApprovedSheet(
+        context,
+        roomTitle: e['title'] as String? ?? '',
+        roomId: id,
+      );
+    });
+    AppShell.bind(
+      current: () => _tab,
+      select: (tab) {
+        if (!mounted) return;
+        Navigator.of(context).popUntil((route) => route.isFirst);
+        _onNavChanged(tab);
+      },
+    );
     final pending = PushService.instance.takePendingTap();
     if (pending != null) {
       WidgetsBinding.instance.addPostFrameCallback(
@@ -65,8 +87,10 @@ class _MainShellState extends State<MainShell> {
 
   @override
   void dispose() {
+    AppShell.unbind();
     _pushTaps?.cancel();
     _groupApproved?.cancel();
+    _roomApproved?.cancel();
     super.dispose();
   }
 
@@ -92,7 +116,11 @@ class _MainShellState extends State<MainShell> {
     }
     // Vibes 24 saatlik: sekmeye her gelişte taze akış.
     if (tab == AppNavTab.vibes && _tab != tab) VibeStore.instance.refresh();
-    if (tab == AppNavTab.discover && _tab != tab) GroupStore.instance.refresh();
+    if (tab == AppNavTab.discover && _tab != tab) {
+      GroupStore.instance.refresh();
+      RoomStore.instance.refresh();
+      DiscoverStore.instance.refresh();
+    }
     if (tab == AppNavTab.chat && _tab != tab) NoteStore.instance.refresh();
     // Profil: takip/takipçi sayıları ve token bakiyesi güncel olsun.
     if (tab == AppNavTab.profile && _tab != tab) {

@@ -2,6 +2,21 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>de</string>
+		<string>it</string>
+		<string>fr</string>
+		<string>tr</string>
+		<string>ja</string>
+		<string>es</string>
+		<string>ru</string>
+		<string>ko</string>
+		<string>hi</string>
+		<string>pt</string>
+		<string>zh-Hans</string>
+	</array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -43,9 +58,11 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>Veylo needs camera access to take photos for stories and your profile.</string>
+	<string>Veylo needs camera access for photos, stories and video calls.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Veylo connects to the development server on your local network.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Veylo needs microphone access when recording video.</string>
+	<string>Veylo needs microphone access for voice calls, rooms and video.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Veylo needs permission to save photos to your library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

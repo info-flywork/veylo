@@ -17,6 +17,7 @@ Future<void> showRoomApprovedSheet(
   bool isGroup = false,
   int memberCount = 1,
   String? conversationId,
+  String? roomId,
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -27,6 +28,7 @@ Future<void> showRoomApprovedSheet(
       isGroup: isGroup,
       memberCount: memberCount,
       conversationId: conversationId,
+      roomId: roomId,
     ),
   );
 }
@@ -37,6 +39,7 @@ class _RoomApprovedSheet extends StatelessWidget {
     this.isGroup = false,
     this.memberCount = 1,
     this.conversationId,
+    this.roomId,
   });
 
   final String roomTitle;
@@ -45,6 +48,9 @@ class _RoomApprovedSheet extends StatelessWidget {
 
   /// Gerçek grup: Continue grubu sunucudan yükleyip açar.
   final String? conversationId;
+
+  /// Gizli canlı oda: Continue odaya girer.
+  final String? roomId;
 
   static const _sheetBg = Color(0xFFF6F6FB);
 
@@ -113,9 +119,10 @@ class _RoomApprovedSheet extends StatelessWidget {
                             title: title,
                             memberCount: count,
                           );
-                        } else {
+                        } else if (roomId != null) {
                           RoomLivePage.open(
                             navigator.context,
+                            roomId: roomId!,
                             roomTitle: title,
                           );
                         }

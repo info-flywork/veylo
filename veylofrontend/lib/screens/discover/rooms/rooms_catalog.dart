@@ -1,21 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/data/remote/group_store.dart';
+import 'package:veylo/data/remote/room_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/screens/discover/rooms/room_list_item.dart';
 import 'package:veylo/screens/discover/rooms/room_list_page.dart';
 
 /// Rooms tab — All Groups + All Rooms bölümleri (See All ile iç sayfa).
-/// Gruplar backend'den gelir; canlı odalar (Agora) bağlanana kadar örnek veridir.
+/// Gruplar ve canlı odalar backend'den gelir.
 class RoomsCatalog extends StatefulWidget {
-  const RoomsCatalog({
-    super.key,
-    this.rooms = defaultRooms,
-    this.previewCount = 3,
-  });
+  const RoomsCatalog({super.key, this.previewCount = 3});
 
-  final List<RoomListItem> rooms;
   final int previewCount;
 
   @override
@@ -24,17 +22,28 @@ class RoomsCatalog extends StatefulWidget {
 
 class _RoomsCatalogState extends State<RoomsCatalog> {
   final _store = GroupStore.instance;
+  final _rooms = RoomStore.instance;
+
+  /// Canlı odalar sık değişir: liste ekranda görünürken yenilenir.
+  Timer? _poll;
 
   @override
   void initState() {
     super.initState();
     _store.addListener(_onStore);
+    _rooms.addListener(_onStore);
     _store.refresh();
+    _rooms.refresh();
+    _poll = Timer.periodic(const Duration(seconds: 15), (_) {
+      if (mounted && TickerMode.valuesOf(context).enabled) _rooms.refresh();
+    });
   }
 
   @override
   void dispose() {
+    _poll?.cancel();
     _store.removeListener(_onStore);
+    _rooms.removeListener(_onStore);
     super.dispose();
   }
 
@@ -46,7 +55,7 @@ class _RoomsCatalogState extends State<RoomsCatalog> {
   Widget build(BuildContext context) {
     final t = Translations.of(context).discover;
     final groups = [for (final g in _store.groups) RoomListItem.fromGroup(g)];
-    final rooms = widget.rooms;
+    final rooms = [for (final r in _rooms.rooms) RoomListItem.fromRoom(r)];
     final previewCount = widget.previewCount;
 
     return Column(
@@ -64,6 +73,7 @@ class _RoomsCatalogState extends State<RoomsCatalog> {
             isGroup: true,
           ),
         ),
+        if (rooms.isNotEmpty) ...[
         const SizedBox(height: 8),
         _Section(
           title: t.allRooms,
@@ -73,6 +83,7 @@ class _RoomsCatalogState extends State<RoomsCatalog> {
           onSeeAll: () =>
               RoomListPage.open(context, title: t.allRooms, items: rooms),
         ),
+        ],
       ],
     );
   }

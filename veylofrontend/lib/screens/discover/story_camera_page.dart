@@ -78,7 +78,7 @@ class _StoryCameraPageState extends State<StoryCameraPage> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Galeri açılamadı: $e')),
+        SnackBar(content: Text(Translations.of(context).storyText.galleryError)),
       );
     }
   }

@@ -55,6 +55,11 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$onboarding$tr onboarding = Translations$onboarding$tr.internal(_root);
 	late final Translations$createProfile$tr createProfile = Translations$createProfile$tr.internal(_root);
 	late final Translations$errors$tr errors = Translations$errors$tr.internal(_root);
+	late final Translations$faq$tr faq = Translations$faq$tr.internal(_root);
+	late final Translations$legal$tr legal = Translations$legal$tr.internal(_root);
+	late final Translations$logout$tr logout = Translations$logout$tr.internal(_root);
+	late final Translations$deleteAccount$tr deleteAccount = Translations$deleteAccount$tr.internal(_root);
+	late final Translations$storyText$tr storyText = Translations$storyText$tr.internal(_root);
 }
 
 // Path: app
@@ -98,17 +103,17 @@ class Translations$chats$tr {
 
 	// Translations
 
-	/// tr: 'Chats'
-	String get title => 'Chats';
+	/// tr: 'Sohbetler'
+	String get title => 'Sohbetler';
 
-	/// tr: 'Search'
-	String get search => 'Search';
+	/// tr: 'Ara'
+	String get search => 'Ara';
 
-	/// tr: 'Messages'
-	String get messagesSection => 'Messages';
+	/// tr: 'Mesajlar'
+	String get messagesSection => 'Mesajlar';
 
-	/// tr: 'Request'
-	String get request => 'Request';
+	/// tr: 'İstekler'
+	String get request => 'İstekler';
 
 	/// tr: 'Son mesaj bildirimi yok'
 	String get emptyRequestTitle => 'Son mesaj bildirimi yok';
@@ -119,50 +124,50 @@ class Translations$chats$tr {
 	/// tr: 'Not Ekle'
 	String get noteAdd => 'Not Ekle';
 
-	/// tr: 'Anonymous'
-	String get anonymous => 'Anonymous';
+	/// tr: 'Anonim'
+	String get anonymous => 'Anonim';
 
-	/// tr: 'online'
-	String get online => 'online';
+	/// tr: 'çevrimiçi'
+	String get online => 'çevrimiçi';
 
-	/// tr: 'offline'
-	String get offline => 'offline';
+	/// tr: 'çevrimdışı'
+	String get offline => 'çevrimdışı';
 
-	/// tr: 'Connection'
-	String get connection => 'Connection';
+	/// tr: 'Bağlantı'
+	String get connection => 'Bağlantı';
 
-	/// tr: '{n}%'
-	String connectionPercent({required Object n}) => '${n}%';
+	/// tr: '%{n}'
+	String connectionPercent({required Object n}) => '%${n}';
 
-	/// tr: 'Connection Progress'
-	String get connectionProgressTitle => 'Connection Progress';
+	/// tr: 'Bağlantı İlerlemesi'
+	String get connectionProgressTitle => 'Bağlantı İlerlemesi';
 
-	/// tr: 'First name initial'
-	String get milestoneInitial => 'First name initial';
+	/// tr: 'Adının baş harfi'
+	String get milestoneInitial => 'Adının baş harfi';
 
-	/// tr: 'Unlocked at 25%'
-	String get milestoneInitialHint => 'Unlocked at 25%';
+	/// tr: '%25'te açıldı'
+	String get milestoneInitialHint => '%25\'te açıldı';
 
-	/// tr: 'Unlocks at 25%'
-	String get milestoneInitialLocked => 'Unlocks at 25%';
+	/// tr: '%25'te açılır'
+	String get milestoneInitialLocked => '%25\'te açılır';
 
-	/// tr: 'Blurred photo preview'
-	String get milestonePhoto => 'Blurred photo preview';
+	/// tr: 'Bulanık fotoğraf önizlemesi'
+	String get milestonePhoto => 'Bulanık fotoğraf önizlemesi';
 
-	/// tr: 'Unlocks at 70%'
-	String get milestonePhotoHint => 'Unlocks at 70%';
+	/// tr: '%70'te açılır'
+	String get milestonePhotoHint => '%70\'te açılır';
 
-	/// tr: 'Full profile review'
-	String get milestoneFull => 'Full profile review';
+	/// tr: 'Tam profil görüntüleme'
+	String get milestoneFull => 'Tam profil görüntüleme';
 
-	/// tr: 'Mutual consent at 100%'
-	String get milestoneFullHint => 'Mutual consent at 100%';
+	/// tr: '%100'de karşılıklı onayla'
+	String get milestoneFullHint => '%100\'de karşılıklı onayla';
 
-	/// tr: 'Hello, it was a pleasure meeting you. Could you tell me a little about yourself?'
-	String get sampleAnonymousMessage => 'Hello, it was a pleasure meeting you. Could you tell me a little about yourself?';
+	/// tr: 'Merhaba, tanıştığımıza memnun oldum. Biraz kendinden bahseder misin?'
+	String get sampleAnonymousMessage => 'Merhaba, tanıştığımıza memnun oldum. Biraz kendinden bahseder misin?';
 
-	/// tr: 'Hello Jhon, it was a pleasure meeting you. Could you tell me a little about yourself?'
-	String get strangerSampleMessage => 'Hello Jhon, it was a pleasure meeting you. Could you tell me a little about yourself?';
+	/// tr: 'Merhaba, tanıştığımıza memnun oldum. Biraz kendinden bahseder misin?'
+	String get strangerSampleMessage => 'Merhaba, tanıştığımıza memnun oldum. Biraz kendinden bahseder misin?';
 
 	/// tr: 'Onayla'
 	String get approve => 'Onayla';
@@ -173,23 +178,23 @@ class Translations$chats$tr {
 	/// tr: 'Reddet'
 	String get reject => 'Reddet';
 
-	/// tr: 'Hi! how are you?'
-	String get messageHint => 'Hi! how are you?';
+	/// tr: 'Selam! Nasılsın?'
+	String get messageHint => 'Selam! Nasılsın?';
 
-	/// tr: 'You've reached 100%'
-	String get revealTitle => 'You\'ve reached 100%';
+	/// tr: '%100'e ulaştınız'
+	String get revealTitle => '%100\'e ulaştınız';
 
-	/// tr: 'Reveal your full profiles to each other? Both sides must agree.'
-	String get revealSubtitle => 'Reveal your full profiles to each other? Both sides must agree.';
+	/// tr: 'Tam profillerinizi birbirinize açmak ister misiniz? İki tarafın da onaylaması gerekir.'
+	String get revealSubtitle => 'Tam profillerinizi birbirinize açmak ister misiniz? İki tarafın da onaylaması gerekir.';
 
-	/// tr: 'Waiting for {name} to accept'
-	String revealWaiting({required Object name}) => 'Waiting for ${name} to accept';
+	/// tr: '{name} kişisinin onayı bekleniyor'
+	String revealWaiting({required Object name}) => '${name} kişisinin onayı bekleniyor';
 
-	/// tr: 'Reveal my profile'
-	String get revealCta => 'Reveal my profile';
+	/// tr: 'Profilimi aç'
+	String get revealCta => 'Profilimi aç';
 
-	/// tr: 'Not Yet'
-	String get revealNotYet => 'Not Yet';
+	/// tr: 'Henüz değil'
+	String get revealNotYet => 'Henüz değil';
 
 	/// tr: 'Görüldü'
 	String get seen => 'Görüldü';
@@ -224,32 +229,32 @@ class Translations$profile$tr {
 
 	// Translations
 
-	/// tr: 'Profile'
-	String get eyebrow => 'Profile';
+	/// tr: 'Profil'
+	String get eyebrow => 'Profil';
 
-	/// tr: 'Settings'
-	String get title => 'Settings';
+	/// tr: 'Ayarlar'
+	String get title => 'Ayarlar';
 
-	/// tr: 'Edit Profile'
-	String get editProfile => 'Edit Profile';
+	/// tr: 'Profili Düzenle'
+	String get editProfile => 'Profili Düzenle';
 
-	/// tr: 'Like'
-	String get statLike => 'Like';
+	/// tr: 'Beğeni'
+	String get statLike => 'Beğeni';
 
-	/// tr: 'Follow'
-	String get statFollow => 'Follow';
+	/// tr: 'Takip'
+	String get statFollow => 'Takip';
 
-	/// tr: 'Follower'
-	String get statFollower => 'Follower';
+	/// tr: 'Takipçi'
+	String get statFollower => 'Takipçi';
 
-	/// tr: 'Get More Messages!'
-	String get promoTitle => 'Get More Messages!';
+	/// tr: 'Daha Fazla Mesaj Al!'
+	String get promoTitle => 'Daha Fazla Mesaj Al!';
 
-	/// tr: 'Stand out, appear at the top of the list'
-	String get promoSubtitle => 'Stand out, appear at the top of the list';
+	/// tr: 'Öne çık, listenin en üstünde görün'
+	String get promoSubtitle => 'Öne çık, listenin en üstünde görün';
 
-	/// tr: 'Stand Out'
-	String get standOut => 'Stand Out';
+	/// tr: 'Öne Çık'
+	String get standOut => 'Öne Çık';
 
 	/// tr: 'Gönderi'
 	String get tabPosts => 'Gönderi';
@@ -260,20 +265,20 @@ class Translations$profile$tr {
 	/// tr: 'Kaydedilenler'
 	String get tabSaved => 'Kaydedilenler';
 
-	/// tr: 'Save'
-	String get save => 'Save';
+	/// tr: 'Kaydet'
+	String get save => 'Kaydet';
 
-	/// tr: 'Change Photo'
-	String get changePhoto => 'Change Photo';
+	/// tr: 'Fotoğrafı Değiştir'
+	String get changePhoto => 'Fotoğrafı Değiştir';
 
-	/// tr: 'Change Border'
-	String get changeBorder => 'Change Border';
+	/// tr: 'Çerçeveyi Değiştir'
+	String get changeBorder => 'Çerçeveyi Değiştir';
 
-	/// tr: 'Interest'
-	String get interest => 'Interest';
+	/// tr: 'İlgi Alanları'
+	String get interest => 'İlgi Alanları';
 
-	/// tr: 'Name'
-	String get name => 'Name';
+	/// tr: 'Ad'
+	String get name => 'Ad';
 
 	/// tr: 'İsim Değiştir'
 	String get changeName => 'İsim Değiştir';
@@ -293,8 +298,8 @@ class Translations$profile$tr {
 	/// tr: 'Hakkında'
 	String get settingsAbout => 'Hakkında';
 
-	/// tr: 'Account Settings'
-	String get settingsAccount => 'Account Settings';
+	/// tr: 'Hesap Ayarları'
+	String get settingsAccount => 'Hesap Ayarları';
 
 	/// tr: 'Destek'
 	String get settingsSupport => 'Destek';
@@ -314,11 +319,11 @@ class Translations$profile$tr {
 	/// tr: 'Bizi Beğendin mi? Puan Ver'
 	String get rateApp => 'Bizi Beğendin mi? Puan Ver';
 
-	/// tr: 'Notifications'
-	String get notifications => 'Notifications';
+	/// tr: 'Bildirimler'
+	String get notifications => 'Bildirimler';
 
-	/// tr: 'Password'
-	String get password => 'Password';
+	/// tr: 'Şifre'
+	String get password => 'Şifre';
 
 	/// tr: 'Sohbetleri Sil'
 	String get deleteConversation => 'Sohbetleri Sil';
@@ -341,185 +346,185 @@ class Translations$profile$tr {
 	/// tr: 'Tüm sohbetler silindi'
 	String get conversationsDeleted => 'Tüm sohbetler silindi';
 
-	/// tr: 'Log Out'
-	String get logOut => 'Log Out';
+	/// tr: 'Çıkış Yap'
+	String get logOut => 'Çıkış Yap';
 
-	/// tr: 'Delete Account and Data'
-	String get deleteAccountAndData => 'Delete Account and Data';
+	/// tr: 'Hesabı ve Verileri Sil'
+	String get deleteAccountAndData => 'Hesabı ve Verileri Sil';
 
 	/// tr: '********'
 	String get passwordPlaceholder => '********';
 
-	/// tr: 'Height'
-	String get height => 'Height';
+	/// tr: 'Boy'
+	String get height => 'Boy';
 
-	/// tr: 'Add Height'
-	String get addHeight => 'Add Height';
+	/// tr: 'Boy Ekle'
+	String get addHeight => 'Boy Ekle';
 
 	/// tr: '{value} cm'
 	String heightCm({required Object value}) => '${value} cm';
 
-	/// tr: 'Languages'
-	String get languages => 'Languages';
+	/// tr: 'Diller'
+	String get languages => 'Diller';
 
-	/// tr: 'Relationship Goals'
-	String get relationshipGoals => 'Relationship Goals';
+	/// tr: 'İlişki Hedefleri'
+	String get relationshipGoals => 'İlişki Hedefleri';
 
-	/// tr: 'Looking for'
-	String get lookingFor => 'Looking for';
+	/// tr: 'Aradığım'
+	String get lookingFor => 'Aradığım';
 
-	/// tr: '👋 New Friends'
-	String get newFriends => '👋 New Friends';
+	/// tr: '👋 Yeni Arkadaşlar'
+	String get newFriends => '👋 Yeni Arkadaşlar';
 
-	/// tr: '💕 Long-term, Open to Short'
-	String get goalLongTermOpenToShort => '💕 Long-term, Open to Short';
+	/// tr: '💕 Uzun vadeli, kısaya da açığım'
+	String get goalLongTermOpenToShort => '💕 Uzun vadeli, kısaya da açığım';
 
-	/// tr: '💘 Long-term Relationship'
-	String get goalLongTermRelationship => '💘 Long-term Relationship';
+	/// tr: '💘 Uzun vadeli ilişki'
+	String get goalLongTermRelationship => '💘 Uzun vadeli ilişki';
 
-	/// tr: '👋 New friends'
-	String get goalNewFriends => '👋 New friends';
+	/// tr: '👋 Yeni arkadaşlar'
+	String get goalNewFriends => '👋 Yeni arkadaşlar';
 
-	/// tr: '🥃 Short-term Fun'
-	String get goalShortTermFun => '🥃 Short-term Fun';
+	/// tr: '🥃 Kısa süreli eğlence'
+	String get goalShortTermFun => '🥃 Kısa süreli eğlence';
 
-	/// tr: '🤔 Still Figuring It Out'
-	String get goalStillFiguringItOut => '🤔 Still Figuring It Out';
+	/// tr: '🤔 Henüz karar vermedim'
+	String get goalStillFiguringItOut => '🤔 Henüz karar vermedim';
 
-	/// tr: 'Basics'
-	String get basics => 'Basics';
+	/// tr: 'Temel Bilgiler'
+	String get basics => 'Temel Bilgiler';
 
-	/// tr: 'Zodiac'
-	String get zodiac => 'Zodiac';
+	/// tr: 'Burç'
+	String get zodiac => 'Burç';
 
-	/// tr: 'Scorpion'
-	String get zodiacValue => 'Scorpion';
+	/// tr: 'Akrep'
+	String get zodiacValue => 'Akrep';
 
-	/// tr: 'Education'
-	String get education => 'Education';
+	/// tr: 'Eğitim'
+	String get education => 'Eğitim';
 
-	/// tr: 'Bachelors'
-	String get educationValue => 'Bachelors';
+	/// tr: 'Lisans'
+	String get educationValue => 'Lisans';
 
-	/// tr: 'High School'
-	String get educationHighSchool => 'High School';
+	/// tr: 'Lise'
+	String get educationHighSchool => 'Lise';
 
-	/// tr: 'Associate's Degree'
-	String get educationAssociates => 'Associate\'s Degree';
+	/// tr: 'Ön Lisans'
+	String get educationAssociates => 'Ön Lisans';
 
-	/// tr: 'Bachelor's Degree'
-	String get educationBachelors => 'Bachelor\'s Degree';
+	/// tr: 'Lisans'
+	String get educationBachelors => 'Lisans';
 
-	/// tr: 'Master's Degree'
-	String get educationMasters => 'Master\'s Degree';
+	/// tr: 'Yüksek Lisans'
+	String get educationMasters => 'Yüksek Lisans';
 
-	/// tr: 'PhD / Doctorate'
-	String get educationPhd => 'PhD / Doctorate';
+	/// tr: 'Doktora'
+	String get educationPhd => 'Doktora';
 
-	/// tr: 'Voice Record'
-	String get voiceRecord => 'Voice Record';
+	/// tr: 'Ses Kaydı'
+	String get voiceRecord => 'Ses Kaydı';
 
-	/// tr: 'Add Voice'
-	String get addVoice => 'Add Voice';
+	/// tr: 'Ses Ekle'
+	String get addVoice => 'Ses Ekle';
 
-	/// tr: 'Lifestyle'
-	String get lifestyle => 'Lifestyle';
+	/// tr: 'Yaşam Tarzı'
+	String get lifestyle => 'Yaşam Tarzı';
 
-	/// tr: 'Pets'
-	String get pets => 'Pets';
+	/// tr: 'Evcil Hayvanlar'
+	String get pets => 'Evcil Hayvanlar';
 
-	/// tr: 'I have a cat'
-	String get petsValue => 'I have a cat';
+	/// tr: 'Kedim var'
+	String get petsValue => 'Kedim var';
 
-	/// tr: 'I don't want pets'
-	String get petsDontWant => 'I don\'t want pets';
+	/// tr: 'Evcil hayvan istemiyorum'
+	String get petsDontWant => 'Evcil hayvan istemiyorum';
 
-	/// tr: 'I'm allergic to pets'
-	String get petsAllergic => 'I\'m allergic to pets';
+	/// tr: 'Evcil hayvanlara alerjim var'
+	String get petsAllergic => 'Evcil hayvanlara alerjim var';
 
-	/// tr: 'I have a cat'
-	String get petsHaveCat => 'I have a cat';
+	/// tr: 'Kedim var'
+	String get petsHaveCat => 'Kedim var';
 
-	/// tr: 'I have a dog'
-	String get petsHaveDog => 'I have a dog';
+	/// tr: 'Köpeğim var'
+	String get petsHaveDog => 'Köpeğim var';
 
-	/// tr: 'I have cats and dogs'
-	String get petsHaveCatsAndDogs => 'I have cats and dogs';
+	/// tr: 'Kedilerim ve köpeklerim var'
+	String get petsHaveCatsAndDogs => 'Kedilerim ve köpeklerim var';
 
-	/// tr: 'I have other pets'
-	String get petsHaveOther => 'I have other pets';
+	/// tr: 'Başka evcil hayvanlarım var'
+	String get petsHaveOther => 'Başka evcil hayvanlarım var';
 
-	/// tr: 'Drinking'
-	String get drinking => 'Drinking';
+	/// tr: 'Alkol'
+	String get drinking => 'Alkol';
 
-	/// tr: 'On special occasions'
-	String get drinkingValue => 'On special occasions';
+	/// tr: 'Özel günlerde'
+	String get drinkingValue => 'Özel günlerde';
 
-	/// tr: 'Never'
-	String get drinkingNever => 'Never';
+	/// tr: 'Hiç'
+	String get drinkingNever => 'Hiç';
 
-	/// tr: 'On special occasions'
-	String get drinkingSpecialOccasions => 'On special occasions';
+	/// tr: 'Özel günlerde'
+	String get drinkingSpecialOccasions => 'Özel günlerde';
 
-	/// tr: 'Socially'
-	String get drinkingSocially => 'Socially';
+	/// tr: 'Sosyal ortamlarda'
+	String get drinkingSocially => 'Sosyal ortamlarda';
 
-	/// tr: 'Frequently'
-	String get drinkingFrequently => 'Frequently';
+	/// tr: 'Sık sık'
+	String get drinkingFrequently => 'Sık sık';
 
-	/// tr: 'Sober'
-	String get drinkingSober => 'Sober';
+	/// tr: 'Hiç içmiyorum'
+	String get drinkingSober => 'Hiç içmiyorum';
 
-	/// tr: 'Prefer not to say'
-	String get drinkingPreferNotToSay => 'Prefer not to say';
+	/// tr: 'Belirtmek istemiyorum'
+	String get drinkingPreferNotToSay => 'Belirtmek istemiyorum';
 
-	/// tr: 'Smoking'
-	String get smoking => 'Smoking';
+	/// tr: 'Sigara'
+	String get smoking => 'Sigara';
 
-	/// tr: 'Non-smoker'
-	String get smokingValue => 'Non-smoker';
+	/// tr: 'İçmiyorum'
+	String get smokingValue => 'İçmiyorum';
 
-	/// tr: 'Non-smoker'
-	String get smokingNonSmoker => 'Non-smoker';
+	/// tr: 'İçmiyorum'
+	String get smokingNonSmoker => 'İçmiyorum';
 
-	/// tr: 'Social smoker'
-	String get smokingSocialSmoker => 'Social smoker';
+	/// tr: 'Sosyal ortamlarda'
+	String get smokingSocialSmoker => 'Sosyal ortamlarda';
 
-	/// tr: 'Smoker'
-	String get smokingSmoker => 'Smoker';
+	/// tr: 'İçiyorum'
+	String get smokingSmoker => 'İçiyorum';
 
-	/// tr: 'Trying to quit'
-	String get smokingTryingToQuit => 'Trying to quit';
+	/// tr: 'Bırakmaya çalışıyorum'
+	String get smokingTryingToQuit => 'Bırakmaya çalışıyorum';
 
-	/// tr: 'Smoker when drinking'
-	String get smokingWhenDrinking => 'Smoker when drinking';
+	/// tr: 'İçki içerken'
+	String get smokingWhenDrinking => 'İçki içerken';
 
-	/// tr: 'Prefer not to say'
-	String get smokingPreferNotToSay => 'Prefer not to say';
+	/// tr: 'Belirtmek istemiyorum'
+	String get smokingPreferNotToSay => 'Belirtmek istemiyorum';
 
-	/// tr: 'Gender'
-	String get gender => 'Gender';
+	/// tr: 'Cinsiyet'
+	String get gender => 'Cinsiyet';
 
-	/// tr: 'Female'
-	String get genderFemale => 'Female';
+	/// tr: 'Kadın'
+	String get genderFemale => 'Kadın';
 
-	/// tr: 'Male'
-	String get genderMale => 'Male';
+	/// tr: 'Erkek'
+	String get genderMale => 'Erkek';
 
-	/// tr: 'I don't want to mention it'
-	String get genderPreferNotToSay => 'I don\'t want to mention it';
+	/// tr: 'Belirtmek istemiyorum'
+	String get genderPreferNotToSay => 'Belirtmek istemiyorum';
 
-	/// tr: 'Visible'
-	String get visible => 'Visible';
+	/// tr: 'Görünür'
+	String get visible => 'Görünür';
 
-	/// tr: 'Profile Visibility'
-	String get profileVisibility => 'Profile Visibility';
+	/// tr: 'Profil Görünürlüğü'
+	String get profileVisibility => 'Profil Görünürlüğü';
 
-	/// tr: 'Language'
-	String get language => 'Language';
+	/// tr: 'Dil'
+	String get language => 'Dil';
 
-	/// tr: 'Profile Border'
-	String get borderTitle => 'Profile Border';
+	/// tr: 'Profil Çerçevesi'
+	String get borderTitle => 'Profil Çerçevesi';
 
 	/// tr: 'Profilinize çerçeve ekleyerek kendinizi öne çıkarabilirsiniz.'
 	String get borderSubtitle => 'Profilinize çerçeve ekleyerek kendinizi öne\nçıkarabilirsiniz.';
@@ -557,14 +562,14 @@ class Translations$profile$tr {
 	/// tr: 'Sapphire Halo'
 	String get borderSapphireHalo => 'Sapphire Halo';
 
-	/// tr: 'Follow'
-	String get follow => 'Follow';
+	/// tr: 'Takip Et'
+	String get follow => 'Takip Et';
 
-	/// tr: 'Following'
-	String get following => 'Following';
+	/// tr: 'Takip Ediliyor'
+	String get following => 'Takip Ediliyor';
 
-	/// tr: 'Follow'
-	String get followPageTitle => 'Follow';
+	/// tr: 'Takip'
+	String get followPageTitle => 'Takip';
 
 	/// tr: 'Takip'
 	String get followTabFollowing => 'Takip';
@@ -572,11 +577,11 @@ class Translations$profile$tr {
 	/// tr: 'Takipçi'
 	String get followTabFollowers => 'Takipçi';
 
-	/// tr: 'Search'
-	String get followSearch => 'Search';
+	/// tr: 'Ara'
+	String get followSearch => 'Ara';
 
-	/// tr: 'Unfollow'
-	String get unfollow => 'Unfollow';
+	/// tr: 'Takibi Bırak'
+	String get unfollow => 'Takibi Bırak';
 
 	/// tr: 'Sırala'
 	String get followSortTitle => 'Sırala';
@@ -590,68 +595,68 @@ class Translations$profile$tr {
 	/// tr: 'Benim takip etmediklerim'
 	String get followSortNotFollowedByMe => 'Benim takip etmediklerim';
 
-	/// tr: 'Show Result'
-	String get followSortShowResult => 'Show Result';
+	/// tr: 'Sonuçları Göster'
+	String get followSortShowResult => 'Sonuçları Göster';
 
 	/// tr: 'Bu filtreye uyan kimse yok'
 	String get followSortEmpty => 'Bu filtreye uyan kimse yok';
 
-	/// tr: 'Share with Friends'
-	String get shareTitle => 'Share with Friends';
+	/// tr: 'Arkadaşlarınla Paylaş'
+	String get shareTitle => 'Arkadaşlarınla Paylaş';
 
-	/// tr: 'Everything is more fun when you connect with your friends!'
-	String get shareSubtitle => 'Everything is more fun when you connect\nwith your friends!';
+	/// tr: 'Arkadaşlarınla bağlantı kurunca her şey daha eğlenceli!'
+	String get shareSubtitle => 'Arkadaşlarınla bağlantı kurunca\nher şey daha eğlenceli!';
 
-	/// tr: 'Share the profile'
-	String get shareProfileLabel => 'Share the profile';
+	/// tr: 'Profili paylaş'
+	String get shareProfileLabel => 'Profili paylaş';
 
-	/// tr: 'Link copied'
-	String get shareLinkCopied => 'Link copied';
+	/// tr: 'Bağlantı kopyalandı'
+	String get shareLinkCopied => 'Bağlantı kopyalandı';
 
-	/// tr: 'Restrict'
-	String get restrict => 'Restrict';
+	/// tr: 'Kısıtla'
+	String get restrict => 'Kısıtla';
 
-	/// tr: 'Block'
-	String get block => 'Block';
+	/// tr: 'Engelle'
+	String get block => 'Engelle';
 
-	/// tr: 'Report'
-	String get report => 'Report';
+	/// tr: 'Şikayet Et'
+	String get report => 'Şikayet Et';
 
-	/// tr: 'Block {username} ?'
-	String blockTitle({required Object username}) => 'Block ${username} ?';
+	/// tr: '{username} engellensin mi?'
+	String blockTitle({required Object username}) => '${username} engellensin mi?';
 
-	/// tr: 'This will also block any other accounts they may have or create in the future. You can unlock them anytime.'
-	String get blockBody => 'This will also block any other accounts they may have or create in the future. You can unlock them anytime.';
+	/// tr: 'Bu, kişinin sahip olduğu ya da ileride oluşturacağı diğer hesapları da engeller. Engeli istediğin zaman kaldırabilirsin.'
+	String get blockBody => 'Bu, kişinin sahip olduğu ya da ileride oluşturacağı diğer hesapları da engeller. Engeli istediğin zaman kaldırabilirsin.';
 
-	/// tr: 'Block and report'
-	String get blockAndReport => 'Block and report';
+	/// tr: 'Engelle ve şikayet et'
+	String get blockAndReport => 'Engelle ve şikayet et';
 
-	/// tr: 'Restrict {username} ?'
-	String restrictTitle({required Object username}) => 'Restrict ${username} ?';
+	/// tr: '{username} kısıtlansın mı?'
+	String restrictTitle({required Object username}) => '${username} kısıtlansın mı?';
 
-	/// tr: 'They won't be able to see when you're online or that you've read their messages. You can change this anytime.'
-	String get restrictBody => 'They won\'t be able to see when you\'re online or that you\'ve read their messages. You can change this anytime.';
+	/// tr: 'Çevrimiçi olduğunu ya da mesajlarını okuduğunu göremez. Bunu istediğin zaman değiştirebilirsin.'
+	String get restrictBody => 'Çevrimiçi olduğunu ya da mesajlarını okuduğunu göremez. Bunu istediğin zaman değiştirebilirsin.';
 
-	/// tr: 'Restrict and report'
-	String get restrictAndReport => 'Restrict and report';
+	/// tr: 'Kısıtla ve şikayet et'
+	String get restrictAndReport => 'Kısıtla ve şikayet et';
 
-	/// tr: 'Report sebebini merak ediyoruz'
-	String get reportTitle => 'Report sebebini merak ediyoruz';
+	/// tr: 'Şikayet sebebini merak ediyoruz'
+	String get reportTitle => 'Şikayet sebebini merak ediyoruz';
 
-	/// tr: 'Sana daha iyi bir deneyim sunabilmek için kullanıcıyı neden report etmek istediğini açıklar mısın?'
-	String get reportSubtitle => 'Sana daha iyi bir deneyim sunabilmek için kullanıcıyı neden report etmek istediğini açıklar mısın?';
+	/// tr: 'Sana daha iyi bir deneyim sunabilmek için kullanıcıyı neden şikayet etmek istediğini açıklar mısın?'
+	String get reportSubtitle => 'Sana daha iyi bir deneyim sunabilmek için kullanıcıyı neden şikayet etmek istediğini açıklar mısın?';
 
-	/// tr: 'Report Mesajı'
-	String get reportMessageLabel => 'Report Mesajı';
+	/// tr: 'Şikayet Mesajı'
+	String get reportMessageLabel => 'Şikayet Mesajı';
 
 	/// tr: 'Mesajınızı yazın'
 	String get reportMessageHint => 'Mesajınızı yazın';
 
-	/// tr: 'Cancel'
-	String get reportCancel => 'Cancel';
+	/// tr: 'İptal'
+	String get reportCancel => 'İptal';
 
-	/// tr: 'Send Report'
-	String get sendReport => 'Send Report';
+	/// tr: 'Şikayeti Gönder'
+	String get sendReport => 'Şikayeti Gönder';
 
 	/// tr: 'Belirtilmedi'
 	String get notSet => 'Belirtilmedi';
@@ -677,20 +682,20 @@ class Translations$nav$tr {
 
 	// Translations
 
-	/// tr: 'Discover'
-	String get discover => 'Discover';
+	/// tr: 'Keşfet'
+	String get discover => 'Keşfet';
 
-	/// tr: 'Chat'
-	String get chat => 'Chat';
+	/// tr: 'Sohbet'
+	String get chat => 'Sohbet';
 
-	/// tr: 'Call'
-	String get call => 'Call';
+	/// tr: 'Ara'
+	String get call => 'Ara';
 
 	/// tr: 'Vibes'
 	String get vibes => 'Vibes';
 
-	/// tr: 'Profile'
-	String get profile => 'Profile';
+	/// tr: 'Profil'
+	String get profile => 'Profil';
 }
 
 // Path: call
@@ -701,59 +706,92 @@ class Translations$call$tr {
 
 	// Translations
 
-	/// tr: '60 Second Stranger'
-	String get title => '60 Second Stranger';
+	/// tr: '60 Saniyelik Yabancı'
+	String get title => '60 Saniyelik Yabancı';
 
-	/// tr: 'Talk to a random stranger for 60 seconds — completely anonymous. No profile, no photo, no name. Just a voice and a moment.'
-	String get subtitle => 'Talk to a random stranger for 60 seconds — completely anonymous. No profile, no photo, no name. Just a voice and a moment.';
+	/// tr: 'Rastgele bir yabancıyla 60 saniye konuş — tamamen anonim. Profil yok, fotoğraf yok, isim yok. Sadece bir ses ve bir an.'
+	String get subtitle => 'Rastgele bir yabancıyla 60 saniye konuş — tamamen anonim. Profil yok, fotoğraf yok, isim yok. Sadece bir ses ve bir an.';
 
-	/// tr: 'Finding a stranger...'
-	String get findingTitle => 'Finding a stranger...';
+	/// tr: 'Bir yabancı aranıyor...'
+	String get findingTitle => 'Bir yabancı aranıyor...';
 
-	/// tr: 'You'll talk anonymously for 60 seconds. No profile, no names.'
-	String get findingSubtitle => 'You\'ll talk anonymously for 60 seconds. No profile, no names.';
+	/// tr: '60 saniye anonim konuşacaksın. Profil yok, isim yok.'
+	String get findingSubtitle => '60 saniye anonim konuşacaksın. Profil yok, isim yok.';
 
-	/// tr: 'Call Stranger - 10 Token'
-	String get callStranger => 'Call Stranger - 10 Token';
+	/// tr: 'Yabancıyı Ara - 10 Token'
+	String get callStranger => 'Yabancıyı Ara - 10 Token';
 
-	/// tr: 'Cancel'
-	String get cancel => 'Cancel';
+	/// tr: 'İptal'
+	String get cancel => 'İptal';
 
-	/// tr: 'Female'
-	String get female => 'Female';
+	/// tr: 'Kadın'
+	String get female => 'Kadın';
 
-	/// tr: 'Male'
-	String get male => 'Male';
+	/// tr: 'Erkek'
+	String get male => 'Erkek';
 
 	/// tr: 'Non-binary'
 	String get nonBinary => 'Non-binary';
 
-	/// tr: 'Prefer not to say'
-	String get preferNotToSay => 'Prefer not to say';
+	/// tr: 'Fark etmez'
+	String get preferNotToSay => 'Fark etmez';
 
-	/// tr: '🎙️ Anonymous voice call'
-	String get anonymousBadge => '🎙️ Anonymous voice call';
+	/// tr: '🎙️ Anonim sesli arama'
+	String get anonymousBadge => '🎙️ Anonim sesli arama';
 
-	/// tr: 'Stranger'
-	String get stranger => 'Stranger';
+	/// tr: 'Yabancı'
+	String get stranger => 'Yabancı';
 
-	/// tr: '{n}sn'
-	String secondsLeft({required Object n}) => '${n}sn';
+	/// tr: '{n} sn'
+	String secondsLeft({required Object n}) => '${n} sn';
 
-	/// tr: 'Time's up!'
-	String get timesUpTitle => 'Time\'s up!';
+	/// tr: 'Süre doldu!'
+	String get timesUpTitle => 'Süre doldu!';
 
-	/// tr: 'Want to keep talking? If you both say yes, chat unlocks.'
-	String get timesUpSubtitle => 'Want to keep talking? If you both say yes, chat unlocks.';
+	/// tr: 'Konuşmaya devam etmek ister misin? İkiniz de evet derseniz sohbet açılır.'
+	String get timesUpSubtitle => 'Konuşmaya devam etmek ister misin? İkiniz de evet derseniz sohbet açılır.';
 
-	/// tr: 'Keep Talking'
-	String get keepTalking => 'Keep Talking';
+	/// tr: 'Konuşmaya Devam Et'
+	String get keepTalking => 'Konuşmaya Devam Et';
 
-	/// tr: 'End Call'
-	String get endCall => 'End Call';
+	/// tr: 'Aramayı Bitir'
+	String get endCall => 'Aramayı Bitir';
 
-	/// tr: 'Waiting for the other person...'
-	String get waitingOther => 'Waiting for the other person...';
+	/// tr: 'Karşı taraf bekleniyor...'
+	String get waitingOther => 'Karşı taraf bekleniyor...';
+
+	/// tr: 'Yabancıyı Ara'
+	String get callStrangerFree => 'Yabancıyı Ara';
+
+	/// tr: 'Karşı taraf aramayı bitirdi.'
+	String get peerLeft => 'Karşı taraf aramayı bitirdi.';
+
+	/// tr: 'Bu sefer sohbet açılmadı.'
+	String get noKeep => 'Bu sefer sohbet açılmadı.';
+
+	/// tr: 'Görüntülü aramayı kabul etmesi bekleniyor...'
+	String get videoWaiting => 'Görüntülü aramayı kabul etmesi bekleniyor...';
+
+	/// tr: 'Görüntülü aramayı reddetti.'
+	String get videoDeclined => 'Görüntülü aramayı reddetti.';
+
+	/// tr: 'Arama için mikrofon izni gerekli. Ayarlar'dan açabilirsin.'
+	String get micDenied => 'Arama için mikrofon izni gerekli. Ayarlar\'dan açabilirsin.';
+
+	/// tr: 'Görüntülü arama: 15 dk / 20 token'
+	String get videoCost => 'Görüntülü arama: 15 dk / 20 token';
+
+	/// tr: 'Aranıyor'
+	String get calling => 'Aranıyor';
+
+	/// tr: 'Kabul et'
+	String get accept => 'Kabul et';
+
+	/// tr: 'Reddet'
+	String get decline => 'Reddet';
+
+	/// tr: 'Görüntülü aramaya geçmek ister misin?'
+	String get switchToVideo => 'Görüntülü aramaya geçmek ister misin?';
 }
 
 // Path: vibes
@@ -764,14 +802,14 @@ class Translations$vibes$tr {
 
 	// Translations
 
-	/// tr: 'Search'
-	String get search => 'Search';
+	/// tr: 'Ara'
+	String get search => 'Ara';
 
 	/// tr: 'Mesaj Gönder'
 	String get sendMessage => 'Mesaj Gönder';
 
-	/// tr: 'Wants to talk about this right now'
-	String get wantsToTalk => 'Wants to talk about this right now';
+	/// tr: 'Şu an bunun hakkında konuşmak istiyor'
+	String get wantsToTalk => 'Şu an bunun hakkında konuşmak istiyor';
 
 	/// tr: 'Vibe Paylaş'
 	String get shareTitle => 'Vibe Paylaş';
@@ -806,55 +844,55 @@ class Translations$discover$tr {
 
 	// Translations
 
-	/// tr: 'Discover'
-	String get title => 'Discover';
+	/// tr: 'Keşfet'
+	String get title => 'Keşfet';
 
-	/// tr: 'Rooms'
-	String get tabRooms => 'Rooms';
+	/// tr: 'Odalar'
+	String get tabRooms => 'Odalar';
 
-	/// tr: 'Discover'
-	String get tabDiscover => 'Discover';
+	/// tr: 'Keşfet'
+	String get tabDiscover => 'Keşfet';
 
 	/// tr: 'AI Match'
 	String get tabAiMatch => 'AI Match';
 
 	late final Translations$discover$aiMatch$tr aiMatch = Translations$discover$aiMatch$tr.internal(_root);
 
-	/// tr: 'Search'
-	String get searchHint => 'Search';
+	/// tr: 'Ara'
+	String get searchHint => 'Ara';
 
-	/// tr: 'All Rooms'
-	String get allRooms => 'All Rooms';
+	/// tr: 'Tüm Odalar'
+	String get allRooms => 'Tüm Odalar';
 
-	/// tr: 'All Groups'
-	String get allGroups => 'All Groups';
+	/// tr: 'Tüm Gruplar'
+	String get allGroups => 'Tüm Gruplar';
 
-	/// tr: 'See All'
-	String get seeAll => 'See All';
+	/// tr: 'Tümünü Gör'
+	String get seeAll => 'Tümünü Gör';
 
-	/// tr: 'Live'
-	String get live => 'Live';
+	/// tr: 'Canlı'
+	String get live => 'Canlı';
 
-	/// tr: 'Join'
-	String get join => 'Join';
+	/// tr: 'Katıl'
+	String get join => 'Katıl';
 
-	/// tr: 'Request'
-	String get request => 'Request';
+	/// tr: 'İstek Gönder'
+	String get request => 'İstek Gönder';
 
-	/// tr: 'Requested'
-	String get requested => 'Requested';
+	/// tr: 'İstek Gönderildi'
+	String get requested => 'İstek Gönderildi';
 
-	/// tr: 'Private'
-	String get private => 'Private';
+	/// tr: 'Gizli'
+	String get private => 'Gizli';
 
-	/// tr: '+{count} more'
-	String moreCount({required Object count}) => '+${count} more';
+	/// tr: '+{count} kişi daha'
+	String moreCount({required Object count}) => '+${count} kişi daha';
 
-	/// tr: '{count} active'
-	String activeCount({required Object count}) => '${count} active';
+	/// tr: '{count} aktif'
+	String activeCount({required Object count}) => '${count} aktif';
 
-	/// tr: '{count} members'
-	String membersCount({required Object count}) => '${count} members';
+	/// tr: '{count} üye'
+	String membersCount({required Object count}) => '${count} üye';
 
 	late final Translations$discover$privateRoom$tr privateRoom = Translations$discover$privateRoom$tr.internal(_root);
 	late final Translations$discover$roomToken$tr roomToken = Translations$discover$roomToken$tr.internal(_root);
@@ -869,6 +907,9 @@ class Translations$discover$tr {
 	late final Translations$discover$story$tr story = Translations$discover$story$tr.internal(_root);
 	late final Translations$discover$highlight$tr highlight = Translations$discover$highlight$tr.internal(_root);
 	late final Translations$discover$stats$tr stats = Translations$discover$stats$tr.internal(_root);
+
+	/// tr: '{name} sunuyor'
+	String hostedBy({required Object name}) => '${name} sunuyor';
 }
 
 // Path: common
@@ -1285,6 +1326,222 @@ class Translations$errors$tr {
 
 	/// tr: 'E-posta ve şifren Google ya da Apple hesabın tarafından yönetiliyor.'
 	String get socialAccount => 'E-posta ve şifren Google ya da Apple hesabın tarafından yönetiliyor.';
+
+	/// tr: 'Zaten bir aramadasın.'
+	String get alreadyInCall => 'Zaten bir aramadasın.';
+
+	/// tr: 'Bu oda gizli. Katılmak için istek gönder.'
+	String get roomPrivate => 'Bu oda gizli. Katılmak için istek gönder.';
+
+	/// tr: 'Oda dolu.'
+	String get roomFull => 'Oda dolu.';
+}
+
+// Path: faq
+class Translations$faq$tr {
+	Translations$faq$tr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// tr: 'Bu uygulama nasıl çalışır?'
+	String get q1 => 'Bu uygulama nasıl çalışır?';
+
+	/// tr: 'Anonim sohbet nedir?'
+	String get q2 => 'Anonim sohbet nedir?';
+
+	/// tr: 'Bağlantı İlerlemesi ne işe yarar?'
+	String get q3 => 'Bağlantı İlerlemesi ne işe yarar?';
+
+	/// tr: 'Profilimi nasıl açarım?'
+	String get q4 => 'Profilimi nasıl açarım?';
+
+	/// tr: '60 Saniyelik Yabancı nedir?'
+	String get q5 => '60 Saniyelik Yabancı nedir?';
+
+	/// tr: 'Vibes nedir?'
+	String get q6 => 'Vibes nedir?';
+
+	/// tr: 'Profilimi nasıl düzenlerim?'
+	String get q7 => 'Profilimi nasıl düzenlerim?';
+
+	/// tr: 'Bildirimleri nasıl yönetirim?'
+	String get q8 => 'Bildirimleri nasıl yönetirim?';
+
+	/// tr: 'Satın alımları nasıl geri yüklerim?'
+	String get q9 => 'Satın alımları nasıl geri yüklerim?';
+
+	/// tr: 'Tüm sohbetleri silebilir miyim?'
+	String get q10 => 'Tüm sohbetleri silebilir miyim?';
+
+	/// tr: 'Verilerim güvende mi?'
+	String get q11 => 'Verilerim güvende mi?';
+
+	/// tr: 'Bir kullanıcıyı nasıl engeller veya şikayet ederim?'
+	String get q12 => 'Bir kullanıcıyı nasıl engeller veya şikayet ederim?';
+
+	/// tr: 'Uygulamayı nasıl paylaşırım?'
+	String get q13 => 'Uygulamayı nasıl paylaşırım?';
+
+	/// tr: 'Hesabımı nasıl silebilirim?'
+	String get q14 => 'Hesabımı nasıl silebilirim?';
+
+	/// tr: 'Veylo’da anonim olarak yeni insanlarla tanışabilir, sohbet edebilir ve bağlantın güçlendikçe profilini adım adım açabilirsin. İstediğin zaman yazışma, sesli arama veya yüz yüze görüşmeye geçebilirsin.'
+	String get a1 => 'Veylo’da anonim olarak yeni insanlarla tanışabilir, sohbet edebilir ve bağlantın güçlendikçe profilini adım adım açabilirsin. İstediğin zaman yazışma, sesli arama veya yüz yüze görüşmeye geçebilirsin.';
+
+	/// tr: 'Anonim sohbette kimliğin ve fotoğrafın gizli kalır. Bağlantı yüzdesi arttıkça isim baş harfi, bulanık fotoğraf gibi bilgiler açılır; %100’de karşılıklı onayla tam profil paylaşılır.'
+	String get a2 => 'Anonim sohbette kimliğin ve fotoğrafın gizli kalır. Bağlantı yüzdesi arttıkça isim baş harfi, bulanık fotoğraf gibi bilgiler açılır; %100’de karşılıklı onayla tam profil paylaşılır.';
+
+	/// tr: 'Sohbet ettikçe bağlantı yüzdeniz artar. Belirli eşiklerde isim baş harfi, bulanık fotoğraf ve tam profil gibi adımlar açılır. Detayları Bağlantı göstergesine dokunarak görebilirsin.'
+	String get a3 => 'Sohbet ettikçe bağlantı yüzdeniz artar. Belirli eşiklerde isim baş harfi, bulanık fotoğraf ve tam profil gibi adımlar açılır. Detayları Bağlantı göstergesine dokunarak görebilirsin.';
+
+	/// tr: 'Bağlantı %100 olduğunda Profilimi aç ile talep gönderebilirsin. Karşı taraf da kabul ederse karşılıklı tam profiller görünür.'
+	String get a4 => 'Bağlantı %100 olduğunda Profilimi aç ile talep gönderebilirsin. Karşı taraf da kabul ederse karşılıklı tam profiller görünür.';
+
+	/// tr: 'Ara sekmesinden kısa süreli rastgele bir eşleşme bulabilirsin. Süre bitince görüşmeyi uzatmayı seçebilir veya kapatabilirsin.'
+	String get a5 => 'Ara sekmesinden kısa süreli rastgele bir eşleşme bulabilirsin. Süre bitince görüşmeyi uzatmayı seçebilir veya kapatabilirsin.';
+
+	/// tr: 'Vibes, yakındaki veya keşfedilebilir insanları harita / liste üzerinden görmeni sağlar. İlgilendiğin kişiye yaklaşıp sohbet başlatabilirsin.'
+	String get a6 => 'Vibes, yakındaki veya keşfedilebilir insanları harita / liste üzerinden görmeni sağlar. İlgilendiğin kişiye yaklaşıp sohbet başlatabilirsin.';
+
+	/// tr: 'Profil sekmesinden Profili Düzenle’ye girerek adını, fotoğraflarını, hakkında bilgilerini ve ilgi alanlarını güncelleyebilirsin. Değişiklikler kaydettikten sonra görünür olur.'
+	String get a7 => 'Profil sekmesinden Profili Düzenle’ye girerek adını, fotoğraflarını, hakkında bilgilerini ve ilgi alanlarını güncelleyebilirsin. Değişiklikler kaydettikten sonra görünür olur.';
+
+	/// tr: 'Ayarlar’daki Bildirimler bölümünden mesaj, eşleşme ve diğer uyarıları açıp kapatabilirsin.'
+	String get a8 => 'Ayarlar’daki Bildirimler bölümünden mesaj, eşleşme ve diğer uyarıları açıp kapatabilirsin.';
+
+	/// tr: 'Ayarlar → Hesap Yönetimi → Satın Alımları Geri Yükle’ye dokun. Aynı mağaza hesabındaki uygun satın alımlar geri yüklenir.'
+	String get a9 => 'Ayarlar → Hesap Yönetimi → Satın Alımları Geri Yükle’ye dokun. Aynı mağaza hesabındaki uygun satın alımlar geri yüklenir.';
+
+	/// tr: 'Evet. Ayarlar → Sohbetleri Sil ile onayladıktan sonra tüm konuşmaların silinir. Bu işlem geri alınamaz.'
+	String get a10 => 'Evet. Ayarlar → Sohbetleri Sil ile onayladıktan sonra tüm konuşmaların silinir. Bu işlem geri alınamaz.';
+
+	/// tr: 'Hesap bilgilerin ve mesajların korumalı sistemlerde saklanır. İstersen hesap yönetimi üzerinden hesabını ve verilerini silme talebi oluşturabilirsin.'
+	String get a11 => 'Hesap bilgilerin ve mesajların korumalı sistemlerde saklanır. İstersen hesap yönetimi üzerinden hesabını ve verilerini silme talebi oluşturabilirsin.';
+
+	/// tr: 'Profil veya sohbet ekranındaki menüden engelle veya şikayet et seçeneklerini kullanabilirsin. Şikayetler ekibimiz tarafından incelenir.'
+	String get a12 => 'Profil veya sohbet ekranındaki menüden engelle veya şikayet et seçeneklerini kullanabilirsin. Şikayetler ekibimiz tarafından incelenir.';
+
+	/// tr: 'Ayarlar’daki Uygulamayı Paylaş ile bağlantıyı kopyalayıp arkadaşlarınla paylaşabilirsin.'
+	String get a13 => 'Ayarlar’daki Uygulamayı Paylaş ile bağlantıyı kopyalayıp arkadaşlarınla paylaşabilirsin.';
+
+	/// tr: 'Ayarlar → Hesap Yönetimi → Hesabı ve Verileri Sil yolunu izle. Sebep belirttikten sonra silme talebini onaylaman gerekir.'
+	String get a14 => 'Ayarlar → Hesap Yönetimi → Hesabı ve Verileri Sil yolunu izle. Sebep belirttikten sonra silme talebini onaylaman gerekir.';
+}
+
+// Path: legal
+class Translations$legal$tr {
+	Translations$legal$tr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// tr: 'Hizmet Şartları'
+	String get termsTitle => 'Hizmet Şartları';
+
+	/// tr: 'Gizlilik Politikası'
+	String get privacyTitle => 'Gizlilik Politikası';
+
+	/// tr: 'Son güncelleme: 16 Mart 2026 Veylo’ya hoş geldin. Hesap oluşturarak veya uygulamayı kullanarak bu Hizmet Şartları’nı kabul etmiş olursun. 1. Veylo nedir? Veylo; insanlarla tanışabileceğin, anonim sohbet edebileceğin, bağlantını zamanla güçlendirebileceğin ve karşılıklı onayla sesli veya yüz yüze aramaya geçebileceğin bir sosyal uygulamadır. 2. Hesabın Doğru bilgi vermeli ve giriş bilgilerini güvende tutmalısın. Hesabındaki aktivitelerden sen sorumlusun. Yaşadığın ülkenin yasalarına göre Veylo’yu kullanabilecek yaşta olmalısın. 3. Saygılı kullanım Taciz, tehdit, dolandırıcılık, kimliğe bürünme, yasa dışı içerik veya güvenlik özelliklerini atlatma girişimleri yasaktır. Kuralları ihlal eden içerik kaldırılabilir, özellikler kısıtlanabilir veya hesap askıya alınabilir. 4. Anonim sohbet ve profil açma Anonim sohbetlerde isim ve fotoğraf, bağlantı eşiklerine kadar gizli kalabilir. Tam profil açılışı karşılıklı onay gerektirir. Kimliğini açması için kimseyi zorlama. 5. Satın alımlar Bazı özellikler ücretli olabilir. Ödemeler App Store veya Google Play üzerinden yapılır. Restore Purchases, aynı mağaza hesabındaki uygun satın alımları geri yükler. İadeler mağaza politikasına tabidir. 6. Paylaştığın içerik İçeriğinin hakları sende kalır; Veylo’ya hizmeti sunmak için gereken ölçüde barındırma ve gösterme lisansı verirsin. Hakkın olmayan içeriği paylaşma. 7. Kullanımı sonlandırma İstediğin zaman Veylo’yu bırakabilir ve Ayarlar’dan hesap silme talebi oluşturabilirsin. Gerekirse hizmeti makul bildirimle değiştirebilir veya sonlandırabiliriz. 8. İletişim Bu şartlarla ilgili soruların için: support@veylo.app'
+	String get termsBody => 'Son güncelleme: 16 Mart 2026\n\nVeylo’ya hoş geldin. Hesap oluşturarak veya uygulamayı kullanarak bu Hizmet Şartları’nı kabul etmiş olursun.\n\n1. Veylo nedir?\nVeylo; insanlarla tanışabileceğin, anonim sohbet edebileceğin, bağlantını zamanla güçlendirebileceğin ve karşılıklı onayla sesli veya yüz yüze aramaya geçebileceğin bir sosyal uygulamadır.\n\n2. Hesabın\nDoğru bilgi vermeli ve giriş bilgilerini güvende tutmalısın. Hesabındaki aktivitelerden sen sorumlusun. Yaşadığın ülkenin yasalarına göre Veylo’yu kullanabilecek yaşta olmalısın.\n\n3. Saygılı kullanım\nTaciz, tehdit, dolandırıcılık, kimliğe bürünme, yasa dışı içerik veya güvenlik özelliklerini atlatma girişimleri yasaktır. Kuralları ihlal eden içerik kaldırılabilir, özellikler kısıtlanabilir veya hesap askıya alınabilir.\n\n4. Anonim sohbet ve profil açma\nAnonim sohbetlerde isim ve fotoğraf, bağlantı eşiklerine kadar gizli kalabilir. Tam profil açılışı karşılıklı onay gerektirir. Kimliğini açması için kimseyi zorlama.\n\n5. Satın alımlar\nBazı özellikler ücretli olabilir. Ödemeler App Store veya Google Play üzerinden yapılır. Restore Purchases, aynı mağaza hesabındaki uygun satın alımları geri yükler. İadeler mağaza politikasına tabidir.\n\n6. Paylaştığın içerik\nİçeriğinin hakları sende kalır; Veylo’ya hizmeti sunmak için gereken ölçüde barındırma ve gösterme lisansı verirsin. Hakkın olmayan içeriği paylaşma.\n\n7. Kullanımı sonlandırma\nİstediğin zaman Veylo’yu bırakabilir ve Ayarlar’dan hesap silme talebi oluşturabilirsin. Gerekirse hizmeti makul bildirimle değiştirebilir veya sonlandırabiliriz.\n\n8. İletişim\nBu şartlarla ilgili soruların için: support@veylo.app';
+
+	/// tr: 'Son güncelleme: 16 Mart 2026 Bu Gizlilik Politikası, Veylo’nun bilgilerini nasıl topladığını, kullandığını ve koruduğunu açıklar. 1. Topladığımız bilgiler • Hesap verileri: e-posta, görünen ad, profil fotoğrafları, bio, tercihler • Kullanım verileri: sohbetler, bağlantı ilerlemesi, kullandığın arama özellikleri, temel cihaz/uygulama bilgileri • Satın alımlar: ücretli özellikleri açmak ve geri yüklemek için gerekli mağaza fiş bilgileri 2. Nasıl kullanırız? Verilerini Veylo’yu işletmek, eşleşme ve sohbet deneyimini kişiselleştirmek, topluluğu güvende tutmak, satın alımları işlemek ve ürünü geliştirmek için kullanırız. Kişisel verilerini satmayız. 3. Anonim mod Anonim sohbetlerde diğer kullanıcıların gördüğü bilgiler (ör. maskeli isim veya bulanık fotoğraf) kilit açma kuralları ve karşılıklı onayla sınırlıdır. Özelliğin güvenli çalışması için hesap tanımlayıcılarına yine ihtiyaç duyarız. 4. Paylaşım Verileri yalnızca barındırma, analiz veya ödeme gibi hizmet sağlayıcılarla gerektiği ölçüde paylaşabiliriz. Yasal zorunluluk veya kullanıcıları zarardan koruma durumlarında da açıklama yapılabilir. 5. Saklama Hesabın aktifken ve yasal, güvenlik ile faturalama gerekçeleriyle gerektiği süre veriyi saklarız. Silme talebi tamamlandıktan sonra, zorunlu saklama dışında kişisel veriler silinir veya anonimleştirilir. 6. Seçeneklerin Profilini düzenleyebilir, bildirimleri yönetebilir, hesap silme talebi oluşturabilir ve verilerin hakkında bize yazabilirsin. Mağaza satın alımları Apple veya Google üzerinden de yönetilir. 7. Güvenlik Bilgilerini korumak için makul teknik ve idari önlemler alırız. Hiçbir sistem tamamen risksiz değildir; güçlü parola kullan ve cihazını güncel tut. 8. İletişim Gizlilik soruları: privacy@veylo.app'
+	String get privacyBody => 'Son güncelleme: 16 Mart 2026\n\nBu Gizlilik Politikası, Veylo’nun bilgilerini nasıl topladığını, kullandığını ve koruduğunu açıklar.\n\n1. Topladığımız bilgiler\n• Hesap verileri: e-posta, görünen ad, profil fotoğrafları, bio, tercihler\n• Kullanım verileri: sohbetler, bağlantı ilerlemesi, kullandığın arama özellikleri, temel cihaz/uygulama bilgileri\n• Satın alımlar: ücretli özellikleri açmak ve geri yüklemek için gerekli mağaza fiş bilgileri\n\n2. Nasıl kullanırız?\nVerilerini Veylo’yu işletmek, eşleşme ve sohbet deneyimini kişiselleştirmek, topluluğu güvende tutmak, satın alımları işlemek ve ürünü geliştirmek için kullanırız. Kişisel verilerini satmayız.\n\n3. Anonim mod\nAnonim sohbetlerde diğer kullanıcıların gördüğü bilgiler (ör. maskeli isim veya bulanık fotoğraf) kilit açma kuralları ve karşılıklı onayla sınırlıdır. Özelliğin güvenli çalışması için hesap tanımlayıcılarına yine ihtiyaç duyarız.\n\n4. Paylaşım\nVerileri yalnızca barındırma, analiz veya ödeme gibi hizmet sağlayıcılarla gerektiği ölçüde paylaşabiliriz. Yasal zorunluluk veya kullanıcıları zarardan koruma durumlarında da açıklama yapılabilir.\n\n5. Saklama\nHesabın aktifken ve yasal, güvenlik ile faturalama gerekçeleriyle gerektiği süre veriyi saklarız. Silme talebi tamamlandıktan sonra, zorunlu saklama dışında kişisel veriler silinir veya anonimleştirilir.\n\n6. Seçeneklerin\nProfilini düzenleyebilir, bildirimleri yönetebilir, hesap silme talebi oluşturabilir ve verilerin hakkında bize yazabilirsin. Mağaza satın alımları Apple veya Google üzerinden de yönetilir.\n\n7. Güvenlik\nBilgilerini korumak için makul teknik ve idari önlemler alırız. Hiçbir sistem tamamen risksiz değildir; güçlü parola kullan ve cihazını güncel tut.\n\n8. İletişim\nGizlilik soruları: privacy@veylo.app';
+}
+
+// Path: logout
+class Translations$logout$tr {
+	Translations$logout$tr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// tr: 'Çıkış yap'
+	String get title => 'Çıkış yap';
+
+	/// tr: 'Çıkış yapmak istediğinden emin misin?'
+	String get subtitle => 'Çıkış yapmak istediğinden emin misin?';
+
+	/// tr: 'İptal'
+	String get cancel => 'İptal';
+
+	/// tr: 'Çıkış yap'
+	String get confirm => 'Çıkış yap';
+}
+
+// Path: deleteAccount
+class Translations$deleteAccount$tr {
+	Translations$deleteAccount$tr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// tr: 'Hesap silme talebi gönder'
+	String get title => 'Hesap silme talebi gönder';
+
+	/// tr: 'Hesabını silmek istediğinden emin misin?'
+	String get subtitle => 'Hesabını silmek istediğinden emin misin?';
+
+	/// tr: 'Gitmeni istemiyoruz ama seni anlıyoruz.'
+	String get reasonTitle => 'Gitmeni istemiyoruz ama seni anlıyoruz.';
+
+	/// tr: ''
+	String get reasonBefore => '';
+
+	/// tr: ' deneyimini iyileştirmemiz için bize neden ayrılmak istediğini söyler misin?'
+	String get reasonAfter => ' deneyimini iyileştirmemiz için bize neden ayrılmak istediğini söyler misin?';
+
+	/// tr: 'Hesabını neden silmek istiyorsun'
+	String get reasonLabel => 'Hesabını neden silmek istiyorsun';
+
+	/// tr: 'Mesajınızı yazın'
+	String get reasonHint => 'Mesajınızı yazın';
+
+	/// tr: 'İptal'
+	String get cancel => 'İptal';
+
+	/// tr: 'Talep Oluştur'
+	String get createRequest => 'Talep Oluştur';
+
+	/// tr: 'Hesap silme talebini göndermek istediğinden emin misin?'
+	String get confirmTitle => 'Hesap silme talebini göndermek istediğinden emin misin?';
+
+	/// tr: 'Onaylarsan hesap silme talebin oluşturulacak'
+	String get confirmSubtitle => 'Onaylarsan hesap silme talebin oluşturulacak';
+
+	/// tr: 'Sil'
+	String get delete => 'Sil';
+}
+
+// Path: storyText
+class Translations$storyText$tr {
+	Translations$storyText$tr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// tr: 'Kalın'
+	String get bold => 'Kalın';
+
+	/// tr: 'İtalik'
+	String get italic => 'İtalik';
+
+	/// tr: 'Büyük harf'
+	String get uppercase => 'Büyük harf';
+
+	/// tr: 'Altı çizili'
+	String get underline => 'Altı çizili';
+
+	/// tr: 'İptal'
+	String get cancel => 'İptal';
+
+	/// tr: 'Galeri açılamadı'
+	String get galleryError => 'Galeri açılamadı';
 }
 
 // Path: discover.aiMatch
@@ -1352,59 +1609,59 @@ class Translations$discover$aiMatch$tr {
 	/// tr: '87%'
 	String get statMatchValue => '87%';
 
-	/// tr: '8s'
-	String get statAvgValue => '8s';
+	/// tr: '8 sn'
+	String get statAvgValue => '8 sn';
 
-	/// tr: 'Start Smart Match'
-	String get startSmartMatch => 'Start Smart Match';
+	/// tr: 'Akıllı Eşleşmeyi Başlat'
+	String get startSmartMatch => 'Akıllı Eşleşmeyi Başlat';
 
-	/// tr: 'Finding your match'
-	String get findingTitle => 'Finding your match';
+	/// tr: 'Eşleşmen aranıyor'
+	String get findingTitle => 'Eşleşmen aranıyor';
 
-	/// tr: 'Matching your mood and interests with the right person'
-	String get findingSubtitle => 'Matching your mood and interests with the right person';
+	/// tr: 'Ruh halin ve ilgi alanların doğru kişiyle eşleştiriliyor'
+	String get findingSubtitle => 'Ruh halin ve ilgi alanların doğru kişiyle eşleştiriliyor';
 
-	/// tr: 'Mood analyzed'
-	String get findingStepMood => 'Mood analyzed';
+	/// tr: 'Ruh hali analiz edildi'
+	String get findingStepMood => 'Ruh hali analiz edildi';
 
-	/// tr: 'Interests matched'
-	String get findingStepInterests => 'Interests matched';
+	/// tr: 'İlgi alanları eşleşti'
+	String get findingStepInterests => 'İlgi alanları eşleşti';
 
-	/// tr: 'Calculating compatibility...'
-	String get findingStepCompatibility => 'Calculating compatibility...';
+	/// tr: 'Uyum hesaplanıyor...'
+	String get findingStepCompatibility => 'Uyum hesaplanıyor...';
 
-	/// tr: 'Content is being created...'
-	String get findingStepContent => 'Content is being created...';
+	/// tr: 'İçerik hazırlanıyor...'
+	String get findingStepContent => 'İçerik hazırlanıyor...';
 
-	/// tr: '{count} people online right now'
-	String findingOnline({required Object count}) => '${count} people online right now';
+	/// tr: 'Şu an {count} kişi çevrimiçi'
+	String findingOnline({required Object count}) => 'Şu an ${count} kişi çevrimiçi';
 
-	/// tr: 'Your Match'
-	String get yourMatchTitle => 'Your Match';
+	/// tr: 'Eşleşmen'
+	String get yourMatchTitle => 'Eşleşmen';
 
-	/// tr: 'You have been matched based on your answers'
-	String get yourMatchSubtitle => 'You have been matched based on your answers';
+	/// tr: 'Cevaplarına göre eşleştin'
+	String get yourMatchSubtitle => 'Cevaplarına göre eşleştin';
 
-	/// tr: '{percent}% Vibe match'
-	String vibeMatch({required Object percent}) => '${percent}% Vibe match';
+	/// tr: '%{percent} uyum'
+	String vibeMatch({required Object percent}) => '%${percent} uyum';
 
-	/// tr: 'Start Chatting'
-	String get startChatting => 'Start Chatting';
+	/// tr: 'Sohbete Başla'
+	String get startChatting => 'Sohbete Başla';
 
 	/// tr: '{name}, {age}'
 	String matchNameAge({required Object name, required Object age}) => '${name}, ${age}';
 
-	/// tr: 'I'll make you feel things you didn't know you could feel.'
-	String get matchBio => 'I\'ll make you feel things you didn\'t know you could feel.';
+	/// tr: 'Hissedebileceğini bilmediğin şeyleri hissettireceğim.'
+	String get matchBio => 'Hissedebileceğini bilmediğin şeyleri hissettireceğim.';
 
-	/// tr: 'Previous'
-	String get swipePrevious => 'Previous';
+	/// tr: 'Önceki'
+	String get swipePrevious => 'Önceki';
 
-	/// tr: 'Next'
-	String get swipeNext => 'Next';
+	/// tr: 'Sonraki'
+	String get swipeNext => 'Sonraki';
 
-	/// tr: 'Swipe Finger'
-	String get swipeFinger => 'Swipe Finger';
+	/// tr: 'Parmağını Kaydır'
+	String get swipeFinger => 'Parmağını Kaydır';
 
 	/// tr: 'Şu an uygun kimse yok. Biraz sonra tekrar dene.'
 	String get noMatch => 'Şu an uygun kimse yok. Biraz sonra tekrar dene.';
@@ -1418,23 +1675,23 @@ class Translations$discover$privateRoom$tr {
 
 	// Translations
 
-	/// tr: 'This is a private room. Unlock access with tokens.'
-	String get subtitle => 'This is a private room. Unlock access with tokens.';
+	/// tr: 'Bu gizli bir oda. Erişimi token ile aç.'
+	String get subtitle => 'Bu gizli bir oda. Erişimi token ile aç.';
 
-	/// tr: 'Room access'
-	String get roomAccess => 'Room access';
+	/// tr: 'Oda erişimi'
+	String get roomAccess => 'Oda erişimi';
 
-	/// tr: 'Your balance'
-	String get yourBalance => 'Your balance';
+	/// tr: 'Bakiyen'
+	String get yourBalance => 'Bakiyen';
 
-	/// tr: '{count} tokens'
-	String tokensAmount({required Object count}) => '${count} tokens';
+	/// tr: '{count} token'
+	String tokensAmount({required Object count}) => '${count} token';
 
-	/// tr: 'Join for {count} tokens'
-	String joinForTokens({required Object count}) => 'Join for ${count} tokens';
+	/// tr: '{count} token ile katıl'
+	String joinForTokens({required Object count}) => '${count} token ile katıl';
 
-	/// tr: 'Cancel'
-	String get cancel => 'Cancel';
+	/// tr: 'İptal'
+	String get cancel => 'İptal';
 }
 
 // Path: discover.roomToken
@@ -1445,23 +1702,23 @@ class Translations$discover$roomToken$tr {
 
 	// Translations
 
-	/// tr: 'Unlock access with tokens.'
-	String get subtitle => 'Unlock access with tokens.';
+	/// tr: 'Erişimi token ile aç.'
+	String get subtitle => 'Erişimi token ile aç.';
 
-	/// tr: 'Room access'
-	String get roomAccess => 'Room access';
+	/// tr: 'Oda erişimi'
+	String get roomAccess => 'Oda erişimi';
 
-	/// tr: 'Your balance'
-	String get yourBalance => 'Your balance';
+	/// tr: 'Bakiyen'
+	String get yourBalance => 'Bakiyen';
 
-	/// tr: '{count} tokens'
-	String tokensAmount({required Object count}) => '${count} tokens';
+	/// tr: '{count} token'
+	String tokensAmount({required Object count}) => '${count} token';
 
-	/// tr: 'Join for {count} tokens'
-	String joinForTokens({required Object count}) => 'Join for ${count} tokens';
+	/// tr: '{count} token ile katıl'
+	String joinForTokens({required Object count}) => '${count} token ile katıl';
 
-	/// tr: 'Cancel'
-	String get cancel => 'Cancel';
+	/// tr: 'İptal'
+	String get cancel => 'İptal';
 }
 
 // Path: discover.privateRequest
@@ -1472,20 +1729,20 @@ class Translations$discover$privateRequest$tr {
 
 	// Translations
 
-	/// tr: 'Request to join'
-	String get title => 'Request to join';
+	/// tr: 'Katılma isteği'
+	String get title => 'Katılma isteği';
 
-	/// tr: '{name} · {count} members'
-	String roomInfo({required Object name, required Object count}) => '${name} · ${count} members';
+	/// tr: '{name} · {count} üye'
+	String roomInfo({required Object name, required Object count}) => '${name} · ${count} üye';
 
-	/// tr: 'Say something (optional)...'
-	String get messageHint => 'Say something (optional)...';
+	/// tr: 'Bir şey yaz (isteğe bağlı)...'
+	String get messageHint => 'Bir şey yaz (isteğe bağlı)...';
 
-	/// tr: 'Send Request'
-	String get sendRequest => 'Send Request';
+	/// tr: 'İstek Gönder'
+	String get sendRequest => 'İstek Gönder';
 
-	/// tr: 'The room admin will review your request'
-	String get adminReview => 'The room admin will review your request';
+	/// tr: 'İsteğini oda yöneticisi inceleyecek'
+	String get adminReview => 'İsteğini oda yöneticisi inceleyecek';
 }
 
 // Path: discover.roomApproved
@@ -1496,14 +1753,14 @@ class Translations$discover$roomApproved$tr {
 
 	// Translations
 
-	/// tr: 'You're in!'
-	String get title => 'You\'re in!';
+	/// tr: 'İçeridesin!'
+	String get title => 'İçeridesin!';
 
-	/// tr: 'Your spot in {name} is reserved'
-	String subtitle({required Object name}) => 'Your spot in ${name} is reserved';
+	/// tr: '{name} içinde yerin hazır'
+	String subtitle({required Object name}) => '${name} içinde yerin hazır';
 
-	/// tr: 'Continue'
-	String get continueLabel => 'Continue';
+	/// tr: 'Devam Et'
+	String get continueLabel => 'Devam Et';
 }
 
 // Path: discover.createSpace
@@ -1514,38 +1771,41 @@ class Translations$discover$createSpace$tr {
 
 	// Translations
 
-	/// tr: 'Create Room or Group'
-	String get title => 'Create Room or Group';
+	/// tr: 'Oda veya Grup Oluştur'
+	String get title => 'Oda veya Grup Oluştur';
 
 	/// tr: 'Grup veya canlı oda oluşturarak kitlelere hitap et'
 	String get subtitle => 'Grup veya canlı oda oluşturarak kitlelere hitap et';
 
-	/// tr: 'Room'
-	String get room => 'Room';
+	/// tr: 'Oda'
+	String get room => 'Oda';
 
-	/// tr: 'Group'
-	String get group => 'Group';
+	/// tr: 'Grup'
+	String get group => 'Grup';
 
-	/// tr: 'Hide Your Account'
-	String get hideAccount => 'Hide Your Account';
+	/// tr: 'Hesabımı Gizle'
+	String get hideAccount => 'Hesabımı Gizle';
 
-	/// tr: 'Create'
-	String get create => 'Create';
+	/// tr: 'Oluştur'
+	String get create => 'Oluştur';
 
-	/// tr: 'Cancel'
-	String get cancel => 'Cancel';
+	/// tr: 'İptal'
+	String get cancel => 'İptal';
 
-	/// tr: 'Create Room'
-	String get createRoomTitle => 'Create Room';
+	/// tr: 'Oda Oluştur'
+	String get createRoomTitle => 'Oda Oluştur';
 
-	/// tr: 'Create Group'
-	String get createGroupTitle => 'Create Group';
+	/// tr: 'Grup Oluştur'
+	String get createGroupTitle => 'Grup Oluştur';
 
-	/// tr: 'Give the group you created a name'
-	String get nameSubtitle => 'Give the group you created a name';
+	/// tr: 'Oluşturduğun gruba bir isim ver'
+	String get nameSubtitle => 'Oluşturduğun gruba bir isim ver';
 
-	/// tr: 'Night Owl'
-	String get nameHint => 'Night Owl';
+	/// tr: 'Gece Kuşu'
+	String get nameHint => 'Gece Kuşu';
+
+	/// tr: '{count} tokene oluştur'
+	String createRoomFor({required Object count}) => '${count} tokene oluştur';
 }
 
 // Path: discover.liveRoom
@@ -1556,8 +1816,8 @@ class Translations$discover$liveRoom$tr {
 
 	// Translations
 
-	/// tr: '(Admin)'
-	String get adminSuffix => '(Admin)';
+	/// tr: '(Yönetici)'
+	String get adminSuffix => '(Yönetici)';
 
 	/// tr: 'Mesaj'
 	String get messageHint => 'Mesaj';
@@ -1576,6 +1836,15 @@ class Translations$discover$liveRoom$tr {
 
 	/// tr: 'Ne yapabiliriz? Aklında ne var?'
 	String get sampleChatBody => 'Ne yapabiliriz? Aklında ne var?';
+
+	/// tr: 'Oda kapandı.'
+	String get roomEnded => 'Oda kapandı.';
+
+	/// tr: '{name} katılmak istiyor'
+	String wantsToJoin({required Object name}) => '${name} katılmak istiyor';
+
+	/// tr: 'Onayla'
+	String get approve => 'Onayla';
 }
 
 // Path: discover.groupChat
@@ -1634,8 +1903,8 @@ class Translations$discover$groupInfo$tr {
 	/// tr: 'Sen'
 	String get you => 'Sen';
 
-	/// tr: 'Admin'
-	String get admin => 'Admin';
+	/// tr: 'Yönetici'
+	String get admin => 'Yönetici';
 
 	/// tr: 'Gruptan ayrıl'
 	String get leaveGroup => 'Gruptan ayrıl';
@@ -1682,8 +1951,8 @@ class Translations$discover$filters$tr {
 
 	// Translations
 
-	/// tr: 'Filters'
-	String get title => 'Filters';
+	/// tr: 'Filtreler'
+	String get title => 'Filtreler';
 
 	/// tr: 'Yaş aralığı'
 	String get ageRange => 'Yaş aralığı';
@@ -1742,8 +2011,8 @@ class Translations$discover$post$tr {
 	/// tr: 'Yorumlar'
 	String get commentsTitle => 'Yorumlar';
 
-	/// tr: 'There's nothing quite like having a cup of coffee after a beautiful day. <3'
-	String get sampleCaption => 'There\'s nothing quite like having a cup of coffee after a beautiful day. <3';
+	/// tr: 'Güzel bir günün ardından bir fincan kahve gibisi yok. <3'
+	String get sampleCaption => 'Güzel bir günün ardından bir fincan kahve gibisi yok. <3';
 
 	/// tr: '{hours}s'
 	String hoursAgo({required Object hours}) => '${hours}s';
@@ -1766,11 +2035,11 @@ class Translations$discover$story$tr {
 
 	// Translations
 
-	/// tr: 'DRAFT'
-	String get draft => 'DRAFT';
+	/// tr: 'TASLAK'
+	String get draft => 'TASLAK';
 
-	/// tr: 'STORY'
-	String get story => 'STORY';
+	/// tr: 'HİKÂYE'
+	String get story => 'HİKÂYE';
 
 	/// tr: 'Paylaş'
 	String get share => 'Paylaş';
@@ -1781,14 +2050,14 @@ class Translations$discover$story$tr {
 	/// tr: 'Taslak olarak kaydedilsin mi?'
 	String get draftPrompt => 'Taslak olarak kaydedilsin mi?';
 
-	/// tr: 'Save to Draft'
-	String get saveToDraft => 'Save to Draft';
+	/// tr: 'Taslağa Kaydet'
+	String get saveToDraft => 'Taslağa Kaydet';
 
-	/// tr: 'Move to Trash'
-	String get moveToTrash => 'Move to Trash';
+	/// tr: 'Çöpe Taşı'
+	String get moveToTrash => 'Çöpe Taşı';
 
-	/// tr: 'Save'
-	String get save => 'Save';
+	/// tr: 'Kaydet'
+	String get save => 'Kaydet';
 
 	/// tr: 'Müzik'
 	String get musicTitle => 'Müzik';
@@ -1814,8 +2083,8 @@ class Translations$discover$highlight$tr {
 
 	// Translations
 
-	/// tr: 'Highlight'
-	String get title => 'Highlight';
+	/// tr: 'Öne Çıkan'
+	String get title => 'Öne Çıkan';
 
 	/// tr: 'Görüntüle'
 	String get view => 'Görüntüle';
@@ -1951,37 +2220,37 @@ extension on Translations {
 			'home.title' => 'Ana Sayfa',
 			'home.subtitle' => 'Uygulama hazırlanıyor',
 			'home.body' => 'Çok dilli arayüz slang ile yönetiliyor.',
-			'chats.title' => 'Chats',
-			'chats.search' => 'Search',
-			'chats.messagesSection' => 'Messages',
-			'chats.request' => 'Request',
+			'chats.title' => 'Sohbetler',
+			'chats.search' => 'Ara',
+			'chats.messagesSection' => 'Mesajlar',
+			'chats.request' => 'İstekler',
 			'chats.emptyRequestTitle' => 'Son mesaj bildirimi yok',
 			'chats.emptyRequestSubtitle' => '30 günden eski istekler gösterilmez.',
 			'chats.noteAdd' => 'Not Ekle',
-			'chats.anonymous' => 'Anonymous',
-			'chats.online' => 'online',
-			'chats.offline' => 'offline',
-			'chats.connection' => 'Connection',
-			'chats.connectionPercent' => ({required Object n}) => '${n}%',
-			'chats.connectionProgressTitle' => 'Connection Progress',
-			'chats.milestoneInitial' => 'First name initial',
-			'chats.milestoneInitialHint' => 'Unlocked at 25%',
-			'chats.milestoneInitialLocked' => 'Unlocks at 25%',
-			'chats.milestonePhoto' => 'Blurred photo preview',
-			'chats.milestonePhotoHint' => 'Unlocks at 70%',
-			'chats.milestoneFull' => 'Full profile review',
-			'chats.milestoneFullHint' => 'Mutual consent at 100%',
-			'chats.sampleAnonymousMessage' => 'Hello, it was a pleasure meeting you. Could you tell me a little about yourself?',
-			'chats.strangerSampleMessage' => 'Hello Jhon, it was a pleasure meeting you. Could you tell me a little about yourself?',
+			'chats.anonymous' => 'Anonim',
+			'chats.online' => 'çevrimiçi',
+			'chats.offline' => 'çevrimdışı',
+			'chats.connection' => 'Bağlantı',
+			'chats.connectionPercent' => ({required Object n}) => '%${n}',
+			'chats.connectionProgressTitle' => 'Bağlantı İlerlemesi',
+			'chats.milestoneInitial' => 'Adının baş harfi',
+			'chats.milestoneInitialHint' => '%25\'te açıldı',
+			'chats.milestoneInitialLocked' => '%25\'te açılır',
+			'chats.milestonePhoto' => 'Bulanık fotoğraf önizlemesi',
+			'chats.milestonePhotoHint' => '%70\'te açılır',
+			'chats.milestoneFull' => 'Tam profil görüntüleme',
+			'chats.milestoneFullHint' => '%100\'de karşılıklı onayla',
+			'chats.sampleAnonymousMessage' => 'Merhaba, tanıştığımıza memnun oldum. Biraz kendinden bahseder misin?',
+			'chats.strangerSampleMessage' => 'Merhaba, tanıştığımıza memnun oldum. Biraz kendinden bahseder misin?',
 			'chats.approve' => 'Onayla',
 			'chats.blockUser' => 'Engelle',
 			'chats.reject' => 'Reddet',
-			'chats.messageHint' => 'Hi! how are you?',
-			'chats.revealTitle' => 'You\'ve reached 100%',
-			'chats.revealSubtitle' => 'Reveal your full profiles to each other? Both sides must agree.',
-			'chats.revealWaiting' => ({required Object name}) => 'Waiting for ${name} to accept',
-			'chats.revealCta' => 'Reveal my profile',
-			'chats.revealNotYet' => 'Not Yet',
+			'chats.messageHint' => 'Selam! Nasılsın?',
+			'chats.revealTitle' => '%100\'e ulaştınız',
+			'chats.revealSubtitle' => 'Tam profillerinizi birbirinize açmak ister misiniz? İki tarafın da onaylaması gerekir.',
+			'chats.revealWaiting' => ({required Object name}) => '${name} kişisinin onayı bekleniyor',
+			'chats.revealCta' => 'Profilimi aç',
+			'chats.revealNotYet' => 'Henüz değil',
 			'chats.seen' => 'Görüldü',
 			'chats.typing' => 'yazıyor…',
 			'chats.noteYou' => 'Sen',
@@ -1990,38 +2259,38 @@ extension on Translations {
 			'chats.noteHint' => 'Aklında ne var?',
 			'chats.noteShare' => 'Paylaş',
 			'chats.noteDelete' => 'Notu sil',
-			'profile.eyebrow' => 'Profile',
-			'profile.title' => 'Settings',
-			'profile.editProfile' => 'Edit Profile',
-			'profile.statLike' => 'Like',
-			'profile.statFollow' => 'Follow',
-			'profile.statFollower' => 'Follower',
-			'profile.promoTitle' => 'Get More Messages!',
-			'profile.promoSubtitle' => 'Stand out, appear at the top of the list',
-			'profile.standOut' => 'Stand Out',
+			'profile.eyebrow' => 'Profil',
+			'profile.title' => 'Ayarlar',
+			'profile.editProfile' => 'Profili Düzenle',
+			'profile.statLike' => 'Beğeni',
+			'profile.statFollow' => 'Takip',
+			'profile.statFollower' => 'Takipçi',
+			'profile.promoTitle' => 'Daha Fazla Mesaj Al!',
+			'profile.promoSubtitle' => 'Öne çık, listenin en üstünde görün',
+			'profile.standOut' => 'Öne Çık',
 			'profile.tabPosts' => 'Gönderi',
 			'profile.tabVideo' => 'Video',
 			'profile.tabSaved' => 'Kaydedilenler',
-			'profile.save' => 'Save',
-			'profile.changePhoto' => 'Change Photo',
-			'profile.changeBorder' => 'Change Border',
-			'profile.interest' => 'Interest',
-			'profile.name' => 'Name',
+			'profile.save' => 'Kaydet',
+			'profile.changePhoto' => 'Fotoğrafı Değiştir',
+			'profile.changeBorder' => 'Çerçeveyi Değiştir',
+			'profile.interest' => 'İlgi Alanları',
+			'profile.name' => 'Ad',
 			'profile.changeName' => 'İsim Değiştir',
 			'profile.changePassword' => 'Şifre Değiştir',
 			'profile.confirmPassword' => 'Şifreyi Onayla',
 			'profile.email' => 'E-posta',
 			'profile.accountManagement' => 'Hesap Yönetimi',
 			'profile.settingsAbout' => 'Hakkında',
-			'profile.settingsAccount' => 'Account Settings',
+			'profile.settingsAccount' => 'Hesap Ayarları',
 			'profile.settingsSupport' => 'Destek',
 			'profile.shareApp' => 'Uygulamayı Paylaş',
 			'profile.shareAppTitle' => 'Arkadaşlarınla Paylaş',
 			'profile.shareAppSubtitle' => 'Veylo’yu arkadaşlarınla paylaş, birlikte keşfedin!',
 			'profile.shareAppLabel' => 'Uygulama bağlantısı',
 			'profile.rateApp' => 'Bizi Beğendin mi? Puan Ver',
-			'profile.notifications' => 'Notifications',
-			'profile.password' => 'Password',
+			'profile.notifications' => 'Bildirimler',
+			'profile.password' => 'Şifre',
 			'profile.deleteConversation' => 'Sohbetleri Sil',
 			'profile.faqHelp' => 'SSS ve Yardım',
 			'profile.restorePurchases' => 'Satın Alımları Geri Yükle',
@@ -2029,66 +2298,66 @@ extension on Translations {
 			'profile.privacyPolicy' => 'Gizlilik Politikası',
 			'profile.restorePurchasesDone' => 'Satın alımlar kontrol edildi',
 			'profile.conversationsDeleted' => 'Tüm sohbetler silindi',
-			'profile.logOut' => 'Log Out',
-			'profile.deleteAccountAndData' => 'Delete Account and Data',
+			'profile.logOut' => 'Çıkış Yap',
+			'profile.deleteAccountAndData' => 'Hesabı ve Verileri Sil',
 			'profile.passwordPlaceholder' => '********',
-			'profile.height' => 'Height',
-			'profile.addHeight' => 'Add Height',
+			'profile.height' => 'Boy',
+			'profile.addHeight' => 'Boy Ekle',
 			'profile.heightCm' => ({required Object value}) => '${value} cm',
-			'profile.languages' => 'Languages',
-			'profile.relationshipGoals' => 'Relationship Goals',
-			'profile.lookingFor' => 'Looking for',
-			'profile.newFriends' => '👋 New Friends',
-			'profile.goalLongTermOpenToShort' => '💕 Long-term, Open to Short',
-			'profile.goalLongTermRelationship' => '💘 Long-term Relationship',
-			'profile.goalNewFriends' => '👋 New friends',
-			'profile.goalShortTermFun' => '🥃 Short-term Fun',
-			'profile.goalStillFiguringItOut' => '🤔 Still Figuring It Out',
-			'profile.basics' => 'Basics',
-			'profile.zodiac' => 'Zodiac',
-			'profile.zodiacValue' => 'Scorpion',
-			'profile.education' => 'Education',
-			'profile.educationValue' => 'Bachelors',
-			'profile.educationHighSchool' => 'High School',
-			'profile.educationAssociates' => 'Associate\'s Degree',
-			'profile.educationBachelors' => 'Bachelor\'s Degree',
-			'profile.educationMasters' => 'Master\'s Degree',
-			'profile.educationPhd' => 'PhD / Doctorate',
-			'profile.voiceRecord' => 'Voice Record',
-			'profile.addVoice' => 'Add Voice',
-			'profile.lifestyle' => 'Lifestyle',
-			'profile.pets' => 'Pets',
-			'profile.petsValue' => 'I have a cat',
-			'profile.petsDontWant' => 'I don\'t want pets',
-			'profile.petsAllergic' => 'I\'m allergic to pets',
-			'profile.petsHaveCat' => 'I have a cat',
-			'profile.petsHaveDog' => 'I have a dog',
-			'profile.petsHaveCatsAndDogs' => 'I have cats and dogs',
-			'profile.petsHaveOther' => 'I have other pets',
-			'profile.drinking' => 'Drinking',
-			'profile.drinkingValue' => 'On special occasions',
-			'profile.drinkingNever' => 'Never',
-			'profile.drinkingSpecialOccasions' => 'On special occasions',
-			'profile.drinkingSocially' => 'Socially',
-			'profile.drinkingFrequently' => 'Frequently',
-			'profile.drinkingSober' => 'Sober',
-			'profile.drinkingPreferNotToSay' => 'Prefer not to say',
-			'profile.smoking' => 'Smoking',
-			'profile.smokingValue' => 'Non-smoker',
-			'profile.smokingNonSmoker' => 'Non-smoker',
-			'profile.smokingSocialSmoker' => 'Social smoker',
-			'profile.smokingSmoker' => 'Smoker',
-			'profile.smokingTryingToQuit' => 'Trying to quit',
-			'profile.smokingWhenDrinking' => 'Smoker when drinking',
-			'profile.smokingPreferNotToSay' => 'Prefer not to say',
-			'profile.gender' => 'Gender',
-			'profile.genderFemale' => 'Female',
-			'profile.genderMale' => 'Male',
-			'profile.genderPreferNotToSay' => 'I don\'t want to mention it',
-			'profile.visible' => 'Visible',
-			'profile.profileVisibility' => 'Profile Visibility',
-			'profile.language' => 'Language',
-			'profile.borderTitle' => 'Profile Border',
+			'profile.languages' => 'Diller',
+			'profile.relationshipGoals' => 'İlişki Hedefleri',
+			'profile.lookingFor' => 'Aradığım',
+			'profile.newFriends' => '👋 Yeni Arkadaşlar',
+			'profile.goalLongTermOpenToShort' => '💕 Uzun vadeli, kısaya da açığım',
+			'profile.goalLongTermRelationship' => '💘 Uzun vadeli ilişki',
+			'profile.goalNewFriends' => '👋 Yeni arkadaşlar',
+			'profile.goalShortTermFun' => '🥃 Kısa süreli eğlence',
+			'profile.goalStillFiguringItOut' => '🤔 Henüz karar vermedim',
+			'profile.basics' => 'Temel Bilgiler',
+			'profile.zodiac' => 'Burç',
+			'profile.zodiacValue' => 'Akrep',
+			'profile.education' => 'Eğitim',
+			'profile.educationValue' => 'Lisans',
+			'profile.educationHighSchool' => 'Lise',
+			'profile.educationAssociates' => 'Ön Lisans',
+			'profile.educationBachelors' => 'Lisans',
+			'profile.educationMasters' => 'Yüksek Lisans',
+			'profile.educationPhd' => 'Doktora',
+			'profile.voiceRecord' => 'Ses Kaydı',
+			'profile.addVoice' => 'Ses Ekle',
+			'profile.lifestyle' => 'Yaşam Tarzı',
+			'profile.pets' => 'Evcil Hayvanlar',
+			'profile.petsValue' => 'Kedim var',
+			'profile.petsDontWant' => 'Evcil hayvan istemiyorum',
+			'profile.petsAllergic' => 'Evcil hayvanlara alerjim var',
+			'profile.petsHaveCat' => 'Kedim var',
+			'profile.petsHaveDog' => 'Köpeğim var',
+			'profile.petsHaveCatsAndDogs' => 'Kedilerim ve köpeklerim var',
+			'profile.petsHaveOther' => 'Başka evcil hayvanlarım var',
+			'profile.drinking' => 'Alkol',
+			'profile.drinkingValue' => 'Özel günlerde',
+			'profile.drinkingNever' => 'Hiç',
+			'profile.drinkingSpecialOccasions' => 'Özel günlerde',
+			'profile.drinkingSocially' => 'Sosyal ortamlarda',
+			'profile.drinkingFrequently' => 'Sık sık',
+			'profile.drinkingSober' => 'Hiç içmiyorum',
+			'profile.drinkingPreferNotToSay' => 'Belirtmek istemiyorum',
+			'profile.smoking' => 'Sigara',
+			'profile.smokingValue' => 'İçmiyorum',
+			'profile.smokingNonSmoker' => 'İçmiyorum',
+			'profile.smokingSocialSmoker' => 'Sosyal ortamlarda',
+			'profile.smokingSmoker' => 'İçiyorum',
+			'profile.smokingTryingToQuit' => 'Bırakmaya çalışıyorum',
+			'profile.smokingWhenDrinking' => 'İçki içerken',
+			'profile.smokingPreferNotToSay' => 'Belirtmek istemiyorum',
+			'profile.gender' => 'Cinsiyet',
+			'profile.genderFemale' => 'Kadın',
+			'profile.genderMale' => 'Erkek',
+			'profile.genderPreferNotToSay' => 'Belirtmek istemiyorum',
+			'profile.visible' => 'Görünür',
+			'profile.profileVisibility' => 'Profil Görünürlüğü',
+			'profile.language' => 'Dil',
+			'profile.borderTitle' => 'Profil Çerçevesi',
 			'profile.borderSubtitle' => 'Profilinize çerçeve ekleyerek kendinizi öne\nçıkarabilirsiniz.',
 			'profile.borderBuySection' => 'Çerçeve satın al',
 			'profile.borderBuyCta' => 'Çerçeve Satın Al',
@@ -2101,69 +2370,80 @@ extension on Translations {
 			'profile.borderStarlitComet' => 'Starlit Comet',
 			'profile.borderCrimsonRoyal' => 'Crimson Royal',
 			'profile.borderSapphireHalo' => 'Sapphire Halo',
-			'profile.follow' => 'Follow',
-			'profile.following' => 'Following',
-			'profile.followPageTitle' => 'Follow',
+			'profile.follow' => 'Takip Et',
+			'profile.following' => 'Takip Ediliyor',
+			'profile.followPageTitle' => 'Takip',
 			'profile.followTabFollowing' => 'Takip',
 			'profile.followTabFollowers' => 'Takipçi',
-			'profile.followSearch' => 'Search',
-			'profile.unfollow' => 'Unfollow',
+			'profile.followSearch' => 'Ara',
+			'profile.unfollow' => 'Takibi Bırak',
 			'profile.followSortTitle' => 'Sırala',
 			'profile.followSortRecent' => 'En son takip ettiğim kişiler',
 			'profile.followSortNotFollowingMe' => 'Beni takip etmeyenler',
 			'profile.followSortNotFollowedByMe' => 'Benim takip etmediklerim',
-			'profile.followSortShowResult' => 'Show Result',
+			'profile.followSortShowResult' => 'Sonuçları Göster',
 			'profile.followSortEmpty' => 'Bu filtreye uyan kimse yok',
-			'profile.shareTitle' => 'Share with Friends',
-			'profile.shareSubtitle' => 'Everything is more fun when you connect\nwith your friends!',
-			'profile.shareProfileLabel' => 'Share the profile',
-			'profile.shareLinkCopied' => 'Link copied',
-			'profile.restrict' => 'Restrict',
-			'profile.block' => 'Block',
-			'profile.report' => 'Report',
-			'profile.blockTitle' => ({required Object username}) => 'Block ${username} ?',
-			'profile.blockBody' => 'This will also block any other accounts they may have or create in the future. You can unlock them anytime.',
-			'profile.blockAndReport' => 'Block and report',
-			'profile.restrictTitle' => ({required Object username}) => 'Restrict ${username} ?',
-			'profile.restrictBody' => 'They won\'t be able to see when you\'re online or that you\'ve read their messages. You can change this anytime.',
-			'profile.restrictAndReport' => 'Restrict and report',
-			'profile.reportTitle' => 'Report sebebini merak ediyoruz',
-			'profile.reportSubtitle' => 'Sana daha iyi bir deneyim sunabilmek için kullanıcıyı neden report etmek istediğini açıklar mısın?',
-			'profile.reportMessageLabel' => 'Report Mesajı',
+			'profile.shareTitle' => 'Arkadaşlarınla Paylaş',
+			'profile.shareSubtitle' => 'Arkadaşlarınla bağlantı kurunca\nher şey daha eğlenceli!',
+			'profile.shareProfileLabel' => 'Profili paylaş',
+			'profile.shareLinkCopied' => 'Bağlantı kopyalandı',
+			'profile.restrict' => 'Kısıtla',
+			'profile.block' => 'Engelle',
+			'profile.report' => 'Şikayet Et',
+			'profile.blockTitle' => ({required Object username}) => '${username} engellensin mi?',
+			'profile.blockBody' => 'Bu, kişinin sahip olduğu ya da ileride oluşturacağı diğer hesapları da engeller. Engeli istediğin zaman kaldırabilirsin.',
+			'profile.blockAndReport' => 'Engelle ve şikayet et',
+			'profile.restrictTitle' => ({required Object username}) => '${username} kısıtlansın mı?',
+			'profile.restrictBody' => 'Çevrimiçi olduğunu ya da mesajlarını okuduğunu göremez. Bunu istediğin zaman değiştirebilirsin.',
+			'profile.restrictAndReport' => 'Kısıtla ve şikayet et',
+			'profile.reportTitle' => 'Şikayet sebebini merak ediyoruz',
+			'profile.reportSubtitle' => 'Sana daha iyi bir deneyim sunabilmek için kullanıcıyı neden şikayet etmek istediğini açıklar mısın?',
+			'profile.reportMessageLabel' => 'Şikayet Mesajı',
 			'profile.reportMessageHint' => 'Mesajınızı yazın',
-			'profile.reportCancel' => 'Cancel',
-			'profile.sendReport' => 'Send Report',
+			'profile.reportCancel' => 'İptal',
+			'profile.sendReport' => 'Şikayeti Gönder',
 			'profile.notSet' => 'Belirtilmedi',
 			'profile.reportSent' => 'Teşekkürler, raporunu aldık.',
 			'profile.emailVerificationSent' => ({required Object email}) => '${email} adresine onay bağlantısı gönderdik. Onaylayınca e-postan değişir.',
 			'profile.passwordChanged' => 'Şifren güncellendi.',
 			'profile.passwordMismatch' => 'Şifreler eşleşmiyor.',
-			'nav.discover' => 'Discover',
-			'nav.chat' => 'Chat',
-			'nav.call' => 'Call',
+			'nav.discover' => 'Keşfet',
+			'nav.chat' => 'Sohbet',
+			'nav.call' => 'Ara',
 			'nav.vibes' => 'Vibes',
-			'nav.profile' => 'Profile',
-			'call.title' => '60 Second Stranger',
-			'call.subtitle' => 'Talk to a random stranger for 60 seconds — completely anonymous. No profile, no photo, no name. Just a voice and a moment.',
-			'call.findingTitle' => 'Finding a stranger...',
-			'call.findingSubtitle' => 'You\'ll talk anonymously for 60 seconds. No profile, no names.',
-			'call.callStranger' => 'Call Stranger - 10 Token',
-			'call.cancel' => 'Cancel',
-			'call.female' => 'Female',
-			'call.male' => 'Male',
+			'nav.profile' => 'Profil',
+			'call.title' => '60 Saniyelik Yabancı',
+			'call.subtitle' => 'Rastgele bir yabancıyla 60 saniye konuş — tamamen anonim. Profil yok, fotoğraf yok, isim yok. Sadece bir ses ve bir an.',
+			'call.findingTitle' => 'Bir yabancı aranıyor...',
+			'call.findingSubtitle' => '60 saniye anonim konuşacaksın. Profil yok, isim yok.',
+			'call.callStranger' => 'Yabancıyı Ara - 10 Token',
+			'call.cancel' => 'İptal',
+			'call.female' => 'Kadın',
+			'call.male' => 'Erkek',
 			'call.nonBinary' => 'Non-binary',
-			'call.preferNotToSay' => 'Prefer not to say',
-			'call.anonymousBadge' => '🎙️ Anonymous voice call',
-			'call.stranger' => 'Stranger',
-			'call.secondsLeft' => ({required Object n}) => '${n}sn',
-			'call.timesUpTitle' => 'Time\'s up!',
-			'call.timesUpSubtitle' => 'Want to keep talking? If you both say yes, chat unlocks.',
-			'call.keepTalking' => 'Keep Talking',
-			'call.endCall' => 'End Call',
-			'call.waitingOther' => 'Waiting for the other person...',
-			'vibes.search' => 'Search',
+			'call.preferNotToSay' => 'Fark etmez',
+			'call.anonymousBadge' => '🎙️ Anonim sesli arama',
+			'call.stranger' => 'Yabancı',
+			'call.secondsLeft' => ({required Object n}) => '${n} sn',
+			'call.timesUpTitle' => 'Süre doldu!',
+			'call.timesUpSubtitle' => 'Konuşmaya devam etmek ister misin? İkiniz de evet derseniz sohbet açılır.',
+			'call.keepTalking' => 'Konuşmaya Devam Et',
+			'call.endCall' => 'Aramayı Bitir',
+			'call.waitingOther' => 'Karşı taraf bekleniyor...',
+			'call.callStrangerFree' => 'Yabancıyı Ara',
+			'call.peerLeft' => 'Karşı taraf aramayı bitirdi.',
+			'call.noKeep' => 'Bu sefer sohbet açılmadı.',
+			'call.videoWaiting' => 'Görüntülü aramayı kabul etmesi bekleniyor...',
+			'call.videoDeclined' => 'Görüntülü aramayı reddetti.',
+			'call.micDenied' => 'Arama için mikrofon izni gerekli. Ayarlar\'dan açabilirsin.',
+			'call.videoCost' => 'Görüntülü arama: 15 dk / 20 token',
+			'call.calling' => 'Aranıyor',
+			'call.accept' => 'Kabul et',
+			'call.decline' => 'Reddet',
+			'call.switchToVideo' => 'Görüntülü aramaya geçmek ister misin?',
+			'vibes.search' => 'Ara',
 			'vibes.sendMessage' => 'Mesaj Gönder',
-			'vibes.wantsToTalk' => 'Wants to talk about this right now',
+			'vibes.wantsToTalk' => 'Şu an bunun hakkında konuşmak istiyor',
 			'vibes.shareTitle' => 'Vibe Paylaş',
 			'vibes.replyTitle' => 'Vibe\'a Cevap Ver',
 			'vibes.shareHint' => 'Bir şeyler yaz',
@@ -2172,9 +2452,9 @@ extension on Translations {
 			'vibes.deleteTitle' => 'Bu vibe silinsin mi?',
 			'vibes.delete' => 'Sil',
 			'vibes.cancel' => 'Vazgeç',
-			'discover.title' => 'Discover',
-			'discover.tabRooms' => 'Rooms',
-			'discover.tabDiscover' => 'Discover',
+			'discover.title' => 'Keşfet',
+			'discover.tabRooms' => 'Odalar',
+			'discover.tabDiscover' => 'Keşfet',
 			'discover.tabAiMatch' => 'AI Match',
 			'discover.aiMatch.feelingTitle' => 'Bugün nasıl hissediyorsun',
 			'discover.aiMatch.feelingSubtitle' => 'AI, seçimine göre en iyi eşleşmeyi bulur',
@@ -2195,75 +2475,79 @@ extension on Translations {
 			'discover.aiMatch.statAvgTime' => 'Ort. süre',
 			'discover.aiMatch.statActiveValue' => '843',
 			'discover.aiMatch.statMatchValue' => '87%',
-			'discover.aiMatch.statAvgValue' => '8s',
-			'discover.aiMatch.startSmartMatch' => 'Start Smart Match',
-			'discover.aiMatch.findingTitle' => 'Finding your match',
-			'discover.aiMatch.findingSubtitle' => 'Matching your mood and interests with the right person',
-			'discover.aiMatch.findingStepMood' => 'Mood analyzed',
-			'discover.aiMatch.findingStepInterests' => 'Interests matched',
-			'discover.aiMatch.findingStepCompatibility' => 'Calculating compatibility...',
-			'discover.aiMatch.findingStepContent' => 'Content is being created...',
-			'discover.aiMatch.findingOnline' => ({required Object count}) => '${count} people online right now',
-			'discover.aiMatch.yourMatchTitle' => 'Your Match',
-			'discover.aiMatch.yourMatchSubtitle' => 'You have been matched based on your answers',
-			'discover.aiMatch.vibeMatch' => ({required Object percent}) => '${percent}% Vibe match',
-			'discover.aiMatch.startChatting' => 'Start Chatting',
+			'discover.aiMatch.statAvgValue' => '8 sn',
+			'discover.aiMatch.startSmartMatch' => 'Akıllı Eşleşmeyi Başlat',
+			'discover.aiMatch.findingTitle' => 'Eşleşmen aranıyor',
+			'discover.aiMatch.findingSubtitle' => 'Ruh halin ve ilgi alanların doğru kişiyle eşleştiriliyor',
+			'discover.aiMatch.findingStepMood' => 'Ruh hali analiz edildi',
+			'discover.aiMatch.findingStepInterests' => 'İlgi alanları eşleşti',
+			'discover.aiMatch.findingStepCompatibility' => 'Uyum hesaplanıyor...',
+			'discover.aiMatch.findingStepContent' => 'İçerik hazırlanıyor...',
+			'discover.aiMatch.findingOnline' => ({required Object count}) => 'Şu an ${count} kişi çevrimiçi',
+			'discover.aiMatch.yourMatchTitle' => 'Eşleşmen',
+			'discover.aiMatch.yourMatchSubtitle' => 'Cevaplarına göre eşleştin',
+			'discover.aiMatch.vibeMatch' => ({required Object percent}) => '%${percent} uyum',
+			'discover.aiMatch.startChatting' => 'Sohbete Başla',
 			'discover.aiMatch.matchNameAge' => ({required Object name, required Object age}) => '${name}, ${age}',
-			'discover.aiMatch.matchBio' => 'I\'ll make you feel things you didn\'t know you could feel.',
-			'discover.aiMatch.swipePrevious' => 'Previous',
-			'discover.aiMatch.swipeNext' => 'Next',
-			'discover.aiMatch.swipeFinger' => 'Swipe Finger',
+			'discover.aiMatch.matchBio' => 'Hissedebileceğini bilmediğin şeyleri hissettireceğim.',
+			'discover.aiMatch.swipePrevious' => 'Önceki',
+			'discover.aiMatch.swipeNext' => 'Sonraki',
+			'discover.aiMatch.swipeFinger' => 'Parmağını Kaydır',
 			'discover.aiMatch.noMatch' => 'Şu an uygun kimse yok. Biraz sonra tekrar dene.',
-			'discover.searchHint' => 'Search',
-			'discover.allRooms' => 'All Rooms',
-			'discover.allGroups' => 'All Groups',
-			'discover.seeAll' => 'See All',
-			'discover.live' => 'Live',
-			'discover.join' => 'Join',
-			'discover.request' => 'Request',
-			'discover.requested' => 'Requested',
-			'discover.private' => 'Private',
-			'discover.moreCount' => ({required Object count}) => '+${count} more',
-			'discover.activeCount' => ({required Object count}) => '${count} active',
-			'discover.membersCount' => ({required Object count}) => '${count} members',
-			'discover.privateRoom.subtitle' => 'This is a private room. Unlock access with tokens.',
-			'discover.privateRoom.roomAccess' => 'Room access',
-			'discover.privateRoom.yourBalance' => 'Your balance',
-			'discover.privateRoom.tokensAmount' => ({required Object count}) => '${count} tokens',
-			'discover.privateRoom.joinForTokens' => ({required Object count}) => 'Join for ${count} tokens',
-			'discover.privateRoom.cancel' => 'Cancel',
-			'discover.roomToken.subtitle' => 'Unlock access with tokens.',
-			'discover.roomToken.roomAccess' => 'Room access',
-			'discover.roomToken.yourBalance' => 'Your balance',
-			'discover.roomToken.tokensAmount' => ({required Object count}) => '${count} tokens',
-			'discover.roomToken.joinForTokens' => ({required Object count}) => 'Join for ${count} tokens',
-			'discover.roomToken.cancel' => 'Cancel',
-			'discover.privateRequest.title' => 'Request to join',
-			'discover.privateRequest.roomInfo' => ({required Object name, required Object count}) => '${name} · ${count} members',
-			'discover.privateRequest.messageHint' => 'Say something (optional)...',
-			'discover.privateRequest.sendRequest' => 'Send Request',
-			'discover.privateRequest.adminReview' => 'The room admin will review your request',
-			'discover.roomApproved.title' => 'You\'re in!',
-			'discover.roomApproved.subtitle' => ({required Object name}) => 'Your spot in ${name} is reserved',
-			'discover.roomApproved.continueLabel' => 'Continue',
-			'discover.createSpace.title' => 'Create Room or Group',
+			'discover.searchHint' => 'Ara',
+			'discover.allRooms' => 'Tüm Odalar',
+			'discover.allGroups' => 'Tüm Gruplar',
+			'discover.seeAll' => 'Tümünü Gör',
+			'discover.live' => 'Canlı',
+			'discover.join' => 'Katıl',
+			'discover.request' => 'İstek Gönder',
+			'discover.requested' => 'İstek Gönderildi',
+			'discover.private' => 'Gizli',
+			'discover.moreCount' => ({required Object count}) => '+${count} kişi daha',
+			'discover.activeCount' => ({required Object count}) => '${count} aktif',
+			'discover.membersCount' => ({required Object count}) => '${count} üye',
+			'discover.privateRoom.subtitle' => 'Bu gizli bir oda. Erişimi token ile aç.',
+			'discover.privateRoom.roomAccess' => 'Oda erişimi',
+			'discover.privateRoom.yourBalance' => 'Bakiyen',
+			'discover.privateRoom.tokensAmount' => ({required Object count}) => '${count} token',
+			'discover.privateRoom.joinForTokens' => ({required Object count}) => '${count} token ile katıl',
+			'discover.privateRoom.cancel' => 'İptal',
+			'discover.roomToken.subtitle' => 'Erişimi token ile aç.',
+			'discover.roomToken.roomAccess' => 'Oda erişimi',
+			'discover.roomToken.yourBalance' => 'Bakiyen',
+			'discover.roomToken.tokensAmount' => ({required Object count}) => '${count} token',
+			'discover.roomToken.joinForTokens' => ({required Object count}) => '${count} token ile katıl',
+			'discover.roomToken.cancel' => 'İptal',
+			'discover.privateRequest.title' => 'Katılma isteği',
+			'discover.privateRequest.roomInfo' => ({required Object name, required Object count}) => '${name} · ${count} üye',
+			'discover.privateRequest.messageHint' => 'Bir şey yaz (isteğe bağlı)...',
+			'discover.privateRequest.sendRequest' => 'İstek Gönder',
+			'discover.privateRequest.adminReview' => 'İsteğini oda yöneticisi inceleyecek',
+			'discover.roomApproved.title' => 'İçeridesin!',
+			'discover.roomApproved.subtitle' => ({required Object name}) => '${name} içinde yerin hazır',
+			'discover.roomApproved.continueLabel' => 'Devam Et',
+			'discover.createSpace.title' => 'Oda veya Grup Oluştur',
 			'discover.createSpace.subtitle' => 'Grup veya canlı oda oluşturarak kitlelere hitap et',
-			'discover.createSpace.room' => 'Room',
-			'discover.createSpace.group' => 'Group',
-			'discover.createSpace.hideAccount' => 'Hide Your Account',
-			'discover.createSpace.create' => 'Create',
-			'discover.createSpace.cancel' => 'Cancel',
-			'discover.createSpace.createRoomTitle' => 'Create Room',
-			'discover.createSpace.createGroupTitle' => 'Create Group',
-			'discover.createSpace.nameSubtitle' => 'Give the group you created a name',
-			'discover.createSpace.nameHint' => 'Night Owl',
-			'discover.liveRoom.adminSuffix' => '(Admin)',
+			'discover.createSpace.room' => 'Oda',
+			'discover.createSpace.group' => 'Grup',
+			'discover.createSpace.hideAccount' => 'Hesabımı Gizle',
+			'discover.createSpace.create' => 'Oluştur',
+			'discover.createSpace.cancel' => 'İptal',
+			'discover.createSpace.createRoomTitle' => 'Oda Oluştur',
+			'discover.createSpace.createGroupTitle' => 'Grup Oluştur',
+			'discover.createSpace.nameSubtitle' => 'Oluşturduğun gruba bir isim ver',
+			'discover.createSpace.nameHint' => 'Gece Kuşu',
+			'discover.createSpace.createRoomFor' => ({required Object count}) => '${count} tokene oluştur',
+			'discover.liveRoom.adminSuffix' => '(Yönetici)',
 			'discover.liveRoom.messageHint' => 'Mesaj',
 			'discover.liveRoom.quickReplyHey' => 'Herkese merhaba!',
 			'discover.liveRoom.quickReplyTopic' => 'Konu ne?',
 			'discover.liveRoom.quickReplyNew' => 'Ben yeniyim!',
 			'discover.liveRoom.sampleChatName' => 'Sona',
 			'discover.liveRoom.sampleChatBody' => 'Ne yapabiliriz? Aklında ne var?',
+			'discover.liveRoom.roomEnded' => 'Oda kapandı.',
+			'discover.liveRoom.wantsToJoin' => ({required Object name}) => '${name} katılmak istiyor',
+			'discover.liveRoom.approve' => 'Onayla',
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} Kullanıcı',
 			'discover.groupChat.sampleVictoria' => 'Çok sıkıldım. Bir şeyler yapalım mı?',
 			'discover.groupChat.sampleSona' => 'Ne yapabiliriz? Aklında ne var?',
@@ -2277,7 +2561,7 @@ extension on Translations {
 			'discover.groupInfo.membersCount' => ({required Object count}) => '${count} üye',
 			'discover.groupInfo.addPeople' => 'Kişi Ekle',
 			'discover.groupInfo.you' => 'Sen',
-			'discover.groupInfo.admin' => 'Admin',
+			'discover.groupInfo.admin' => 'Yönetici',
 			'discover.groupInfo.leaveGroup' => 'Gruptan ayrıl',
 			'discover.groupInfo.requests' => 'Katılma istekleri',
 			'discover.groupInfo.approve' => 'Onayla',
@@ -2290,7 +2574,7 @@ extension on Translations {
 			'discover.groupInfo.leaveConfirm' => 'Bu gruptan ayrılmak istiyor musun?',
 			'discover.groupInfo.leave' => 'Ayrıl',
 			'discover.groupInfo.cancel' => 'Vazgeç',
-			'discover.filters.title' => 'Filters',
+			'discover.filters.title' => 'Filtreler',
 			'discover.filters.ageRange' => 'Yaş aralığı',
 			'discover.filters.ageRangeValue' => ({required Object min, required Object max}) => '${min}-${max}',
 			'discover.filters.distance' => 'Mesafe',
@@ -2307,25 +2591,25 @@ extension on Translations {
 			'discover.post.following' => 'Takipte',
 			'discover.post.addComment' => 'Yorum ekle...',
 			'discover.post.commentsTitle' => 'Yorumlar',
-			'discover.post.sampleCaption' => 'There\'s nothing quite like having a cup of coffee after a beautiful day. <3',
+			'discover.post.sampleCaption' => 'Güzel bir günün ardından bir fincan kahve gibisi yok. <3',
 			'discover.post.hoursAgo' => ({required Object hours}) => '${hours}s',
 			'discover.post.minutesAgo' => ({required Object minutes}) => '${minutes}dk',
 			'discover.post.daysAgo' => ({required Object days}) => '${days}g',
 			'discover.post.deleteCommentTitle' => 'Bu yorum silinsin mi?',
-			'discover.story.draft' => 'DRAFT',
-			'discover.story.story' => 'STORY',
+			'discover.story.draft' => 'TASLAK',
+			'discover.story.story' => 'HİKÂYE',
 			'discover.story.share' => 'Paylaş',
 			'discover.story.textPlaceholder' => 'Bir şeyler yaz...',
 			'discover.story.draftPrompt' => 'Taslak olarak kaydedilsin mi?',
-			'discover.story.saveToDraft' => 'Save to Draft',
-			'discover.story.moveToTrash' => 'Move to Trash',
-			'discover.story.save' => 'Save',
+			'discover.story.saveToDraft' => 'Taslağa Kaydet',
+			'discover.story.moveToTrash' => 'Çöpe Taşı',
+			'discover.story.save' => 'Kaydet',
 			'discover.story.musicTitle' => 'Müzik',
 			'discover.story.musicEmpty' => 'Müzik bulunamadı.',
 			'discover.story.musicError' => 'Müzikler yüklenemedi.',
 			'discover.story.downloaded' => 'Galeriye kaydedildi',
 			'discover.story.downloadFailed' => 'Kaydedilemedi',
-			'discover.highlight.title' => 'Highlight',
+			'discover.highlight.title' => 'Öne Çıkan',
 			'discover.highlight.view' => 'Görüntüle',
 			'discover.highlight.aiComments' => 'AI yorumlar',
 			'discover.highlight.remove' => 'Highlight’ı kaldır',
@@ -2338,6 +2622,7 @@ extension on Translations {
 			'discover.stats.likes' => 'Beğeni',
 			'discover.stats.boostCta' => '1 gün boyunca öne çıkar - 100 token',
 			'discover.stats.boosted' => 'Öne çıkarıldı! Gönderin 24 saat boyunca en üstte.',
+			'discover.hostedBy' => ({required Object name}) => '${name} sunuyor',
 			'common.loading' => 'Yükleniyor…',
 			'common.retry' => 'Tekrar dene',
 			'common.cancel' => 'İptal',
@@ -2442,6 +2727,8 @@ extension on Translations {
 			'createProfile.stepChatGoal' => '5/5 Sohbet hedefi',
 			'createProfile.chatGoalTitle' => 'Bugün ne arıyorsun?',
 			'createProfile.chatGoalSubtitle' => 'Bu, şu anki ruh haline uygun eşleşmeyi bulmamıza yardımcı olur.',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.chatGoalQuickMatch' => 'Hızlı eşleşme — doğrudan sohbete gir',
 			'createProfile.chatGoalFlirtyChat' => 'Flört sohbeti — hafif, eğlenceli muhabbet',
 			'createProfile.chatGoalMoodMatch' => 'Ruh hali eşleşmesi — nasıl hissettiğine göre',
@@ -2458,8 +2745,6 @@ extension on Translations {
 			'errors.network' => 'Veylo’ya ulaşılamadı. Bağlantını kontrol edip tekrar dene.',
 			'errors.generic' => 'Bir şeyler ters gitti. Lütfen tekrar dene.',
 			'errors.signInFailed' => 'Giriş yapılamadı. Lütfen tekrar dene.',
-			_ => null,
-		} ?? switch (path) {
 			'errors.sessionExpired' => 'Oturumun sona erdi. Lütfen tekrar giriş yap.',
 			'errors.accountSuspended' => 'Bu hesap askıya alındı.',
 			'errors.unsupportedImage' => 'Lütfen JPEG, PNG veya WebP bir fotoğraf seç.',
@@ -2482,6 +2767,63 @@ extension on Translations {
 			'errors.notFound' => 'Bu artık mevcut değil.',
 			'errors.recentLogin' => 'Güvenliğin için çıkış yapıp tekrar giriş yap, sonra yeniden dene.',
 			'errors.socialAccount' => 'E-posta ve şifren Google ya da Apple hesabın tarafından yönetiliyor.',
+			'errors.alreadyInCall' => 'Zaten bir aramadasın.',
+			'errors.roomPrivate' => 'Bu oda gizli. Katılmak için istek gönder.',
+			'errors.roomFull' => 'Oda dolu.',
+			'faq.q1' => 'Bu uygulama nasıl çalışır?',
+			'faq.q2' => 'Anonim sohbet nedir?',
+			'faq.q3' => 'Bağlantı İlerlemesi ne işe yarar?',
+			'faq.q4' => 'Profilimi nasıl açarım?',
+			'faq.q5' => '60 Saniyelik Yabancı nedir?',
+			'faq.q6' => 'Vibes nedir?',
+			'faq.q7' => 'Profilimi nasıl düzenlerim?',
+			'faq.q8' => 'Bildirimleri nasıl yönetirim?',
+			'faq.q9' => 'Satın alımları nasıl geri yüklerim?',
+			'faq.q10' => 'Tüm sohbetleri silebilir miyim?',
+			'faq.q11' => 'Verilerim güvende mi?',
+			'faq.q12' => 'Bir kullanıcıyı nasıl engeller veya şikayet ederim?',
+			'faq.q13' => 'Uygulamayı nasıl paylaşırım?',
+			'faq.q14' => 'Hesabımı nasıl silebilirim?',
+			'faq.a1' => 'Veylo’da anonim olarak yeni insanlarla tanışabilir, sohbet edebilir ve bağlantın güçlendikçe profilini adım adım açabilirsin. İstediğin zaman yazışma, sesli arama veya yüz yüze görüşmeye geçebilirsin.',
+			'faq.a2' => 'Anonim sohbette kimliğin ve fotoğrafın gizli kalır. Bağlantı yüzdesi arttıkça isim baş harfi, bulanık fotoğraf gibi bilgiler açılır; %100’de karşılıklı onayla tam profil paylaşılır.',
+			'faq.a3' => 'Sohbet ettikçe bağlantı yüzdeniz artar. Belirli eşiklerde isim baş harfi, bulanık fotoğraf ve tam profil gibi adımlar açılır. Detayları Bağlantı göstergesine dokunarak görebilirsin.',
+			'faq.a4' => 'Bağlantı %100 olduğunda Profilimi aç ile talep gönderebilirsin. Karşı taraf da kabul ederse karşılıklı tam profiller görünür.',
+			'faq.a5' => 'Ara sekmesinden kısa süreli rastgele bir eşleşme bulabilirsin. Süre bitince görüşmeyi uzatmayı seçebilir veya kapatabilirsin.',
+			'faq.a6' => 'Vibes, yakındaki veya keşfedilebilir insanları harita / liste üzerinden görmeni sağlar. İlgilendiğin kişiye yaklaşıp sohbet başlatabilirsin.',
+			'faq.a7' => 'Profil sekmesinden Profili Düzenle’ye girerek adını, fotoğraflarını, hakkında bilgilerini ve ilgi alanlarını güncelleyebilirsin. Değişiklikler kaydettikten sonra görünür olur.',
+			'faq.a8' => 'Ayarlar’daki Bildirimler bölümünden mesaj, eşleşme ve diğer uyarıları açıp kapatabilirsin.',
+			'faq.a9' => 'Ayarlar → Hesap Yönetimi → Satın Alımları Geri Yükle’ye dokun. Aynı mağaza hesabındaki uygun satın alımlar geri yüklenir.',
+			'faq.a10' => 'Evet. Ayarlar → Sohbetleri Sil ile onayladıktan sonra tüm konuşmaların silinir. Bu işlem geri alınamaz.',
+			'faq.a11' => 'Hesap bilgilerin ve mesajların korumalı sistemlerde saklanır. İstersen hesap yönetimi üzerinden hesabını ve verilerini silme talebi oluşturabilirsin.',
+			'faq.a12' => 'Profil veya sohbet ekranındaki menüden engelle veya şikayet et seçeneklerini kullanabilirsin. Şikayetler ekibimiz tarafından incelenir.',
+			'faq.a13' => 'Ayarlar’daki Uygulamayı Paylaş ile bağlantıyı kopyalayıp arkadaşlarınla paylaşabilirsin.',
+			'faq.a14' => 'Ayarlar → Hesap Yönetimi → Hesabı ve Verileri Sil yolunu izle. Sebep belirttikten sonra silme talebini onaylaman gerekir.',
+			'legal.termsTitle' => 'Hizmet Şartları',
+			'legal.privacyTitle' => 'Gizlilik Politikası',
+			'legal.termsBody' => 'Son güncelleme: 16 Mart 2026\n\nVeylo’ya hoş geldin. Hesap oluşturarak veya uygulamayı kullanarak bu Hizmet Şartları’nı kabul etmiş olursun.\n\n1. Veylo nedir?\nVeylo; insanlarla tanışabileceğin, anonim sohbet edebileceğin, bağlantını zamanla güçlendirebileceğin ve karşılıklı onayla sesli veya yüz yüze aramaya geçebileceğin bir sosyal uygulamadır.\n\n2. Hesabın\nDoğru bilgi vermeli ve giriş bilgilerini güvende tutmalısın. Hesabındaki aktivitelerden sen sorumlusun. Yaşadığın ülkenin yasalarına göre Veylo’yu kullanabilecek yaşta olmalısın.\n\n3. Saygılı kullanım\nTaciz, tehdit, dolandırıcılık, kimliğe bürünme, yasa dışı içerik veya güvenlik özelliklerini atlatma girişimleri yasaktır. Kuralları ihlal eden içerik kaldırılabilir, özellikler kısıtlanabilir veya hesap askıya alınabilir.\n\n4. Anonim sohbet ve profil açma\nAnonim sohbetlerde isim ve fotoğraf, bağlantı eşiklerine kadar gizli kalabilir. Tam profil açılışı karşılıklı onay gerektirir. Kimliğini açması için kimseyi zorlama.\n\n5. Satın alımlar\nBazı özellikler ücretli olabilir. Ödemeler App Store veya Google Play üzerinden yapılır. Restore Purchases, aynı mağaza hesabındaki uygun satın alımları geri yükler. İadeler mağaza politikasına tabidir.\n\n6. Paylaştığın içerik\nİçeriğinin hakları sende kalır; Veylo’ya hizmeti sunmak için gereken ölçüde barındırma ve gösterme lisansı verirsin. Hakkın olmayan içeriği paylaşma.\n\n7. Kullanımı sonlandırma\nİstediğin zaman Veylo’yu bırakabilir ve Ayarlar’dan hesap silme talebi oluşturabilirsin. Gerekirse hizmeti makul bildirimle değiştirebilir veya sonlandırabiliriz.\n\n8. İletişim\nBu şartlarla ilgili soruların için: support@veylo.app',
+			'legal.privacyBody' => 'Son güncelleme: 16 Mart 2026\n\nBu Gizlilik Politikası, Veylo’nun bilgilerini nasıl topladığını, kullandığını ve koruduğunu açıklar.\n\n1. Topladığımız bilgiler\n• Hesap verileri: e-posta, görünen ad, profil fotoğrafları, bio, tercihler\n• Kullanım verileri: sohbetler, bağlantı ilerlemesi, kullandığın arama özellikleri, temel cihaz/uygulama bilgileri\n• Satın alımlar: ücretli özellikleri açmak ve geri yüklemek için gerekli mağaza fiş bilgileri\n\n2. Nasıl kullanırız?\nVerilerini Veylo’yu işletmek, eşleşme ve sohbet deneyimini kişiselleştirmek, topluluğu güvende tutmak, satın alımları işlemek ve ürünü geliştirmek için kullanırız. Kişisel verilerini satmayız.\n\n3. Anonim mod\nAnonim sohbetlerde diğer kullanıcıların gördüğü bilgiler (ör. maskeli isim veya bulanık fotoğraf) kilit açma kuralları ve karşılıklı onayla sınırlıdır. Özelliğin güvenli çalışması için hesap tanımlayıcılarına yine ihtiyaç duyarız.\n\n4. Paylaşım\nVerileri yalnızca barındırma, analiz veya ödeme gibi hizmet sağlayıcılarla gerektiği ölçüde paylaşabiliriz. Yasal zorunluluk veya kullanıcıları zarardan koruma durumlarında da açıklama yapılabilir.\n\n5. Saklama\nHesabın aktifken ve yasal, güvenlik ile faturalama gerekçeleriyle gerektiği süre veriyi saklarız. Silme talebi tamamlandıktan sonra, zorunlu saklama dışında kişisel veriler silinir veya anonimleştirilir.\n\n6. Seçeneklerin\nProfilini düzenleyebilir, bildirimleri yönetebilir, hesap silme talebi oluşturabilir ve verilerin hakkında bize yazabilirsin. Mağaza satın alımları Apple veya Google üzerinden de yönetilir.\n\n7. Güvenlik\nBilgilerini korumak için makul teknik ve idari önlemler alırız. Hiçbir sistem tamamen risksiz değildir; güçlü parola kullan ve cihazını güncel tut.\n\n8. İletişim\nGizlilik soruları: privacy@veylo.app',
+			'logout.title' => 'Çıkış yap',
+			'logout.subtitle' => 'Çıkış yapmak istediğinden emin misin?',
+			'logout.cancel' => 'İptal',
+			'logout.confirm' => 'Çıkış yap',
+			'deleteAccount.title' => 'Hesap silme talebi gönder',
+			'deleteAccount.subtitle' => 'Hesabını silmek istediğinden emin misin?',
+			'deleteAccount.reasonTitle' => 'Gitmeni istemiyoruz ama seni anlıyoruz.',
+			'deleteAccount.reasonBefore' => '',
+			'deleteAccount.reasonAfter' => ' deneyimini iyileştirmemiz için bize neden ayrılmak istediğini söyler misin?',
+			'deleteAccount.reasonLabel' => 'Hesabını neden silmek istiyorsun',
+			'deleteAccount.reasonHint' => 'Mesajınızı yazın',
+			'deleteAccount.cancel' => 'İptal',
+			'deleteAccount.createRequest' => 'Talep Oluştur',
+			'deleteAccount.confirmTitle' => 'Hesap silme talebini göndermek istediğinden emin misin?',
+			'deleteAccount.confirmSubtitle' => 'Onaylarsan hesap silme talebin oluşturulacak',
+			'deleteAccount.delete' => 'Sil',
+			'storyText.bold' => 'Kalın',
+			'storyText.italic' => 'İtalik',
+			'storyText.uppercase' => 'Büyük harf',
+			'storyText.underline' => 'Altı çizili',
+			'storyText.cancel' => 'İptal',
+			'storyText.galleryError' => 'Galeri açılamadı',
 			_ => null,
 		};
 	}

@@ -8,6 +8,7 @@ import 'package:veylo/data/remote/api_client.dart';
 import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/data/remote/discover_store.dart';
 import 'package:veylo/data/remote/group_store.dart';
+import 'package:veylo/data/remote/room_store.dart';
 import 'package:veylo/data/remote/note_store.dart';
 import 'package:veylo/data/remote/push_service.dart';
 import 'package:veylo/data/remote/vibe_store.dart';
@@ -220,6 +221,18 @@ class SessionStore extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Takip / takibi bırak sonrası profildeki sayılar sunucu cevabını beklemeden değişsin.
+  void adjustFollowCounts({int followingDelta = 0, int followerDelta = 0}) {
+    final me = _me;
+    if (me == null) return;
+    setMe(
+      me.copyWith(
+        followingCount: me.followingCount + followingDelta,
+        followerCount: me.followerCount + followerDelta,
+      ),
+    );
+  }
+
   void updateTokenBalance(int balance) {
     if (_me == null) return;
     setMe(_me!.copyWith(tokenBalance: balance));
@@ -232,6 +245,7 @@ class SessionStore extends ChangeNotifier {
     ChatStore.instance.stop();
     VibeStore.instance.clear();
     GroupStore.instance.clear();
+    RoomStore.instance.clear();
     NoteStore.instance.clear();
     DiscoverStore.instance.clear();
     try {

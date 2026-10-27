@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_back_button.dart';
+import 'package:veylo/core/widgets/app_bottom_nav.dart';
 import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
@@ -183,6 +184,11 @@ class _FollowPageState extends State<FollowPage> {
 
     return Scaffold(
       backgroundColor: AppColors.white,
+      extendBody: true,
+      bottomNavigationBar: AppBottomNav(
+        current: AppShell.current,
+        onChanged: AppShell.select,
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -246,7 +252,7 @@ class _FollowPageState extends State<FollowPage> {
                     ),
                   )
                 : ListView.separated(
-                    padding: EdgeInsets.fromLTRB(hPad, 12, hPad, bottom + 24),
+                    padding: EdgeInsets.fromLTRB(hPad, 12, hPad, bottom + 120),
                     itemCount: users.length,
                     separatorBuilder: (_, _) =>
                         const SizedBox(height: _kListGap),

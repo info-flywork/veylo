@@ -31,9 +31,7 @@ class _ChangeNameSheetState extends State<_ChangeNameSheet> {
 
   TextEditingController get _textController {
     return _controller ??= TextEditingController(
-      text: widget.initialName.trim().isEmpty
-          ? 'Alex'
-          : widget.initialName.trim(),
+      text: widget.initialName.trim(),
     );
   }
 

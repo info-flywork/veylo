@@ -31,9 +31,7 @@ class _ChangeEmailSheetState extends State<_ChangeEmailSheet> {
 
   TextEditingController get _textController {
     return _controller ??= TextEditingController(
-      text: widget.initialEmail.trim().isEmpty
-          ? 'alex1234567@gmail.com'
-          : widget.initialEmail.trim(),
+      text: widget.initialEmail.trim(),
     );
   }
 

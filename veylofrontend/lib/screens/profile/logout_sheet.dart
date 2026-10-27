@@ -21,13 +21,11 @@ class LogoutSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bottom = MediaQuery.paddingOf(context).bottom;
-    final tr = LocaleSettings.currentLocale == AppLocale.tr;
-
-    final title = tr ? 'Çıkış yap' : 'Log out';
-    final subtitle =
-        tr ? 'Çıkış yapmak istediğinden emin misin?' : 'Are you sure you want to log out?';
-    final cancel = tr ? 'İptal' : 'Cancel';
-    final confirm = tr ? 'Çıkış yap' : 'Log out';
+    final t = Translations.of(context).logout;
+    final title = t.title;
+    final subtitle = t.subtitle;
+    final cancel = t.cancel;
+    final confirm = t.confirm;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(16, 10, 16, 10 + bottom),

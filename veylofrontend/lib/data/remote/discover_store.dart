@@ -16,6 +16,7 @@ class DiscoverStore extends ChangeNotifier {
   String? _nextCursor;
   bool _loaded = false;
   bool _loadingMore = false;
+  int _savedEpoch = 0;
   String _query = '';
   DiscoverFilters _filters = const DiscoverFilters();
   Timer? _debounce;
@@ -24,6 +25,9 @@ class DiscoverStore extends ChangeNotifier {
   List<Post> get posts => _posts;
   bool get loaded => _loaded;
   DiscoverFilters get filters => _filters;
+
+  /// Kaydet / kaydı kaldır. Profildeki Saved sekmesi bunu dinler.
+  int get savedEpoch => _savedEpoch;
 
   Future<void> refresh() async {
     final gen = ++_generation;
@@ -39,8 +43,9 @@ class DiscoverStore extends ChangeNotifier {
   }
 
   Future<void> loadMore() async {
+    if (_loadingMore) return;
     final cursor = _nextCursor;
-    if (cursor == null || _loadingMore) return;
+    if (cursor == null) return;
     _loadingMore = true;
     try {
       final page = await _repo.feed(
@@ -72,7 +77,12 @@ class DiscoverStore extends ChangeNotifier {
 
   /// Detay ekranında beğeni/kaydetme değişince ızgaradaki kopya da güncellenir.
   void replace(Post post) {
+    Post? prev;
+    for (final p in _posts) {
+      if (p.id == post.id) prev = p;
+    }
     _posts = [for (final p in _posts) p.id == post.id ? post : p];
+    if (prev?.savedByMe != post.savedByMe) _savedEpoch++;
     notifyListeners();
   }
 

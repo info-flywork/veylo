@@ -59,9 +59,9 @@
     "promoTitle": "Get More Messages!",
     "promoSubtitle": "Stand out, appear at the top of the list",
     "standOut": "Stand Out",
-    "tabPosts": "Gönderi",
+    "tabPosts": "Posts",
     "tabVideo": "Video",
-    "tabSaved": "Kaydedilenler",
+    "tabSaved": "Saved",
     "save": "Save",
     "changePhoto": "Change Photo",
     "changeBorder": "Change Border",
@@ -149,9 +149,9 @@
     "profileVisibility": "Profile Visibility",
     "language": "Language",
     "borderTitle": "Profile Border",
-    "borderSubtitle": "Profilinize çerçeve ekleyerek kendinizi öne\nçıkarabilirsiniz.",
-    "borderBuySection": "Çerçeve satın al",
-    "borderBuyCta": "Çerçeve Satın Al",
+    "borderSubtitle": "Add a border to your profile to make\nyourself stand out.",
+    "borderBuySection": "Buy a border",
+    "borderBuyCta": "Buy Border",
     "borderToken": "{count} Token",
     "borderAmethystWings": "Amethyst Wings",
     "borderGoldenPhoenix": "Golden Phoenix",
@@ -168,10 +168,10 @@
     "followTabFollowers": "Followers",
     "followSearch": "Search",
     "unfollow": "Unfollow",
-    "followSortTitle": "Sırala",
-    "followSortRecent": "En son takip ettiğim kişiler",
-    "followSortNotFollowingMe": "Beni takip etmeyenler",
-    "followSortNotFollowedByMe": "Benim takip etmediklerim",
+    "followSortTitle": "Sort",
+    "followSortRecent": "People I followed most recently",
+    "followSortNotFollowingMe": "People who don't follow me back",
+    "followSortNotFollowedByMe": "People I don't follow back",
     "followSortShowResult": "Show Result",
     "followSortEmpty": "No users match this filter",
     "shareTitle": "Share with Friends",
@@ -187,10 +187,10 @@
     "restrictTitle": "Restrict {username} ?",
     "restrictBody": "They won't be able to see when you're online or that you've read their messages. You can change this anytime.",
     "restrictAndReport": "Restrict and report",
-    "reportTitle": "Report sebebini merak ediyoruz",
-    "reportSubtitle": "Sana daha iyi bir deneyim sunabilmek için kullanıcıyı neden report etmek istediğini açıklar mısın?",
-    "reportMessageLabel": "Report Mesajı",
-    "reportMessageHint": "Mesajınızı yazın",
+    "reportTitle": "We'd like to know why",
+    "reportSubtitle": "To help us give you a better experience, could you tell us why you want to report this user?",
+    "reportMessageLabel": "Report Message",
+    "reportMessageHint": "Type your message",
     "reportCancel": "Cancel",
     "sendReport": "Send Report",
     "notSet": "Not set",
@@ -224,7 +224,18 @@
     "timesUpSubtitle": "Want to keep talking? If you both say yes, chat unlocks.",
     "keepTalking": "Keep Talking",
     "endCall": "End Call",
-    "waitingOther": "Waiting for the other person..."
+    "waitingOther": "Waiting for the other person...",
+    "callStrangerFree": "Call Stranger",
+    "peerLeft": "The other person ended the call.",
+    "noKeep": "Chat didn't unlock this time.",
+    "videoWaiting": "Waiting for them to accept the video call...",
+    "videoDeclined": "They declined the video call.",
+    "micDenied": "Microphone access is needed for calls. You can enable it in Settings.",
+    "videoCost": "Video call: 20 tokens / 15 min",
+    "calling": "Calling",
+    "accept": "Accept",
+    "decline": "Decline",
+    "switchToVideo": "Would you like to switch to a video call?"
   },
   "vibes": {
     "search": "Search",
@@ -326,7 +337,7 @@
     },
     "createSpace": {
       "title": "Create Room or Group",
-      "subtitle": "Grup veya canlı oda oluşturarak kitlelere hitap et",
+      "subtitle": "Reach more people by creating a group or a live room",
       "room": "Room",
       "group": "Group",
       "hideAccount": "Hide Your Account",
@@ -335,7 +346,8 @@
       "createRoomTitle": "Create Room",
       "createGroupTitle": "Create Group",
       "nameSubtitle": "Give the group you created a name",
-      "nameHint": "Night Owl"
+      "nameHint": "Night Owl",
+      "createRoomFor": "Create for {count} tokens"
     },
     "liveRoom": {
       "adminSuffix": "(Admin)",
@@ -344,7 +356,10 @@
       "quickReplyTopic": "What's the topic?",
       "quickReplyNew": "I'm new here!",
       "sampleChatName": "Sona",
-      "sampleChatBody": "What can we do? What do you have in mind?"
+      "sampleChatBody": "What can we do? What do you have in mind?",
+      "roomEnded": "The room has ended.",
+      "wantsToJoin": "{name} wants to join",
+      "approve": "Approve"
     },
     "groupChat": {
       "usersCount": "{count} Users",
@@ -392,7 +407,7 @@
       "showResult": "Show Result"
     },
     "post": {
-      "follow": "Takip Et",
+      "follow": "Follow",
       "following": "Following",
       "addComment": "Add comment...",
       "commentsTitle": "Comments",
@@ -433,7 +448,8 @@
       "likes": "Likes",
       "boostCta": "Boost for 1 day - 100 tokens",
       "boosted": "Boosted! Your post is at the top for 24 hours."
-    }
+    },
+    "hostedBy": "Hosted by {name}"
   },
   "common": {
     "loading": "Loading…",
@@ -589,6 +605,73 @@
     "groupCreateLimit": "You’ve created too many groups today. Try again later.",
     "notFound": "This is no longer available.",
     "recentLogin": "For your security, log out and log in again, then try once more.",
-    "socialAccount": "Your email and password are managed by your Google or Apple account."
+    "socialAccount": "Your email and password are managed by your Google or Apple account.",
+    "alreadyInCall": "You are already in a call.",
+    "roomPrivate": "This room is private. Ask the host to join.",
+    "roomFull": "This room is full."
+  },
+  "faq": {
+    "q1": "How does this app work?",
+    "q2": "What is anonymous chat?",
+    "q3": "What is Connection Progress?",
+    "q4": "How do I reveal my profile?",
+    "q5": "What is 60 Second Stranger?",
+    "q6": "What are Vibes?",
+    "q7": "How do I edit my profile?",
+    "q8": "How do I manage notifications?",
+    "q9": "How do I restore purchases?",
+    "q10": "Can I delete all conversations?",
+    "q11": "Is my data secure?",
+    "q12": "How do I block or report someone?",
+    "q13": "How do I share the app?",
+    "q14": "How do I delete my account?",
+    "a1": "On Veylo you can meet new people anonymously, chat, and gradually reveal your profile as your connection grows. Switch to text, voice, or face-to-face whenever you both feel ready.",
+    "a2": "In anonymous chat your identity and photo stay hidden. As connection rises you unlock details like a name initial and a blurred photo. At 100%, both sides must agree to reveal full profiles.",
+    "a3": "As you chat, your connection percentage grows. At certain milestones you unlock a name initial, a blurred photo, and full profile. Tap the Connection pill to see details.",
+    "a4": "When connection reaches 100%, tap Reveal my profile. If the other person also accepts, both full profiles become visible.",
+    "a5": "From the Call tab you can get a short random match. When time is up you can keep talking or end the call.",
+    "a6": "Vibes lets you discover people nearby or around you on a map/list view and start a chat with someone you’re interested in.",
+    "a7": "Open the Profile tab and go to Edit Profile to update your name, photos, bio, and interests. Changes appear after you save.",
+    "a8": "Open Notifications in Settings to turn message, match, and other alerts on or off.",
+    "a9": "Go to Settings → Account Management → Restore Purchases. Eligible buys on the same store account will be restored.",
+    "a10": "Yes. Use Settings → Delete Conversation and confirm. All chats will be removed. This can’t be undone.",
+    "a11": "Your account details and messages are stored on protected systems. You can also request account and data deletion from Account Management anytime.",
+    "a12": "Use the menu on a profile or chat screen to block or report. Reports are reviewed by our team.",
+    "a13": "Use Share App in Settings to copy the link and send it to friends.",
+    "a14": "Go to Settings → Account Management → Delete Account and Data. After sharing a reason, confirm to submit your deletion request."
+  },
+  "legal": {
+    "termsTitle": "Terms of Service",
+    "privacyTitle": "Privacy Policy",
+    "termsBody": "Last updated: March 16, 2026\n\nWelcome to Veylo. By creating an account or using the app, you agree to these Terms of Service.\n\n1. What Veylo is\nVeylo is a social app where you can meet people, chat anonymously, build connection over time, and optionally move to voice or face-to-face calls when both sides agree.\n\n2. Your account\nYou must provide accurate information and keep your login secure. You are responsible for activity under your account. You must be old enough to use Veylo under the laws of your country.\n\n3. Respectful use\nDo not harass, threaten, scam, impersonate others, share illegal content, or try to bypass safety features. We may remove content, limit features, or suspend accounts that break these rules.\n\n4. Anonymous chat & profile reveal\nAnonymous chats may hide your name and photo until connection milestones are reached. Full profile reveal requires mutual consent. Do not pressure others to reveal identity.\n\n5. Purchases\nSome features may be paid. Purchases are handled by Apple App Store or Google Play. Restore Purchases recovers eligible buys on the same store account. Refunds follow the store’s policy.\n\n6. Content you share\nYou keep rights to your content, but grant Veylo a license to host and display it in the app as needed to operate the service. Do not post content you do not have rights to share.\n\n7. Ending use\nYou can stop using Veylo anytime and request account deletion from Settings. We may also end or change the service with reasonable notice when required.\n\n8. Contact\nQuestions about these terms: support@veylo.app",
+    "privacyBody": "Last updated: March 16, 2026\n\nThis Privacy Policy explains how Veylo collects, uses, and protects your information.\n\n1. Information we collect\n• Account data: email, display name, profile photos, bio, preferences\n• Usage data: chats, connection progress, call features you use, device/app basics\n• Purchases: store receipt data needed to unlock and restore paid features\n\n2. How we use it\nWe use your data to run Veylo, personalize matching and chat experiences, keep the community safe, process purchases, and improve the product. We do not sell your personal data.\n\n3. Anonymous mode\nIn anonymous chats we limit what others see (for example masked name or blurred photo) until unlock rules and mutual consent allow more. Behind the scenes we still need account identifiers to operate the feature securely.\n\n4. Sharing\nWe may share data with service providers that help us host, analyze, or process payments—only as needed. We may also disclose information if required by law or to protect users from harm.\n\n5. Retention\nWe keep data while your account is active and as needed for legal, safety, and billing reasons. After a deletion request is completed, we remove or anonymize personal data except where retention is required.\n\n6. Your choices\nYou can edit profile info, manage notifications, request account deletion, and contact us about your data. Store purchases are also managed through Apple or Google.\n\n7. Security\nWe use reasonable technical and organizational measures to protect your information. No system is perfectly secure; please use a strong password and keep your device updated.\n\n8. Contact\nPrivacy questions: privacy@veylo.app"
+  },
+  "logout": {
+    "title": "Log out",
+    "subtitle": "Are you sure you want to log out?",
+    "cancel": "Cancel",
+    "confirm": "Log out"
+  },
+  "deleteAccount": {
+    "title": "Submit an account deletion request",
+    "subtitle": "Are you sure you want to delete your account?",
+    "reasonTitle": "We don't want you to leave, but we understand.",
+    "reasonBefore": "Would you tell us why you want to leave so we can improve the ",
+    "reasonAfter": " experience?",
+    "reasonLabel": "Why do you want to delete your account",
+    "reasonHint": "Type your message",
+    "cancel": "Cancel",
+    "createRequest": "Create a Request",
+    "confirmTitle": "Are you sure you want to submit a deletion request?",
+    "confirmSubtitle": "If you confirm, your account deletion request will be submitted",
+    "delete": "Delete"
+  },
+  "storyText": {
+    "bold": "Bold",
+    "italic": "Italic",
+    "uppercase": "Uppercase",
+    "underline": "Underline",
+    "cancel": "Cancel",
+    "galleryError": "Could not open the gallery"
   }
 }

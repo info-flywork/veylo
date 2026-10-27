@@ -1,13 +1,22 @@
 import 'dart:async';
 
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
+import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/theme/theme.dart';
+import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/animated_profile_ripple.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/data/remote/agora_service.dart';
+import 'package:veylo/data/remote/api_client.dart';
+import 'package:veylo/data/remote/chat_store.dart';
+import 'package:veylo/data/remote/session_store.dart';
+import 'package:veylo/data/remote/socket_service.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 
 enum _StrangerGender { female, male, nonBinary, preferNotToSay }
 
@@ -44,93 +53,348 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
   static const _contentWidth = 398.0;
   static const _callSeconds = 60;
 
+  final _socket = SocketService.instance;
+  final _agora = AgoraService.instance;
+  final List<StreamSubscription<Map<String, dynamic>>> _subs = [];
+
   _StrangerGender? _gender = _StrangerGender.male;
   _CallPhase _phase = _CallPhase.setup;
   int _secondsLeft = _callSeconds;
   bool _speakerOn = true;
   bool _micOn = true;
+  bool _camOn = true;
   bool _waitingOther = false;
 
-  Timer? _findTimer;
+  String? _callId;
+  DateTime? _endsAt;
+  int? _peerUid;
+  String _peerName = '';
+  String _peerAvatar = '';
+  bool _peerIsAi = false;
+  DateTime? _videoStartedAt;
+
   Timer? _callTimer;
   Timer? _videoTimer;
   int _videoSeconds = 0;
 
   @override
+  void initState() {
+    super.initState();
+    _subs.addAll([
+      _socket.on('call:matched').listen(_onMatched),
+      _socket.on('call:times_up').listen(_onTimesUp),
+      _socket.on('call:revealed').listen(_onRevealed),
+      _socket.on('call:video_requested').listen(_onVideoRequested),
+      _socket.on('call:video_declined').listen(_onVideoDeclined),
+      _socket.on('call:video_started').listen(_onVideoStarted),
+      _socket.on('call:video_ended').listen(_onVideoEnded),
+      _socket.on('call:ended').listen(_onEnded),
+      _socket.on('call:error').listen(_onCallError),
+    ]);
+  }
+
+  @override
   void dispose() {
-    _findTimer?.cancel();
+    for (final s in _subs) {
+      s.cancel();
+    }
     _callTimer?.cancel();
     _videoTimer?.cancel();
+    // Sayfa başka yoldan kapanırsa (geri hareketi vb.) sunucudaki durum da kapansın.
+    final callId = _callId;
+    if (callId != null) {
+      _socket.emit('call:end', {'callId': callId});
+    } else if (_phase == _CallPhase.finding) {
+      _socket.emit('call:cancel', {});
+    }
+    _agora.leave();
     super.dispose();
   }
 
-  void _startFinding() {
+  bool _isMine(Map<String, dynamic> e) => e['callId'] == _callId;
+
+  /// "Prefer not to say" = rastgele (ücretsiz); cinsiyet seçimi 10 token.
+  String get _target => switch (_gender) {
+    _StrangerGender.female => 'female',
+    _StrangerGender.male => 'male',
+    _StrangerGender.nonBinary => 'nonBinary',
+    _ => 'any',
+  };
+
+  void _toast(String text) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(text)));
+  }
+
+  Future<void> _startFinding() async {
     if (_gender == null) return;
-    _findTimer?.cancel();
-    _callTimer?.cancel();
+    // İzin baştan istenir; eşleşince karşı taraf beklemesin.
+    if (!await _agora.requestMic()) {
+      if (mounted) _toast(Translations.of(context).call.micDenied);
+      return;
+    }
+    if (!mounted) return;
     setState(() {
       _phase = _CallPhase.finding;
       _waitingOther = false;
     });
-    _findTimer = Timer(const Duration(seconds: 3), _startInCall);
+    try {
+      await _socket.request('call:queue', {'target': _target});
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _phase = _CallPhase.setup);
+      _toast(errorMessage(context, e));
+    }
   }
 
   void _cancelFinding() {
-    _findTimer?.cancel();
+    _socket.request('call:cancel', {}).ignore();
     setState(() => _phase = _CallPhase.setup);
   }
 
+  void _onMatched(Map<String, dynamic> e) {
+    if (!mounted || _phase != _CallPhase.finding) return;
+    _callId = e['callId'] as String;
+    _endsAt = DateTime.tryParse(e['endsAt'] as String? ?? '')?.toLocal();
+    _peerUid = (e['peerUid'] as num?)?.toInt();
+    _agora.join(RtcCredentials.fromJson(e['rtc'])).then((_) {
+      _agora.setMic(_micOn);
+      _agora.setPlayback(_speakerOn);
+    });
+    _startInCall();
+  }
+
   void _startInCall() {
-    _findTimer?.cancel();
     _callTimer?.cancel();
     setState(() {
       _phase = _CallPhase.inCall;
-      _secondsLeft = _callSeconds;
+      _secondsLeft = _remaining();
     });
     _callTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) {
         timer.cancel();
         return;
       }
-      if (_secondsLeft <= 1) {
-        timer.cancel();
-        setState(() {
-          _secondsLeft = 0;
-          _phase = _CallPhase.timesUp;
-        });
-        return;
-      }
-      setState(() => _secondsLeft -= 1);
+      // Süre sunucuda tutulur; burada sadece gösterim (bitişi call:times_up söyler).
+      final left = _remaining();
+      if (left != _secondsLeft) setState(() => _secondsLeft = left);
+      if (left == 0) timer.cancel();
     });
   }
 
-  void _endCall() {
-    _findTimer?.cancel();
+  int _remaining() {
+    final endsAt = _endsAt;
+    if (endsAt == null) return _callSeconds;
+    final s = endsAt.difference(DateTime.now()).inMilliseconds / 1000;
+    return s.ceil().clamp(0, _callSeconds);
+  }
+
+  void _onTimesUp(Map<String, dynamic> e) {
+    if (!mounted || !_isMine(e)) return;
     _callTimer?.cancel();
+    setState(() {
+      _secondsLeft = 0;
+      _waitingOther = false;
+      _phase = _CallPhase.timesUp;
+    });
+  }
+
+  Future<void> _keepTalking() async {
+    final callId = _callId;
+    if (callId == null) return;
+    setState(() => _waitingOther = true);
+    try {
+      await _socket.request('call:keep', {'callId': callId});
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _waitingOther = false);
+      _toast(errorMessage(context, e));
+    }
+  }
+
+  /// İkisi de devam dedi: kimlikler açıldı, sohbet oluştu.
+  void _onRevealed(Map<String, dynamic> e) {
+    if (!mounted || !_isMine(e)) return;
+    final peer = Map<String, dynamic>.from(e['peer'] as Map);
+    ChatStore.instance.refresh();
+    // Gelen arama ekranı: kabul edilene kadar ses kapalı.
+    _agora.setMic(false);
+    _agora.setPlayback(false);
+    setState(() {
+      _peerName = peer['displayName'] as String? ?? '';
+      _peerAvatar = peer['avatarUrl'] as String? ?? '';
+      _peerIsAi = peer['isAi'] == true;
+      _waitingOther = false;
+      _phase = _CallPhase.namedCallRinging;
+    });
+  }
+
+  void _acceptNamedCall() {
+    _agora.setMic(_micOn);
+    _agora.setPlayback(_speakerOn);
+    setState(() => _phase = _CallPhase.namedCall);
+  }
+
+  void _toggleSpeaker() {
+    setState(() => _speakerOn = !_speakerOn);
+    _agora.setPlayback(_speakerOn);
+  }
+
+  void _toggleMic() {
+    setState(() => _micOn = !_micOn);
+    _agora.setMic(_micOn);
+  }
+
+  void _toggleCam() {
+    setState(() => _camOn = !_camOn);
+    _agora.setCamera(_camOn);
+  }
+
+  Future<void> _endCall() async {
+    final callId = _callId;
+    _callId = null;
+    _callTimer?.cancel();
+    _videoTimer?.cancel();
+    if (callId != null) {
+      _socket.request('call:end', {'callId': callId}).ignore();
+    }
+    await _agora.leave();
     if (!mounted) return;
     Navigator.of(context).pop();
   }
 
+  void _onEnded(Map<String, dynamic> e) {
+    if (!mounted || !_isMine(e)) return;
+    final t = Translations.of(context).call;
+    final reason = e['reason'] as String?;
+    if (reason == 'NO_KEEP') {
+      _toast(t.noKeep);
+    } else if (e['byPeer'] == true) {
+      _toast(t.peerLeft);
+    }
+    _callId = null;
+    _endCall();
+  }
+
+  void _onCallError(Map<String, dynamic> e) {
+    if (!mounted || _phase != _CallPhase.finding) return;
+    setState(() => _phase = _CallPhase.setup);
+    _toast(
+      errorMessage(context, ApiException(code: e['code'] as String? ?? '')),
+    );
+  }
+
+  // ───────────── görüntülü ─────────────
+
+  /// Kamera: görüntülüye geçme isteği (isteyen 20 token öder, kabul edilirse).
   Future<void> _onVideoCallSheet() async {
+    final callId = _callId;
+    if (callId == null) return;
     final accepted = await showVideoCallSheet(context);
-    if (accepted == true && mounted) {
-      setState(() => _phase = _CallPhase.videoIncoming);
+    if (accepted != true || !mounted) return;
+    if (!await _agora.requestCamera()) {
+      if (mounted) _toast(Translations.of(context).call.micDenied);
+      return;
+    }
+    try {
+      await _socket.request('call:video_request', {'callId': callId});
+      if (mounted) _toast(Translations.of(context).call.videoWaiting);
+    } catch (e) {
+      if (mounted) _toast(errorMessage(context, e));
     }
   }
 
-  void _startVideoCall() {
+  void _onVideoRequested(Map<String, dynamic> e) {
+    if (!mounted || !_isMine(e)) return;
+    setState(() => _phase = _CallPhase.videoIncoming);
+  }
+
+  Future<void> _respondVideo(bool accept) async {
+    final callId = _callId;
+    if (callId == null) return;
+    if (accept && !await _agora.requestCamera()) accept = false;
+    if (!accept && mounted) setState(() => _phase = _CallPhase.namedCall);
+    try {
+      await _socket.request('call:video_respond', {
+        'callId': callId,
+        'accept': accept,
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _phase = _CallPhase.namedCall);
+      _toast(errorMessage(context, e));
+    }
+  }
+
+  void _onVideoDeclined(Map<String, dynamic> e) {
+    if (!mounted || !_isMine(e)) return;
+    _toast(Translations.of(context).call.videoDeclined);
+  }
+
+  Future<void> _onVideoStarted(Map<String, dynamic> e) async {
+    if (!mounted || !_isMine(e)) return;
+    await _agora.startVideo();
     _videoTimer?.cancel();
+    _videoStartedAt ??= DateTime.now();
+    if (!mounted) return;
     setState(() {
+      _camOn = true;
       _phase = _CallPhase.videoActive;
-      _videoSeconds = 0;
+      _videoSeconds = DateTime.now().difference(_videoStartedAt!).inSeconds;
     });
     _videoTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) {
         timer.cancel();
         return;
       }
-      setState(() => _videoSeconds += 1);
+      setState(
+        () => _videoSeconds = DateTime.now()
+            .difference(_videoStartedAt!)
+            .inSeconds,
+      );
     });
+  }
+
+  /// 15 dakikalık görüntülü süre doldu: sesli devam.
+  Future<void> _onVideoEnded(Map<String, dynamic> e) async {
+    if (!mounted || !_isMine(e)) return;
+    _videoTimer?.cancel();
+    _videoStartedAt = null;
+    await _agora.stopVideo();
+    if (mounted) setState(() => _phase = _CallPhase.namedCall);
+  }
+
+  Widget? _remoteVideo() {
+    final engine = _agora.engine;
+    final uid = _peerUid;
+    final channel = _agora.channel;
+    if (engine == null || uid == null || channel == null) return null;
+    return ValueListenableBuilder<Set<int>>(
+      valueListenable: _agora.remoteVideo,
+      builder: (context, on, fallback) => on.contains(uid)
+          ? AgoraVideoView(
+              controller: VideoViewController.remote(
+                rtcEngine: engine,
+                canvas: VideoCanvas(uid: uid),
+                connection: RtcConnection(channelId: channel),
+              ),
+            )
+          : fallback!,
+      child: _PeerPhoto(avatarUrl: _peerAvatar, gender: _gender),
+    );
+  }
+
+  Widget? _localVideo() {
+    final engine = _agora.engine;
+    if (engine == null || !_camOn) return null;
+    return AgoraVideoView(
+      controller: VideoViewController(
+        rtcEngine: engine,
+        canvas: const VideoCanvas(uid: 0),
+      ),
+    );
   }
 
   void _onBack() {
@@ -202,6 +466,7 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
                     padding: EdgeInsets.fromLTRB(hPad, 8, hPad, 16 + bottom),
                     child: _SetupFindingBody(
                       finding: _phase == _CallPhase.finding,
+                      free: _target == 'any',
                       gender: _gender,
                       onGender: (g) => setState(() => _gender = g),
                       onPrimary: _phase == _CallPhase.finding
@@ -220,52 +485,59 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
                           secondsLeft: _secondsLeft,
                           speakerOn: _speakerOn,
                           micOn: _micOn,
-                          onToggleSpeaker: () =>
-                              setState(() => _speakerOn = !_speakerOn),
-                          onToggleMic: () => setState(() => _micOn = !_micOn),
+                          onToggleSpeaker: _toggleSpeaker,
+                          onToggleMic: _toggleMic,
                           onEnd: _endCall,
                           t: t,
                         ),
                       _CallPhase.timesUp => _TimesUpBody(
                           waitingOther: _waitingOther,
-                          onKeepTalking: () => setState(
-                            () => _phase = _CallPhase.namedCallRinging,
-                          ),
+                          onKeepTalking: _keepTalking,
                           onEnd: _endCall,
                           t: t,
                         ),
-                      // Keep Talking: önce arama ekranı (Decline / Accept)
+                      // İkisi de devam dedi: kimliği açılan kişiden gelen arama (Decline / Accept)
                       _CallPhase.namedCallRinging => _VideoIncomingBody(
                           gender: _gender,
+                          name: _peerName,
+                          avatarUrl: _peerAvatar,
+                          isAi: _peerIsAi,
                           onDecline: _endCall,
-                          onAccept: () => setState(
-                            () => _phase = _CallPhase.namedCall,
-                          ),
+                          onAccept: _acceptNamedCall,
                         ),
                       // Accept sonrası: aktif konuşma kontrolleri
                       _CallPhase.namedCall => _NamedCallBody(
                           gender: _gender,
+                          name: _peerName,
+                          avatarUrl: _peerAvatar,
+                          isAi: _peerIsAi,
                           speakerOn: _speakerOn,
                           micOn: _micOn,
-                          onToggleSpeaker: () =>
-                              setState(() => _speakerOn = !_speakerOn),
-                          onToggleMic: () => setState(() => _micOn = !_micOn),
+                          onToggleSpeaker: _toggleSpeaker,
+                          onToggleMic: _toggleMic,
                           onCamera: _onVideoCallSheet,
                           onEnd: _endCall,
                         ),
                       _CallPhase.videoIncoming => _VideoIncomingBody(
                           gender: _gender,
-                          onDecline: _endCall,
-                          onAccept: _startVideoCall,
+                          name: _peerName,
+                          avatarUrl: _peerAvatar,
+                          isAi: _peerIsAi,
+                          onDecline: () => _respondVideo(false),
+                          onAccept: () => _respondVideo(true),
                         ),
                       _CallPhase.videoActive => _VideoActiveBody(
                           gender: _gender,
+                          name: _peerName,
+                          avatarUrl: _peerAvatar,
+                          remoteVideo: _remoteVideo(),
+                          localVideo: _localVideo(),
                           seconds: _videoSeconds,
-                          camOn: _speakerOn,
+                          camOn: _camOn,
                           micOn: _micOn,
-                          onToggleCam: () =>
-                              setState(() => _speakerOn = !_speakerOn),
-                          onToggleMic: () => setState(() => _micOn = !_micOn),
+                          onSwitchCamera: _agora.switchCamera,
+                          onToggleCam: _toggleCam,
+                          onToggleMic: _toggleMic,
                           onEnd: _endCall,
                         ),
                       _ => const SizedBox.shrink(),
@@ -285,6 +557,9 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
 class _NamedCallBody extends StatelessWidget {
   const _NamedCallBody({
     required this.gender,
+    required this.name,
+    required this.avatarUrl,
+    required this.isAi,
     required this.speakerOn,
     required this.micOn,
     required this.onToggleSpeaker,
@@ -294,6 +569,9 @@ class _NamedCallBody extends StatelessWidget {
   });
 
   final _StrangerGender? gender;
+  final String name;
+  final String avatarUrl;
+  final bool isAi;
   final bool speakerOn;
   final bool micOn;
   final VoidCallback onToggleSpeaker;
@@ -319,27 +597,11 @@ class _NamedCallBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tr = LocaleSettings.currentLocale == AppLocale.tr;
-    final photo = gender == _StrangerGender.female
-        ? AppAssets.callFemalePerson
-        : AppAssets.callMalePerson;
-
     return Column(
       children: [
+        _PeerName(name: name, isAi: isAi),
         Text(
-          'Victoria',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: AppFonts.poppins,
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            height: 24 / 16,
-            letterSpacing: -0.32,
-            color: AppColors.black.withValues(alpha: 0.65),
-          ),
-        ),
-        Text(
-          tr ? 'Aranıyor' : 'Calling',
+          Translations.of(context).call.calling,
           textAlign: TextAlign.center,
           style: const TextStyle(
             fontFamily: AppFonts.poppins,
@@ -351,15 +613,7 @@ class _NamedCallBody extends StatelessWidget {
           ),
         ),
         const Spacer(flex: 2),
-        ClipOval(
-          child: Image.asset(
-            photo,
-            width: 220,
-            height: 220,
-            fit: BoxFit.cover,
-            filterQuality: FilterQuality.high,
-          ),
-        ),
+        _PeerPhoto(avatarUrl: avatarUrl, gender: gender, size: 220),
         const Spacer(flex: 3),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -418,12 +672,9 @@ class _VideoCallSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tr = LocaleSettings.currentLocale == AppLocale.tr;
     final bottom = MediaQuery.paddingOf(context).bottom;
-    final title = tr
-        ? 'Görüntülü aramaya geçmek ister misin?'
-        : 'Would you like to switch to a video call?';
-    final accept = tr ? 'Kabul et' : 'Accept';
+    final title = Translations.of(context).call.switchToVideo;
+    final accept = Translations.of(context).call.accept;
 
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
@@ -452,6 +703,17 @@ class _VideoCallSheet extends StatelessWidget {
                     height: 1.3,
                     letterSpacing: -0.4,
                     color: AppColors.black,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  Translations.of(context).call.videoCost,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: AppFonts.poppins,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.black.withValues(alpha: 0.55),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -538,35 +800,25 @@ String _fmtClock(int s) {
 class _VideoIncomingBody extends StatelessWidget {
   const _VideoIncomingBody({
     required this.gender,
+    required this.name,
+    required this.avatarUrl,
+    required this.isAi,
     required this.onDecline,
     required this.onAccept,
   });
 
   final _StrangerGender? gender;
+  final String name;
+  final String avatarUrl;
+  final bool isAi;
   final VoidCallback onDecline;
   final VoidCallback onAccept;
 
   @override
   Widget build(BuildContext context) {
-    final tr = LocaleSettings.currentLocale == AppLocale.tr;
-    final photo = gender == _StrangerGender.female
-        ? AppAssets.callFemalePerson
-        : AppAssets.callMalePerson;
-
     return Column(
       children: [
-        Text(
-          'Victoria',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: AppFonts.poppins,
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            height: 24 / 16,
-            letterSpacing: -0.32,
-            color: AppColors.black.withValues(alpha: 0.65),
-          ),
-        ),
+        _PeerName(name: name, isAi: isAi),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -581,7 +833,7 @@ class _VideoIncomingBody extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Text(
-              tr ? 'Aranıyor' : 'Calling',
+              Translations.of(context).call.calling,
               style: const TextStyle(
                 fontFamily: AppFonts.poppins,
                 fontSize: 20,
@@ -594,15 +846,7 @@ class _VideoIncomingBody extends StatelessWidget {
           ],
         ),
         const Spacer(flex: 2),
-        ClipOval(
-          child: Image.asset(
-            photo,
-            width: 220,
-            height: 220,
-            fit: BoxFit.cover,
-            filterQuality: FilterQuality.high,
-          ),
-        ),
+        _PeerPhoto(avatarUrl: avatarUrl, gender: gender, size: 220),
         const Spacer(flex: 3),
         Row(
           children: [
@@ -610,7 +854,7 @@ class _VideoIncomingBody extends StatelessWidget {
               child: _VideoAnswerAction(
                 asset: AppAssets.iconDeclineCall,
                 background: const Color(0xFFFC4F41),
-                label: tr ? 'Reddet' : 'Decline',
+                label: Translations.of(context).call.decline,
                 onTap: onDecline,
               ),
             ),
@@ -618,7 +862,7 @@ class _VideoIncomingBody extends StatelessWidget {
               child: _VideoAnswerAction(
                 asset: AppAssets.iconAcceptCall,
                 background: const Color(0xFF4CD964),
-                label: tr ? 'Kabul et' : 'Accept',
+                label: Translations.of(context).call.accept,
                 onTap: onAccept,
               ),
             ),
@@ -690,6 +934,11 @@ class _VideoAnswerAction extends StatelessWidget {
 class _VideoActiveBody extends StatelessWidget {
   const _VideoActiveBody({
     required this.gender,
+    required this.name,
+    required this.avatarUrl,
+    required this.remoteVideo,
+    required this.localVideo,
+    required this.onSwitchCamera,
     required this.seconds,
     required this.camOn,
     required this.micOn,
@@ -699,6 +948,11 @@ class _VideoActiveBody extends StatelessWidget {
   });
 
   final _StrangerGender? gender;
+  final String name;
+  final String avatarUrl;
+  final Widget? remoteVideo;
+  final Widget? localVideo;
+  final VoidCallback onSwitchCamera;
   final int seconds;
   final bool camOn;
   final bool micOn;
@@ -706,7 +960,7 @@ class _VideoActiveBody extends StatelessWidget {
   final VoidCallback onToggleMic;
   final VoidCallback onEnd;
 
-  Widget _videoFrame(String photo, {Widget? overlay}) {
+  Widget _videoFrame(Widget content, {Widget? overlay}) {
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
@@ -719,7 +973,7 @@ class _VideoActiveBody extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(photo, fit: BoxFit.cover, filterQuality: FilterQuality.high),
+          content,
           if (overlay != null) overlay,
         ],
       ),
@@ -745,9 +999,6 @@ class _VideoActiveBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final strangerPhoto = gender == _StrangerGender.female
-        ? AppAssets.facetofaceCallfemale
-        : AppAssets.callFemalePerson;
 
     final controls = Align(
       alignment: Alignment.bottomCenter,
@@ -758,7 +1009,7 @@ class _VideoActiveBody extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _ctrl(AppAssets.iconRevertCamera, () {}),
+            _ctrl(AppAssets.iconRevertCamera, onSwitchCamera),
             const SizedBox(width: 12),
             _ctrl(AppAssets.iconCameraVoiceCall, onToggleCam, dim: !camOn),
             const SizedBox(width: 12),
@@ -776,18 +1027,7 @@ class _VideoActiveBody extends StatelessWidget {
 
     return Column(
       children: [
-        Text(
-          'Victoria',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontFamily: AppFonts.poppins,
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            height: 24 / 16,
-            letterSpacing: -0.32,
-            color: AppColors.black.withValues(alpha: 0.65),
-          ),
-        ),
+        _PeerName(name: name),
         Text(
           _fmtClock(seconds),
           textAlign: TextAlign.center,
@@ -804,11 +1044,27 @@ class _VideoActiveBody extends StatelessWidget {
         Expanded(
           child: Column(
             children: [
-              Expanded(child: _videoFrame(strangerPhoto)),
+              Expanded(
+                child: _videoFrame(
+                  remoteVideo ??
+                      _PeerPhoto(
+                        avatarUrl: avatarUrl,
+                        gender: gender,
+                        size: double.infinity,
+                        square: true,
+                      ),
+                ),
+              ),
               const SizedBox(height: 12),
               Expanded(
                 child: _videoFrame(
-                  AppAssets.callFemalePerson,
+                  localVideo ??
+                      _PeerPhoto(
+                        avatarUrl: SessionStore.instance.me?.avatarUrl ?? '',
+                        gender: null,
+                        size: double.infinity,
+                        square: true,
+                      ),
                   overlay: controls,
                 ),
               ),
@@ -818,6 +1074,69 @@ class _VideoActiveBody extends StatelessWidget {
         const SizedBox(height: 8),
       ],
     );
+  }
+}
+
+/// Kimliği açılan kişinin adı (AI karakteriyse rozetli).
+class _PeerName extends StatelessWidget {
+  const _PeerName({required this.name, this.isAi = false});
+
+  final String name;
+  final bool isAi;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Flexible(
+          child: Text(
+            name,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontFamily: AppFonts.poppins,
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              height: 24 / 16,
+              letterSpacing: -0.32,
+              color: AppColors.black.withValues(alpha: 0.65),
+            ),
+          ),
+        ),
+        if (isAi) const AiBadge(),
+      ],
+    );
+  }
+}
+
+/// Karşı tarafın fotoğrafı; yoksa tasarımdaki yer tutucu.
+class _PeerPhoto extends StatelessWidget {
+  const _PeerPhoto({
+    required this.avatarUrl,
+    required this.gender,
+    this.size = 220,
+    this.square = false,
+  });
+
+  final String avatarUrl;
+  final _StrangerGender? gender;
+  final double size;
+  final bool square;
+
+  @override
+  Widget build(BuildContext context) {
+    // Fotoğrafı yoksa yer tutucu (başka birinin fotoğrafı gösterilmez).
+    final Widget image = size.isFinite
+        ? ChatAvatarImage(url: avatarUrl, size: size)
+        : LayoutBuilder(
+            builder: (context, c) => ChatAvatarImage(
+              url: avatarUrl,
+              size: c.biggest.shortestSide,
+            ),
+          );
+    return square ? image : ClipOval(child: image);
   }
 }
 
@@ -910,6 +1229,7 @@ class _StrangerMap extends StatelessWidget {
 class _SetupFindingBody extends StatelessWidget {
   const _SetupFindingBody({
     required this.finding,
+    required this.free,
     required this.gender,
     required this.onGender,
     required this.onPrimary,
@@ -917,6 +1237,7 @@ class _SetupFindingBody extends StatelessWidget {
   });
 
   final bool finding;
+  final bool free;
   final _StrangerGender? gender;
   final ValueChanged<_StrangerGender> onGender;
   final VoidCallback onPrimary;
@@ -950,7 +1271,9 @@ class _SetupFindingBody extends StatelessWidget {
         ],
         const Spacer(),
         _DarkCta(
-          label: finding ? t.cancel : t.callStranger,
+          label: finding
+              ? t.cancel
+              : (free ? t.callStrangerFree : t.callStranger),
           onPressed: onPrimary,
         ),
       ],

@@ -7,9 +7,10 @@ import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/screens/discover/rooms/room_live_page.dart';
 
-/// Açık (public) odalar — token ile katılma bottom sheet.
+/// Token ile katılma bottom sheet. Şu an odaya katılım ücretsiz olduğundan kullanılmıyor.
 Future<void> showRoomTokenSheet(
   BuildContext context, {
+  required String roomId,
   required String roomTitle,
   int accessCost = 50,
   int balance = 125,
@@ -19,6 +20,7 @@ Future<void> showRoomTokenSheet(
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
     builder: (context) => _RoomTokenSheet(
+      roomId: roomId,
       roomTitle: roomTitle,
       accessCost: accessCost,
       balance: balance,
@@ -28,11 +30,13 @@ Future<void> showRoomTokenSheet(
 
 class _RoomTokenSheet extends StatelessWidget {
   const _RoomTokenSheet({
+    required this.roomId,
     required this.roomTitle,
     required this.accessCost,
     required this.balance,
   });
 
+  final String roomId;
   final String roomTitle;
   final int accessCost;
   final int balance;
@@ -94,7 +98,11 @@ class _RoomTokenSheet extends StatelessWidget {
                       final navigator = Navigator.of(context);
                       navigator.pop();
                       WidgetsBinding.instance.addPostFrameCallback((_) {
-                        RoomLivePage.open(navigator.context, roomTitle: title);
+                        RoomLivePage.open(
+                          navigator.context,
+                          roomId: roomId,
+                          roomTitle: title,
+                        );
                       });
                     },
                   ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
+import 'package:veylo/core/config/app_config.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
@@ -8,6 +9,8 @@ import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/data/remote/group_repository.dart';
 import 'package:veylo/data/remote/group_store.dart';
+import 'package:veylo/data/remote/room_repository.dart';
+import 'package:veylo/data/remote/room_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/screens/discover/rooms/create_room_or_group_sheet.dart';
 import 'package:veylo/screens/discover/rooms/group_chat_page.dart';
@@ -62,6 +65,33 @@ class _CreateRoomNameSheetState extends State<_CreateRoomNameSheet> {
       navigator.pop();
       WidgetsBinding.instance.addPostFrameCallback(
         (_) => GroupChatPage.openThread(navigator.context, thread),
+      );
+    } catch (e) {
+      if (mounted) {
+        setState(() => _creating = false);
+        showErrorSnackBar(context, e);
+      }
+    }
+  }
+
+  /// Oda açmak 50 token; açan kişi doğrudan odaya girer.
+  Future<void> _createRoom(String name) async {
+    if (_creating) return;
+    setState(() => _creating = true);
+    final navigator = Navigator.of(context);
+    try {
+      final id = await RoomRepository.instance.create(
+        title: name,
+        anonymous: widget.hideAccount,
+      );
+      RoomStore.instance.refresh();
+      navigator.pop();
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => RoomLivePage.open(
+          navigator.context,
+          roomId: id,
+          roomTitle: name,
+        ),
       );
     } catch (e) {
       if (mounted) {
@@ -139,28 +169,18 @@ class _CreateRoomNameSheetState extends State<_CreateRoomNameSheet> {
           ),
           const SizedBox(height: 20),
           AppPrimaryButton(
-            label: t.create,
+            label: isRoom
+                ? t.createRoomFor(count: TokenCosts.roomCreate.toString())
+                : t.create,
             onPressed: () {
               final name = _controller.text.trim().isEmpty
                   ? t.nameHint
                   : _controller.text.trim();
-              if (widget.type == CreateSpaceType.group) {
+              if (isRoom) {
+                _createRoom(name);
+              } else {
                 _createGroup(name);
-                return;
               }
-              final navigator = Navigator.of(context);
-              navigator.pop();
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                if (widget.type == CreateSpaceType.group) {
-                  GroupChatPage.open(
-                    navigator.context,
-                    title: name,
-                    memberCount: 1,
-                  );
-                } else {
-                  RoomLivePage.open(navigator.context, roomTitle: name);
-                }
-              });
             },
           ),
         ],

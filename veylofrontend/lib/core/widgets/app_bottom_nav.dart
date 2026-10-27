@@ -7,6 +7,29 @@ import 'package:veylo/i18n/strings.g.dart';
 
 enum AppNavTab { discover, chat, call, vibes, profile }
 
+/// Ana kabuğun sekmesi. Üste açılan follow / profil sayfaları aynı çubuğu gösterir.
+class AppShell {
+  static AppNavTab Function()? _current;
+  static void Function(AppNavTab tab)? _select;
+
+  static void bind({
+    required AppNavTab Function() current,
+    required void Function(AppNavTab tab) select,
+  }) {
+    _current = current;
+    _select = select;
+  }
+
+  static void unbind() {
+    _current = null;
+    _select = null;
+  }
+
+  static AppNavTab get current => _current?.call() ?? AppNavTab.discover;
+
+  static void select(AppNavTab tab) => _select?.call(tab);
+}
+
 /// Figma Navigation — 430×80, Call ortada (beyaz 98 disk + 82 purple).
 class AppBottomNav extends StatelessWidget {
   const AppBottomNav({

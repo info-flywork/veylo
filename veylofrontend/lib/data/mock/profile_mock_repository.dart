@@ -25,6 +25,7 @@ class ProfileMockRepository {
       tokenBalance: me.tokenBalance,
       isSelf: true,
       borderId: me.borderId,
+      voiceIntroUrl: me.voiceIntroUrl,
     );
   }
 
