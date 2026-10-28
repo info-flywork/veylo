@@ -107,12 +107,35 @@ class SocketService {
     connected.value = false;
   }
 
+  /// Bağlantı yeni kuruluyorsa kısa süre bekler, sonra ack'li gönderir.
+  Future<void> _waitUntilConnected({
+    Duration timeout = const Duration(seconds: 8),
+  }) async {
+    if (_socket == null) connect();
+    if (_socket?.connected == true) return;
+    final done = Completer<void>();
+    void listener() {
+      if (connected.value && !done.isCompleted) done.complete();
+    }
+
+    connected.addListener(listener);
+    listener();
+    try {
+      await done.future.timeout(timeout);
+    } on TimeoutException {
+      throw const ApiException(code: 'NETWORK');
+    } finally {
+      connected.removeListener(listener);
+    }
+  }
+
   /// Ack'li gönderim. Sunucu `{ok, data}` / `{ok:false, error}` döner.
   Future<dynamic> request(
     String event,
     Map<String, dynamic> payload, {
     Duration timeout = const Duration(seconds: 15),
-  }) {
+  }) async {
+    await _waitUntilConnected();
     final socket = _socket;
     if (socket == null || !socket.connected) {
       return Future.error(const ApiException(code: 'NETWORK'));
