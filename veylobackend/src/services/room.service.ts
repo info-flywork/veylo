@@ -182,11 +182,18 @@ async function join(viewerId: string, roomId: string, anonymous: boolean) {
 async function leave(viewerId: string, roomId: string) {
   const r = live.get(roomId);
   if (!r) return;
-  if (r.room.hostId === viewerId) return endRoom(roomId, 'HOST_LEFT');
+  if (r.hostGrace && r.room.hostId === viewerId) {
+    clearTimeout(r.hostGrace);
+    r.hostGrace = null;
+  }
   const p = r.participants.get(viewerId);
+  if (!p) return;
+  const isHost = r.room.hostId === viewerId;
   r.participants.delete(viewerId);
   leaveChannel(viewerId, channelOf(roomId));
-  if (p) emitToChannel(channelOf(roomId), 'room:participant_left', { roomId, uid: agoraUid(viewerId) });
+  emitToChannel(channelOf(roomId), 'room:participant_left', { roomId, uid: agoraUid(viewerId) });
+  // İçeride biri varken oda açık kalır. Son kişi çıkınca kapanır.
+  if (r.participants.size === 0) await endRoom(roomId, isHost ? 'HOST_LEFT' : 'EMPTY');
 }
 
 function setMic(viewerId: string, roomId: string, on: boolean) {
@@ -218,18 +225,20 @@ async function endRoom(roomId: string, reason: 'HOST_LEFT' | 'REPLACED' | 'EMPTY
   logger.info({ roomId, reason }, 'Oda kapandı');
 }
 
-/** Son bağlantısı koptu: katıldığı odalardan çık; sahipse kısa süre bekle. */
+/** Son bağlantısı koptu. Sahip kısa süre geri gelebilir; oda, içinde biri varken kapanmaz. */
 function onDisconnect(userId: string) {
   for (const [roomId, r] of live) {
     if (!r.participants.has(userId)) continue;
-    if (r.room.hostId === userId) {
-      if (r.hostGrace) clearTimeout(r.hostGrace);
-      r.hostGrace = setTimeout(() => {
-        if (!presence.isOnline(userId)) void endRoom(roomId, 'HOST_LEFT');
-      }, ROOM.hostGraceMs);
-    } else {
+    if (r.room.hostId !== userId) {
       void leave(userId, roomId);
+      continue;
     }
+    if (r.hostGrace) clearTimeout(r.hostGrace);
+    r.hostGrace = setTimeout(() => {
+      r.hostGrace = null;
+      if (presence.isOnline(userId)) return;
+      void leave(userId, roomId);
+    }, ROOM.hostGraceMs);
   }
 }
 
