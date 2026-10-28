@@ -37,6 +37,11 @@ export const messagesQuery = z.object({
 
 export const markReadBody = z.object({ seq: z.number().int().min(0) });
 
+/** Anonim sohbette bir bağlantı adımını erkenden istemek. */
+export const unlockRequestBody = conversationIdParams.extend({
+  milestone: z.enum(['initial', 'photo', 'full']),
+});
+
 export const settingsBody = z
   .object({ pinned: z.boolean(), muted: z.boolean() })
   .partial()
