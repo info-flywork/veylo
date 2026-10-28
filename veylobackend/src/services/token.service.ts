@@ -1,4 +1,5 @@
 import { Prisma, type LedgerReason } from '@prisma/client';
+import { env } from '../config/env';
 import { AppError } from '../errors/AppError';
 import { prisma, type Tx } from '../lib/prisma';
 
@@ -48,6 +49,10 @@ async function spend(
   refId?: string,
   meta?: Prisma.InputJsonValue,
 ): Promise<{ applied: boolean; balance: number }> {
+  if (env.SKIP_TOKEN_SPEND) {
+    const u = await tx.user.findUniqueOrThrow({ where: { id: userId }, select: { tokenBalance: true } });
+    return { applied: false, balance: u.tokenBalance };
+  }
   if (amount <= 0) throw new Error('spend amount must be positive');
   if (await alreadyApplied(tx, reason, refId)) {
     const u = await tx.user.findUniqueOrThrow({ where: { id: userId }, select: { tokenBalance: true } });

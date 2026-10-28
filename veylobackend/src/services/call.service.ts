@@ -92,7 +92,7 @@ async function joinQueue(userId: string, target: CallTarget) {
   leaveQueue(userId);
 
   const user = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
-  if (target !== 'any' && user.tokenBalance < TOKENS.callGenderFilter) {
+  if (!env.SKIP_TOKEN_SPEND && target !== 'any' && user.tokenBalance < TOKENS.callGenderFilter) {
     throw AppError.insufficientTokens(TOKENS.callGenderFilter, user.tokenBalance);
   }
   const me: Ticket = { userId, gender: user.gender, target, blocked: await safetyService.blockedIdsFor(userId) };
@@ -297,7 +297,7 @@ async function requestVideo(userId: string, callId: string) {
   if (c.phase !== 'revealed') throw AppError.badRequest('NOT_REVEALED');
   if (c.videoUntil && c.videoUntil > new Date()) throw AppError.conflict('VIDEO_ACTIVE');
   const user = await prisma.user.findUniqueOrThrow({ where: { id: userId }, select: { tokenBalance: true } });
-  if (user.tokenBalance < TOKENS.videoCallPer15Min) {
+  if (!env.SKIP_TOKEN_SPEND && user.tokenBalance < TOKENS.videoCallPer15Min) {
     throw AppError.insufficientTokens(TOKENS.videoCallPer15Min, user.tokenBalance);
   }
   c.videoRequestedBy = userId;
