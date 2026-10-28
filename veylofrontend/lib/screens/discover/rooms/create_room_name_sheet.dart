@@ -54,7 +54,7 @@ class _CreateRoomNameSheetState extends State<_CreateRoomNameSheet> {
   Future<void> _createGroup(String name) async {
     if (_creating) return;
     setState(() => _creating = true);
-    final navigator = Navigator.of(context);
+    final nav = Navigator.of(context, rootNavigator: true);
     try {
       final thread = await GroupRepository.instance.create(
         title: name,
@@ -62,10 +62,9 @@ class _CreateRoomNameSheetState extends State<_CreateRoomNameSheet> {
       );
       ChatStore.instance.replace(thread);
       GroupStore.instance.refresh();
-      navigator.pop();
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) => GroupChatPage.openThread(navigator.context, thread),
-      );
+      if (!mounted) return;
+      nav.pop();
+      await GroupChatPage.openThread(nav.context, thread);
     } catch (e) {
       if (mounted) {
         setState(() => _creating = false);
@@ -78,20 +77,20 @@ class _CreateRoomNameSheetState extends State<_CreateRoomNameSheet> {
   Future<void> _createRoom(String name) async {
     if (_creating) return;
     setState(() => _creating = true);
-    final navigator = Navigator.of(context);
+    final nav = Navigator.of(context, rootNavigator: true);
     try {
       final id = await RoomRepository.instance.create(
         title: name,
         anonymous: widget.hideAccount,
       );
       RoomStore.instance.refresh();
-      navigator.pop();
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) => RoomLivePage.open(
-          navigator.context,
-          roomId: id,
-          roomTitle: name,
-        ),
+      if (!mounted) return;
+      nav.pop();
+      await RoomLivePage.open(
+        nav.context,
+        roomId: id,
+        roomTitle: name,
+        anonymous: widget.hideAccount,
       );
     } catch (e) {
       if (mounted) {

@@ -118,15 +118,13 @@ class _CreateRoomOrGroupSheetState extends State<_CreateRoomOrGroupSheet> {
             onPressed: () {
               final type = _type;
               final hideAccount = _hideAccount;
-              final navigator = Navigator.of(context);
-              navigator.pop();
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                showCreateRoomNameSheet(
-                  navigator.context,
-                  type: type,
-                  hideAccount: hideAccount,
-                );
-              });
+              final nav = Navigator.of(context, rootNavigator: true);
+              nav.pop();
+              showCreateRoomNameSheet(
+                nav.context,
+                type: type,
+                hideAccount: hideAccount,
+              );
             },
           ),
           const SizedBox(height: 12),

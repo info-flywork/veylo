@@ -69,6 +69,7 @@ class _RoomLivePageState extends State<RoomLivePage> {
   List<RoomChatLine> _messages = const [];
   bool _joined = false;
   bool _left = false;
+  bool _canLeave = false;
 
   @override
   void initState() {
@@ -134,8 +135,7 @@ class _RoomLivePageState extends State<RoomLivePage> {
     } catch (e) {
       if (!mounted) return;
       showErrorSnackBar(context, e);
-      _left = true;
-      Navigator.of(context).pop();
+      _leave();
     }
   }
 
@@ -205,10 +205,15 @@ class _RoomLivePageState extends State<RoomLivePage> {
   }
 
   Future<void> _leave() async {
+    if (_left && _canLeave) return;
     _left = true;
     _repo.leave(widget.roomId).ignore();
     await _agora.leave();
-    if (mounted) Navigator.of(context).pop();
+    if (!mounted) return;
+    setState(() => _canLeave = true);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) Navigator.of(context).pop();
+    });
   }
 
   void _onEnded() {
@@ -258,7 +263,7 @@ class _RoomLivePageState extends State<RoomLivePage> {
     ];
 
     return PopScope(
-      canPop: false,
+      canPop: _canLeave,
       onPopInvokedWithResult: (didPop, _) {
         if (!didPop) _leave();
       },
@@ -303,6 +308,8 @@ class _RoomLivePageState extends State<RoomLivePage> {
                         blurred: host?.blurred ?? false,
                         speaking: host != null && speaking.contains(host.uid),
                         size: 72,
+                        micOn: host?.micOn ?? false,
+                        onMic: _isHost ? _toggleMic : null,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -388,6 +395,9 @@ class _RoomLivePageState extends State<RoomLivePage> {
                                           speaking: speaking.contains(
                                             member.uid,
                                           ),
+                                          onMic: member.uid == _me?.uid
+                                              ? _toggleMic
+                                              : null,
                                         ),
                                       ),
                                   ],
@@ -489,12 +499,16 @@ class _AdminAvatar extends StatelessWidget {
     required this.size,
     this.blurred = false,
     this.speaking = false,
+    this.micOn = false,
+    this.onMic,
   });
 
   final String avatar;
   final double size;
   final bool blurred;
   final bool speaking;
+  final bool micOn;
+  final VoidCallback? onMic;
 
   @override
   Widget build(BuildContext context) {
@@ -505,26 +519,43 @@ class _AdminAvatar extends StatelessWidget {
         child: photo,
       );
     }
-    return Container(
+    return SizedBox(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: AppColors.selectionBorder,
-          width: speaking ? 3 : 2,
-        ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        alignment: Alignment.center,
+        children: [
+          Container(
+            width: size,
+            height: size,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: AppColors.selectionBorder,
+                width: speaking ? 3 : 2,
+              ),
+            ),
+            child: ClipOval(child: photo),
+          ),
+          if (onMic != null)
+            Positioned(
+              right: 0,
+              bottom: 0,
+              child: _ProfileMicButton(on: micOn, onTap: onMic!),
+            ),
+        ],
       ),
-      child: ClipOval(child: photo),
     );
   }
 }
 
 class _MemberTile extends StatelessWidget {
-  const _MemberTile({required this.member, this.speaking = false});
+  const _MemberTile({required this.member, this.speaking = false, this.onMic});
 
   final RoomParticipant member;
   final bool speaking;
+  final VoidCallback? onMic;
 
   @override
   Widget build(BuildContext context) {
@@ -535,6 +566,7 @@ class _MemberTile extends StatelessWidget {
           width: 68,
           height: 68,
           child: Stack(
+            clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
               if (speaking)
@@ -565,7 +597,7 @@ class _MemberTile extends StatelessWidget {
                       : ChatAvatarImage(url: member.avatarUrl, size: 68),
                 ),
               ),
-              if (!member.micOn) ...[
+              if (!member.micOn && onMic == null) ...[
                 Container(
                   width: 68,
                   height: 68,
@@ -580,6 +612,12 @@ class _MemberTile extends StatelessWidget {
                   height: 24,
                 ),
               ],
+              if (onMic != null)
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: _ProfileMicButton(on: member.micOn, onTap: onMic!),
+                ),
             ],
           ),
         ),
@@ -599,6 +637,40 @@ class _MemberTile extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+class _ProfileMicButton extends StatelessWidget {
+  const _ProfileMicButton({required this.on, required this.onTap});
+
+  final bool on;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: 28,
+        height: 28,
+        decoration: BoxDecoration(
+          color: on ? AppColors.selectionBorder : AppColors.white,
+          shape: BoxShape.circle,
+          border: Border.all(color: AppColors.white, width: 2),
+        ),
+        alignment: Alignment.center,
+        child: SvgPicture.asset(
+          on ? AppAssets.iconMicrophone : AppAssets.iconMicrophoneOff,
+          width: 16,
+          height: 16,
+          colorFilter: ColorFilter.mode(
+            on ? AppColors.white : AppColors.black,
+            BlendMode.srcIn,
+          ),
+        ),
+      ),
     );
   }
 }
