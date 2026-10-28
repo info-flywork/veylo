@@ -57,6 +57,7 @@ async function broadcastConversation(c: ConversationFull) {
 function previewOf(type: MessageType, body?: string | null) {
   if (type === 'IMAGE') return '📷 Photo';
   if (type === 'VOICE') return '🎤 Voice message';
+  if (type === 'SYSTEM') return 'Unlock request';
   return (body ?? '').slice(0, 120);
 }
 
@@ -189,7 +190,7 @@ interface SendInput {
  * Tek mesaj gönderme yolu (REST ve Socket.IO ikisi de bunu çağırır).
  * Aynı clientMsgId tekrar gelirse yeni mesaj yazılmaz, ilki döner.
  */
-async function send(viewerId: string, conversationId: string, input: SendInput) {
+async function send(viewerId: string, conversationId: string, input: SendInput, asSystem = false) {
   // Tekrar gönderim: aynı clientMsgId'li mesaj zaten yazıldıysa onu döndür.
   const dup = await prisma.message.findUnique({
     where: { senderId_clientMsgId: { senderId: viewerId, clientMsgId: input.clientMsgId } },
@@ -204,8 +205,9 @@ async function send(viewerId: string, conversationId: string, input: SendInput) 
       ? await mediaService.resolveForMessage(viewerId, input.mediaId, input.type)
       : null;
 
-  const preview = previewOf(input.type, input.body);
-  const growsConnection = c.type === 'ANONYMOUS' && !c.revealedAt && c.status === 'ACCEPTED';
+  const storedType = asSystem ? 'SYSTEM' : input.type;
+  const preview = asSystem ? 'Unlock request' : previewOf(input.type, input.body);
+  const growsConnection = !asSystem && c.type === 'ANONYMOUS' && !c.revealedAt && c.status === 'ACCEPTED';
   let message: Message;
   let progress = c.connectionProgress;
 
@@ -225,7 +227,7 @@ async function send(viewerId: string, conversationId: string, input: SendInput) 
         seq,
         senderId: viewerId,
         clientMsgId: input.clientMsgId,
-        type: input.type,
+        type: storedType,
         body: input.body ?? null,
         mediaId: media?.id ?? null,
         mediaUrl: media?.url ?? null,
@@ -288,6 +290,23 @@ async function send(viewerId: string, conversationId: string, input: SendInput) 
   void fanOutMessage(fresh, message, viewerId).catch((err) => logger.warn({ err }, 'Mesaj iletimi başarısız'));
   chatEvents.emit('message:sent', { conversation: fresh, message, senderId: viewerId });
   return { message: serializeMessage(message, fresh, viewerId), duplicate: false };
+}
+
+/** Anonim sohbette bir kilidi erkenden istemek. Karşı tarafın sohbetinde bir satır olarak durur. */
+async function requestUnlock(
+  viewerId: string,
+  conversationId: string,
+  milestone: 'initial' | 'photo' | 'full',
+) {
+  const c = await loadForMember(conversationId, viewerId);
+  if (c.type !== 'ANONYMOUS') throw AppError.badRequest('NOT_ANONYMOUS');
+  const { message } = await send(
+    viewerId,
+    conversationId,
+    { clientMsgId: randomUUID(), type: 'TEXT', body: `unlock:${milestone}` },
+    true,
+  );
+  return message;
 }
 
 async function assertCanSend(c: ConversationFull, viewerId: string) {
@@ -574,6 +593,7 @@ export const conversationService = {
   createDirect,
   createAnonymous,
   send,
+  requestUnlock,
   messages,
   markRead,
   approve,
