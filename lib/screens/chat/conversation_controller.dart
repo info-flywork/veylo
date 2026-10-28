@@ -175,6 +175,17 @@ class ConversationController extends ChangeNotifier {
     await _deliver(pending);
   }
 
+  /// Bağlantı adımı için istek. Karşı tarafın sohbetinde bir satır olarak görünür.
+  Future<void> requestUnlock(String milestone) async {
+    if (_thread.isLocalOnly) return;
+    final res = await _socket.request('connection:request', {
+      'conversationId': _thread.id,
+      'milestone': milestone,
+    });
+    _upsertMessage(ChatMessage.fromJson(Map<String, dynamic>.from(res as Map)));
+    _notify();
+  }
+
   /// Başarısız mesaja dokununca aynı clientMsgId ile tekrar (sunucu ikinci kez yazmaz).
   Future<void> retry(ChatMessage failed) async {
     _upsertMessage(failed.copyWith(status: ChatMessageStatus.sending));
