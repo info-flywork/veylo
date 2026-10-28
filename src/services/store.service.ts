@@ -21,14 +21,17 @@ async function purchaseBorder(userId: string, borderId: string) {
     const key = { userId_itemType_itemId: { userId, itemType: 'BORDER' as const, itemId: borderId } };
     const already = await tx.ownedItem.findUnique({ where: key });
     let balance: number;
+    let charged = 0;
     if (already) {
       balance = (await tx.user.findUniqueOrThrow({ where: { id: userId } })).tokenBalance;
     } else {
-      ({ balance } = await tokenService.spend(tx, userId, price, 'BORDER_PURCHASE', `border:${userId}:${borderId}`));
+      const spent = await tokenService.spend(tx, userId, price, 'BORDER_PURCHASE', `border:${userId}:${borderId}`);
+      balance = spent.balance;
+      charged = spent.applied ? price : 0;
       await tx.ownedItem.create({ data: { userId, itemType: 'BORDER', itemId: borderId } });
     }
     await tx.user.update({ where: { id: userId }, data: { borderId } });
-    return { borderId, balance, charged: already ? 0 : price };
+    return { borderId, balance, charged };
   });
 }
 

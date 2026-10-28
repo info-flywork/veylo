@@ -27,6 +27,14 @@ const envSchema = z
     AGORA_APP_CERTIFICATE: z.string().optional(),
     /** Sadece test: anonim arama süresi (sn). Production'da her zaman 60. */
     CALL_ANON_SECONDS: z.coerce.number().int().min(1).max(60).optional(),
+    /**
+     * true iken bakiye yetmese de oda, arama ve diğer ücretli işlemler geçer.
+     * Mağazaya çıkmadan önce false yap.
+     */
+    SKIP_TOKEN_SPEND: z
+      .string()
+      .default('true')
+      .transform((v) => v === 'true'),
     /** AI karakterler (persona). Boşsa karakterler cevap vermez, vibe paylaşmaz. */
     OPENAI_API_KEY: z.string().optional(),
     OPENAI_MODEL: z.string().default('gpt-4o-mini'),

@@ -186,10 +186,16 @@ async function main() {
   check(r2.data.connection.revealed && r2.data.peer.id === alice.id, 'iki taraf onaylayınca profiller açıldı');
 
   // ── Token: çerçeve satın alma
+  // SKIP_TOKEN_SPEND varsayılan açık: testte bakiye düşmez.
+  const tokensFree = (process.env.SKIP_TOKEN_SPEND ?? 'true') !== 'false';
   const buy = await call(alice.token, 'POST', '/store/borders/sapphire/purchase');
-  check(buy.data.balance === 30 && buy.data.charged === 70, 'sapphire (70) alındı, bakiye 30');
-  const buy2 = await call(alice.token, 'POST', '/store/borders/crimson/purchase');
-  check(buy2.status === 402 && buy2.data.error.code === 'INSUFFICIENT_TOKENS', 'yetersiz bakiyede 402 dönüyor');
+  if (tokensFree) {
+    check(buy.status === 200 && buy.data.charged === 0, 'token kontrolü kapalı: çerçeve bakiyesiz alındı');
+  } else {
+    check(buy.data.balance === 30 && buy.data.charged === 70, 'sapphire (70) alındı, bakiye 30');
+    const buy2 = await call(alice.token, 'POST', '/store/borders/crimson/purchase');
+    check(buy2.status === 402 && buy2.data.error.code === 'INSUFFICIENT_TOKENS', 'yetersiz bakiyede 402 dönüyor');
+  }
   const notOwned = await call(alice.token, 'PATCH', '/users/me', { borderId: 'phoenix' });
   check(notOwned.data.error?.code === 'BORDER_NOT_OWNED', 'sahip olunmayan çerçeve takılamıyor');
 
