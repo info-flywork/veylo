@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/chat/chat_message.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 
@@ -82,6 +83,9 @@ class _ChatMessageListState extends State<ChatMessageList> {
     final children = <Widget>[
       ...widget.leading,
       for (final (i, m) in msgs.indexed) ...[
+        if (m.type == 'SYSTEM')
+          _UnlockNotice(message: m)
+        else
         _Bubble(
           message: m,
           maxWidth: maxBubble,
@@ -119,6 +123,49 @@ class _ChatMessageListState extends State<ChatMessageList> {
       itemCount: children.length,
       separatorBuilder: (_, _) => const SizedBox(height: 10),
       itemBuilder: (context, index) => children[children.length - 1 - index],
+    );
+  }
+}
+
+class _UnlockNotice extends StatelessWidget {
+  const _UnlockNotice({required this.message});
+
+  final ChatMessage message;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Translations.of(context).chats;
+    final title = switch (message.body) {
+      'unlock:initial' => t.milestoneInitial,
+      'unlock:photo' => t.milestonePhoto,
+      'unlock:full' => t.milestoneFull,
+      _ => message.body ?? '',
+    };
+    final text = message.isMine
+        ? 'You sent a request: $title'
+        : 'The person you\'re chatting with sent you a request about $title';
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Center(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: const Color(0x14998FED),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: AppText(
+            text,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontFamily: AppFonts.poppins,
+              fontWeight: FontWeight.w500,
+              fontSize: 13,
+              height: 18 / 13,
+              color: Color(0xA6000000),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

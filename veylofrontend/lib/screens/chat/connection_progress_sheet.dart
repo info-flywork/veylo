@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
+import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
 
@@ -9,6 +10,7 @@ import 'package:veylo/i18n/strings.g.dart';
 Future<void> showConnectionProgressSheet(
   BuildContext context, {
   required int progress,
+  Future<void> Function(String milestone)? onRequest,
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -17,14 +19,44 @@ Future<void> showConnectionProgressSheet(
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
-    builder: (_) => ConnectionProgressSheet(progress: progress),
+    builder: (_) => ConnectionProgressSheet(
+      progress: progress,
+      onRequest: onRequest,
+    ),
   );
 }
 
-class ConnectionProgressSheet extends StatelessWidget {
-  const ConnectionProgressSheet({super.key, required this.progress});
+class ConnectionProgressSheet extends StatefulWidget {
+  const ConnectionProgressSheet({
+    super.key,
+    required this.progress,
+    this.onRequest,
+  });
 
   final int progress;
+  final Future<void> Function(String milestone)? onRequest;
+
+  @override
+  State<ConnectionProgressSheet> createState() => _ConnectionProgressSheetState();
+}
+
+class _ConnectionProgressSheetState extends State<ConnectionProgressSheet> {
+  final Set<String> _sent = {};
+  String? _busy;
+
+  Future<void> _request(String id) async {
+    final send = widget.onRequest;
+    if (send == null || _busy != null || _sent.contains(id)) return;
+    setState(() => _busy = id);
+    try {
+      await send(id);
+      if (mounted) setState(() => _sent.add(id));
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    } finally {
+      if (mounted) setState(() => _busy = null);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,18 +64,21 @@ class ConnectionProgressSheet extends StatelessWidget {
     final bottom = MediaQuery.viewPaddingOf(context).bottom;
     final milestones = [
       (
+        id: 'initial',
         title: t.milestoneInitial,
         hintUnlocked: t.milestoneInitialHint,
         hintLocked: t.milestoneInitialLocked,
         at: 25,
       ),
       (
+        id: 'photo',
         title: t.milestonePhoto,
         hintUnlocked: t.milestonePhotoHint,
         hintLocked: t.milestonePhotoHint,
         at: 70,
       ),
       (
+        id: 'full',
         title: t.milestoneFull,
         hintUnlocked: t.milestoneFullHint,
         hintLocked: t.milestoneFullHint,
@@ -100,10 +135,15 @@ class ConnectionProgressSheet extends StatelessWidget {
               const Divider(height: 1, thickness: 1, color: Color(0xFFE8E8E8)),
             _MilestoneRow(
               title: milestones[i].title,
-              subtitle: progress >= milestones[i].at
+              subtitle: widget.progress >= milestones[i].at
                   ? milestones[i].hintUnlocked
                   : milestones[i].hintLocked,
-              unlocked: progress >= milestones[i].at,
+              unlocked: widget.progress >= milestones[i].at,
+              requestLabel: _sent.contains(milestones[i].id) ? 'Sent' : 'Request',
+              busy: _busy == milestones[i].id,
+              onRequest: widget.onRequest == null || _sent.contains(milestones[i].id)
+                  ? null
+                  : () => _request(milestones[i].id),
             ),
           ],
         ],
@@ -117,11 +157,17 @@ class _MilestoneRow extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.unlocked,
+    required this.requestLabel,
+    required this.busy,
+    this.onRequest,
   });
 
   final String title;
   final String subtitle;
   final bool unlocked;
+  final String requestLabel;
+  final bool busy;
+  final VoidCallback? onRequest;
 
   @override
   Widget build(BuildContext context) {
@@ -172,6 +218,24 @@ class _MilestoneRow extends StatelessWidget {
               ],
             ),
           ),
+          if (onRequest != null || requestLabel == 'Sent')
+            GestureDetector(
+              onTap: busy ? null : onRequest,
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: AppText(
+                  busy ? '...' : requestLabel,
+                  style: const TextStyle(
+                    fontFamily: AppFonts.poppins,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13,
+                    height: 1,
+                    color: AppColors.selectionBorder,
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );

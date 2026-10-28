@@ -120,7 +120,11 @@ class _AnonymousChatPageState extends State<AnonymousChatPage> {
   Future<void> _onConnectionTap(ChatThread thread, int progress) async {
     final name = thread.peerUsername ?? thread.maskedName ?? thread.title;
     if (progress < 100) {
-      await showConnectionProgressSheet(context, progress: progress);
+      await showConnectionProgressSheet(
+        context,
+        progress: progress,
+        onRequest: thread.isLocalOnly ? null : _ctrl.requestUnlock,
+      );
       return;
     }
     final reveal = await showRevealProfileSheet(context, peerUsername: name);
