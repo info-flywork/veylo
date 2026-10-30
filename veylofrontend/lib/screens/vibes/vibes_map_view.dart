@@ -5,11 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
-import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
-import 'package:veylo/core/widgets/avatar_ripple.dart';
-import 'package:veylo/data/local/local_profile_store.dart';
-import 'package:veylo/data/mock/profile_mock_repository.dart';
 import 'package:veylo/data/remote/vibe_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/vibes/vibe_post.dart';
@@ -79,10 +75,6 @@ const _specs = <_BubbleSpec>[
 
 const _kGap = 4.0;
 const _kMapShift = 48.0;
-const _kSelfAvatar = 80.0;
-
-/// Sadece avatar gövdesi için boşluk — dalgalar diğer balonların üstüne binebilir.
-const _kSelfClearRadius = _kSelfAvatar * 0.62;
 
 /// Orta halkayı dolduran ekstra balonlar (kenar + rastgele paket yetmeyince).
 const _centerSpecs = <_BubbleSpec>[
@@ -106,13 +98,6 @@ List<_PlacedBubble> _pack(double width, double height) {
   final selfCx = width / 2;
   final selfCy = height * 0.48;
 
-  bool hitsSelf(double cx, double cy, double radius) {
-    final dx = cx - selfCx;
-    final dy = cy - selfCy;
-    final min = radius + _kSelfClearRadius + _kGap;
-    return dx * dx + dy * dy < min * min;
-  }
-
   bool overlapsAny(double cx, double cy, double radius) {
     return placed.any((other) {
       final dx = other.cx - cx;
@@ -130,7 +115,7 @@ List<_PlacedBubble> _pack(double width, double height) {
         cy > height - radius + 8) {
       return false;
     }
-    if (hitsSelf(cx, cy, radius) || overlapsAny(cx, cy, radius)) return false;
+    if (overlapsAny(cx, cy, radius)) return false;
     placed.add(_PlacedBubble(cx, cy, spec, postIndex));
     return true;
   }
@@ -172,7 +157,7 @@ List<_PlacedBubble> _pack(double width, double height) {
   // Orta halka — boş Atlantik bölgesini doldur (self etrafında 2 ring).
   var centerIdx = 0;
   for (var ring = 0; ring < 2; ring++) {
-    final ringR = _kSelfAvatar * (0.95 + ring * 0.55);
+    final ringR = 70.0 + ring * 48;
     final count = ring == 0 ? 6 : 8;
     for (var k = 0; k < count && centerIdx < _centerSpecs.length; k++) {
       final spec = _centerSpecs[centerIdx];
@@ -310,11 +295,6 @@ class _VibesMapViewState extends State<VibesMapView> {
             .where((b) => b.post.id == _selected)
             .firstOrNull;
 
-        final self = LocalProfileStore.instance.apply(
-          ProfileMockRepository.currentUser(),
-        );
-        final selfCx = mapW / 2;
-        final selfCy = _kMapShift + usableH * 0.48;
         // Dalgalar taşsın diye clip yok; harita katmanı kendi alanında kalır.
         return Stack(
           clipBehavior: Clip.none,
@@ -359,27 +339,6 @@ class _VibesMapViewState extends State<VibesMapView> {
                   ),
                 ),
               ),
-            // Figma: merkez kullanıcı + lavanta radar dalgaları
-            Positioned(
-              left: selfCx - _kSelfAvatar / 2,
-              top: selfCy - _kSelfAvatar / 2,
-              width: _kSelfAvatar,
-              height: _kSelfAvatar,
-              child: AvatarRipple(
-                size: _kSelfAvatar,
-                ringCount: 4,
-                maxScale: 2.85,
-                peakOpacity: 0.14,
-                color: const Color(0xFF998FED),
-                child: ClipOval(
-                  child: ChatAvatarImage(
-                    url: self.avatarUrl,
-                    size: _kSelfAvatar,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-            ),
             if (selected != null)
               Positioned(
                 left: _cardLeft(selected.bubble, mapW),
@@ -478,16 +437,15 @@ class _VibePreviewCard extends StatelessWidget {
                 Expanded(
                   child: Row(
                     children: [
-                      Flexible(
-                        child: AppText(
-                          post.name,
-                          style: AppTextStyles.vibesName,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      if (post.isAi) const AiBadge(),
-                    ],
+                          Flexible(
+                            child: AppText(
+                              post.name,
+                              style: AppTextStyles.vibesName,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -528,23 +486,25 @@ class _VibePreviewCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 18),
-                  GestureDetector(
-                    onTap: onSend,
-                    behavior: HitTestBehavior.opaque,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SvgPicture.asset(
-                          AppAssets.iconMessagesBalloon,
-                          width: 24,
-                          height: 24,
-                        ),
-                        const SizedBox(width: 4),
-                        AppText(sendLabel, style: AppTextStyles.vibesMeta),
-                      ],
+                  if (!post.isMine) ...[
+                    const SizedBox(width: 18),
+                    GestureDetector(
+                      onTap: onSend,
+                      behavior: HitTestBehavior.opaque,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SvgPicture.asset(
+                            AppAssets.iconMessagesBalloon,
+                            width: 24,
+                            height: 24,
+                          ),
+                          const SizedBox(width: 4),
+                          AppText(sendLabel, style: AppTextStyles.vibesMeta),
+                        ],
+                      ),
                     ),
-                  ),
+                  ],
                 ],
               ),
             ),
