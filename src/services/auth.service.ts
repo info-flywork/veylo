@@ -29,7 +29,9 @@ async function verifyToken(rawToken: string | undefined): Promise<FirebaseIdenti
   if (!auth) throw AppError.unauthorized('AUTH_NOT_CONFIGURED');
 
   try {
-    const decoded = await auth.verifyIdToken(rawToken, true);
+    // checkRevoked kapalı: açık oturumdaki geçerli token, iptal sorgusu yüzünden
+    // "oturum bitti" diye düşmesin. Süresi dolan token yine reddedilir, istemci yeniler.
+    const decoded = await auth.verifyIdToken(rawToken);
     const provider = PROVIDERS[decoded.firebase.sign_in_provider];
     if (!provider) throw AppError.unauthorized('UNSUPPORTED_PROVIDER');
     return { uid: decoded.uid, email: decoded.email, provider };
