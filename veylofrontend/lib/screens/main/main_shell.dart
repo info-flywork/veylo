@@ -35,6 +35,7 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> {
   AppNavTab _tab = AppNavTab.discover;
   StreamSubscription<String>? _pushTaps;
+  StreamSubscription<String>? _callPush;
   StreamSubscription<Map<String, dynamic>>? _groupApproved;
   StreamSubscription<Map<String, dynamic>>? _roomApproved;
   StreamSubscription<Map<String, dynamic>>? _callIncoming;
@@ -49,6 +50,7 @@ class _MainShellState extends State<MainShell> {
       PushService.instance.start();
     }
     _pushTaps = PushService.instance.taps.listen(_openConversation);
+    _callPush = PushService.instance.callInvites.listen(_openIncomingCall);
     // Gizli gruba katılma isteğim onaylandı.
     _groupApproved = SocketService.instance.on('group:approved').listen((e) {
       final id = e['conversationId'] as String?;
@@ -63,12 +65,7 @@ class _MainShellState extends State<MainShell> {
     });
     // Gizli canlı odaya katılma isteğim onaylandı.
     _callIncoming = SocketService.instance.on('call:incoming').listen((e) {
-      final id = e['callId'] as String?;
-      if (id == null || !mounted || _incomingCallId == id) return;
-      _incomingCallId = id;
-      CallStrangerPage.openIncoming(context, e).whenComplete(() {
-        if (_incomingCallId == id) _incomingCallId = null;
-      });
+      _openIncomingCall(e['inviteId'] as String?);
     });
     _roomApproved = SocketService.instance.on('room:approved').listen((e) {
       final id = e['roomId'] as String?;
@@ -89,10 +86,12 @@ class _MainShellState extends State<MainShell> {
       },
     );
     final pending = PushService.instance.takePendingTap();
-    if (pending != null) {
-      WidgetsBinding.instance.addPostFrameCallback(
-        (_) => _openConversation(pending),
-      );
+    final pendingCall = PushService.instance.takePendingCall();
+    if (pending != null || pendingCall != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (pendingCall != null) _openIncomingCall(pendingCall);
+        if (pending != null) _openConversation(pending);
+      });
     }
   }
 
@@ -100,10 +99,21 @@ class _MainShellState extends State<MainShell> {
   void dispose() {
     AppShell.unbind();
     _pushTaps?.cancel();
+    _callPush?.cancel();
     _groupApproved?.cancel();
     _roomApproved?.cancel();
     _callIncoming?.cancel();
     super.dispose();
+  }
+
+  void _openIncomingCall(String? inviteId) {
+    if (inviteId == null || inviteId.isEmpty || !mounted || _incomingCallId == inviteId) {
+      return;
+    }
+    _incomingCallId = inviteId;
+    CallStrangerPage.openIncoming(context, {'inviteId': inviteId}).whenComplete(() {
+      if (_incomingCallId == inviteId) _incomingCallId = null;
+    });
   }
 
   /// Bildirime dokunuldu: Chats sekmesine geç ve sohbeti aç.

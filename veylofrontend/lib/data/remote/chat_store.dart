@@ -56,10 +56,9 @@ class ChatStore extends ChangeNotifier {
         }),
       );
     _socket.reconnects.addListener(refresh);
-    // Arka planda socket kapatılır: sunucu kullanıcıyı çevrimdışı görür ve
-    // mesajları FCM push olarak gönderir. Dönünce yeniden bağlanıp eşitlenir.
+    // Arka planda bağlantı açık kalır. Böylece uygulama önde değilken de
+    // anonim arama düşer. İşletim sistemi süreci kapatırsa dönüşte yeniden bağlanır.
     _lifecycle = AppLifecycleListener(
-      onPause: _socket.disconnect,
       onResume: () => _socket.connect(resync: true),
     );
     refresh();

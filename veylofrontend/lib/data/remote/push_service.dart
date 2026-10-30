@@ -31,9 +31,11 @@ class PushService {
   final _local = FlutterLocalNotificationsPlugin();
   final _api = ApiClient.instance;
   final _taps = StreamController<String>.broadcast();
+  final _callInvites = StreamController<String>.broadcast();
   final List<StreamSubscription<dynamic>> _subs = [];
 
   String? _pendingTap;
+  String? _pendingCall;
   String? _token;
   String _language = 'en';
   bool _started = false;
@@ -41,10 +43,19 @@ class PushService {
   /// Bildirime dokunulunca açılacak sohbet id'si.
   Stream<String> get taps => _taps.stream;
 
+  /// Arama bildirimine dokunulunca açılacak davet.
+  Stream<String> get callInvites => _callInvites.stream;
+
   /// Uygulama bildirime dokunularak açıldıysa (ana ekran hazır olunca bir kez okunur).
   String? takePendingTap() {
     final id = _pendingTap;
     _pendingTap = null;
+    return id;
+  }
+
+  String? takePendingCall() {
+    final id = _pendingCall;
+    _pendingCall = null;
     return id;
   }
 
@@ -69,13 +80,9 @@ class PushService {
       _pendingTap = launch!.notificationResponse?.payload;
     }
     final initial = await _messaging.getInitialMessage();
-    if (initial != null) {
-      _pendingTap = initial.data['conversationId'] as String?;
-    }
+    if (initial != null) _capturePush(initial.data);
 
-    FirebaseMessaging.onMessageOpenedApp.listen(
-      (m) => _onTap(m.data['conversationId'] as String?),
-    );
+    FirebaseMessaging.onMessageOpenedApp.listen((m) => _capturePush(m.data));
     FirebaseMessaging.onMessage.listen(_onForegroundPush);
   }
 
@@ -197,6 +204,23 @@ class PushService {
         );
   }
 
+  void _capturePush(Map<String, dynamic> data) {
+    if (data['type'] == 'call') {
+      _onCall(data['inviteId'] as String?);
+      return;
+    }
+    _onTap(data['conversationId'] as String?);
+  }
+
+  void _onCall(String? inviteId) {
+    if (inviteId == null || inviteId.isEmpty) return;
+    if (_callInvites.hasListener) {
+      _callInvites.add(inviteId);
+    } else {
+      _pendingCall = inviteId;
+    }
+  }
+
   void _onTap(String? conversationId) {
     if (conversationId == null || conversationId.isEmpty) return;
     if (_taps.hasListener) {
@@ -241,6 +265,10 @@ class PushService {
   /// Uygulama açıkken FCM gelirse (socket o an kopuksa) yerel bildirim olarak göster.
   /// iOS'ta sistem bunu zaten gösterir (AppDelegate willPresent).
   void _onForegroundPush(RemoteMessage m) {
+    if (m.data['type'] == 'call') {
+      _onCall(m.data['inviteId'] as String?);
+      return;
+    }
     if (Platform.isIOS || SocketService.instance.connected.value) return;
     final conversationId = m.data['conversationId'] as String?;
     if (conversationId == ChatStore.instance.activeConversationId) return;
