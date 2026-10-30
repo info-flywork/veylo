@@ -34,6 +34,11 @@ class PresenceStore {
     return (this.sockets.get(userId)?.size ?? 0) > 0;
   }
 
+  /** Şu an soketi açık olan kullanıcılar. */
+  onlineUserIds(): string[] {
+    return [...this.sockets.keys()];
+  }
+
   get onlineCount(): number {
     return this.sockets.size;
   }
