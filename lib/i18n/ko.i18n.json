@@ -235,7 +235,10 @@
     "calling": "전화 거는 중",
     "accept": "수락",
     "decline": "거절",
-    "switchToVideo": "영상 통화로 전환할까요?"
+    "switchToVideo": "영상 통화로 전환할까요?",
+    "noMatchTitle": "지금은 대화할 수 있는 사람이 없어요",
+    "noMatchBody": "지금은 대화 상대를 찾지 못했어요. 잠시 후에 다시 시도해 주세요.",
+    "noMatchOk": "확인"
   },
   "vibes": {
     "search": "검색",

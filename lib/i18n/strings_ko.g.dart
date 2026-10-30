@@ -338,6 +338,9 @@ class _Translations$call$ko extends Translations$call$tr {
 	@override String get accept => '수락';
 	@override String get decline => '거절';
 	@override String get switchToVideo => '영상 통화로 전환할까요?';
+	@override String get noMatchTitle => '지금은 대화할 수 있는 사람이 없어요';
+	@override String get noMatchBody => '지금은 대화 상대를 찾지 못했어요. 잠시 후에 다시 시도해 주세요.';
+	@override String get noMatchOk => '확인';
 }
 
 // Path: vibes
@@ -1222,6 +1225,9 @@ extension on TranslationsKo {
 			'call.accept' => '수락',
 			'call.decline' => '거절',
 			'call.switchToVideo' => '영상 통화로 전환할까요?',
+			'call.noMatchTitle' => '지금은 대화할 수 있는 사람이 없어요',
+			'call.noMatchBody' => '지금은 대화 상대를 찾지 못했어요. 잠시 후에 다시 시도해 주세요.',
+			'call.noMatchOk' => '확인',
 			'vibes.search' => '검색',
 			'vibes.sendMessage' => '메시지 보내기',
 			'vibes.wantsToTalk' => '지금 바로 이 얘기를 하고 싶어해요',
@@ -1505,11 +1511,11 @@ extension on TranslationsKo {
 			'createProfile.interests.coding' => '코딩',
 			'createProfile.interests.ai' => 'AI',
 			'createProfile.interests.podcast' => '팟캐스트',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.stepChatGoal' => '5/5 대화 목적',
 			'createProfile.chatGoalTitle' => '오늘은 무엇을 찾고 있나요?',
 			'createProfile.chatGoalSubtitle' => '지금 기분에 딱 맞는 상대를 찾는 데 도움이 돼요.',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.chatGoalQuickMatch' => '빠른 매칭 — 바로 대화에\n뛰어들기',
 			'createProfile.chatGoalFlirtyChat' => '설레는 대화 — 가볍고 장난스러운\n대화',
 			'createProfile.chatGoalMoodMatch' => '기분 매칭 — 지금 기분에 맞는\n상대와 매칭',

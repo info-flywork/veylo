@@ -338,6 +338,9 @@ class _Translations$call$zh extends Translations$call$tr {
 	@override String get accept => '接受';
 	@override String get decline => '拒绝';
 	@override String get switchToVideo => '要切换到视频通话吗？';
+	@override String get noMatchTitle => '暂时没有可匹配的人';
+	@override String get noMatchBody => '目前没有找到可以聊天的人，请稍后再试。';
+	@override String get noMatchOk => '好的';
 }
 
 // Path: vibes
@@ -1222,6 +1225,9 @@ extension on TranslationsZh {
 			'call.accept' => '接受',
 			'call.decline' => '拒绝',
 			'call.switchToVideo' => '要切换到视频通话吗？',
+			'call.noMatchTitle' => '暂时没有可匹配的人',
+			'call.noMatchBody' => '目前没有找到可以聊天的人，请稍后再试。',
+			'call.noMatchOk' => '好的',
 			'vibes.search' => '搜索',
 			'vibes.sendMessage' => '发消息',
 			'vibes.wantsToTalk' => '现在就想聊这个',
@@ -1505,11 +1511,11 @@ extension on TranslationsZh {
 			'createProfile.interests.coding' => '编程',
 			'createProfile.interests.ai' => 'AI',
 			'createProfile.interests.podcast' => '播客',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.stepChatGoal' => '5/5 聊天目标',
 			'createProfile.chatGoalTitle' => '你今天想找什么？',
 			'createProfile.chatGoalSubtitle' => '这能帮我们根据你此刻的心情找到合适的人。',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.chatGoalQuickMatch' => '快速匹配——直接\n开聊',
 			'createProfile.chatGoalFlirtyChat' => '暧昧聊天——轻松、俏皮的\n对话',
 			'createProfile.chatGoalMoodMatch' => '心情匹配——根据你此刻的\n感受匹配',

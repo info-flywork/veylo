@@ -235,7 +235,10 @@
     "calling": "Calling",
     "accept": "Accept",
     "decline": "Decline",
-    "switchToVideo": "Would you like to switch to a video call?"
+    "switchToVideo": "Would you like to switch to a video call?",
+    "noMatchTitle": "No one is available right now",
+    "noMatchBody": "We couldn't find anyone to talk to at the moment. Please try again a little later.",
+    "noMatchOk": "OK"
   },
   "vibes": {
     "search": "Search",

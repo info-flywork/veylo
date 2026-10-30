@@ -338,6 +338,9 @@ class _Translations$call$en extends Translations$call$tr {
 	@override String get accept => 'Accept';
 	@override String get decline => 'Decline';
 	@override String get switchToVideo => 'Would you like to switch to a video call?';
+	@override String get noMatchTitle => 'No one is available right now';
+	@override String get noMatchBody => 'We couldn\'t find anyone to talk to at the moment. Please try again a little later.';
+	@override String get noMatchOk => 'OK';
 }
 
 // Path: vibes
@@ -1222,6 +1225,9 @@ extension on TranslationsEn {
 			'call.accept' => 'Accept',
 			'call.decline' => 'Decline',
 			'call.switchToVideo' => 'Would you like to switch to a video call?',
+			'call.noMatchTitle' => 'No one is available right now',
+			'call.noMatchBody' => 'We couldn\'t find anyone to talk to at the moment. Please try again a little later.',
+			'call.noMatchOk' => 'OK',
 			'vibes.search' => 'Search',
 			'vibes.sendMessage' => 'Send Message',
 			'vibes.wantsToTalk' => 'Wants to talk about this right now',
@@ -1505,11 +1511,11 @@ extension on TranslationsEn {
 			'createProfile.interests.coding' => 'Coding',
 			'createProfile.interests.ai' => 'AI',
 			'createProfile.interests.podcast' => 'Podcasts',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.stepChatGoal' => '5/5 Chat goal',
 			'createProfile.chatGoalTitle' => 'What are you looking for today?',
 			'createProfile.chatGoalSubtitle' => 'This helps us find the right match for your mood right now.',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.chatGoalQuickMatch' => 'Quick match — jump straight into a\nconversation',
 			'createProfile.chatGoalFlirtyChat' => 'Flirty chat — light, playful\nconversations',
 			'createProfile.chatGoalMoodMatch' => 'Mood match — match based on how you\'re\nfeeling',

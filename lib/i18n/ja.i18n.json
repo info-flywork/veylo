@@ -235,7 +235,10 @@
     "calling": "発信中",
     "accept": "応答",
     "decline": "拒否",
-    "switchToVideo": "ビデオ通話に切り替えますか？"
+    "switchToVideo": "ビデオ通話に切り替えますか？",
+    "noMatchTitle": "今は話せる人がいません",
+    "noMatchBody": "現在、話せる相手が見つかりませんでした。少し時間をおいてもう一度お試しください。",
+    "noMatchOk": "OK"
   },
   "vibes": {
     "search": "検索",

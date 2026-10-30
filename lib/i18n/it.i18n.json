@@ -235,7 +235,10 @@
     "calling": "Chiamata in corso",
     "accept": "Accetta",
     "decline": "Rifiuta",
-    "switchToVideo": "Vuoi passare a una videochiamata?"
+    "switchToVideo": "Vuoi passare a una videochiamata?",
+    "noMatchTitle": "Nessuno è disponibile al momento",
+    "noMatchBody": "Al momento non abbiamo trovato nessuno con cui parlare. Riprova tra un po'.",
+    "noMatchOk": "OK"
   },
   "vibes": {
     "search": "Cerca",

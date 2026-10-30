@@ -235,7 +235,10 @@
     "calling": "Anruf läuft",
     "accept": "Annehmen",
     "decline": "Ablehnen",
-    "switchToVideo": "Möchtest du zu einem Videoanruf wechseln?"
+    "switchToVideo": "Möchtest du zu einem Videoanruf wechseln?",
+    "noMatchTitle": "Gerade ist niemand verfügbar",
+    "noMatchBody": "Wir konnten gerade niemanden zum Reden finden. Versuch es etwas später noch einmal.",
+    "noMatchOk": "OK"
   },
   "vibes": {
     "search": "Suchen",

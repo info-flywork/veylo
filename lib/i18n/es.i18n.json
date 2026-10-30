@@ -235,7 +235,10 @@
     "calling": "Llamando",
     "accept": "Aceptar",
     "decline": "Rechazar",
-    "switchToVideo": "¿Quieres pasar a videollamada?"
+    "switchToVideo": "¿Quieres pasar a videollamada?",
+    "noMatchTitle": "No hay nadie disponible ahora",
+    "noMatchBody": "No encontramos a nadie con quien hablar en este momento. Vuelve a intentarlo un poco más tarde.",
+    "noMatchOk": "OK"
   },
   "vibes": {
     "search": "Buscar",

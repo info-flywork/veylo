@@ -235,7 +235,10 @@
     "calling": "Chamando",
     "accept": "Aceitar",
     "decline": "Recusar",
-    "switchToVideo": "Quer mudar para uma chamada de vídeo?"
+    "switchToVideo": "Quer mudar para uma chamada de vídeo?",
+    "noMatchTitle": "Ninguém disponível agora",
+    "noMatchBody": "Não encontramos ninguém para conversar no momento. Tente novamente daqui a pouco.",
+    "noMatchOk": "OK"
   },
   "vibes": {
     "search": "Buscar",

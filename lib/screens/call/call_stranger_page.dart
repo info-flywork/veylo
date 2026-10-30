@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/theme/theme.dart';
@@ -92,6 +93,13 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
   bool _accepting = false;
 
   Timer? _callTimer;
+
+  /// Bu süre içinde kimse bulunamazsa arama durur ve uyarı gösterilir.
+  static const _searchTimeout = Duration(minutes: 2);
+  Timer? _searchTimer;
+
+  /// Arama/görüşme sürerken ekran kararmaz (kararırsa bağlantı kopar, sıradan düşülür).
+  bool _awake = false;
   Timer? _videoTimer;
   int _videoSeconds = 0;
 
@@ -110,6 +118,8 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
       _socket.on('call:error').listen(_onCallError),
       _socket.on('call:invite_ended').listen(_onInviteEnded),
     ]);
+    // Bağlantı koptuysa sunucu sıradan çıkarır; geri gelince aramaya devam edilir.
+    _socket.reconnects.addListener(_requeue);
     final incoming = widget.incoming;
     if (incoming != null) {
       _inviteId = incoming['inviteId'] as String?;
@@ -124,6 +134,9 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
     }
     _callTimer?.cancel();
     _videoTimer?.cancel();
+    _searchTimer?.cancel();
+    _socket.reconnects.removeListener(_requeue);
+    if (_awake) WakelockPlus.disable().ignore();
     // Sayfa başka yoldan kapanırsa (geri hareketi vb.) sunucudaki durum da kapansın.
     final callId = _callId;
     final inviteId = _inviteId;
@@ -167,16 +180,34 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
       _phase = _CallPhase.finding;
       _waitingOther = false;
     });
+    _searchTimer?.cancel();
+    _searchTimer = Timer(_searchTimeout, _onSearchTimeout);
     try {
       await _socket.request('call:queue', {'target': _target});
     } catch (e) {
       if (!mounted) return;
+      _searchTimer?.cancel();
       setState(() => _phase = _CallPhase.setup);
       _toast(errorMessage(context, e));
     }
   }
 
+  /// Yeniden bağlanınca hâlâ aranıyorsa sıraya tekrar gir.
+  void _requeue() {
+    if (!mounted || _phase != _CallPhase.finding) return;
+    _socket.request('call:queue', {'target': _target}).ignore();
+  }
+
+  /// 2 dakikada kimse bulunamadı: aramayı bırak, nazik bir uyarı göster.
+  Future<void> _onSearchTimeout() async {
+    if (!mounted || _phase != _CallPhase.finding) return;
+    _socket.request('call:cancel', {}).ignore();
+    setState(() => _phase = _CallPhase.setup);
+    await showNoMatchSheet(context);
+  }
+
   void _cancelFinding() {
+    _searchTimer?.cancel();
     _socket.request('call:cancel', {}).ignore();
     setState(() => _phase = _CallPhase.setup);
   }
@@ -185,6 +216,7 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
     final waiting =
         _phase == _CallPhase.finding || _phase == _CallPhase.incoming;
     if (!mounted || !waiting) return;
+    _searchTimer?.cancel();
     _inviteId = null;
     _callId = e['callId'] as String;
     _endsAt = DateTime.tryParse(e['endsAt'] as String? ?? '')?.toLocal();
@@ -347,6 +379,7 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
 
   void _onCallError(Map<String, dynamic> e) {
     if (!mounted || _phase != _CallPhase.finding) return;
+    _searchTimer?.cancel();
     setState(() => _phase = _CallPhase.setup);
     _toast(
       errorMessage(context, ApiException(code: e['code'] as String? ?? '')),
@@ -485,8 +518,17 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
   bool get _isSetupPhase =>
       _phase == _CallPhase.setup || _phase == _CallPhase.finding;
 
+  /// Kurulum ekranı dışında (arama, gelen arama, görüşme) ekran açık kalır.
+  void _syncWakelock() {
+    final want = _phase != _CallPhase.setup;
+    if (want == _awake) return;
+    _awake = want;
+    WakelockPlus.toggle(enable: want).ignore();
+  }
+
   @override
   Widget build(BuildContext context) {
+    _syncWakelock();
     final t = Translations.of(context).call;
     final top = MediaQuery.viewPaddingOf(context).top;
     final bottom = MediaQuery.viewPaddingOf(context).bottom;
@@ -732,6 +774,86 @@ class _NamedCallBody extends StatelessWidget {
 }
 
 /// "Görüntülü aramaya geç?" bottom sheet.
+/// 2 dakika içinde kimse bulunamadı uyarısı.
+Future<void> showNoMatchSheet(BuildContext context) {
+  return showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) => const _NoMatchSheet(),
+  );
+}
+
+class _NoMatchSheet extends StatelessWidget {
+  const _NoMatchSheet();
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Translations.of(context).call;
+    final bottom = MediaQuery.paddingOf(context).bottom;
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.topCenter,
+      children: [
+        Container(
+          margin: const EdgeInsets.only(top: 44),
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          ),
+          padding: EdgeInsets.fromLTRB(20, 64, 20, 20 + bottom),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AppText(
+                t.noMatchTitle,
+                style: AppTextStyles.callStrangerTitle,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 10),
+              AppText(
+                t.noMatchBody,
+                style: AppTextStyles.callStrangerSubtitle,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              AppPrimaryButton(
+                label: t.noMatchOk,
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          top: 0,
+          child: Container(
+            width: 88,
+            height: 88,
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.10),
+                  blurRadius: 18,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+            ),
+            child: Image.asset(
+              AppAssets.clock,
+              fit: BoxFit.contain,
+              filterQuality: FilterQuality.high,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 Future<bool?> showVideoCallSheet(BuildContext context) {
   return showModalBottomSheet<bool>(
     context: context,

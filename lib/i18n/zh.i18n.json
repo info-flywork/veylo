@@ -235,7 +235,10 @@
     "calling": "呼叫中",
     "accept": "接受",
     "decline": "拒绝",
-    "switchToVideo": "要切换到视频通话吗？"
+    "switchToVideo": "要切换到视频通话吗？",
+    "noMatchTitle": "暂时没有可匹配的人",
+    "noMatchBody": "目前没有找到可以聊天的人，请稍后再试。",
+    "noMatchOk": "好的"
   },
   "vibes": {
     "search": "搜索",

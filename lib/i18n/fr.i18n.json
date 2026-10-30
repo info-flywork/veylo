@@ -235,7 +235,10 @@
     "calling": "Appel en cours",
     "accept": "Accepter",
     "decline": "Refuser",
-    "switchToVideo": "Passer en appel vidéo ?"
+    "switchToVideo": "Passer en appel vidéo ?",
+    "noMatchTitle": "Personne n'est disponible pour l'instant",
+    "noMatchBody": "Nous n'avons trouvé personne avec qui parler pour le moment. Réessaie un peu plus tard.",
+    "noMatchOk": "OK"
   },
   "vibes": {
     "search": "Rechercher",

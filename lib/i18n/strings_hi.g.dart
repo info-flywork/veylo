@@ -338,6 +338,9 @@ class _Translations$call$hi extends Translations$call$tr {
 	@override String get accept => 'स्वीकार करें';
 	@override String get decline => 'अस्वीकार करें';
 	@override String get switchToVideo => 'क्या आप वीडियो कॉल पर जाना चाहेंगे?';
+	@override String get noMatchTitle => 'अभी कोई उपलब्ध नहीं है';
+	@override String get noMatchBody => 'इस समय बात करने के लिए कोई नहीं मिला। थोड़ी देर बाद फिर से कोशिश करें।';
+	@override String get noMatchOk => 'ठीक है';
 }
 
 // Path: vibes
@@ -1222,6 +1225,9 @@ extension on TranslationsHi {
 			'call.accept' => 'स्वीकार करें',
 			'call.decline' => 'अस्वीकार करें',
 			'call.switchToVideo' => 'क्या आप वीडियो कॉल पर जाना चाहेंगे?',
+			'call.noMatchTitle' => 'अभी कोई उपलब्ध नहीं है',
+			'call.noMatchBody' => 'इस समय बात करने के लिए कोई नहीं मिला। थोड़ी देर बाद फिर से कोशिश करें।',
+			'call.noMatchOk' => 'ठीक है',
 			'vibes.search' => 'खोजें',
 			'vibes.sendMessage' => 'मैसेज भेजें',
 			'vibes.wantsToTalk' => 'अभी इस बारे में बात करना चाहते हैं',
@@ -1505,11 +1511,11 @@ extension on TranslationsHi {
 			'createProfile.interests.coding' => 'कोडिंग',
 			'createProfile.interests.ai' => 'AI',
 			'createProfile.interests.podcast' => 'पॉडकास्ट',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.stepChatGoal' => '5/5 चैट का लक्ष्य',
 			'createProfile.chatGoalTitle' => 'आज आप क्या ढूँढ रहे हैं?',
 			'createProfile.chatGoalSubtitle' => 'इससे हम आपके अभी के मूड के हिसाब से सही मैच ढूँढ पाएँगे।',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.chatGoalQuickMatch' => 'क्विक मैच — सीधे बातचीत\nशुरू करें',
 			'createProfile.chatGoalFlirtyChat' => 'फ़्लर्टी चैट — हल्की-फुल्की, मज़ेदार\nबातें',
 			'createProfile.chatGoalMoodMatch' => 'मूड मैच — आपके मूड के हिसाब से\nमैच',

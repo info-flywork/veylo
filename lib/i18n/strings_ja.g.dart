@@ -338,6 +338,9 @@ class _Translations$call$ja extends Translations$call$tr {
 	@override String get accept => '応答';
 	@override String get decline => '拒否';
 	@override String get switchToVideo => 'ビデオ通話に切り替えますか？';
+	@override String get noMatchTitle => '今は話せる人がいません';
+	@override String get noMatchBody => '現在、話せる相手が見つかりませんでした。少し時間をおいてもう一度お試しください。';
+	@override String get noMatchOk => 'OK';
 }
 
 // Path: vibes
@@ -1222,6 +1225,9 @@ extension on TranslationsJa {
 			'call.accept' => '応答',
 			'call.decline' => '拒否',
 			'call.switchToVideo' => 'ビデオ通話に切り替えますか？',
+			'call.noMatchTitle' => '今は話せる人がいません',
+			'call.noMatchBody' => '現在、話せる相手が見つかりませんでした。少し時間をおいてもう一度お試しください。',
+			'call.noMatchOk' => 'OK',
 			'vibes.search' => '検索',
 			'vibes.sendMessage' => 'メッセージを送る',
 			'vibes.wantsToTalk' => '今このことについて話したい',
@@ -1505,11 +1511,11 @@ extension on TranslationsJa {
 			'createProfile.interests.coding' => 'プログラミング',
 			'createProfile.interests.ai' => 'AI',
 			'createProfile.interests.podcast' => 'ポッドキャスト',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.stepChatGoal' => '5/5 チャットの目的',
 			'createProfile.chatGoalTitle' => '今日は何を探してる？',
 			'createProfile.chatGoalSubtitle' => '今の気分にぴったりの相手を見つけるのに役立ちます。',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.chatGoalQuickMatch' => 'クイックマッチ — すぐに\n会話を始める',
 			'createProfile.chatGoalFlirtyChat' => 'ドキドキトーク — 軽くて楽しい\n会話',
 			'createProfile.chatGoalMoodMatch' => '気分マッチ — 今の気持ちで\nマッチング',

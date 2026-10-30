@@ -792,6 +792,15 @@ class Translations$call$tr {
 
 	/// tr: 'Görüntülü aramaya geçmek ister misin?'
 	String get switchToVideo => 'Görüntülü aramaya geçmek ister misin?';
+
+	/// tr: 'Şu an uygun kimse yok'
+	String get noMatchTitle => 'Şu an uygun kimse yok';
+
+	/// tr: 'Şu anda konuşmaya müsait bir anonim kullanıcı bulamadık. Biraz sonra tekrar dene.'
+	String get noMatchBody => 'Şu anda konuşmaya müsait bir anonim kullanıcı bulamadık. Biraz sonra tekrar dene.';
+
+	/// tr: 'Tamam'
+	String get noMatchOk => 'Tamam';
 }
 
 // Path: vibes
@@ -2441,6 +2450,9 @@ extension on Translations {
 			'call.accept' => 'Kabul et',
 			'call.decline' => 'Reddet',
 			'call.switchToVideo' => 'Görüntülü aramaya geçmek ister misin?',
+			'call.noMatchTitle' => 'Şu an uygun kimse yok',
+			'call.noMatchBody' => 'Şu anda konuşmaya müsait bir anonim kullanıcı bulamadık. Biraz sonra tekrar dene.',
+			'call.noMatchOk' => 'Tamam',
 			'vibes.search' => 'Ara',
 			'vibes.sendMessage' => 'Mesaj Gönder',
 			'vibes.wantsToTalk' => 'Şu an bunun hakkında konuşmak istiyor',
@@ -2724,11 +2736,11 @@ extension on Translations {
 			'createProfile.interests.coding' => 'Kodlama',
 			'createProfile.interests.ai' => 'YZ',
 			'createProfile.interests.podcast' => 'Podcast',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.stepChatGoal' => '5/5 Sohbet hedefi',
 			'createProfile.chatGoalTitle' => 'Bugün ne arıyorsun?',
 			'createProfile.chatGoalSubtitle' => 'Bu, şu anki ruh haline uygun eşleşmeyi bulmamıza yardımcı olur.',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.chatGoalQuickMatch' => 'Hızlı eşleşme — doğrudan sohbete gir',
 			'createProfile.chatGoalFlirtyChat' => 'Flört sohbeti — hafif, eğlenceli muhabbet',
 			'createProfile.chatGoalMoodMatch' => 'Ruh hali eşleşmesi — nasıl hissettiğine göre',
