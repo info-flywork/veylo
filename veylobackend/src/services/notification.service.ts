@@ -13,7 +13,7 @@ interface PushPayload {
 }
 
 /** Bildirim metni cihazın diline göre üretilir. */
-type PushBuilder = (t: NotificationTexts) => PushPayload;
+type PushBuilder = (t: NotificationTexts, locale: string) => PushPayload;
 
 const INVALID_TOKEN_CODES = new Set([
   'messaging/registration-token-not-registered',
@@ -41,7 +41,7 @@ async function pushToUser(userId: string, build: PushBuilder, opts: { evenIfOnli
 
     const dead: string[] = [];
     for (const [locale, tokens] of byLocale) {
-      const payload = build(notificationTexts(locale));
+      const payload = build(notificationTexts(locale), locale);
       const res = await messaging.sendEachForMulticast({
         tokens,
         notification: { title: payload.title, body: payload.body },

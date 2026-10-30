@@ -16,6 +16,7 @@ import {
 } from '../serializers/conversation.serializer';
 import { maskName, pairKey } from '../utils/mask';
 import { mediaService } from './media.service';
+import { unlockNotice } from '../i18n/unlock-notices';
 import { notificationService } from './notification.service';
 import { safetyService } from './safety.service';
 
@@ -60,6 +61,10 @@ function previewOf(type: MessageType, body?: string | null) {
   if (type === 'SYSTEM') {
     if (body === 'unlock:initial:approved') return 'Name shared';
     if (body === 'unlock:initial:rejected') return 'Name request declined';
+    if (body === 'unlock:photo:approved') return 'Photo shared';
+    if (body === 'unlock:photo:rejected') return 'Photo request declined';
+    if (body === 'unlock:full:approved') return 'Profile shared';
+    if (body === 'unlock:full:rejected') return 'Profile request declined';
     return 'Unlock request';
   }
   return (body ?? '').slice(0, 120);
@@ -304,14 +309,14 @@ async function requestUnlock(
 ) {
   const c = await loadForMember(conversationId, viewerId);
   if (c.type !== 'ANONYMOUS') throw AppError.badRequest('NOT_ANONYMOUS');
-  if (milestone === 'initial') {
-    const peer = peerOf(c, viewerId);
-    if (peer?.nameShared) throw AppError.badRequest('NAME_ALREADY_SHARED');
-    const pending = await prisma.message.findFirst({
-      where: { conversationId, senderId: viewerId, type: 'SYSTEM', body: 'unlock:initial' },
-    });
-    if (pending) return serializeMessage(pending, c, viewerId);
-  }
+  const peer = peerOf(c, viewerId);
+  const already =
+    milestone === 'initial' ? peer?.nameShared : milestone === 'photo' ? peer?.photoShared : peer?.profileShared;
+  if (already) throw AppError.badRequest('UNLOCK_ALREADY_SHARED');
+  const pending = await prisma.message.findFirst({
+    where: { conversationId, senderId: viewerId, type: 'SYSTEM', body: `unlock:${milestone}` },
+  });
+  if (pending) return serializeMessage(pending, c, viewerId);
   const { message } = await send(
     viewerId,
     conversationId,
@@ -321,7 +326,9 @@ async function requestUnlock(
   return message;
 }
 
-/** İsim isteğini karşı taraf onaylar veya reddeder. Onayda adı kalıcı açılır. */
+const UNLOCK_MILESTONE = { 'unlock:initial': 'initial', 'unlock:photo': 'photo', 'unlock:full': 'full' } as const;
+
+/** İsim, bulanık fotoğraf veya tam profil isteğini karşı taraf onaylar ya da reddeder. */
 async function respondUnlock(
   viewerId: string,
   conversationId: string,
@@ -331,21 +338,29 @@ async function respondUnlock(
   const c = await loadForMember(conversationId, viewerId);
   if (c.type !== 'ANONYMOUS') throw AppError.badRequest('NOT_ANONYMOUS');
   const msg = await prisma.message.findFirst({ where: { id: messageId, conversationId: c.id } });
-  if (!msg || msg.type !== 'SYSTEM' || msg.body !== 'unlock:initial') {
+  const milestone = msg?.body ? UNLOCK_MILESTONE[msg.body as keyof typeof UNLOCK_MILESTONE] : undefined;
+  if (!msg || msg.type !== 'SYSTEM' || !milestone) {
     throw AppError.badRequest('UNLOCK_NOT_PENDING');
   }
   if (msg.senderId === viewerId) throw AppError.forbidden('CANNOT_RESPOND_OWN_REQUEST');
 
   const approved = decision === 'approve';
-  const body = approved ? 'unlock:initial:approved' : 'unlock:initial:rejected';
-  const preview = approved ? 'Name shared' : 'Name request declined';
+  const body = `unlock:${milestone}:${approved ? 'approved' : 'rejected'}`;
+  const preview = previewOf('SYSTEM', body);
+  const share = approved
+    ? {
+        initial: { nameShared: true },
+        photo: { photoShared: true },
+        full: { profileShared: true },
+      }[milestone]
+    : null;
   await prisma.$transaction([
     prisma.message.update({ where: { id: msg.id }, data: { body } }),
-    ...(approved
+    ...(share
       ? [
           prisma.conversationMember.update({
             where: { conversationId_userId: { conversationId: c.id, userId: viewerId } },
-            data: { nameShared: true },
+            data: share,
           }),
         ]
       : []),
@@ -410,6 +425,24 @@ async function fanOutMessage(c: ConversationFull, message: Parameters<typeof ser
         conversation: serializeConversation(c, m.userId, ctxFor(m.userId)),
       });
       if (m.userId === senderId || m.muted) return;
+
+      const noticeBody = message.type === 'SYSTEM' ? message.body : null;
+      if (noticeBody?.startsWith('unlock:')) {
+        await notificationService.pushToUser(
+          m.userId,
+          (_t, locale) => {
+            const notice = unlockNotice(locale, noticeBody);
+            return {
+              title: notice?.title ?? 'Veylo',
+              body: notice?.body ?? 'Unlock request',
+              data: { type: 'unlock', conversationId: c.id, body: noticeBody },
+              threadId: c.id,
+            };
+          },
+          { evenIfOnline: true },
+        );
+        return;
+      }
 
       const name = hidden ? maskName(sender.displayName ?? sender.username) : (sender.displayName ?? sender.username ?? 'Veylo');
       const isRequest = c.status === 'PENDING';

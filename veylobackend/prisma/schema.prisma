@@ -240,6 +240,10 @@ model ConversationMember {
   revealConsent  Boolean    @default(false) @map("reveal_consent")
   /// İsim isteği onaylandıysa bu üyenin adı karşı tarafa kalıcı görünür.
   nameShared     Boolean    @default(false) @map("name_shared")
+  /// Bulanık fotoğraf isteği onaylandıysa önizleme karşı tarafa kalıcı görünür.
+  photoShared    Boolean    @default(false) @map("photo_shared")
+  /// Tam profil isteği onaylandıysa bu üyenin profili karşı tarafa açılır.
+  profileShared  Boolean    @default(false) @map("profile_shared")
   /// Grupta "Hesabımı gizle": maskeli ad + bulanık fotoğraf, profil açılmaz.
   anonymous      Boolean    @default(false)
   joinedAt       DateTime   @default(now()) @map("joined_at")
