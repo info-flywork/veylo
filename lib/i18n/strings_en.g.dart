@@ -58,6 +58,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$logout$en logout = _Translations$logout$en._(_root);
 	@override late final _Translations$deleteAccount$en deleteAccount = _Translations$deleteAccount$en._(_root);
 	@override late final _Translations$storyText$en storyText = _Translations$storyText$en._(_root);
+	@override late final _Translations$tokens$en tokens = _Translations$tokens$en._(_root);
 }
 
 // Path: app
@@ -579,6 +580,8 @@ class _Translations$errors$en extends Translations$errors$tr {
 	@override String get alreadyInCall => 'You are already in a call.';
 	@override String get roomPrivate => 'This room is private. Ask the host to join.';
 	@override String get roomFull => 'This room is full.';
+	@override String get alreadyCheckedIn => 'You\'ve already collected today\'s reward.';
+	@override String get purchasesUnavailable => 'Purchases aren\'t available right now.';
 }
 
 // Path: faq
@@ -678,6 +681,51 @@ class _Translations$storyText$en extends Translations$storyText$tr {
 	@override String get underline => 'Underline';
 	@override String get cancel => 'Cancel';
 	@override String get galleryError => 'Could not open the gallery';
+}
+
+// Path: tokens
+class _Translations$tokens$en extends Translations$tokens$tr {
+	_Translations$tokens$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get boostTitle => 'Boost';
+	@override String get history => 'History';
+	@override String get yourBalance => 'Your Balance';
+	@override String balanceTokens({required Object count}) => '${count} Tokens';
+	@override String get getMore => 'Get more tokens';
+	@override String get checkinTitle => 'Daily check-in';
+	@override String checkinSubtitle({required Object max}) => 'Consecutive collect & earn up to ${max} coins daily';
+	@override String day({required Object n}) => 'Day ${n}';
+	@override String collectDay({required Object n}) => 'Collect day ${n} tokens';
+	@override String collectedToday({required Object n}) => 'Come back tomorrow for day ${n}';
+	@override String get duration30m => '30 minutes';
+	@override String get duration1h => '1 hour';
+	@override String get duration2h => '2 hours';
+	@override String visibility({required Object n}) => '${n}x visibility';
+	@override String boostFor({required Object count}) => 'Boost for ${count} tokens';
+	@override String boostActive({required Object time}) => 'Boosted until ${time}';
+	@override String get boostDone => 'Your profile is boosted!';
+	@override String get historyEmpty => 'No token activity yet';
+	@override String balanceLine({required Object count}) => 'Your balance ${count} token';
+	@override String get reasonPurchase => 'Buy Token';
+	@override String get reasonCheckin => 'Daily check-in';
+	@override String get reasonWelcome => 'Welcome bonus';
+	@override String get reasonGenderFilter => 'Gender filter call';
+	@override String get reasonVideoCall => 'Video call';
+	@override String get reasonRoomCreate => 'Create room';
+	@override String get reasonBorder => 'Profile border';
+	@override String get reasonPostBoost => 'Post boost';
+	@override String get reasonRefund => 'Refund';
+	@override String get reasonAdjust => 'Balance adjustment';
+	@override String get packsTitle => 'Get more tokens';
+	@override String get packsSubtitle => 'Choose a token pack';
+	@override String packTokens({required Object count}) => '${count} tokens';
+	@override String get buy => 'Buy';
+	@override String purchaseDone({required Object count}) => '${count} tokens added to your balance';
+	@override String get notEnoughTitle => 'Not enough tokens';
+	@override String get notEnoughSubtitle => 'Top up your balance to continue.';
 }
 
 // Path: discover.aiMatch
@@ -1557,6 +1605,8 @@ extension on TranslationsEn {
 			'errors.alreadyInCall' => 'You are already in a call.',
 			'errors.roomPrivate' => 'This room is private. Ask the host to join.',
 			'errors.roomFull' => 'This room is full.',
+			'errors.alreadyCheckedIn' => 'You\'ve already collected today\'s reward.',
+			'errors.purchasesUnavailable' => 'Purchases aren\'t available right now.',
 			'faq.q1' => 'How does this app work?',
 			'faq.q2' => 'What is anonymous chat?',
 			'faq.q3' => 'What is Connection Progress?',
@@ -1611,6 +1661,42 @@ extension on TranslationsEn {
 			'storyText.underline' => 'Underline',
 			'storyText.cancel' => 'Cancel',
 			'storyText.galleryError' => 'Could not open the gallery',
+			'tokens.boostTitle' => 'Boost',
+			'tokens.history' => 'History',
+			'tokens.yourBalance' => 'Your Balance',
+			'tokens.balanceTokens' => ({required Object count}) => '${count} Tokens',
+			'tokens.getMore' => 'Get more tokens',
+			'tokens.checkinTitle' => 'Daily check-in',
+			'tokens.checkinSubtitle' => ({required Object max}) => 'Consecutive collect & earn up to ${max} coins daily',
+			'tokens.day' => ({required Object n}) => 'Day ${n}',
+			'tokens.collectDay' => ({required Object n}) => 'Collect day ${n} tokens',
+			'tokens.collectedToday' => ({required Object n}) => 'Come back tomorrow for day ${n}',
+			'tokens.duration30m' => '30 minutes',
+			'tokens.duration1h' => '1 hour',
+			'tokens.duration2h' => '2 hours',
+			'tokens.visibility' => ({required Object n}) => '${n}x visibility',
+			'tokens.boostFor' => ({required Object count}) => 'Boost for ${count} tokens',
+			'tokens.boostActive' => ({required Object time}) => 'Boosted until ${time}',
+			'tokens.boostDone' => 'Your profile is boosted!',
+			'tokens.historyEmpty' => 'No token activity yet',
+			'tokens.balanceLine' => ({required Object count}) => 'Your balance ${count} token',
+			'tokens.reasonPurchase' => 'Buy Token',
+			'tokens.reasonCheckin' => 'Daily check-in',
+			'tokens.reasonWelcome' => 'Welcome bonus',
+			'tokens.reasonGenderFilter' => 'Gender filter call',
+			'tokens.reasonVideoCall' => 'Video call',
+			'tokens.reasonRoomCreate' => 'Create room',
+			'tokens.reasonBorder' => 'Profile border',
+			'tokens.reasonPostBoost' => 'Post boost',
+			'tokens.reasonRefund' => 'Refund',
+			'tokens.reasonAdjust' => 'Balance adjustment',
+			'tokens.packsTitle' => 'Get more tokens',
+			'tokens.packsSubtitle' => 'Choose a token pack',
+			'tokens.packTokens' => ({required Object count}) => '${count} tokens',
+			'tokens.buy' => 'Buy',
+			'tokens.purchaseDone' => ({required Object count}) => '${count} tokens added to your balance',
+			'tokens.notEnoughTitle' => 'Not enough tokens',
+			'tokens.notEnoughSubtitle' => 'Top up your balance to continue.',
 			_ => null,
 		};
 	}

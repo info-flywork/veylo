@@ -58,6 +58,7 @@ class TranslationsRu extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$logout$ru logout = _Translations$logout$ru._(_root);
 	@override late final _Translations$deleteAccount$ru deleteAccount = _Translations$deleteAccount$ru._(_root);
 	@override late final _Translations$storyText$ru storyText = _Translations$storyText$ru._(_root);
+	@override late final _Translations$tokens$ru tokens = _Translations$tokens$ru._(_root);
 }
 
 // Path: app
@@ -579,6 +580,8 @@ class _Translations$errors$ru extends Translations$errors$tr {
 	@override String get alreadyInCall => 'Ты уже в звонке.';
 	@override String get roomPrivate => 'Комната закрытая. Попроси ведущего впустить тебя.';
 	@override String get roomFull => 'Комната заполнена.';
+	@override String get alreadyCheckedIn => 'Ты уже забрал сегодняшнюю награду.';
+	@override String get purchasesUnavailable => 'Покупки сейчас недоступны.';
 }
 
 // Path: faq
@@ -678,6 +681,51 @@ class _Translations$storyText$ru extends Translations$storyText$tr {
 	@override String get underline => 'Подчёркнутый';
 	@override String get cancel => 'Отмена';
 	@override String get galleryError => 'Не удалось открыть галерею';
+}
+
+// Path: tokens
+class _Translations$tokens$ru extends Translations$tokens$tr {
+	_Translations$tokens$ru._(TranslationsRu root) : this._root = root, super.internal(root);
+
+	final TranslationsRu _root; // ignore: unused_field
+
+	// Translations
+	@override String get boostTitle => 'Boost';
+	@override String get history => 'История';
+	@override String get yourBalance => 'Твой баланс';
+	@override String balanceTokens({required Object count}) => 'Токены: ${count}';
+	@override String get getMore => 'Получить токены';
+	@override String get checkinTitle => 'Ежедневный вход';
+	@override String checkinSubtitle({required Object max}) => 'Заходи каждый день подряд и получай до ${max} токенов в день';
+	@override String day({required Object n}) => 'День ${n}';
+	@override String collectDay({required Object n}) => 'Забрать токены за день ${n}';
+	@override String collectedToday({required Object n}) => 'Возвращайся завтра за днём ${n}';
+	@override String get duration30m => '30 минут';
+	@override String get duration1h => '1 час';
+	@override String get duration2h => '2 часа';
+	@override String visibility({required Object n}) => 'Видимость x${n}';
+	@override String boostFor({required Object count}) => 'Boost за ${count} ток.';
+	@override String boostActive({required Object time}) => 'Boost до ${time}';
+	@override String get boostDone => 'Твой профиль продвигается!';
+	@override String get historyEmpty => 'Пока нет операций с токенами';
+	@override String balanceLine({required Object count}) => 'Твой баланс: ${count} ток.';
+	@override String get reasonPurchase => 'Покупка токенов';
+	@override String get reasonCheckin => 'Ежедневный вход';
+	@override String get reasonWelcome => 'Приветственный бонус';
+	@override String get reasonGenderFilter => 'Звонок с фильтром пола';
+	@override String get reasonVideoCall => 'Видеозвонок';
+	@override String get reasonRoomCreate => 'Создание комнаты';
+	@override String get reasonBorder => 'Рамка профиля';
+	@override String get reasonPostBoost => 'Продвижение поста';
+	@override String get reasonRefund => 'Возврат';
+	@override String get reasonAdjust => 'Корректировка баланса';
+	@override String get packsTitle => 'Получить токены';
+	@override String get packsSubtitle => 'Выбери пакет токенов';
+	@override String packTokens({required Object count}) => 'Токены: ${count}';
+	@override String get buy => 'Купить';
+	@override String purchaseDone({required Object count}) => 'Добавлено токенов: ${count}';
+	@override String get notEnoughTitle => 'Недостаточно токенов';
+	@override String get notEnoughSubtitle => 'Пополни баланс, чтобы продолжить.';
 }
 
 // Path: discover.aiMatch
@@ -1557,6 +1605,8 @@ extension on TranslationsRu {
 			'errors.alreadyInCall' => 'Ты уже в звонке.',
 			'errors.roomPrivate' => 'Комната закрытая. Попроси ведущего впустить тебя.',
 			'errors.roomFull' => 'Комната заполнена.',
+			'errors.alreadyCheckedIn' => 'Ты уже забрал сегодняшнюю награду.',
+			'errors.purchasesUnavailable' => 'Покупки сейчас недоступны.',
 			'faq.q1' => 'Как работает приложение?',
 			'faq.q2' => 'Что такое анонимный чат?',
 			'faq.q3' => 'Что такое прогресс связи?',
@@ -1611,6 +1661,42 @@ extension on TranslationsRu {
 			'storyText.underline' => 'Подчёркнутый',
 			'storyText.cancel' => 'Отмена',
 			'storyText.galleryError' => 'Не удалось открыть галерею',
+			'tokens.boostTitle' => 'Boost',
+			'tokens.history' => 'История',
+			'tokens.yourBalance' => 'Твой баланс',
+			'tokens.balanceTokens' => ({required Object count}) => 'Токены: ${count}',
+			'tokens.getMore' => 'Получить токены',
+			'tokens.checkinTitle' => 'Ежедневный вход',
+			'tokens.checkinSubtitle' => ({required Object max}) => 'Заходи каждый день подряд и получай до ${max} токенов в день',
+			'tokens.day' => ({required Object n}) => 'День ${n}',
+			'tokens.collectDay' => ({required Object n}) => 'Забрать токены за день ${n}',
+			'tokens.collectedToday' => ({required Object n}) => 'Возвращайся завтра за днём ${n}',
+			'tokens.duration30m' => '30 минут',
+			'tokens.duration1h' => '1 час',
+			'tokens.duration2h' => '2 часа',
+			'tokens.visibility' => ({required Object n}) => 'Видимость x${n}',
+			'tokens.boostFor' => ({required Object count}) => 'Boost за ${count} ток.',
+			'tokens.boostActive' => ({required Object time}) => 'Boost до ${time}',
+			'tokens.boostDone' => 'Твой профиль продвигается!',
+			'tokens.historyEmpty' => 'Пока нет операций с токенами',
+			'tokens.balanceLine' => ({required Object count}) => 'Твой баланс: ${count} ток.',
+			'tokens.reasonPurchase' => 'Покупка токенов',
+			'tokens.reasonCheckin' => 'Ежедневный вход',
+			'tokens.reasonWelcome' => 'Приветственный бонус',
+			'tokens.reasonGenderFilter' => 'Звонок с фильтром пола',
+			'tokens.reasonVideoCall' => 'Видеозвонок',
+			'tokens.reasonRoomCreate' => 'Создание комнаты',
+			'tokens.reasonBorder' => 'Рамка профиля',
+			'tokens.reasonPostBoost' => 'Продвижение поста',
+			'tokens.reasonRefund' => 'Возврат',
+			'tokens.reasonAdjust' => 'Корректировка баланса',
+			'tokens.packsTitle' => 'Получить токены',
+			'tokens.packsSubtitle' => 'Выбери пакет токенов',
+			'tokens.packTokens' => ({required Object count}) => 'Токены: ${count}',
+			'tokens.buy' => 'Купить',
+			'tokens.purchaseDone' => ({required Object count}) => 'Добавлено токенов: ${count}',
+			'tokens.notEnoughTitle' => 'Недостаточно токенов',
+			'tokens.notEnoughSubtitle' => 'Пополни баланс, чтобы продолжить.',
 			_ => null,
 		};
 	}

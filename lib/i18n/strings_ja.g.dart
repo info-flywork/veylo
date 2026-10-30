@@ -58,6 +58,7 @@ class TranslationsJa extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$logout$ja logout = _Translations$logout$ja._(_root);
 	@override late final _Translations$deleteAccount$ja deleteAccount = _Translations$deleteAccount$ja._(_root);
 	@override late final _Translations$storyText$ja storyText = _Translations$storyText$ja._(_root);
+	@override late final _Translations$tokens$ja tokens = _Translations$tokens$ja._(_root);
 }
 
 // Path: app
@@ -579,6 +580,8 @@ class _Translations$errors$ja extends Translations$errors$tr {
 	@override String get alreadyInCall => '既に通話中です。';
 	@override String get roomPrivate => 'このルームは非公開です。ホストに参加をリクエストしてください。';
 	@override String get roomFull => 'このルームは満員です。';
+	@override String get alreadyCheckedIn => '今日の報酬はすでに受け取り済みです。';
+	@override String get purchasesUnavailable => '現在、購入はご利用いただけません。';
 }
 
 // Path: faq
@@ -678,6 +681,51 @@ class _Translations$storyText$ja extends Translations$storyText$tr {
 	@override String get underline => '下線';
 	@override String get cancel => 'キャンセル';
 	@override String get galleryError => 'ギャラリーを開けませんでした';
+}
+
+// Path: tokens
+class _Translations$tokens$ja extends Translations$tokens$tr {
+	_Translations$tokens$ja._(TranslationsJa root) : this._root = root, super.internal(root);
+
+	final TranslationsJa _root; // ignore: unused_field
+
+	// Translations
+	@override String get boostTitle => 'Boost';
+	@override String get history => '履歴';
+	@override String get yourBalance => '残高';
+	@override String balanceTokens({required Object count}) => '${count} トークン';
+	@override String get getMore => 'トークンを追加';
+	@override String get checkinTitle => 'デイリーチェックイン';
+	@override String checkinSubtitle({required Object max}) => '毎日続けて受け取ると、1日最大${max}トークン獲得';
+	@override String day({required Object n}) => '${n}日目';
+	@override String collectDay({required Object n}) => '${n}日目のトークンを受け取る';
+	@override String collectedToday({required Object n}) => '明日また来て${n}日目を受け取ろう';
+	@override String get duration30m => '30分';
+	@override String get duration1h => '1時間';
+	@override String get duration2h => '2時間';
+	@override String visibility({required Object n}) => '表示回数${n}倍';
+	@override String boostFor({required Object count}) => '${count}トークンでBoost';
+	@override String boostActive({required Object time}) => '${time}までBoost中';
+	@override String get boostDone => 'プロフィールをBoostしました！';
+	@override String get historyEmpty => 'トークンの履歴はまだありません';
+	@override String balanceLine({required Object count}) => '残高 ${count} トークン';
+	@override String get reasonPurchase => 'トークン購入';
+	@override String get reasonCheckin => 'デイリーチェックイン';
+	@override String get reasonWelcome => 'ウェルカムボーナス';
+	@override String get reasonGenderFilter => '性別フィルター通話';
+	@override String get reasonVideoCall => 'ビデオ通話';
+	@override String get reasonRoomCreate => 'ルーム作成';
+	@override String get reasonBorder => 'プロフィール枠';
+	@override String get reasonPostBoost => '投稿Boost';
+	@override String get reasonRefund => '返金';
+	@override String get reasonAdjust => '残高調整';
+	@override String get packsTitle => 'トークンを追加';
+	@override String get packsSubtitle => 'トークンパックを選択';
+	@override String packTokens({required Object count}) => '${count} トークン';
+	@override String get buy => '購入';
+	@override String purchaseDone({required Object count}) => '${count}トークンが残高に追加されました';
+	@override String get notEnoughTitle => 'トークンが足りません';
+	@override String get notEnoughSubtitle => '続けるには残高をチャージしてください。';
 }
 
 // Path: discover.aiMatch
@@ -1557,6 +1605,8 @@ extension on TranslationsJa {
 			'errors.alreadyInCall' => '既に通話中です。',
 			'errors.roomPrivate' => 'このルームは非公開です。ホストに参加をリクエストしてください。',
 			'errors.roomFull' => 'このルームは満員です。',
+			'errors.alreadyCheckedIn' => '今日の報酬はすでに受け取り済みです。',
+			'errors.purchasesUnavailable' => '現在、購入はご利用いただけません。',
 			'faq.q1' => 'このアプリはどう使うの？',
 			'faq.q2' => '匿名チャットとは？',
 			'faq.q3' => 'つながり度とは？',
@@ -1611,6 +1661,42 @@ extension on TranslationsJa {
 			'storyText.underline' => '下線',
 			'storyText.cancel' => 'キャンセル',
 			'storyText.galleryError' => 'ギャラリーを開けませんでした',
+			'tokens.boostTitle' => 'Boost',
+			'tokens.history' => '履歴',
+			'tokens.yourBalance' => '残高',
+			'tokens.balanceTokens' => ({required Object count}) => '${count} トークン',
+			'tokens.getMore' => 'トークンを追加',
+			'tokens.checkinTitle' => 'デイリーチェックイン',
+			'tokens.checkinSubtitle' => ({required Object max}) => '毎日続けて受け取ると、1日最大${max}トークン獲得',
+			'tokens.day' => ({required Object n}) => '${n}日目',
+			'tokens.collectDay' => ({required Object n}) => '${n}日目のトークンを受け取る',
+			'tokens.collectedToday' => ({required Object n}) => '明日また来て${n}日目を受け取ろう',
+			'tokens.duration30m' => '30分',
+			'tokens.duration1h' => '1時間',
+			'tokens.duration2h' => '2時間',
+			'tokens.visibility' => ({required Object n}) => '表示回数${n}倍',
+			'tokens.boostFor' => ({required Object count}) => '${count}トークンでBoost',
+			'tokens.boostActive' => ({required Object time}) => '${time}までBoost中',
+			'tokens.boostDone' => 'プロフィールをBoostしました！',
+			'tokens.historyEmpty' => 'トークンの履歴はまだありません',
+			'tokens.balanceLine' => ({required Object count}) => '残高 ${count} トークン',
+			'tokens.reasonPurchase' => 'トークン購入',
+			'tokens.reasonCheckin' => 'デイリーチェックイン',
+			'tokens.reasonWelcome' => 'ウェルカムボーナス',
+			'tokens.reasonGenderFilter' => '性別フィルター通話',
+			'tokens.reasonVideoCall' => 'ビデオ通話',
+			'tokens.reasonRoomCreate' => 'ルーム作成',
+			'tokens.reasonBorder' => 'プロフィール枠',
+			'tokens.reasonPostBoost' => '投稿Boost',
+			'tokens.reasonRefund' => '返金',
+			'tokens.reasonAdjust' => '残高調整',
+			'tokens.packsTitle' => 'トークンを追加',
+			'tokens.packsSubtitle' => 'トークンパックを選択',
+			'tokens.packTokens' => ({required Object count}) => '${count} トークン',
+			'tokens.buy' => '購入',
+			'tokens.purchaseDone' => ({required Object count}) => '${count}トークンが残高に追加されました',
+			'tokens.notEnoughTitle' => 'トークンが足りません',
+			'tokens.notEnoughSubtitle' => '続けるには残高をチャージしてください。',
 			_ => null,
 		};
 	}

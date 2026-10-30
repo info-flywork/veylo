@@ -60,6 +60,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$logout$tr logout = Translations$logout$tr.internal(_root);
 	late final Translations$deleteAccount$tr deleteAccount = Translations$deleteAccount$tr.internal(_root);
 	late final Translations$storyText$tr storyText = Translations$storyText$tr.internal(_root);
+	late final Translations$tokens$tr tokens = Translations$tokens$tr.internal(_root);
 }
 
 // Path: app
@@ -1344,6 +1345,12 @@ class Translations$errors$tr {
 
 	/// tr: 'Oda dolu.'
 	String get roomFull => 'Oda dolu.';
+
+	/// tr: 'Bugünün ödülünü zaten topladın.'
+	String get alreadyCheckedIn => 'Bugünün ödülünü zaten topladın.';
+
+	/// tr: 'Satın alma şu an kullanılamıyor.'
+	String get purchasesUnavailable => 'Satın alma şu an kullanılamıyor.';
 }
 
 // Path: faq
@@ -1551,6 +1558,123 @@ class Translations$storyText$tr {
 
 	/// tr: 'Galeri açılamadı'
 	String get galleryError => 'Galeri açılamadı';
+}
+
+// Path: tokens
+class Translations$tokens$tr {
+	Translations$tokens$tr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// tr: 'Boost'
+	String get boostTitle => 'Boost';
+
+	/// tr: 'Geçmiş'
+	String get history => 'Geçmiş';
+
+	/// tr: 'Bakiyen'
+	String get yourBalance => 'Bakiyen';
+
+	/// tr: '{count} Token'
+	String balanceTokens({required Object count}) => '${count} Token';
+
+	/// tr: 'Daha fazla token al'
+	String get getMore => 'Daha fazla token al';
+
+	/// tr: 'Günlük giriş'
+	String get checkinTitle => 'Günlük giriş';
+
+	/// tr: 'Her gün üst üste topla, günde {max} tokene kadar kazan'
+	String checkinSubtitle({required Object max}) => 'Her gün üst üste topla, günde ${max} tokene kadar kazan';
+
+	/// tr: '{n}. Gün'
+	String day({required Object n}) => '${n}. Gün';
+
+	/// tr: '{n}. gün tokenlerini topla'
+	String collectDay({required Object n}) => '${n}. gün tokenlerini topla';
+
+	/// tr: '{n}. gün için yarın tekrar gel'
+	String collectedToday({required Object n}) => '${n}. gün için yarın tekrar gel';
+
+	/// tr: '30 dakika'
+	String get duration30m => '30 dakika';
+
+	/// tr: '1 saat'
+	String get duration1h => '1 saat';
+
+	/// tr: '2 saat'
+	String get duration2h => '2 saat';
+
+	/// tr: '{n} kat görünürlük'
+	String visibility({required Object n}) => '${n} kat görünürlük';
+
+	/// tr: '{count} token ile Boost'
+	String boostFor({required Object count}) => '${count} token ile Boost';
+
+	/// tr: '{time} saatine kadar öne çıkarıldı'
+	String boostActive({required Object time}) => '${time} saatine kadar öne çıkarıldı';
+
+	/// tr: 'Profilin öne çıkarıldı!'
+	String get boostDone => 'Profilin öne çıkarıldı!';
+
+	/// tr: 'Henüz token hareketi yok'
+	String get historyEmpty => 'Henüz token hareketi yok';
+
+	/// tr: 'Bakiyen {count} token'
+	String balanceLine({required Object count}) => 'Bakiyen ${count} token';
+
+	/// tr: 'Token Satın Alma'
+	String get reasonPurchase => 'Token Satın Alma';
+
+	/// tr: 'Günlük giriş'
+	String get reasonCheckin => 'Günlük giriş';
+
+	/// tr: 'Hoş geldin hediyesi'
+	String get reasonWelcome => 'Hoş geldin hediyesi';
+
+	/// tr: 'Cinsiyet filtreli arama'
+	String get reasonGenderFilter => 'Cinsiyet filtreli arama';
+
+	/// tr: 'Görüntülü arama'
+	String get reasonVideoCall => 'Görüntülü arama';
+
+	/// tr: 'Oda oluşturma'
+	String get reasonRoomCreate => 'Oda oluşturma';
+
+	/// tr: 'Profil çerçevesi'
+	String get reasonBorder => 'Profil çerçevesi';
+
+	/// tr: 'Gönderi öne çıkarma'
+	String get reasonPostBoost => 'Gönderi öne çıkarma';
+
+	/// tr: 'İade'
+	String get reasonRefund => 'İade';
+
+	/// tr: 'Bakiye düzeltme'
+	String get reasonAdjust => 'Bakiye düzeltme';
+
+	/// tr: 'Daha fazla token al'
+	String get packsTitle => 'Daha fazla token al';
+
+	/// tr: 'Bir token paketi seç'
+	String get packsSubtitle => 'Bir token paketi seç';
+
+	/// tr: '{count} token'
+	String packTokens({required Object count}) => '${count} token';
+
+	/// tr: 'Satın al'
+	String get buy => 'Satın al';
+
+	/// tr: 'Bakiyene {count} token eklendi'
+	String purchaseDone({required Object count}) => 'Bakiyene ${count} token eklendi';
+
+	/// tr: 'Yeterli token yok'
+	String get notEnoughTitle => 'Yeterli token yok';
+
+	/// tr: 'Devam etmek için bakiyeni yükle.'
+	String get notEnoughSubtitle => 'Devam etmek için bakiyeni yükle.';
 }
 
 // Path: discover.aiMatch
@@ -2782,6 +2906,8 @@ extension on Translations {
 			'errors.alreadyInCall' => 'Zaten bir aramadasın.',
 			'errors.roomPrivate' => 'Bu oda gizli. Katılmak için istek gönder.',
 			'errors.roomFull' => 'Oda dolu.',
+			'errors.alreadyCheckedIn' => 'Bugünün ödülünü zaten topladın.',
+			'errors.purchasesUnavailable' => 'Satın alma şu an kullanılamıyor.',
 			'faq.q1' => 'Bu uygulama nasıl çalışır?',
 			'faq.q2' => 'Anonim sohbet nedir?',
 			'faq.q3' => 'Bağlantı İlerlemesi ne işe yarar?',
@@ -2836,6 +2962,42 @@ extension on Translations {
 			'storyText.underline' => 'Altı çizili',
 			'storyText.cancel' => 'İptal',
 			'storyText.galleryError' => 'Galeri açılamadı',
+			'tokens.boostTitle' => 'Boost',
+			'tokens.history' => 'Geçmiş',
+			'tokens.yourBalance' => 'Bakiyen',
+			'tokens.balanceTokens' => ({required Object count}) => '${count} Token',
+			'tokens.getMore' => 'Daha fazla token al',
+			'tokens.checkinTitle' => 'Günlük giriş',
+			'tokens.checkinSubtitle' => ({required Object max}) => 'Her gün üst üste topla, günde ${max} tokene kadar kazan',
+			'tokens.day' => ({required Object n}) => '${n}. Gün',
+			'tokens.collectDay' => ({required Object n}) => '${n}. gün tokenlerini topla',
+			'tokens.collectedToday' => ({required Object n}) => '${n}. gün için yarın tekrar gel',
+			'tokens.duration30m' => '30 dakika',
+			'tokens.duration1h' => '1 saat',
+			'tokens.duration2h' => '2 saat',
+			'tokens.visibility' => ({required Object n}) => '${n} kat görünürlük',
+			'tokens.boostFor' => ({required Object count}) => '${count} token ile Boost',
+			'tokens.boostActive' => ({required Object time}) => '${time} saatine kadar öne çıkarıldı',
+			'tokens.boostDone' => 'Profilin öne çıkarıldı!',
+			'tokens.historyEmpty' => 'Henüz token hareketi yok',
+			'tokens.balanceLine' => ({required Object count}) => 'Bakiyen ${count} token',
+			'tokens.reasonPurchase' => 'Token Satın Alma',
+			'tokens.reasonCheckin' => 'Günlük giriş',
+			'tokens.reasonWelcome' => 'Hoş geldin hediyesi',
+			'tokens.reasonGenderFilter' => 'Cinsiyet filtreli arama',
+			'tokens.reasonVideoCall' => 'Görüntülü arama',
+			'tokens.reasonRoomCreate' => 'Oda oluşturma',
+			'tokens.reasonBorder' => 'Profil çerçevesi',
+			'tokens.reasonPostBoost' => 'Gönderi öne çıkarma',
+			'tokens.reasonRefund' => 'İade',
+			'tokens.reasonAdjust' => 'Bakiye düzeltme',
+			'tokens.packsTitle' => 'Daha fazla token al',
+			'tokens.packsSubtitle' => 'Bir token paketi seç',
+			'tokens.packTokens' => ({required Object count}) => '${count} token',
+			'tokens.buy' => 'Satın al',
+			'tokens.purchaseDone' => ({required Object count}) => 'Bakiyene ${count} token eklendi',
+			'tokens.notEnoughTitle' => 'Yeterli token yok',
+			'tokens.notEnoughSubtitle' => 'Devam etmek için bakiyeni yükle.',
 			_ => null,
 		};
 	}

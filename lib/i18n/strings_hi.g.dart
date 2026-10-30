@@ -58,6 +58,7 @@ class TranslationsHi extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$logout$hi logout = _Translations$logout$hi._(_root);
 	@override late final _Translations$deleteAccount$hi deleteAccount = _Translations$deleteAccount$hi._(_root);
 	@override late final _Translations$storyText$hi storyText = _Translations$storyText$hi._(_root);
+	@override late final _Translations$tokens$hi tokens = _Translations$tokens$hi._(_root);
 }
 
 // Path: app
@@ -579,6 +580,8 @@ class _Translations$errors$hi extends Translations$errors$tr {
 	@override String get alreadyInCall => 'आप पहले से एक कॉल पर हैं।';
 	@override String get roomPrivate => 'यह रूम प्राइवेट है। जॉइन करने के लिए होस्ट से पूछें।';
 	@override String get roomFull => 'यह रूम भर चुका है।';
+	@override String get alreadyCheckedIn => 'आप आज का इनाम पहले ही ले चुके हैं।';
+	@override String get purchasesUnavailable => 'खरीदारी अभी उपलब्ध नहीं है।';
 }
 
 // Path: faq
@@ -678,6 +681,51 @@ class _Translations$storyText$hi extends Translations$storyText$tr {
 	@override String get underline => 'अंडरलाइन';
 	@override String get cancel => 'रद्द करें';
 	@override String get galleryError => 'गैलरी नहीं खुल सकी';
+}
+
+// Path: tokens
+class _Translations$tokens$hi extends Translations$tokens$tr {
+	_Translations$tokens$hi._(TranslationsHi root) : this._root = root, super.internal(root);
+
+	final TranslationsHi _root; // ignore: unused_field
+
+	// Translations
+	@override String get boostTitle => 'Boost';
+	@override String get history => 'इतिहास';
+	@override String get yourBalance => 'आपका बैलेंस';
+	@override String balanceTokens({required Object count}) => '${count} टोकन';
+	@override String get getMore => 'और टोकन पाएं';
+	@override String get checkinTitle => 'दैनिक चेक-इन';
+	@override String checkinSubtitle({required Object max}) => 'रोज़ लगातार कलेक्ट करें और रोज़ ${max} टोकन तक कमाएं';
+	@override String day({required Object n}) => 'दिन ${n}';
+	@override String collectDay({required Object n}) => 'दिन ${n} के टोकन कलेक्ट करें';
+	@override String collectedToday({required Object n}) => 'दिन ${n} के लिए कल फिर आएं';
+	@override String get duration30m => '30 मिनट';
+	@override String get duration1h => '1 घंटा';
+	@override String get duration2h => '2 घंटे';
+	@override String visibility({required Object n}) => '${n}x विज़िबिलिटी';
+	@override String boostFor({required Object count}) => '${count} टोकन में Boost';
+	@override String boostActive({required Object time}) => '${time} तक Boost';
+	@override String get boostDone => 'आपकी प्रोफ़ाइल Boost हो गई!';
+	@override String get historyEmpty => 'अभी तक कोई टोकन गतिविधि नहीं';
+	@override String balanceLine({required Object count}) => 'आपका बैलेंस ${count} टोकन';
+	@override String get reasonPurchase => 'टोकन खरीद';
+	@override String get reasonCheckin => 'दैनिक चेक-इन';
+	@override String get reasonWelcome => 'वेलकम बोनस';
+	@override String get reasonGenderFilter => 'जेंडर फ़िल्टर कॉल';
+	@override String get reasonVideoCall => 'वीडियो कॉल';
+	@override String get reasonRoomCreate => 'रूम बनाना';
+	@override String get reasonBorder => 'प्रोफ़ाइल बॉर्डर';
+	@override String get reasonPostBoost => 'पोस्ट Boost';
+	@override String get reasonRefund => 'रिफ़ंड';
+	@override String get reasonAdjust => 'बैलेंस समायोजन';
+	@override String get packsTitle => 'और टोकन पाएं';
+	@override String get packsSubtitle => 'टोकन पैक चुनें';
+	@override String packTokens({required Object count}) => '${count} टोकन';
+	@override String get buy => 'खरीदें';
+	@override String purchaseDone({required Object count}) => 'आपके बैलेंस में ${count} टोकन जोड़े गए';
+	@override String get notEnoughTitle => 'पर्याप्त टोकन नहीं';
+	@override String get notEnoughSubtitle => 'जारी रखने के लिए बैलेंस टॉप अप करें।';
 }
 
 // Path: discover.aiMatch
@@ -1557,6 +1605,8 @@ extension on TranslationsHi {
 			'errors.alreadyInCall' => 'आप पहले से एक कॉल पर हैं।',
 			'errors.roomPrivate' => 'यह रूम प्राइवेट है। जॉइन करने के लिए होस्ट से पूछें।',
 			'errors.roomFull' => 'यह रूम भर चुका है।',
+			'errors.alreadyCheckedIn' => 'आप आज का इनाम पहले ही ले चुके हैं।',
+			'errors.purchasesUnavailable' => 'खरीदारी अभी उपलब्ध नहीं है।',
 			'faq.q1' => 'यह ऐप कैसे काम करता है?',
 			'faq.q2' => 'गुमनाम चैट क्या है?',
 			'faq.q3' => 'कनेक्शन प्रोग्रेस क्या है?',
@@ -1611,6 +1661,42 @@ extension on TranslationsHi {
 			'storyText.underline' => 'अंडरलाइन',
 			'storyText.cancel' => 'रद्द करें',
 			'storyText.galleryError' => 'गैलरी नहीं खुल सकी',
+			'tokens.boostTitle' => 'Boost',
+			'tokens.history' => 'इतिहास',
+			'tokens.yourBalance' => 'आपका बैलेंस',
+			'tokens.balanceTokens' => ({required Object count}) => '${count} टोकन',
+			'tokens.getMore' => 'और टोकन पाएं',
+			'tokens.checkinTitle' => 'दैनिक चेक-इन',
+			'tokens.checkinSubtitle' => ({required Object max}) => 'रोज़ लगातार कलेक्ट करें और रोज़ ${max} टोकन तक कमाएं',
+			'tokens.day' => ({required Object n}) => 'दिन ${n}',
+			'tokens.collectDay' => ({required Object n}) => 'दिन ${n} के टोकन कलेक्ट करें',
+			'tokens.collectedToday' => ({required Object n}) => 'दिन ${n} के लिए कल फिर आएं',
+			'tokens.duration30m' => '30 मिनट',
+			'tokens.duration1h' => '1 घंटा',
+			'tokens.duration2h' => '2 घंटे',
+			'tokens.visibility' => ({required Object n}) => '${n}x विज़िबिलिटी',
+			'tokens.boostFor' => ({required Object count}) => '${count} टोकन में Boost',
+			'tokens.boostActive' => ({required Object time}) => '${time} तक Boost',
+			'tokens.boostDone' => 'आपकी प्रोफ़ाइल Boost हो गई!',
+			'tokens.historyEmpty' => 'अभी तक कोई टोकन गतिविधि नहीं',
+			'tokens.balanceLine' => ({required Object count}) => 'आपका बैलेंस ${count} टोकन',
+			'tokens.reasonPurchase' => 'टोकन खरीद',
+			'tokens.reasonCheckin' => 'दैनिक चेक-इन',
+			'tokens.reasonWelcome' => 'वेलकम बोनस',
+			'tokens.reasonGenderFilter' => 'जेंडर फ़िल्टर कॉल',
+			'tokens.reasonVideoCall' => 'वीडियो कॉल',
+			'tokens.reasonRoomCreate' => 'रूम बनाना',
+			'tokens.reasonBorder' => 'प्रोफ़ाइल बॉर्डर',
+			'tokens.reasonPostBoost' => 'पोस्ट Boost',
+			'tokens.reasonRefund' => 'रिफ़ंड',
+			'tokens.reasonAdjust' => 'बैलेंस समायोजन',
+			'tokens.packsTitle' => 'और टोकन पाएं',
+			'tokens.packsSubtitle' => 'टोकन पैक चुनें',
+			'tokens.packTokens' => ({required Object count}) => '${count} टोकन',
+			'tokens.buy' => 'खरीदें',
+			'tokens.purchaseDone' => ({required Object count}) => 'आपके बैलेंस में ${count} टोकन जोड़े गए',
+			'tokens.notEnoughTitle' => 'पर्याप्त टोकन नहीं',
+			'tokens.notEnoughSubtitle' => 'जारी रखने के लिए बैलेंस टॉप अप करें।',
 			_ => null,
 		};
 	}

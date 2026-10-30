@@ -58,6 +58,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$logout$it logout = _Translations$logout$it._(_root);
 	@override late final _Translations$deleteAccount$it deleteAccount = _Translations$deleteAccount$it._(_root);
 	@override late final _Translations$storyText$it storyText = _Translations$storyText$it._(_root);
+	@override late final _Translations$tokens$it tokens = _Translations$tokens$it._(_root);
 }
 
 // Path: app
@@ -579,6 +580,8 @@ class _Translations$errors$it extends Translations$errors$tr {
 	@override String get alreadyInCall => 'Sei già in una chiamata.';
 	@override String get roomPrivate => 'Questa stanza è privata. Chiedi all\'host di entrare.';
 	@override String get roomFull => 'Questa stanza è piena.';
+	@override String get alreadyCheckedIn => 'Hai già riscattato la ricompensa di oggi.';
+	@override String get purchasesUnavailable => 'Gli acquisti non sono disponibili al momento.';
 }
 
 // Path: faq
@@ -678,6 +681,51 @@ class _Translations$storyText$it extends Translations$storyText$tr {
 	@override String get underline => 'Sottolineato';
 	@override String get cancel => 'Annulla';
 	@override String get galleryError => 'Impossibile aprire la galleria';
+}
+
+// Path: tokens
+class _Translations$tokens$it extends Translations$tokens$tr {
+	_Translations$tokens$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get boostTitle => 'Boost';
+	@override String get history => 'Cronologia';
+	@override String get yourBalance => 'Il tuo saldo';
+	@override String balanceTokens({required Object count}) => '${count} token';
+	@override String get getMore => 'Ottieni più token';
+	@override String get checkinTitle => 'Check-in giornaliero';
+	@override String checkinSubtitle({required Object max}) => 'Raccogli ogni giorno di fila e guadagna fino a ${max} token al giorno';
+	@override String day({required Object n}) => 'Giorno ${n}';
+	@override String collectDay({required Object n}) => 'Raccogli i token del giorno ${n}';
+	@override String collectedToday({required Object n}) => 'Torna domani per il giorno ${n}';
+	@override String get duration30m => '30 minuti';
+	@override String get duration1h => '1 ora';
+	@override String get duration2h => '2 ore';
+	@override String visibility({required Object n}) => 'Visibilità ${n}x';
+	@override String boostFor({required Object count}) => 'Boost per ${count} token';
+	@override String boostActive({required Object time}) => 'Boost attivo fino alle ${time}';
+	@override String get boostDone => 'Il tuo profilo è in boost!';
+	@override String get historyEmpty => 'Ancora nessuna attività token';
+	@override String balanceLine({required Object count}) => 'Il tuo saldo: ${count} token';
+	@override String get reasonPurchase => 'Acquisto token';
+	@override String get reasonCheckin => 'Check-in giornaliero';
+	@override String get reasonWelcome => 'Bonus di benvenuto';
+	@override String get reasonGenderFilter => 'Chiamata con filtro genere';
+	@override String get reasonVideoCall => 'Videochiamata';
+	@override String get reasonRoomCreate => 'Crea stanza';
+	@override String get reasonBorder => 'Cornice profilo';
+	@override String get reasonPostBoost => 'Boost post';
+	@override String get reasonRefund => 'Rimborso';
+	@override String get reasonAdjust => 'Rettifica saldo';
+	@override String get packsTitle => 'Ottieni più token';
+	@override String get packsSubtitle => 'Scegli un pacchetto di token';
+	@override String packTokens({required Object count}) => '${count} token';
+	@override String get buy => 'Acquista';
+	@override String purchaseDone({required Object count}) => '${count} token aggiunti al tuo saldo';
+	@override String get notEnoughTitle => 'Token insufficienti';
+	@override String get notEnoughSubtitle => 'Ricarica il saldo per continuare.';
 }
 
 // Path: discover.aiMatch
@@ -1557,6 +1605,8 @@ extension on TranslationsIt {
 			'errors.alreadyInCall' => 'Sei già in una chiamata.',
 			'errors.roomPrivate' => 'Questa stanza è privata. Chiedi all\'host di entrare.',
 			'errors.roomFull' => 'Questa stanza è piena.',
+			'errors.alreadyCheckedIn' => 'Hai già riscattato la ricompensa di oggi.',
+			'errors.purchasesUnavailable' => 'Gli acquisti non sono disponibili al momento.',
 			'faq.q1' => 'Come funziona l\'app?',
 			'faq.q2' => 'Cos\'è la chat anonima?',
 			'faq.q3' => 'Cos\'è il Progresso connessione?',
@@ -1611,6 +1661,42 @@ extension on TranslationsIt {
 			'storyText.underline' => 'Sottolineato',
 			'storyText.cancel' => 'Annulla',
 			'storyText.galleryError' => 'Impossibile aprire la galleria',
+			'tokens.boostTitle' => 'Boost',
+			'tokens.history' => 'Cronologia',
+			'tokens.yourBalance' => 'Il tuo saldo',
+			'tokens.balanceTokens' => ({required Object count}) => '${count} token',
+			'tokens.getMore' => 'Ottieni più token',
+			'tokens.checkinTitle' => 'Check-in giornaliero',
+			'tokens.checkinSubtitle' => ({required Object max}) => 'Raccogli ogni giorno di fila e guadagna fino a ${max} token al giorno',
+			'tokens.day' => ({required Object n}) => 'Giorno ${n}',
+			'tokens.collectDay' => ({required Object n}) => 'Raccogli i token del giorno ${n}',
+			'tokens.collectedToday' => ({required Object n}) => 'Torna domani per il giorno ${n}',
+			'tokens.duration30m' => '30 minuti',
+			'tokens.duration1h' => '1 ora',
+			'tokens.duration2h' => '2 ore',
+			'tokens.visibility' => ({required Object n}) => 'Visibilità ${n}x',
+			'tokens.boostFor' => ({required Object count}) => 'Boost per ${count} token',
+			'tokens.boostActive' => ({required Object time}) => 'Boost attivo fino alle ${time}',
+			'tokens.boostDone' => 'Il tuo profilo è in boost!',
+			'tokens.historyEmpty' => 'Ancora nessuna attività token',
+			'tokens.balanceLine' => ({required Object count}) => 'Il tuo saldo: ${count} token',
+			'tokens.reasonPurchase' => 'Acquisto token',
+			'tokens.reasonCheckin' => 'Check-in giornaliero',
+			'tokens.reasonWelcome' => 'Bonus di benvenuto',
+			'tokens.reasonGenderFilter' => 'Chiamata con filtro genere',
+			'tokens.reasonVideoCall' => 'Videochiamata',
+			'tokens.reasonRoomCreate' => 'Crea stanza',
+			'tokens.reasonBorder' => 'Cornice profilo',
+			'tokens.reasonPostBoost' => 'Boost post',
+			'tokens.reasonRefund' => 'Rimborso',
+			'tokens.reasonAdjust' => 'Rettifica saldo',
+			'tokens.packsTitle' => 'Ottieni più token',
+			'tokens.packsSubtitle' => 'Scegli un pacchetto di token',
+			'tokens.packTokens' => ({required Object count}) => '${count} token',
+			'tokens.buy' => 'Acquista',
+			'tokens.purchaseDone' => ({required Object count}) => '${count} token aggiunti al tuo saldo',
+			'tokens.notEnoughTitle' => 'Token insufficienti',
+			'tokens.notEnoughSubtitle' => 'Ricarica il saldo per continuare.',
 			_ => null,
 		};
 	}

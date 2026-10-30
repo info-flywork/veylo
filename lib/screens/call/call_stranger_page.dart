@@ -17,6 +17,7 @@ import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/data/remote/socket_service.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/screens/tokens/token_packs_sheet.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 
 enum _StrangerGender { female, male, nonBinary, preferNotToSay }
@@ -161,6 +162,16 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
     _ => 'any',
   };
 
+  /// Bakiye yetmediyse token paketleri açılır, diğer hatalarda kısa uyarı.
+  void _showError(Object e) {
+    if (!mounted) return;
+    if (e is ApiException && e.code == 'INSUFFICIENT_TOKENS') {
+      showTokenPacksSheet(context, notEnough: true);
+      return;
+    }
+    _toast(errorMessage(context, e));
+  }
+
   void _toast(String text) {
     if (!mounted) return;
     ScaffoldMessenger.of(context)
@@ -188,7 +199,7 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
       if (!mounted) return;
       _searchTimer?.cancel();
       setState(() => _phase = _CallPhase.setup);
-      _toast(errorMessage(context, e));
+      _showError(e);
     }
   }
 
@@ -267,7 +278,7 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
     } catch (e) {
       if (!mounted) return;
       setState(() => _accepting = false);
-      _toast(errorMessage(context, e));
+      _showError(e);
     }
   }
 
@@ -303,7 +314,7 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
     } catch (e) {
       if (!mounted) return;
       setState(() => _waitingOther = false);
-      _toast(errorMessage(context, e));
+      _showError(e);
     }
   }
 
@@ -402,7 +413,7 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
       await _socket.request('call:video_request', {'callId': callId});
       if (mounted) _toast(Translations.of(context).call.videoWaiting);
     } catch (e) {
-      if (mounted) _toast(errorMessage(context, e));
+      if (mounted) _showError(e);
     }
   }
 
@@ -424,7 +435,7 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
     } catch (e) {
       if (!mounted) return;
       setState(() => _phase = _CallPhase.namedCall);
-      _toast(errorMessage(context, e));
+      _showError(e);
     }
   }
 
