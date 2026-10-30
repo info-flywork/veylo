@@ -31,6 +31,8 @@ class SocketService {
     'typing',
     'presence:update',
     'tokens:updated',
+    'call:incoming',
+    'call:invite_ended',
     'call:matched',
     'call:times_up',
     'call:peer_kept',
