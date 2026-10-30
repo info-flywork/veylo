@@ -40,6 +40,8 @@ interface Ticket {
   target: CallTarget;
   blocked: Set<string>;
   persona?: boolean;
+  /** Sırada değil; uygulamayı açık tutan gerçek kullanıcı. */
+  invited?: boolean;
 }
 
 interface LiveCall {
@@ -55,6 +57,8 @@ interface LiveCall {
   videoTimer: NodeJS.Timeout | null;
   /** Karşı taraf AI karakterse oyunu kendisi vermiş sayılır. */
   personaId: string | null;
+  /** Aramaya çekilen çevrimiçi kullanıcı. Kimliği, arayan devam deyince açılır. */
+  invitedId: string | null;
 }
 
 const queue: Ticket[] = [];
@@ -117,16 +121,67 @@ function clearPersonaWait(userId: string) {
   personaWait.delete(userId);
 }
 
-/** Başka kimse yoksa birkaç saniye sonra bir AI karakterle eşleştir. */
+/** Başka arayan yoksa kısa süre bekle, sonra çevrimiçi gerçek kullanıcıya bak. O da yoksa AI. */
 function schedulePersonaMatch(userId: string) {
   clearPersonaWait(userId);
   personaWait.set(
     userId,
     setTimeout(() => {
       personaWait.delete(userId);
-      void matchPersona(userId).catch((err) => logger.warn({ err, userId }, 'AI karakter eşleşmesi başarısız'));
+      void matchWaiting(userId).catch((err) => logger.warn({ err, userId }, 'Eşleşme başarısız'));
     }, 2500),
   );
+}
+
+async function matchWaiting(userId: string) {
+  const human = await matchOnlineHuman(userId);
+  if (!human) await matchPersona(userId);
+}
+
+/** Uygulaması açık gerçek kullanıcıyı aramaya alır. Sırada araması gerekmez. */
+async function matchOnlineHuman(userId: string) {
+  const i = queue.findIndex((t) => t.userId === userId);
+  if (i === -1 || userCall.has(userId)) return false;
+  const me = queue[i]!;
+  const busy = new Set([...userCall.keys(), ...queue.map((t) => t.userId)]);
+  const ids = presence
+    .onlineUserIds()
+    .filter((id) => id !== userId && !me.blocked.has(id) && !busy.has(id));
+  if (ids.length === 0) return false;
+
+  const gender = me.target === 'any' ? undefined : TARGET_GENDER[me.target];
+  const users = await prisma.user.findMany({
+    where: {
+      id: { in: ids },
+      isPersona: false,
+      status: 'ACTIVE',
+      onboardingCompleted: true,
+      ...(gender ? { gender } : {}),
+    },
+    select: { id: true, gender: true },
+  });
+  const open: typeof users = [];
+  for (const u of users) {
+    if (await safetyService.isBlockedBetween(userId, u.id)) continue;
+    open.push(u);
+  }
+  const fresh = open.filter((u) => {
+    const last = recentPair.get(pairKey(userId, u.id));
+    return !last || Date.now() - last > CALL.rematchCooldownMs;
+  });
+  const pool = fresh.length ? fresh : open;
+  const pick = pool[Math.floor(Math.random() * pool.length)];
+  if (!pick) return false;
+
+  queue.splice(i, 1);
+  await startCall(me, {
+    userId: pick.id,
+    gender: pick.gender,
+    target: 'any',
+    blocked: new Set(),
+    invited: true,
+  });
+  return true;
 }
 
 async function matchPersona(userId: string) {
@@ -203,6 +258,7 @@ async function startCall(a: Ticket, b: Ticket) {
     videoUntil: null,
     videoTimer: null,
     personaId: a.persona ? a.userId : b.persona ? b.userId : null,
+    invitedId: b.invited ? b.userId : a.invited ? a.userId : null,
   };
   calls.set(call.id, live);
   userCall.set(a.userId, call.id);
@@ -223,8 +279,19 @@ async function startCall(a: Ticket, b: Ticket) {
     });
   }
 
+  const invited = live.invitedId;
+  if (invited) {
+    const caller = invited === b.userId ? a.userId : b.userId;
+    emitToUser(invited, 'call:incoming', {
+      callId: call.id,
+      endsAt,
+      rtc: rtcCredentials(live.channel, invited),
+      peerUid: agoraUid(caller),
+    });
+  }
+
   live.timers.push(setTimeout(() => timesUp(call.id), CALL.anonSeconds * 1000));
-  logger.info({ callId: call.id }, 'Arama eşleşti');
+  logger.info({ callId: call.id, invited: Boolean(invited) }, 'Arama eşleşti');
 }
 
 function timesUp(callId: string) {
@@ -247,6 +314,8 @@ async function keepTalking(userId: string, callId: string) {
   const c = loadMine(userId, callId);
   if (c.phase !== 'vote') throw AppError.badRequest('NOT_VOTING');
   c.keep.add(userId);
+  // Çevrimiçi çekilen kişi oylama ekranında değildir; arayan devam deyince kimliği açılır.
+  if (c.invitedId && userId !== c.invitedId) c.keep.add(c.invitedId);
   emitToUser(peerOf(c, userId), 'call:peer_kept', { callId });
   if (c.keep.size < 2) return { waiting: true };
 
