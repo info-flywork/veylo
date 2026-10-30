@@ -1978,6 +1978,12 @@ class Translations$discover$liveRoom$tr {
 
 	/// tr: 'Onayla'
 	String get approve => 'Onayla';
+
+	/// tr: 'Odadan çıkar'
+	String get remove => 'Odadan çıkar';
+
+	/// tr: 'Odadan çıkarıldın.'
+	String get removed => 'Odadan çıkarıldın.';
 }
 
 // Path: discover.groupChat
@@ -2684,6 +2690,8 @@ extension on Translations {
 			'discover.liveRoom.roomEnded' => 'Oda kapandı.',
 			'discover.liveRoom.wantsToJoin' => ({required Object name}) => '${name} katılmak istiyor',
 			'discover.liveRoom.approve' => 'Onayla',
+			'discover.liveRoom.remove' => 'Odadan çıkar',
+			'discover.liveRoom.removed' => 'Odadan çıkarıldın.',
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} Kullanıcı',
 			'discover.groupChat.sampleVictoria' => 'Çok sıkıldım. Bir şeyler yapalım mı?',
 			'discover.groupChat.sampleSona' => 'Ne yapabiliriz? Aklında ne var?',
@@ -2858,10 +2866,10 @@ extension on Translations {
 			'createProfile.interests.standUp' => 'Stand-up',
 			'createProfile.interests.tech' => 'Teknoloji',
 			'createProfile.interests.coding' => 'Kodlama',
-			'createProfile.interests.ai' => 'YZ',
-			'createProfile.interests.podcast' => 'Podcast',
 			_ => null,
 		} ?? switch (path) {
+			'createProfile.interests.ai' => 'YZ',
+			'createProfile.interests.podcast' => 'Podcast',
 			'createProfile.stepChatGoal' => '5/5 Sohbet hedefi',
 			'createProfile.chatGoalTitle' => 'Bugün ne arıyorsun?',
 			'createProfile.chatGoalSubtitle' => 'Bu, şu anki ruh haline uygun eşleşmeyi bulmamıza yardımcı olur.',

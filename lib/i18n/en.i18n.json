@@ -362,7 +362,9 @@
       "sampleChatBody": "What can we do? What do you have in mind?",
       "roomEnded": "The room has ended.",
       "wantsToJoin": "{name} wants to join",
-      "approve": "Approve"
+      "approve": "Approve",
+      "remove": "Remove from room",
+      "removed": "You were removed from the room."
     },
     "groupChat": {
       "usersCount": "{count} Users",

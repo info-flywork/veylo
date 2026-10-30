@@ -98,6 +98,9 @@ class RoomRepository {
   Future<void> leave(String roomId) =>
       _socket.request('room:leave', {'roomId': roomId});
 
+  Future<void> kick(String roomId, int uid) =>
+      _socket.request('room:kick', {'roomId': roomId, 'uid': uid});
+
   Future<void> setMic(String roomId, bool on) =>
       _socket.request('room:mic', {'roomId': roomId, 'on': on});
 

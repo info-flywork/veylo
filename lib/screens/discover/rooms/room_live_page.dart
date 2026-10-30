@@ -93,6 +93,7 @@ class _RoomLivePageState extends State<RoomLivePage> {
         );
       }),
       _socket.on('room:ended').where(mine).listen((_) => _onEnded()),
+      _socket.on('room:kicked').where(mine).listen((_) => _onKicked()),
       _socket.on('room:request').where(mine).listen(_onRequest),
     ]);
     // Bağlantı koptuysa geri gelince odaya yeniden katıl (sunucu kaldığı yerden devam eder).
@@ -216,6 +217,42 @@ class _RoomLivePageState extends State<RoomLivePage> {
     });
   }
 
+  void _onKicked() {
+    if (!mounted || _left) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(Translations.of(context).discover.liveRoom.removed),
+      ),
+    );
+    _leave();
+  }
+
+  /// Sahip, odadaki birine basınca onu çıkarır.
+  Future<void> _confirmKick(RoomParticipant member) async {
+    final remove = await showModalBottomSheet<bool>(
+      context: context,
+      backgroundColor: AppColors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => SafeArea(
+        child: ListTile(
+          title: AppText(
+            Translations.of(context).discover.liveRoom.remove,
+            style: AppTextStyles.groupInfoLeave,
+          ),
+          onTap: () => Navigator.of(context).pop(true),
+        ),
+      ),
+    );
+    if (remove != true || !mounted) return;
+    try {
+      await _repo.kick(widget.roomId, member.uid);
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    }
+  }
+
   void _onEnded() {
     if (!mounted || _left) return;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -256,11 +293,7 @@ class _RoomLivePageState extends State<RoomLivePage> {
     final host = _people.where((p) => p.isHost).firstOrNull;
     final members = _people.where((p) => !p.isHost).toList();
 
-    final quickReplies = [
-      t.quickReplyHey,
-      t.quickReplyTopic,
-      t.quickReplyNew,
-    ];
+    final quickReplies = [t.quickReplyHey, t.quickReplyTopic, t.quickReplyNew];
 
     return PopScope(
       canPop: _canLeave,
@@ -354,18 +387,12 @@ class _RoomLivePageState extends State<RoomLivePage> {
                     const Positioned(
                       left: -142 - _BlurOrb.pad,
                       top: 20 - _BlurOrb.pad,
-                      child: _BlurOrb(
-                        size: 404,
-                        color: Color(0x80FFD2B4),
-                      ),
+                      child: _BlurOrb(size: 404, color: Color(0x80FFD2B4)),
                     ),
                     const Positioned(
                       right: -142 - _BlurOrb.pad,
                       top: 20 - _BlurOrb.pad,
-                      child: _BlurOrb(
-                        size: 404,
-                        color: Color(0x807C6CD6),
-                      ),
+                      child: _BlurOrb(size: 404, color: Color(0x807C6CD6)),
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -397,6 +424,10 @@ class _RoomLivePageState extends State<RoomLivePage> {
                                           ),
                                           onMic: member.uid == _me?.uid
                                               ? _toggleMic
+                                              : null,
+                                          onTap:
+                                              _isHost && member.uid != _me?.uid
+                                              ? () => _confirmKick(member)
                                               : null,
                                         ),
                                       ),
@@ -483,10 +514,7 @@ class _BlurOrb extends StatelessWidget {
         child: Container(
           width: size,
           height: size,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: color,
-          ),
+          decoration: BoxDecoration(shape: BoxShape.circle, color: color),
         ),
       ),
     );
@@ -551,92 +579,101 @@ class _AdminAvatar extends StatelessWidget {
 }
 
 class _MemberTile extends StatelessWidget {
-  const _MemberTile({required this.member, this.speaking = false, this.onMic});
+  const _MemberTile({
+    required this.member,
+    this.speaking = false,
+    this.onMic,
+    this.onTap,
+  });
 
   final RoomParticipant member;
   final bool speaking;
   final VoidCallback? onMic;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SizedBox(
-          width: 68,
-          height: 68,
-          child: Stack(
-            clipBehavior: Clip.none,
-            alignment: Alignment.center,
-            children: [
-              if (speaking)
-                Container(
-                  width: 68,
-                  height: 68,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: AppColors.selectionBorder,
-                      width: 2,
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: 68,
+            height: 68,
+            child: Stack(
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
+              children: [
+                if (speaking)
+                  Container(
+                    width: 68,
+                    height: 68,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: AppColors.selectionBorder,
+                        width: 2,
+                      ),
                     ),
                   ),
-                ),
-              ClipOval(
-                child: SizedBox(
-                  width: 68,
-                  height: 68,
-                  child: member.blurred
-                      ? ImageFiltered(
-                          imageFilter:
-                              ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                          child: ChatAvatarImage(
-                            url: member.avatarUrl,
-                            size: 68,
-                          ),
-                        )
-                      : ChatAvatarImage(url: member.avatarUrl, size: 68),
-                ),
-              ),
-              if (!member.micOn && onMic == null) ...[
-                Container(
-                  width: 68,
-                  height: 68,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.white.withValues(alpha: 0.28),
+                ClipOval(
+                  child: SizedBox(
+                    width: 68,
+                    height: 68,
+                    child: member.blurred
+                        ? ImageFiltered(
+                            imageFilter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                            child: ChatAvatarImage(
+                              url: member.avatarUrl,
+                              size: 68,
+                            ),
+                          )
+                        : ChatAvatarImage(url: member.avatarUrl, size: 68),
                   ),
                 ),
-                SvgPicture.asset(
-                  AppAssets.iconMicrophoneOff,
-                  width: 24,
-                  height: 24,
-                ),
+                if (!member.micOn && onMic == null) ...[
+                  Container(
+                    width: 68,
+                    height: 68,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.white.withValues(alpha: 0.28),
+                    ),
+                  ),
+                  SvgPicture.asset(
+                    AppAssets.iconMicrophoneOff,
+                    width: 24,
+                    height: 24,
+                  ),
+                ],
+                if (onMic != null)
+                  Positioned(
+                    right: 0,
+                    bottom: 0,
+                    child: _ProfileMicButton(on: member.micOn, onTap: onMic!),
+                  ),
               ],
-              if (onMic != null)
-                Positioned(
-                  right: 0,
-                  bottom: 0,
-                  child: _ProfileMicButton(on: member.micOn, onTap: onMic!),
+            ),
+          ),
+          const SizedBox(height: 6),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                child: AppText(
+                  member.displayName,
+                  style: AppTextStyles.liveRoomMemberName,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
                 ),
+              ),
+              if (member.isAi) const AiBadge(compact: true),
             ],
           ),
-        ),
-        const SizedBox(height: 6),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Flexible(
-              child: AppText(
-                member.displayName,
-                style: AppTextStyles.liveRoomMemberName,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-              ),
-            ),
-            if (member.isAi) const AiBadge(compact: true),
-          ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -786,8 +823,12 @@ class _MessageInput extends StatelessWidget {
               textInputAction: TextInputAction.send,
               maxLength: 300,
               buildCounter:
-                  (_, {required currentLength, required isFocused, maxLength}) =>
-                      null,
+                  (
+                    _, {
+                    required currentLength,
+                    required isFocused,
+                    maxLength,
+                  }) => null,
               style: AppTextStyles.liveRoomMessageHint,
               cursorColor: AppColors.selectionBorder,
               decoration: InputDecoration(
@@ -800,11 +841,7 @@ class _MessageInput extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          SvgPicture.asset(
-            AppAssets.iconSticker,
-            width: 28,
-            height: 28,
-          ),
+          SvgPicture.asset(AppAssets.iconSticker, width: 28, height: 28),
           const SizedBox(width: 8),
           // Mikrofonum: kapalıyken soluk.
           GestureDetector(
