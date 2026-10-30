@@ -6,6 +6,7 @@ import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_back_button.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
+import 'package:veylo/data/remote/api_client.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/data/remote/socket_service.dart';
 import 'package:veylo/data/remote/token_repository.dart';
@@ -83,8 +84,26 @@ class _BoostPageState extends State<BoostPage> {
       }
     } catch (e) {
       if (!mounted) return;
-      if (!await handleInsufficientTokens(context, e)) {
-        if (mounted) showErrorSnackBar(context, e);
+      var error = e;
+      if (e is ApiException && e.isNetwork) {
+        try {
+          final s = await action();
+          if (!mounted) return;
+          SessionStore.instance.updateTokenBalance(s.balance);
+          setState(() => _status = s);
+          if (done != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(done), behavior: SnackBarBehavior.floating),
+            );
+          }
+          return;
+        } catch (e2) {
+          if (!mounted) return;
+          error = e2;
+        }
+      }
+      if (!await handleInsufficientTokens(context, error)) {
+        if (mounted) showErrorSnackBar(context, error);
       } else {
         _load();
       }
