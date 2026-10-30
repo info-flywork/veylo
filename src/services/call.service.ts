@@ -9,6 +9,7 @@ import { prisma } from '../lib/prisma';
 import { emitToUser } from '../realtime/emitter';
 import { presence } from '../realtime/presence.store';
 import { serializeUserSummary } from '../serializers/user.serializer';
+import { notificationService } from './notification.service';
 import { safetyService } from './safety.service';
 import { tokenService } from './token.service';
 
@@ -17,8 +18,8 @@ export const CALL = {
   anonSeconds: !env.isProd && env.CALL_ANON_SECONDS ? env.CALL_ANON_SECONDS : 60,
   /** Süre dolunca "devam" oyları için bekleme. */
   voteSeconds: 20,
-  /** Çevrimiçi kullanıcıya giden anonim arama isteğinin süresi. */
-  ringSeconds: 20,
+  /** Uygulama arkadayken de yetişilsin diye çalma süresi. */
+  ringSeconds: 45,
   /** Bir görüntülü ödemenin süresi. */
   videoMinutes: 15,
   /** Az önce konuşulan kişiyle hemen tekrar eşleşilmez. */
@@ -190,12 +191,27 @@ async function matchOnlineHuman(userId: string) {
   if (i === -1 || userCall.has(userId)) return false;
   const me = queue[i]!;
   const busy = new Set([...userCall.keys(), ...queue.map((t) => t.userId)]);
-  const ids = presence
+  const gender = me.target === 'any' ? undefined : TARGET_GENDER[me.target];
+  let ids = presence
     .onlineUserIds()
     .filter((id) => id !== userId && !me.blocked.has(id) && !busy.has(id));
+  // Soket kopuk olsa da (uygulama arkada) gerçek kullanıcıya ara.
+  if (ids.length === 0) {
+    const recent = await prisma.user.findMany({
+      where: {
+        id: { not: userId },
+        isPersona: false,
+        status: 'ACTIVE',
+        onboardingCompleted: true,
+        ...(gender ? { gender } : {}),
+      },
+      select: { id: true },
+      orderBy: { lastSeenAt: 'desc' },
+      take: 20,
+    });
+    ids = recent.map((u) => u.id).filter((id) => !me.blocked.has(id) && !busy.has(id));
+  }
   if (ids.length === 0) return false;
-
-  const gender = me.target === 'any' ? undefined : TARGET_GENDER[me.target];
   const users = await prisma.user.findMany({
     where: {
       id: { in: ids },
@@ -229,6 +245,15 @@ async function matchOnlineHuman(userId: string) {
   };
   invites.set(userId, invite);
   emitToUser(pick.id, 'call:incoming', { inviteId: invite.id });
+  void notificationService.pushToUser(
+    pick.id,
+    () => ({
+      title: 'Incoming call',
+      body: 'Someone wants to start an anonymous call.',
+      data: { type: 'call', inviteId: invite.id },
+    }),
+    { evenIfOnline: true },
+  );
   logger.info({ caller: userId, callee: pick.id }, 'Anonim arama onayı istendi');
   return true;
 }
