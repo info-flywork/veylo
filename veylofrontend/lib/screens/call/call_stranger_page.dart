@@ -88,8 +88,8 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
   String _peerAvatar = '';
   bool _peerIsAi = false;
   DateTime? _videoStartedAt;
-  RtcCredentials? _incomingRtc;
-  bool _incomingTimesUp = false;
+  String? _inviteId;
+  bool _accepting = false;
 
   Timer? _callTimer;
   Timer? _videoTimer;
@@ -108,13 +108,11 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
       _socket.on('call:video_ended').listen(_onVideoEnded),
       _socket.on('call:ended').listen(_onEnded),
       _socket.on('call:error').listen(_onCallError),
+      _socket.on('call:invite_ended').listen(_onInviteEnded),
     ]);
     final incoming = widget.incoming;
     if (incoming != null) {
-      _callId = incoming['callId'] as String?;
-      _endsAt = DateTime.tryParse(incoming['endsAt'] as String? ?? '')?.toLocal();
-      _peerUid = (incoming['peerUid'] as num?)?.toInt();
-      _incomingRtc = RtcCredentials.fromJson(incoming['rtc']);
+      _inviteId = incoming['inviteId'] as String?;
       _phase = _CallPhase.incoming;
     }
   }
@@ -128,8 +126,11 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
     _videoTimer?.cancel();
     // Sayfa başka yoldan kapanırsa (geri hareketi vb.) sunucudaki durum da kapansın.
     final callId = _callId;
+    final inviteId = _inviteId;
     if (callId != null) {
       _socket.emit('call:end', {'callId': callId});
+    } else if (inviteId != null) {
+      _socket.emit('call:decline', {'inviteId': inviteId});
     } else if (_phase == _CallPhase.finding) {
       _socket.emit('call:cancel', {});
     }
@@ -181,7 +182,10 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
   }
 
   void _onMatched(Map<String, dynamic> e) {
-    if (!mounted || _phase != _CallPhase.finding) return;
+    final waiting =
+        _phase == _CallPhase.finding || _phase == _CallPhase.incoming;
+    if (!mounted || !waiting) return;
+    _inviteId = null;
     _callId = e['callId'] as String;
     _endsAt = DateTime.tryParse(e['endsAt'] as String? ?? '')?.toLocal();
     _peerUid = (e['peerUid'] as num?)?.toInt();
@@ -218,34 +222,38 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
   }
 
   Future<void> _acceptIncoming() async {
+    final id = _inviteId;
+    if (id == null || _accepting) return;
     if (!await _agora.requestMic()) {
       if (mounted) _toast(Translations.of(context).call.micDenied);
       return;
     }
-    final rtc = _incomingRtc;
-    if (rtc != null) {
-      await _agora.join(rtc);
-      _agora.setMic(_micOn);
-      _agora.setPlayback(_speakerOn);
-    }
     if (!mounted) return;
-    if (_incomingTimesUp) {
-      setState(() => _phase = _CallPhase.timesUp);
-      return;
+    setState(() => _accepting = true);
+    try {
+      await _socket.request('call:accept', {'inviteId': id});
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _accepting = false);
+      _toast(errorMessage(context, e));
     }
-    if (_peerName.isNotEmpty) {
-      setState(() => _phase = _CallPhase.namedCall);
-      return;
-    }
-    _startInCall();
+  }
+
+  void _declineIncoming() {
+    final id = _inviteId;
+    _inviteId = null;
+    if (id != null) _socket.request('call:decline', {'inviteId': id}).ignore();
+    if (mounted) Navigator.of(context).pop();
+  }
+
+  void _onInviteEnded(Map<String, dynamic> e) {
+    if (!mounted || e['inviteId'] != _inviteId) return;
+    _inviteId = null;
+    Navigator.of(context).pop();
   }
 
   void _onTimesUp(Map<String, dynamic> e) {
-    if (!mounted || !_isMine(e)) return;
-    if (_phase == _CallPhase.incoming) {
-      _incomingTimesUp = true;
-      return;
-    }
+    if (!mounted || !_isMine(e) || _phase == _CallPhase.incoming) return;
     _callTimer?.cancel();
     setState(() {
       _secondsLeft = 0;
@@ -461,7 +469,7 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
       case _CallPhase.finding:
         _cancelFinding();
       case _CallPhase.incoming:
-        _endCall();
+        _declineIncoming();
       case _CallPhase.inCall:
       case _CallPhase.timesUp:
       case _CallPhase.namedCallRinging:
@@ -543,8 +551,9 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
                     padding: EdgeInsets.fromLTRB(hPad, 0, hPad, 16 + bottom),
                     child: switch (_phase) {
                       _CallPhase.incoming => _IncomingCallBody(
+                          accepting: _accepting,
                           onAccept: _acceptIncoming,
-                          onDecline: _endCall,
+                          onDecline: _declineIncoming,
                         ),
                       _CallPhase.inCall => _InCallBody(
                           secondsLeft: _secondsLeft,
@@ -1447,8 +1456,13 @@ class _InCallBody extends StatelessWidget {
 }
 
 class _IncomingCallBody extends StatelessWidget {
-  const _IncomingCallBody({required this.onAccept, required this.onDecline});
+  const _IncomingCallBody({
+    required this.accepting,
+    required this.onAccept,
+    required this.onDecline,
+  });
 
+  final bool accepting;
   final VoidCallback onAccept;
   final VoidCallback onDecline;
 
@@ -1467,13 +1481,16 @@ class _IncomingCallBody extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40),
           child: AppText(
-            'Someone in the app is calling you.',
+            'Someone wants to start an anonymous call. It begins only if you accept.',
             style: AppTextStyles.callStrangerSubtitle,
             textAlign: TextAlign.center,
           ),
         ),
         const SizedBox(height: 28),
-        AppPrimaryButton(label: 'Accept', onPressed: onAccept),
+        AppPrimaryButton(
+          label: accepting ? '...' : 'Accept',
+          onPressed: accepting ? null : onAccept,
+        ),
         const SizedBox(height: 12),
         GestureDetector(
           onTap: onDecline,
