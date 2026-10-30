@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:veylo/data/remote/api_client.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/screens/tokens/token_packs_sheet.dart';
 
 /// Hata → kullanıcıya gösterilecek metin.
 String errorMessage(BuildContext context, Object error) {
@@ -27,6 +28,8 @@ String errorMessage(BuildContext context, Object error) {
       'GROUP_FULL' => e.groupFull,
       'GROUP_CREATE_LIMIT' => e.groupCreateLimit,
       'ALREADY_IN_CALL' => e.alreadyInCall,
+      'ALREADY_CHECKED_IN' => e.alreadyCheckedIn,
+      'TEST_PURCHASES_DISABLED' => e.purchasesUnavailable,
       'ROOM_PRIVATE' => e.roomPrivate,
       'ROOM_FULL' => e.roomFull,
       'VIBE_NOT_FOUND' ||
@@ -57,7 +60,12 @@ String errorMessage(BuildContext context, Object error) {
   return e.generic;
 }
 
+/// Hata mesajı. Bakiye yetmediyse mesaj yerine token paketleri açılır.
 void showErrorSnackBar(BuildContext context, Object error) {
+  if (error is ApiException && error.code == 'INSUFFICIENT_TOKENS') {
+    showTokenPacksSheet(context, notEnough: true);
+    return;
+  }
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(errorMessage(context, error)),

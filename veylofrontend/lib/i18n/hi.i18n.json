@@ -235,7 +235,10 @@
     "calling": "कॉल हो रही है",
     "accept": "स्वीकार करें",
     "decline": "अस्वीकार करें",
-    "switchToVideo": "क्या आप वीडियो कॉल पर जाना चाहेंगे?"
+    "switchToVideo": "क्या आप वीडियो कॉल पर जाना चाहेंगे?",
+    "noMatchTitle": "अभी कोई उपलब्ध नहीं है",
+    "noMatchBody": "इस समय बात करने के लिए कोई नहीं मिला। थोड़ी देर बाद फिर से कोशिश करें।",
+    "noMatchOk": "ठीक है"
   },
   "vibes": {
     "search": "खोजें",
@@ -608,7 +611,9 @@
     "socialAccount": "आपका ईमेल और पासवर्ड आपके Google या Apple अकाउंट से मैनेज होता है।",
     "alreadyInCall": "आप पहले से एक कॉल पर हैं।",
     "roomPrivate": "यह रूम प्राइवेट है। जॉइन करने के लिए होस्ट से पूछें।",
-    "roomFull": "यह रूम भर चुका है।"
+    "roomFull": "यह रूम भर चुका है।",
+    "alreadyCheckedIn": "आप आज का इनाम पहले ही ले चुके हैं।",
+    "purchasesUnavailable": "खरीदारी अभी उपलब्ध नहीं है।"
   },
   "faq": {
     "q1": "यह ऐप कैसे काम करता है?",
@@ -673,5 +678,43 @@
     "underline": "अंडरलाइन",
     "cancel": "रद्द करें",
     "galleryError": "गैलरी नहीं खुल सकी"
+  },
+  "tokens": {
+    "boostTitle": "Boost",
+    "history": "इतिहास",
+    "yourBalance": "आपका बैलेंस",
+    "balanceTokens": "{count} टोकन",
+    "getMore": "और टोकन पाएं",
+    "checkinTitle": "दैनिक चेक-इन",
+    "checkinSubtitle": "रोज़ लगातार कलेक्ट करें और रोज़ {max} टोकन तक कमाएं",
+    "day": "दिन {n}",
+    "collectDay": "दिन {n} के टोकन कलेक्ट करें",
+    "collectedToday": "दिन {n} के लिए कल फिर आएं",
+    "duration30m": "30 मिनट",
+    "duration1h": "1 घंटा",
+    "duration2h": "2 घंटे",
+    "visibility": "{n}x विज़िबिलिटी",
+    "boostFor": "{count} टोकन में Boost",
+    "boostActive": "{time} तक Boost",
+    "boostDone": "आपकी प्रोफ़ाइल Boost हो गई!",
+    "historyEmpty": "अभी तक कोई टोकन गतिविधि नहीं",
+    "balanceLine": "आपका बैलेंस {count} टोकन",
+    "reasonPurchase": "टोकन खरीद",
+    "reasonCheckin": "दैनिक चेक-इन",
+    "reasonWelcome": "वेलकम बोनस",
+    "reasonGenderFilter": "जेंडर फ़िल्टर कॉल",
+    "reasonVideoCall": "वीडियो कॉल",
+    "reasonRoomCreate": "रूम बनाना",
+    "reasonBorder": "प्रोफ़ाइल बॉर्डर",
+    "reasonPostBoost": "पोस्ट Boost",
+    "reasonRefund": "रिफ़ंड",
+    "reasonAdjust": "बैलेंस समायोजन",
+    "packsTitle": "और टोकन पाएं",
+    "packsSubtitle": "टोकन पैक चुनें",
+    "packTokens": "{count} टोकन",
+    "buy": "खरीदें",
+    "purchaseDone": "आपके बैलेंस में {count} टोकन जोड़े गए",
+    "notEnoughTitle": "पर्याप्त टोकन नहीं",
+    "notEnoughSubtitle": "जारी रखने के लिए बैलेंस टॉप अप करें।"
   }
 }

@@ -58,6 +58,7 @@ class TranslationsPt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$logout$pt logout = _Translations$logout$pt._(_root);
 	@override late final _Translations$deleteAccount$pt deleteAccount = _Translations$deleteAccount$pt._(_root);
 	@override late final _Translations$storyText$pt storyText = _Translations$storyText$pt._(_root);
+	@override late final _Translations$tokens$pt tokens = _Translations$tokens$pt._(_root);
 }
 
 // Path: app
@@ -338,6 +339,9 @@ class _Translations$call$pt extends Translations$call$tr {
 	@override String get accept => 'Aceitar';
 	@override String get decline => 'Recusar';
 	@override String get switchToVideo => 'Quer mudar para uma chamada de vídeo?';
+	@override String get noMatchTitle => 'Ninguém disponível agora';
+	@override String get noMatchBody => 'Não encontramos ninguém para conversar no momento. Tente novamente daqui a pouco.';
+	@override String get noMatchOk => 'OK';
 }
 
 // Path: vibes
@@ -576,6 +580,8 @@ class _Translations$errors$pt extends Translations$errors$tr {
 	@override String get alreadyInCall => 'Você já está em uma chamada.';
 	@override String get roomPrivate => 'Esta sala é privada. Peça ao anfitrião para entrar.';
 	@override String get roomFull => 'Esta sala está cheia.';
+	@override String get alreadyCheckedIn => 'Você já coletou a recompensa de hoje.';
+	@override String get purchasesUnavailable => 'Compras indisponíveis no momento.';
 }
 
 // Path: faq
@@ -675,6 +681,51 @@ class _Translations$storyText$pt extends Translations$storyText$tr {
 	@override String get underline => 'Sublinhado';
 	@override String get cancel => 'Cancelar';
 	@override String get galleryError => 'Não foi possível abrir a galeria';
+}
+
+// Path: tokens
+class _Translations$tokens$pt extends Translations$tokens$tr {
+	_Translations$tokens$pt._(TranslationsPt root) : this._root = root, super.internal(root);
+
+	final TranslationsPt _root; // ignore: unused_field
+
+	// Translations
+	@override String get boostTitle => 'Boost';
+	@override String get history => 'Histórico';
+	@override String get yourBalance => 'Seu saldo';
+	@override String balanceTokens({required Object count}) => '${count} tokens';
+	@override String get getMore => 'Obter mais tokens';
+	@override String get checkinTitle => 'Check-in diário';
+	@override String checkinSubtitle({required Object max}) => 'Colete todo dia seguido e ganhe até ${max} tokens por dia';
+	@override String day({required Object n}) => 'Dia ${n}';
+	@override String collectDay({required Object n}) => 'Coletar tokens do dia ${n}';
+	@override String collectedToday({required Object n}) => 'Volte amanhã para o dia ${n}';
+	@override String get duration30m => '30 minutos';
+	@override String get duration1h => '1 hora';
+	@override String get duration2h => '2 horas';
+	@override String visibility({required Object n}) => 'Visibilidade ${n}x';
+	@override String boostFor({required Object count}) => 'Boost por ${count} tokens';
+	@override String boostActive({required Object time}) => 'Boost ativo até ${time}';
+	@override String get boostDone => 'Seu perfil está com Boost!';
+	@override String get historyEmpty => 'Nenhuma atividade de tokens ainda';
+	@override String balanceLine({required Object count}) => 'Seu saldo: ${count} tokens';
+	@override String get reasonPurchase => 'Compra de tokens';
+	@override String get reasonCheckin => 'Check-in diário';
+	@override String get reasonWelcome => 'Bônus de boas-vindas';
+	@override String get reasonGenderFilter => 'Chamada com filtro de gênero';
+	@override String get reasonVideoCall => 'Chamada de vídeo';
+	@override String get reasonRoomCreate => 'Criar sala';
+	@override String get reasonBorder => 'Moldura de perfil';
+	@override String get reasonPostBoost => 'Boost de post';
+	@override String get reasonRefund => 'Reembolso';
+	@override String get reasonAdjust => 'Ajuste de saldo';
+	@override String get packsTitle => 'Obter mais tokens';
+	@override String get packsSubtitle => 'Escolha um pacote de tokens';
+	@override String packTokens({required Object count}) => '${count} tokens';
+	@override String get buy => 'Comprar';
+	@override String purchaseDone({required Object count}) => '${count} tokens adicionados ao seu saldo';
+	@override String get notEnoughTitle => 'Tokens insuficientes';
+	@override String get notEnoughSubtitle => 'Recarregue seu saldo para continuar.';
 }
 
 // Path: discover.aiMatch
@@ -1222,6 +1273,9 @@ extension on TranslationsPt {
 			'call.accept' => 'Aceitar',
 			'call.decline' => 'Recusar',
 			'call.switchToVideo' => 'Quer mudar para uma chamada de vídeo?',
+			'call.noMatchTitle' => 'Ninguém disponível agora',
+			'call.noMatchBody' => 'Não encontramos ninguém para conversar no momento. Tente novamente daqui a pouco.',
+			'call.noMatchOk' => 'OK',
 			'vibes.search' => 'Buscar',
 			'vibes.sendMessage' => 'Enviar mensagem',
 			'vibes.wantsToTalk' => 'Quer falar sobre isso agora',
@@ -1505,11 +1559,11 @@ extension on TranslationsPt {
 			'createProfile.interests.coding' => 'Programação',
 			'createProfile.interests.ai' => 'IA',
 			'createProfile.interests.podcast' => 'Podcasts',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.stepChatGoal' => '5/5 Objetivo do chat',
 			'createProfile.chatGoalTitle' => 'O que você procura hoje?',
 			'createProfile.chatGoalSubtitle' => 'Isso ajuda a encontrar o match certo para o seu humor agora.',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.chatGoalQuickMatch' => 'Match rápido — entre direto numa\nconversa',
 			'createProfile.chatGoalFlirtyChat' => 'Paquera — conversas leves e\ndivertidas',
 			'createProfile.chatGoalMoodMatch' => 'Match de humor — combine pelo que você\nestá sentindo',
@@ -1551,6 +1605,8 @@ extension on TranslationsPt {
 			'errors.alreadyInCall' => 'Você já está em uma chamada.',
 			'errors.roomPrivate' => 'Esta sala é privada. Peça ao anfitrião para entrar.',
 			'errors.roomFull' => 'Esta sala está cheia.',
+			'errors.alreadyCheckedIn' => 'Você já coletou a recompensa de hoje.',
+			'errors.purchasesUnavailable' => 'Compras indisponíveis no momento.',
 			'faq.q1' => 'Como o app funciona?',
 			'faq.q2' => 'O que é o chat anônimo?',
 			'faq.q3' => 'O que é o Progresso da conexão?',
@@ -1605,6 +1661,42 @@ extension on TranslationsPt {
 			'storyText.underline' => 'Sublinhado',
 			'storyText.cancel' => 'Cancelar',
 			'storyText.galleryError' => 'Não foi possível abrir a galeria',
+			'tokens.boostTitle' => 'Boost',
+			'tokens.history' => 'Histórico',
+			'tokens.yourBalance' => 'Seu saldo',
+			'tokens.balanceTokens' => ({required Object count}) => '${count} tokens',
+			'tokens.getMore' => 'Obter mais tokens',
+			'tokens.checkinTitle' => 'Check-in diário',
+			'tokens.checkinSubtitle' => ({required Object max}) => 'Colete todo dia seguido e ganhe até ${max} tokens por dia',
+			'tokens.day' => ({required Object n}) => 'Dia ${n}',
+			'tokens.collectDay' => ({required Object n}) => 'Coletar tokens do dia ${n}',
+			'tokens.collectedToday' => ({required Object n}) => 'Volte amanhã para o dia ${n}',
+			'tokens.duration30m' => '30 minutos',
+			'tokens.duration1h' => '1 hora',
+			'tokens.duration2h' => '2 horas',
+			'tokens.visibility' => ({required Object n}) => 'Visibilidade ${n}x',
+			'tokens.boostFor' => ({required Object count}) => 'Boost por ${count} tokens',
+			'tokens.boostActive' => ({required Object time}) => 'Boost ativo até ${time}',
+			'tokens.boostDone' => 'Seu perfil está com Boost!',
+			'tokens.historyEmpty' => 'Nenhuma atividade de tokens ainda',
+			'tokens.balanceLine' => ({required Object count}) => 'Seu saldo: ${count} tokens',
+			'tokens.reasonPurchase' => 'Compra de tokens',
+			'tokens.reasonCheckin' => 'Check-in diário',
+			'tokens.reasonWelcome' => 'Bônus de boas-vindas',
+			'tokens.reasonGenderFilter' => 'Chamada com filtro de gênero',
+			'tokens.reasonVideoCall' => 'Chamada de vídeo',
+			'tokens.reasonRoomCreate' => 'Criar sala',
+			'tokens.reasonBorder' => 'Moldura de perfil',
+			'tokens.reasonPostBoost' => 'Boost de post',
+			'tokens.reasonRefund' => 'Reembolso',
+			'tokens.reasonAdjust' => 'Ajuste de saldo',
+			'tokens.packsTitle' => 'Obter mais tokens',
+			'tokens.packsSubtitle' => 'Escolha um pacote de tokens',
+			'tokens.packTokens' => ({required Object count}) => '${count} tokens',
+			'tokens.buy' => 'Comprar',
+			'tokens.purchaseDone' => ({required Object count}) => '${count} tokens adicionados ao seu saldo',
+			'tokens.notEnoughTitle' => 'Tokens insuficientes',
+			'tokens.notEnoughSubtitle' => 'Recarregue seu saldo para continuar.',
 			_ => null,
 		};
 	}

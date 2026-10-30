@@ -58,6 +58,7 @@ class TranslationsFr extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$logout$fr logout = _Translations$logout$fr._(_root);
 	@override late final _Translations$deleteAccount$fr deleteAccount = _Translations$deleteAccount$fr._(_root);
 	@override late final _Translations$storyText$fr storyText = _Translations$storyText$fr._(_root);
+	@override late final _Translations$tokens$fr tokens = _Translations$tokens$fr._(_root);
 }
 
 // Path: app
@@ -338,6 +339,9 @@ class _Translations$call$fr extends Translations$call$tr {
 	@override String get accept => 'Accepter';
 	@override String get decline => 'Refuser';
 	@override String get switchToVideo => 'Passer en appel vidéo ?';
+	@override String get noMatchTitle => 'Personne n\'est disponible pour l\'instant';
+	@override String get noMatchBody => 'Nous n\'avons trouvé personne avec qui parler pour le moment. Réessaie un peu plus tard.';
+	@override String get noMatchOk => 'OK';
 }
 
 // Path: vibes
@@ -576,6 +580,8 @@ class _Translations$errors$fr extends Translations$errors$tr {
 	@override String get alreadyInCall => 'Tu es déjà en appel.';
 	@override String get roomPrivate => 'Ce salon est privé. Demande à l\'hôte pour le rejoindre.';
 	@override String get roomFull => 'Ce salon est complet.';
+	@override String get alreadyCheckedIn => 'Tu as déjà récupéré la récompense du jour.';
+	@override String get purchasesUnavailable => 'Les achats ne sont pas disponibles pour le moment.';
 }
 
 // Path: faq
@@ -675,6 +681,51 @@ class _Translations$storyText$fr extends Translations$storyText$tr {
 	@override String get underline => 'Souligné';
 	@override String get cancel => 'Annuler';
 	@override String get galleryError => 'Impossible d\'ouvrir la galerie';
+}
+
+// Path: tokens
+class _Translations$tokens$fr extends Translations$tokens$tr {
+	_Translations$tokens$fr._(TranslationsFr root) : this._root = root, super.internal(root);
+
+	final TranslationsFr _root; // ignore: unused_field
+
+	// Translations
+	@override String get boostTitle => 'Boost';
+	@override String get history => 'Historique';
+	@override String get yourBalance => 'Ton solde';
+	@override String balanceTokens({required Object count}) => '${count} jetons';
+	@override String get getMore => 'Obtenir plus de jetons';
+	@override String get checkinTitle => 'Check-in quotidien';
+	@override String checkinSubtitle({required Object max}) => 'Récupère chaque jour d\'affilée et gagne jusqu\'à ${max} jetons par jour';
+	@override String day({required Object n}) => 'Jour ${n}';
+	@override String collectDay({required Object n}) => 'Récupérer les jetons du jour ${n}';
+	@override String collectedToday({required Object n}) => 'Reviens demain pour le jour ${n}';
+	@override String get duration30m => '30 minutes';
+	@override String get duration1h => '1 heure';
+	@override String get duration2h => '2 heures';
+	@override String visibility({required Object n}) => 'Visibilité x${n}';
+	@override String boostFor({required Object count}) => 'Boost pour ${count} jetons';
+	@override String boostActive({required Object time}) => 'Boosté jusqu\'à ${time}';
+	@override String get boostDone => 'Ton profil est boosté !';
+	@override String get historyEmpty => 'Aucune activité de jetons';
+	@override String balanceLine({required Object count}) => 'Ton solde : ${count} jetons';
+	@override String get reasonPurchase => 'Achat de jetons';
+	@override String get reasonCheckin => 'Check-in quotidien';
+	@override String get reasonWelcome => 'Bonus de bienvenue';
+	@override String get reasonGenderFilter => 'Appel avec filtre de genre';
+	@override String get reasonVideoCall => 'Appel vidéo';
+	@override String get reasonRoomCreate => 'Création de salon';
+	@override String get reasonBorder => 'Cadre de profil';
+	@override String get reasonPostBoost => 'Boost de publication';
+	@override String get reasonRefund => 'Remboursement';
+	@override String get reasonAdjust => 'Ajustement du solde';
+	@override String get packsTitle => 'Obtenir plus de jetons';
+	@override String get packsSubtitle => 'Choisis un pack de jetons';
+	@override String packTokens({required Object count}) => '${count} jetons';
+	@override String get buy => 'Acheter';
+	@override String purchaseDone({required Object count}) => '${count} jetons ajoutés à ton solde';
+	@override String get notEnoughTitle => 'Pas assez de jetons';
+	@override String get notEnoughSubtitle => 'Recharge ton solde pour continuer.';
 }
 
 // Path: discover.aiMatch
@@ -1222,6 +1273,9 @@ extension on TranslationsFr {
 			'call.accept' => 'Accepter',
 			'call.decline' => 'Refuser',
 			'call.switchToVideo' => 'Passer en appel vidéo ?',
+			'call.noMatchTitle' => 'Personne n\'est disponible pour l\'instant',
+			'call.noMatchBody' => 'Nous n\'avons trouvé personne avec qui parler pour le moment. Réessaie un peu plus tard.',
+			'call.noMatchOk' => 'OK',
 			'vibes.search' => 'Rechercher',
 			'vibes.sendMessage' => 'Envoyer un message',
 			'vibes.wantsToTalk' => 'Veut en parler maintenant',
@@ -1505,11 +1559,11 @@ extension on TranslationsFr {
 			'createProfile.interests.coding' => 'Code',
 			'createProfile.interests.ai' => 'IA',
 			'createProfile.interests.podcast' => 'Podcasts',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.stepChatGoal' => '5/5 Objectif',
 			'createProfile.chatGoalTitle' => 'Tu cherches quoi aujourd\'hui ?',
 			'createProfile.chatGoalSubtitle' => 'Ça nous aide à trouver le bon match selon ton humeur du moment.',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.chatGoalQuickMatch' => 'Match rapide : plonge direct dans une\nconversation',
 			'createProfile.chatGoalFlirtyChat' => 'Flirt : des échanges légers\net joueurs',
 			'createProfile.chatGoalMoodMatch' => 'Match d\'humeur : selon ce que tu\nressens',
@@ -1551,6 +1605,8 @@ extension on TranslationsFr {
 			'errors.alreadyInCall' => 'Tu es déjà en appel.',
 			'errors.roomPrivate' => 'Ce salon est privé. Demande à l\'hôte pour le rejoindre.',
 			'errors.roomFull' => 'Ce salon est complet.',
+			'errors.alreadyCheckedIn' => 'Tu as déjà récupéré la récompense du jour.',
+			'errors.purchasesUnavailable' => 'Les achats ne sont pas disponibles pour le moment.',
 			'faq.q1' => 'Comment fonctionne l\'app ?',
 			'faq.q2' => 'C\'est quoi le chat anonyme ?',
 			'faq.q3' => 'C\'est quoi la Progression du lien ?',
@@ -1605,6 +1661,42 @@ extension on TranslationsFr {
 			'storyText.underline' => 'Souligné',
 			'storyText.cancel' => 'Annuler',
 			'storyText.galleryError' => 'Impossible d\'ouvrir la galerie',
+			'tokens.boostTitle' => 'Boost',
+			'tokens.history' => 'Historique',
+			'tokens.yourBalance' => 'Ton solde',
+			'tokens.balanceTokens' => ({required Object count}) => '${count} jetons',
+			'tokens.getMore' => 'Obtenir plus de jetons',
+			'tokens.checkinTitle' => 'Check-in quotidien',
+			'tokens.checkinSubtitle' => ({required Object max}) => 'Récupère chaque jour d\'affilée et gagne jusqu\'à ${max} jetons par jour',
+			'tokens.day' => ({required Object n}) => 'Jour ${n}',
+			'tokens.collectDay' => ({required Object n}) => 'Récupérer les jetons du jour ${n}',
+			'tokens.collectedToday' => ({required Object n}) => 'Reviens demain pour le jour ${n}',
+			'tokens.duration30m' => '30 minutes',
+			'tokens.duration1h' => '1 heure',
+			'tokens.duration2h' => '2 heures',
+			'tokens.visibility' => ({required Object n}) => 'Visibilité x${n}',
+			'tokens.boostFor' => ({required Object count}) => 'Boost pour ${count} jetons',
+			'tokens.boostActive' => ({required Object time}) => 'Boosté jusqu\'à ${time}',
+			'tokens.boostDone' => 'Ton profil est boosté !',
+			'tokens.historyEmpty' => 'Aucune activité de jetons',
+			'tokens.balanceLine' => ({required Object count}) => 'Ton solde : ${count} jetons',
+			'tokens.reasonPurchase' => 'Achat de jetons',
+			'tokens.reasonCheckin' => 'Check-in quotidien',
+			'tokens.reasonWelcome' => 'Bonus de bienvenue',
+			'tokens.reasonGenderFilter' => 'Appel avec filtre de genre',
+			'tokens.reasonVideoCall' => 'Appel vidéo',
+			'tokens.reasonRoomCreate' => 'Création de salon',
+			'tokens.reasonBorder' => 'Cadre de profil',
+			'tokens.reasonPostBoost' => 'Boost de publication',
+			'tokens.reasonRefund' => 'Remboursement',
+			'tokens.reasonAdjust' => 'Ajustement du solde',
+			'tokens.packsTitle' => 'Obtenir plus de jetons',
+			'tokens.packsSubtitle' => 'Choisis un pack de jetons',
+			'tokens.packTokens' => ({required Object count}) => '${count} jetons',
+			'tokens.buy' => 'Acheter',
+			'tokens.purchaseDone' => ({required Object count}) => '${count} jetons ajoutés à ton solde',
+			'tokens.notEnoughTitle' => 'Pas assez de jetons',
+			'tokens.notEnoughSubtitle' => 'Recharge ton solde pour continuer.',
 			_ => null,
 		};
 	}

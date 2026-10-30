@@ -235,7 +235,10 @@
     "calling": "Appel en cours",
     "accept": "Accepter",
     "decline": "Refuser",
-    "switchToVideo": "Passer en appel vidéo ?"
+    "switchToVideo": "Passer en appel vidéo ?",
+    "noMatchTitle": "Personne n'est disponible pour l'instant",
+    "noMatchBody": "Nous n'avons trouvé personne avec qui parler pour le moment. Réessaie un peu plus tard.",
+    "noMatchOk": "OK"
   },
   "vibes": {
     "search": "Rechercher",
@@ -608,7 +611,9 @@
     "socialAccount": "Ton e-mail et ton mot de passe sont gérés par ton compte Google ou Apple.",
     "alreadyInCall": "Tu es déjà en appel.",
     "roomPrivate": "Ce salon est privé. Demande à l'hôte pour le rejoindre.",
-    "roomFull": "Ce salon est complet."
+    "roomFull": "Ce salon est complet.",
+    "alreadyCheckedIn": "Tu as déjà récupéré la récompense du jour.",
+    "purchasesUnavailable": "Les achats ne sont pas disponibles pour le moment."
   },
   "faq": {
     "q1": "Comment fonctionne l'app ?",
@@ -673,5 +678,43 @@
     "underline": "Souligné",
     "cancel": "Annuler",
     "galleryError": "Impossible d'ouvrir la galerie"
+  },
+  "tokens": {
+    "boostTitle": "Boost",
+    "history": "Historique",
+    "yourBalance": "Ton solde",
+    "balanceTokens": "{count} jetons",
+    "getMore": "Obtenir plus de jetons",
+    "checkinTitle": "Check-in quotidien",
+    "checkinSubtitle": "Récupère chaque jour d'affilée et gagne jusqu'à {max} jetons par jour",
+    "day": "Jour {n}",
+    "collectDay": "Récupérer les jetons du jour {n}",
+    "collectedToday": "Reviens demain pour le jour {n}",
+    "duration30m": "30 minutes",
+    "duration1h": "1 heure",
+    "duration2h": "2 heures",
+    "visibility": "Visibilité x{n}",
+    "boostFor": "Boost pour {count} jetons",
+    "boostActive": "Boosté jusqu'à {time}",
+    "boostDone": "Ton profil est boosté !",
+    "historyEmpty": "Aucune activité de jetons",
+    "balanceLine": "Ton solde : {count} jetons",
+    "reasonPurchase": "Achat de jetons",
+    "reasonCheckin": "Check-in quotidien",
+    "reasonWelcome": "Bonus de bienvenue",
+    "reasonGenderFilter": "Appel avec filtre de genre",
+    "reasonVideoCall": "Appel vidéo",
+    "reasonRoomCreate": "Création de salon",
+    "reasonBorder": "Cadre de profil",
+    "reasonPostBoost": "Boost de publication",
+    "reasonRefund": "Remboursement",
+    "reasonAdjust": "Ajustement du solde",
+    "packsTitle": "Obtenir plus de jetons",
+    "packsSubtitle": "Choisis un pack de jetons",
+    "packTokens": "{count} jetons",
+    "buy": "Acheter",
+    "purchaseDone": "{count} jetons ajoutés à ton solde",
+    "notEnoughTitle": "Pas assez de jetons",
+    "notEnoughSubtitle": "Recharge ton solde pour continuer."
   }
 }

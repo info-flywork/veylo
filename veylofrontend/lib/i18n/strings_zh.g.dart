@@ -58,6 +58,7 @@ class TranslationsZh extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$logout$zh logout = _Translations$logout$zh._(_root);
 	@override late final _Translations$deleteAccount$zh deleteAccount = _Translations$deleteAccount$zh._(_root);
 	@override late final _Translations$storyText$zh storyText = _Translations$storyText$zh._(_root);
+	@override late final _Translations$tokens$zh tokens = _Translations$tokens$zh._(_root);
 }
 
 // Path: app
@@ -338,6 +339,9 @@ class _Translations$call$zh extends Translations$call$tr {
 	@override String get accept => '接受';
 	@override String get decline => '拒绝';
 	@override String get switchToVideo => '要切换到视频通话吗？';
+	@override String get noMatchTitle => '暂时没有可匹配的人';
+	@override String get noMatchBody => '目前没有找到可以聊天的人，请稍后再试。';
+	@override String get noMatchOk => '好的';
 }
 
 // Path: vibes
@@ -576,6 +580,8 @@ class _Translations$errors$zh extends Translations$errors$tr {
 	@override String get alreadyInCall => '你已在通话中。';
 	@override String get roomPrivate => '这是私密房间，请联系房主申请加入。';
 	@override String get roomFull => '该房间已满。';
+	@override String get alreadyCheckedIn => '你今天已经领取过奖励了。';
+	@override String get purchasesUnavailable => '暂时无法购买。';
 }
 
 // Path: faq
@@ -675,6 +681,51 @@ class _Translations$storyText$zh extends Translations$storyText$tr {
 	@override String get underline => '下划线';
 	@override String get cancel => '取消';
 	@override String get galleryError => '无法打开相册';
+}
+
+// Path: tokens
+class _Translations$tokens$zh extends Translations$tokens$tr {
+	_Translations$tokens$zh._(TranslationsZh root) : this._root = root, super.internal(root);
+
+	final TranslationsZh _root; // ignore: unused_field
+
+	// Translations
+	@override String get boostTitle => 'Boost';
+	@override String get history => '记录';
+	@override String get yourBalance => '你的余额';
+	@override String balanceTokens({required Object count}) => '${count} 代币';
+	@override String get getMore => '获取更多代币';
+	@override String get checkinTitle => '每日签到';
+	@override String checkinSubtitle({required Object max}) => '连续签到，每天最多可得 ${max} 代币';
+	@override String day({required Object n}) => '第 ${n} 天';
+	@override String collectDay({required Object n}) => '领取第 ${n} 天代币';
+	@override String collectedToday({required Object n}) => '明天再来领取第 ${n} 天';
+	@override String get duration30m => '30 分钟';
+	@override String get duration1h => '1 小时';
+	@override String get duration2h => '2 小时';
+	@override String visibility({required Object n}) => '${n} 倍曝光';
+	@override String boostFor({required Object count}) => '花 ${count} 代币 Boost';
+	@override String boostActive({required Object time}) => 'Boost 至 ${time}';
+	@override String get boostDone => '你的资料已 Boost！';
+	@override String get historyEmpty => '暂无代币记录';
+	@override String balanceLine({required Object count}) => '你的余额 ${count} 代币';
+	@override String get reasonPurchase => '购买代币';
+	@override String get reasonCheckin => '每日签到';
+	@override String get reasonWelcome => '欢迎奖励';
+	@override String get reasonGenderFilter => '性别筛选通话';
+	@override String get reasonVideoCall => '视频通话';
+	@override String get reasonRoomCreate => '创建房间';
+	@override String get reasonBorder => '资料边框';
+	@override String get reasonPostBoost => '动态 Boost';
+	@override String get reasonRefund => '退款';
+	@override String get reasonAdjust => '余额调整';
+	@override String get packsTitle => '获取更多代币';
+	@override String get packsSubtitle => '选择代币套餐';
+	@override String packTokens({required Object count}) => '${count} 代币';
+	@override String get buy => '购买';
+	@override String purchaseDone({required Object count}) => '已向你的余额添加 ${count} 代币';
+	@override String get notEnoughTitle => '代币不足';
+	@override String get notEnoughSubtitle => '充值余额以继续。';
 }
 
 // Path: discover.aiMatch
@@ -1222,6 +1273,9 @@ extension on TranslationsZh {
 			'call.accept' => '接受',
 			'call.decline' => '拒绝',
 			'call.switchToVideo' => '要切换到视频通话吗？',
+			'call.noMatchTitle' => '暂时没有可匹配的人',
+			'call.noMatchBody' => '目前没有找到可以聊天的人，请稍后再试。',
+			'call.noMatchOk' => '好的',
 			'vibes.search' => '搜索',
 			'vibes.sendMessage' => '发消息',
 			'vibes.wantsToTalk' => '现在就想聊这个',
@@ -1505,11 +1559,11 @@ extension on TranslationsZh {
 			'createProfile.interests.coding' => '编程',
 			'createProfile.interests.ai' => 'AI',
 			'createProfile.interests.podcast' => '播客',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.stepChatGoal' => '5/5 聊天目标',
 			'createProfile.chatGoalTitle' => '你今天想找什么？',
 			'createProfile.chatGoalSubtitle' => '这能帮我们根据你此刻的心情找到合适的人。',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.chatGoalQuickMatch' => '快速匹配——直接\n开聊',
 			'createProfile.chatGoalFlirtyChat' => '暧昧聊天——轻松、俏皮的\n对话',
 			'createProfile.chatGoalMoodMatch' => '心情匹配——根据你此刻的\n感受匹配',
@@ -1551,6 +1605,8 @@ extension on TranslationsZh {
 			'errors.alreadyInCall' => '你已在通话中。',
 			'errors.roomPrivate' => '这是私密房间，请联系房主申请加入。',
 			'errors.roomFull' => '该房间已满。',
+			'errors.alreadyCheckedIn' => '你今天已经领取过奖励了。',
+			'errors.purchasesUnavailable' => '暂时无法购买。',
 			'faq.q1' => '这个应用怎么用？',
 			'faq.q2' => '什么是匿名聊天？',
 			'faq.q3' => '什么是亲密度进度？',
@@ -1605,6 +1661,42 @@ extension on TranslationsZh {
 			'storyText.underline' => '下划线',
 			'storyText.cancel' => '取消',
 			'storyText.galleryError' => '无法打开相册',
+			'tokens.boostTitle' => 'Boost',
+			'tokens.history' => '记录',
+			'tokens.yourBalance' => '你的余额',
+			'tokens.balanceTokens' => ({required Object count}) => '${count} 代币',
+			'tokens.getMore' => '获取更多代币',
+			'tokens.checkinTitle' => '每日签到',
+			'tokens.checkinSubtitle' => ({required Object max}) => '连续签到，每天最多可得 ${max} 代币',
+			'tokens.day' => ({required Object n}) => '第 ${n} 天',
+			'tokens.collectDay' => ({required Object n}) => '领取第 ${n} 天代币',
+			'tokens.collectedToday' => ({required Object n}) => '明天再来领取第 ${n} 天',
+			'tokens.duration30m' => '30 分钟',
+			'tokens.duration1h' => '1 小时',
+			'tokens.duration2h' => '2 小时',
+			'tokens.visibility' => ({required Object n}) => '${n} 倍曝光',
+			'tokens.boostFor' => ({required Object count}) => '花 ${count} 代币 Boost',
+			'tokens.boostActive' => ({required Object time}) => 'Boost 至 ${time}',
+			'tokens.boostDone' => '你的资料已 Boost！',
+			'tokens.historyEmpty' => '暂无代币记录',
+			'tokens.balanceLine' => ({required Object count}) => '你的余额 ${count} 代币',
+			'tokens.reasonPurchase' => '购买代币',
+			'tokens.reasonCheckin' => '每日签到',
+			'tokens.reasonWelcome' => '欢迎奖励',
+			'tokens.reasonGenderFilter' => '性别筛选通话',
+			'tokens.reasonVideoCall' => '视频通话',
+			'tokens.reasonRoomCreate' => '创建房间',
+			'tokens.reasonBorder' => '资料边框',
+			'tokens.reasonPostBoost' => '动态 Boost',
+			'tokens.reasonRefund' => '退款',
+			'tokens.reasonAdjust' => '余额调整',
+			'tokens.packsTitle' => '获取更多代币',
+			'tokens.packsSubtitle' => '选择代币套餐',
+			'tokens.packTokens' => ({required Object count}) => '${count} 代币',
+			'tokens.buy' => '购买',
+			'tokens.purchaseDone' => ({required Object count}) => '已向你的余额添加 ${count} 代币',
+			'tokens.notEnoughTitle' => '代币不足',
+			'tokens.notEnoughSubtitle' => '充值余额以继续。',
 			_ => null,
 		};
 	}

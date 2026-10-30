@@ -235,7 +235,10 @@
     "calling": "Anruf läuft",
     "accept": "Annehmen",
     "decline": "Ablehnen",
-    "switchToVideo": "Möchtest du zu einem Videoanruf wechseln?"
+    "switchToVideo": "Möchtest du zu einem Videoanruf wechseln?",
+    "noMatchTitle": "Gerade ist niemand verfügbar",
+    "noMatchBody": "Wir konnten gerade niemanden zum Reden finden. Versuch es etwas später noch einmal.",
+    "noMatchOk": "OK"
   },
   "vibes": {
     "search": "Suchen",
@@ -608,7 +611,9 @@
     "socialAccount": "Deine E-Mail und dein Passwort werden über dein Google- oder Apple-Konto verwaltet.",
     "alreadyInCall": "Du bist bereits in einem Anruf.",
     "roomPrivate": "Dieser Raum ist privat. Frag den Host, ob du beitreten darfst.",
-    "roomFull": "Dieser Raum ist voll."
+    "roomFull": "Dieser Raum ist voll.",
+    "alreadyCheckedIn": "Du hast die heutige Belohnung schon abgeholt.",
+    "purchasesUnavailable": "Käufe sind gerade nicht verfügbar."
   },
   "faq": {
     "q1": "Wie funktioniert die App?",
@@ -673,5 +678,43 @@
     "underline": "Unterstrichen",
     "cancel": "Abbrechen",
     "galleryError": "Galerie konnte nicht geöffnet werden"
+  },
+  "tokens": {
+    "boostTitle": "Boost",
+    "history": "Verlauf",
+    "yourBalance": "Dein Guthaben",
+    "balanceTokens": "{count} Token",
+    "getMore": "Mehr Token holen",
+    "checkinTitle": "Täglicher Check-in",
+    "checkinSubtitle": "Sammle täglich in Folge und verdiene bis zu {max} Token pro Tag",
+    "day": "Tag {n}",
+    "collectDay": "Token für Tag {n} sammeln",
+    "collectedToday": "Komm morgen für Tag {n} wieder",
+    "duration30m": "30 Minuten",
+    "duration1h": "1 Stunde",
+    "duration2h": "2 Stunden",
+    "visibility": "{n}x Sichtbarkeit",
+    "boostFor": "Boost für {count} Token",
+    "boostActive": "Geboostet bis {time}",
+    "boostDone": "Dein Profil wird geboostet!",
+    "historyEmpty": "Noch keine Token-Aktivität",
+    "balanceLine": "Dein Guthaben: {count} Token",
+    "reasonPurchase": "Token-Kauf",
+    "reasonCheckin": "Täglicher Check-in",
+    "reasonWelcome": "Willkommensbonus",
+    "reasonGenderFilter": "Anruf mit Geschlechterfilter",
+    "reasonVideoCall": "Videoanruf",
+    "reasonRoomCreate": "Raum erstellen",
+    "reasonBorder": "Profilrahmen",
+    "reasonPostBoost": "Beitrags-Boost",
+    "reasonRefund": "Rückerstattung",
+    "reasonAdjust": "Guthabenkorrektur",
+    "packsTitle": "Mehr Token holen",
+    "packsSubtitle": "Wähle ein Token-Paket",
+    "packTokens": "{count} Token",
+    "buy": "Kaufen",
+    "purchaseDone": "{count} Token zu deinem Guthaben hinzugefügt",
+    "notEnoughTitle": "Nicht genug Token",
+    "notEnoughSubtitle": "Lade dein Guthaben auf, um fortzufahren."
   }
 }

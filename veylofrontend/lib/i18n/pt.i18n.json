@@ -235,7 +235,10 @@
     "calling": "Chamando",
     "accept": "Aceitar",
     "decline": "Recusar",
-    "switchToVideo": "Quer mudar para uma chamada de vídeo?"
+    "switchToVideo": "Quer mudar para uma chamada de vídeo?",
+    "noMatchTitle": "Ninguém disponível agora",
+    "noMatchBody": "Não encontramos ninguém para conversar no momento. Tente novamente daqui a pouco.",
+    "noMatchOk": "OK"
   },
   "vibes": {
     "search": "Buscar",
@@ -608,7 +611,9 @@
     "socialAccount": "Seu e-mail e senha são gerenciados pela sua conta Google ou Apple.",
     "alreadyInCall": "Você já está em uma chamada.",
     "roomPrivate": "Esta sala é privada. Peça ao anfitrião para entrar.",
-    "roomFull": "Esta sala está cheia."
+    "roomFull": "Esta sala está cheia.",
+    "alreadyCheckedIn": "Você já coletou a recompensa de hoje.",
+    "purchasesUnavailable": "Compras indisponíveis no momento."
   },
   "faq": {
     "q1": "Como o app funciona?",
@@ -673,5 +678,43 @@
     "underline": "Sublinhado",
     "cancel": "Cancelar",
     "galleryError": "Não foi possível abrir a galeria"
+  },
+  "tokens": {
+    "boostTitle": "Boost",
+    "history": "Histórico",
+    "yourBalance": "Seu saldo",
+    "balanceTokens": "{count} tokens",
+    "getMore": "Obter mais tokens",
+    "checkinTitle": "Check-in diário",
+    "checkinSubtitle": "Colete todo dia seguido e ganhe até {max} tokens por dia",
+    "day": "Dia {n}",
+    "collectDay": "Coletar tokens do dia {n}",
+    "collectedToday": "Volte amanhã para o dia {n}",
+    "duration30m": "30 minutos",
+    "duration1h": "1 hora",
+    "duration2h": "2 horas",
+    "visibility": "Visibilidade {n}x",
+    "boostFor": "Boost por {count} tokens",
+    "boostActive": "Boost ativo até {time}",
+    "boostDone": "Seu perfil está com Boost!",
+    "historyEmpty": "Nenhuma atividade de tokens ainda",
+    "balanceLine": "Seu saldo: {count} tokens",
+    "reasonPurchase": "Compra de tokens",
+    "reasonCheckin": "Check-in diário",
+    "reasonWelcome": "Bônus de boas-vindas",
+    "reasonGenderFilter": "Chamada com filtro de gênero",
+    "reasonVideoCall": "Chamada de vídeo",
+    "reasonRoomCreate": "Criar sala",
+    "reasonBorder": "Moldura de perfil",
+    "reasonPostBoost": "Boost de post",
+    "reasonRefund": "Reembolso",
+    "reasonAdjust": "Ajuste de saldo",
+    "packsTitle": "Obter mais tokens",
+    "packsSubtitle": "Escolha um pacote de tokens",
+    "packTokens": "{count} tokens",
+    "buy": "Comprar",
+    "purchaseDone": "{count} tokens adicionados ao seu saldo",
+    "notEnoughTitle": "Tokens insuficientes",
+    "notEnoughSubtitle": "Recarregue seu saldo para continuar."
   }
 }

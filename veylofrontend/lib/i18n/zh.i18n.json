@@ -235,7 +235,10 @@
     "calling": "呼叫中",
     "accept": "接受",
     "decline": "拒绝",
-    "switchToVideo": "要切换到视频通话吗？"
+    "switchToVideo": "要切换到视频通话吗？",
+    "noMatchTitle": "暂时没有可匹配的人",
+    "noMatchBody": "目前没有找到可以聊天的人，请稍后再试。",
+    "noMatchOk": "好的"
   },
   "vibes": {
     "search": "搜索",
@@ -608,7 +611,9 @@
     "socialAccount": "你的邮箱和密码由你的 Google 或 Apple 账号管理。",
     "alreadyInCall": "你已在通话中。",
     "roomPrivate": "这是私密房间，请联系房主申请加入。",
-    "roomFull": "该房间已满。"
+    "roomFull": "该房间已满。",
+    "alreadyCheckedIn": "你今天已经领取过奖励了。",
+    "purchasesUnavailable": "暂时无法购买。"
   },
   "faq": {
     "q1": "这个应用怎么用？",
@@ -673,5 +678,43 @@
     "underline": "下划线",
     "cancel": "取消",
     "galleryError": "无法打开相册"
+  },
+  "tokens": {
+    "boostTitle": "Boost",
+    "history": "记录",
+    "yourBalance": "你的余额",
+    "balanceTokens": "{count} 代币",
+    "getMore": "获取更多代币",
+    "checkinTitle": "每日签到",
+    "checkinSubtitle": "连续签到，每天最多可得 {max} 代币",
+    "day": "第 {n} 天",
+    "collectDay": "领取第 {n} 天代币",
+    "collectedToday": "明天再来领取第 {n} 天",
+    "duration30m": "30 分钟",
+    "duration1h": "1 小时",
+    "duration2h": "2 小时",
+    "visibility": "{n} 倍曝光",
+    "boostFor": "花 {count} 代币 Boost",
+    "boostActive": "Boost 至 {time}",
+    "boostDone": "你的资料已 Boost！",
+    "historyEmpty": "暂无代币记录",
+    "balanceLine": "你的余额 {count} 代币",
+    "reasonPurchase": "购买代币",
+    "reasonCheckin": "每日签到",
+    "reasonWelcome": "欢迎奖励",
+    "reasonGenderFilter": "性别筛选通话",
+    "reasonVideoCall": "视频通话",
+    "reasonRoomCreate": "创建房间",
+    "reasonBorder": "资料边框",
+    "reasonPostBoost": "动态 Boost",
+    "reasonRefund": "退款",
+    "reasonAdjust": "余额调整",
+    "packsTitle": "获取更多代币",
+    "packsSubtitle": "选择代币套餐",
+    "packTokens": "{count} 代币",
+    "buy": "购买",
+    "purchaseDone": "已向你的余额添加 {count} 代币",
+    "notEnoughTitle": "代币不足",
+    "notEnoughSubtitle": "充值余额以继续。"
   }
 }

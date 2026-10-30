@@ -235,7 +235,10 @@
     "calling": "Calling",
     "accept": "Accept",
     "decline": "Decline",
-    "switchToVideo": "Would you like to switch to a video call?"
+    "switchToVideo": "Would you like to switch to a video call?",
+    "noMatchTitle": "No one is available right now",
+    "noMatchBody": "We couldn't find anyone to talk to at the moment. Please try again a little later.",
+    "noMatchOk": "OK"
   },
   "vibes": {
     "search": "Search",
@@ -608,7 +611,9 @@
     "socialAccount": "Your email and password are managed by your Google or Apple account.",
     "alreadyInCall": "You are already in a call.",
     "roomPrivate": "This room is private. Ask the host to join.",
-    "roomFull": "This room is full."
+    "roomFull": "This room is full.",
+    "alreadyCheckedIn": "You've already collected today's reward.",
+    "purchasesUnavailable": "Purchases aren't available right now."
   },
   "faq": {
     "q1": "How does this app work?",
@@ -673,5 +678,43 @@
     "underline": "Underline",
     "cancel": "Cancel",
     "galleryError": "Could not open the gallery"
+  },
+  "tokens": {
+    "boostTitle": "Boost",
+    "history": "History",
+    "yourBalance": "Your Balance",
+    "balanceTokens": "{count} Tokens",
+    "getMore": "Get more tokens",
+    "checkinTitle": "Daily check-in",
+    "checkinSubtitle": "Consecutive collect & earn up to {max} coins daily",
+    "day": "Day {n}",
+    "collectDay": "Collect day {n} tokens",
+    "collectedToday": "Come back tomorrow for day {n}",
+    "duration30m": "30 minutes",
+    "duration1h": "1 hour",
+    "duration2h": "2 hours",
+    "visibility": "{n}x visibility",
+    "boostFor": "Boost for {count} tokens",
+    "boostActive": "Boosted until {time}",
+    "boostDone": "Your profile is boosted!",
+    "historyEmpty": "No token activity yet",
+    "balanceLine": "Your balance {count} token",
+    "reasonPurchase": "Buy Token",
+    "reasonCheckin": "Daily check-in",
+    "reasonWelcome": "Welcome bonus",
+    "reasonGenderFilter": "Gender filter call",
+    "reasonVideoCall": "Video call",
+    "reasonRoomCreate": "Create room",
+    "reasonBorder": "Profile border",
+    "reasonPostBoost": "Post boost",
+    "reasonRefund": "Refund",
+    "reasonAdjust": "Balance adjustment",
+    "packsTitle": "Get more tokens",
+    "packsSubtitle": "Choose a token pack",
+    "packTokens": "{count} tokens",
+    "buy": "Buy",
+    "purchaseDone": "{count} tokens added to your balance",
+    "notEnoughTitle": "Not enough tokens",
+    "notEnoughSubtitle": "Top up your balance to continue."
   }
 }

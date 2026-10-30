@@ -58,6 +58,7 @@ class TranslationsKo extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$logout$ko logout = _Translations$logout$ko._(_root);
 	@override late final _Translations$deleteAccount$ko deleteAccount = _Translations$deleteAccount$ko._(_root);
 	@override late final _Translations$storyText$ko storyText = _Translations$storyText$ko._(_root);
+	@override late final _Translations$tokens$ko tokens = _Translations$tokens$ko._(_root);
 }
 
 // Path: app
@@ -338,6 +339,9 @@ class _Translations$call$ko extends Translations$call$tr {
 	@override String get accept => '수락';
 	@override String get decline => '거절';
 	@override String get switchToVideo => '영상 통화로 전환할까요?';
+	@override String get noMatchTitle => '지금은 대화할 수 있는 사람이 없어요';
+	@override String get noMatchBody => '지금은 대화 상대를 찾지 못했어요. 잠시 후에 다시 시도해 주세요.';
+	@override String get noMatchOk => '확인';
 }
 
 // Path: vibes
@@ -576,6 +580,8 @@ class _Translations$errors$ko extends Translations$errors$tr {
 	@override String get alreadyInCall => '이미 통화 중이에요.';
 	@override String get roomPrivate => '비공개 룸이에요. 호스트에게 참여를 요청하세요.';
 	@override String get roomFull => '룸 인원이 가득 찼어요.';
+	@override String get alreadyCheckedIn => '오늘 보상은 이미 받았어요.';
+	@override String get purchasesUnavailable => '지금은 구매할 수 없어요.';
 }
 
 // Path: faq
@@ -675,6 +681,51 @@ class _Translations$storyText$ko extends Translations$storyText$tr {
 	@override String get underline => '밑줄';
 	@override String get cancel => '취소';
 	@override String get galleryError => '갤러리를 열 수 없어요';
+}
+
+// Path: tokens
+class _Translations$tokens$ko extends Translations$tokens$tr {
+	_Translations$tokens$ko._(TranslationsKo root) : this._root = root, super.internal(root);
+
+	final TranslationsKo _root; // ignore: unused_field
+
+	// Translations
+	@override String get boostTitle => 'Boost';
+	@override String get history => '내역';
+	@override String get yourBalance => '내 잔액';
+	@override String balanceTokens({required Object count}) => '${count} 토큰';
+	@override String get getMore => '토큰 더 받기';
+	@override String get checkinTitle => '출석 체크';
+	@override String checkinSubtitle({required Object max}) => '매일 연속으로 받고 하루 최대 ${max} 토큰을 받아요';
+	@override String day({required Object n}) => '${n}일차';
+	@override String collectDay({required Object n}) => '${n}일차 토큰 받기';
+	@override String collectedToday({required Object n}) => '내일 다시 와서 ${n}일차를 받아요';
+	@override String get duration30m => '30분';
+	@override String get duration1h => '1시간';
+	@override String get duration2h => '2시간';
+	@override String visibility({required Object n}) => '노출 ${n}배';
+	@override String boostFor({required Object count}) => '${count} 토큰으로 Boost';
+	@override String boostActive({required Object time}) => '${time}까지 Boost 중';
+	@override String get boostDone => '프로필이 Boost됐어요!';
+	@override String get historyEmpty => '아직 토큰 내역이 없어요';
+	@override String balanceLine({required Object count}) => '내 잔액 ${count} 토큰';
+	@override String get reasonPurchase => '토큰 구매';
+	@override String get reasonCheckin => '출석 체크';
+	@override String get reasonWelcome => '가입 환영 보너스';
+	@override String get reasonGenderFilter => '성별 필터 통화';
+	@override String get reasonVideoCall => '영상 통화';
+	@override String get reasonRoomCreate => '룸 만들기';
+	@override String get reasonBorder => '프로필 테두리';
+	@override String get reasonPostBoost => '게시물 Boost';
+	@override String get reasonRefund => '환불';
+	@override String get reasonAdjust => '잔액 조정';
+	@override String get packsTitle => '토큰 더 받기';
+	@override String get packsSubtitle => '토큰 패키지를 선택하세요';
+	@override String packTokens({required Object count}) => '${count} 토큰';
+	@override String get buy => '구매';
+	@override String purchaseDone({required Object count}) => '잔액에 ${count} 토큰이 추가됐어요';
+	@override String get notEnoughTitle => '토큰이 부족해요';
+	@override String get notEnoughSubtitle => '계속하려면 잔액을 충전하세요.';
 }
 
 // Path: discover.aiMatch
@@ -1222,6 +1273,9 @@ extension on TranslationsKo {
 			'call.accept' => '수락',
 			'call.decline' => '거절',
 			'call.switchToVideo' => '영상 통화로 전환할까요?',
+			'call.noMatchTitle' => '지금은 대화할 수 있는 사람이 없어요',
+			'call.noMatchBody' => '지금은 대화 상대를 찾지 못했어요. 잠시 후에 다시 시도해 주세요.',
+			'call.noMatchOk' => '확인',
 			'vibes.search' => '검색',
 			'vibes.sendMessage' => '메시지 보내기',
 			'vibes.wantsToTalk' => '지금 바로 이 얘기를 하고 싶어해요',
@@ -1505,11 +1559,11 @@ extension on TranslationsKo {
 			'createProfile.interests.coding' => '코딩',
 			'createProfile.interests.ai' => 'AI',
 			'createProfile.interests.podcast' => '팟캐스트',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.stepChatGoal' => '5/5 대화 목적',
 			'createProfile.chatGoalTitle' => '오늘은 무엇을 찾고 있나요?',
 			'createProfile.chatGoalSubtitle' => '지금 기분에 딱 맞는 상대를 찾는 데 도움이 돼요.',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.chatGoalQuickMatch' => '빠른 매칭 — 바로 대화에\n뛰어들기',
 			'createProfile.chatGoalFlirtyChat' => '설레는 대화 — 가볍고 장난스러운\n대화',
 			'createProfile.chatGoalMoodMatch' => '기분 매칭 — 지금 기분에 맞는\n상대와 매칭',
@@ -1551,6 +1605,8 @@ extension on TranslationsKo {
 			'errors.alreadyInCall' => '이미 통화 중이에요.',
 			'errors.roomPrivate' => '비공개 룸이에요. 호스트에게 참여를 요청하세요.',
 			'errors.roomFull' => '룸 인원이 가득 찼어요.',
+			'errors.alreadyCheckedIn' => '오늘 보상은 이미 받았어요.',
+			'errors.purchasesUnavailable' => '지금은 구매할 수 없어요.',
 			'faq.q1' => '이 앱은 어떻게 작동하나요?',
 			'faq.q2' => '익명 채팅이란 무엇인가요?',
 			'faq.q3' => '연결 진행도란 무엇인가요?',
@@ -1605,6 +1661,42 @@ extension on TranslationsKo {
 			'storyText.underline' => '밑줄',
 			'storyText.cancel' => '취소',
 			'storyText.galleryError' => '갤러리를 열 수 없어요',
+			'tokens.boostTitle' => 'Boost',
+			'tokens.history' => '내역',
+			'tokens.yourBalance' => '내 잔액',
+			'tokens.balanceTokens' => ({required Object count}) => '${count} 토큰',
+			'tokens.getMore' => '토큰 더 받기',
+			'tokens.checkinTitle' => '출석 체크',
+			'tokens.checkinSubtitle' => ({required Object max}) => '매일 연속으로 받고 하루 최대 ${max} 토큰을 받아요',
+			'tokens.day' => ({required Object n}) => '${n}일차',
+			'tokens.collectDay' => ({required Object n}) => '${n}일차 토큰 받기',
+			'tokens.collectedToday' => ({required Object n}) => '내일 다시 와서 ${n}일차를 받아요',
+			'tokens.duration30m' => '30분',
+			'tokens.duration1h' => '1시간',
+			'tokens.duration2h' => '2시간',
+			'tokens.visibility' => ({required Object n}) => '노출 ${n}배',
+			'tokens.boostFor' => ({required Object count}) => '${count} 토큰으로 Boost',
+			'tokens.boostActive' => ({required Object time}) => '${time}까지 Boost 중',
+			'tokens.boostDone' => '프로필이 Boost됐어요!',
+			'tokens.historyEmpty' => '아직 토큰 내역이 없어요',
+			'tokens.balanceLine' => ({required Object count}) => '내 잔액 ${count} 토큰',
+			'tokens.reasonPurchase' => '토큰 구매',
+			'tokens.reasonCheckin' => '출석 체크',
+			'tokens.reasonWelcome' => '가입 환영 보너스',
+			'tokens.reasonGenderFilter' => '성별 필터 통화',
+			'tokens.reasonVideoCall' => '영상 통화',
+			'tokens.reasonRoomCreate' => '룸 만들기',
+			'tokens.reasonBorder' => '프로필 테두리',
+			'tokens.reasonPostBoost' => '게시물 Boost',
+			'tokens.reasonRefund' => '환불',
+			'tokens.reasonAdjust' => '잔액 조정',
+			'tokens.packsTitle' => '토큰 더 받기',
+			'tokens.packsSubtitle' => '토큰 패키지를 선택하세요',
+			'tokens.packTokens' => ({required Object count}) => '${count} 토큰',
+			'tokens.buy' => '구매',
+			'tokens.purchaseDone' => ({required Object count}) => '잔액에 ${count} 토큰이 추가됐어요',
+			'tokens.notEnoughTitle' => '토큰이 부족해요',
+			'tokens.notEnoughSubtitle' => '계속하려면 잔액을 충전하세요.',
 			_ => null,
 		};
 	}

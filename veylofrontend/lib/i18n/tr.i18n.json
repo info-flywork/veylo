@@ -235,7 +235,10 @@
     "calling": "Aranıyor",
     "accept": "Kabul et",
     "decline": "Reddet",
-    "switchToVideo": "Görüntülü aramaya geçmek ister misin?"
+    "switchToVideo": "Görüntülü aramaya geçmek ister misin?",
+    "noMatchTitle": "Şu an uygun kimse yok",
+    "noMatchBody": "Şu anda konuşmaya müsait bir anonim kullanıcı bulamadık. Biraz sonra tekrar dene.",
+    "noMatchOk": "Tamam"
   },
   "vibes": {
     "search": "Ara",
@@ -608,7 +611,9 @@
     "socialAccount": "E-posta ve şifren Google ya da Apple hesabın tarafından yönetiliyor.",
     "alreadyInCall": "Zaten bir aramadasın.",
     "roomPrivate": "Bu oda gizli. Katılmak için istek gönder.",
-    "roomFull": "Oda dolu."
+    "roomFull": "Oda dolu.",
+    "alreadyCheckedIn": "Bugünün ödülünü zaten topladın.",
+    "purchasesUnavailable": "Satın alma şu an kullanılamıyor."
   },
   "faq": {
     "q1": "Bu uygulama nasıl çalışır?",
@@ -673,5 +678,43 @@
     "underline": "Altı çizili",
     "cancel": "İptal",
     "galleryError": "Galeri açılamadı"
+  },
+  "tokens": {
+    "boostTitle": "Boost",
+    "history": "Geçmiş",
+    "yourBalance": "Bakiyen",
+    "balanceTokens": "{count} Token",
+    "getMore": "Daha fazla token al",
+    "checkinTitle": "Günlük giriş",
+    "checkinSubtitle": "Her gün üst üste topla, günde {max} tokene kadar kazan",
+    "day": "{n}. Gün",
+    "collectDay": "{n}. gün tokenlerini topla",
+    "collectedToday": "{n}. gün için yarın tekrar gel",
+    "duration30m": "30 dakika",
+    "duration1h": "1 saat",
+    "duration2h": "2 saat",
+    "visibility": "{n} kat görünürlük",
+    "boostFor": "{count} token ile Boost",
+    "boostActive": "{time} saatine kadar öne çıkarıldı",
+    "boostDone": "Profilin öne çıkarıldı!",
+    "historyEmpty": "Henüz token hareketi yok",
+    "balanceLine": "Bakiyen {count} token",
+    "reasonPurchase": "Token Satın Alma",
+    "reasonCheckin": "Günlük giriş",
+    "reasonWelcome": "Hoş geldin hediyesi",
+    "reasonGenderFilter": "Cinsiyet filtreli arama",
+    "reasonVideoCall": "Görüntülü arama",
+    "reasonRoomCreate": "Oda oluşturma",
+    "reasonBorder": "Profil çerçevesi",
+    "reasonPostBoost": "Gönderi öne çıkarma",
+    "reasonRefund": "İade",
+    "reasonAdjust": "Bakiye düzeltme",
+    "packsTitle": "Daha fazla token al",
+    "packsSubtitle": "Bir token paketi seç",
+    "packTokens": "{count} token",
+    "buy": "Satın al",
+    "purchaseDone": "Bakiyene {count} token eklendi",
+    "notEnoughTitle": "Yeterli token yok",
+    "notEnoughSubtitle": "Devam etmek için bakiyeni yükle."
   }
 }

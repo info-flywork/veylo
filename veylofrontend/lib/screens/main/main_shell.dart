@@ -21,6 +21,7 @@ import 'package:veylo/screens/discover/discover_page.dart';
 import 'package:veylo/screens/profile/account_management_page.dart';
 import 'package:veylo/screens/profile/edit_profile_page.dart';
 import 'package:veylo/screens/profile/profile_page.dart';
+import 'package:veylo/screens/tokens/boost_page.dart';
 import 'package:veylo/screens/vibes/vibes_page.dart';
 
 /// Ana shell: Discover + bottom nav.
@@ -165,6 +166,8 @@ class _MainShellState extends State<MainShell> {
           ProfilePage(
             onEditProfileTap: () => EditProfilePage.open(context),
             onSettingsTap: () => AccountManagementPage.open(context),
+            onTokensTap: () => BoostPage.open(context),
+            onStandOutTap: () => BoostPage.open(context),
           ),
         ],
       ),
