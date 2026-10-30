@@ -101,6 +101,16 @@ class RoomRepository {
   Future<void> kick(String roomId, int uid) =>
       _socket.request('room:kick', {'roomId': roomId, 'uid': uid});
 
+  Future<void> requestProfile(String roomId, int uid) =>
+      _socket.request('room:profile', {'roomId': roomId, 'uid': uid});
+
+  Future<void> setMicLock(String roomId, int uid, {required bool locked}) =>
+      _socket.request('room:mic_lock', {
+        'roomId': roomId,
+        'uid': uid,
+        'locked': locked,
+      });
+
   Future<void> setMic(String roomId, bool on) =>
       _socket.request('room:mic', {'roomId': roomId, 'on': on});
 

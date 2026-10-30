@@ -8,6 +8,7 @@ class RoomParticipant {
     required this.blurred,
     required this.isAi,
     required this.micOn,
+    this.micLocked = false,
     required this.isHost,
   });
 
@@ -19,6 +20,7 @@ class RoomParticipant {
     blurred: j['blurred'] == true,
     isAi: j['isAi'] == true,
     micOn: j['micOn'] == true,
+    micLocked: j['micLocked'] == true,
     isHost: j['isHost'] == true,
   );
 
@@ -30,6 +32,7 @@ class RoomParticipant {
   final bool blurred;
   final bool isAi;
   final bool micOn;
+  final bool micLocked;
   final bool isHost;
 }
 
@@ -38,6 +41,8 @@ class RoomChatLine {
     required this.id,
     required this.sender,
     required this.body,
+    this.kind,
+    this.toUid,
   });
 
   factory RoomChatLine.fromJson(Map<String, dynamic> j) => RoomChatLine(
@@ -46,11 +51,15 @@ class RoomChatLine {
       Map<String, dynamic>.from(j['sender'] as Map),
     ),
     body: j['body'] as String? ?? '',
+    kind: j['kind'] as String?,
+    toUid: (j['toUid'] as num?)?.toInt(),
   );
 
   final String id;
   final RoomParticipant sender;
   final String body;
+  final String? kind;
+  final int? toUid;
 }
 
 /// `GET /rooms` satırı.

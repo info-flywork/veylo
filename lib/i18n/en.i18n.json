@@ -364,7 +364,12 @@
       "wantsToJoin": "{name} wants to join",
       "approve": "Approve",
       "remove": "Remove from room",
-      "removed": "You were removed from the room."
+      "removed": "You were removed from the room.",
+      "seeProfile": "Request to see profile",
+      "muteMic": "Turn off microphone",
+      "unmuteMic": "Turn microphone on",
+      "wantsToSeeYou": "{name} in {room} wants to see you.",
+      "wantsMic": "{name} wants you to turn their microphone on."
     },
     "groupChat": {
       "usersCount": "{count} Users",
