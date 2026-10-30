@@ -869,6 +869,8 @@ class _Translations$discover$liveRoom$en extends Translations$discover$liveRoom$
 	@override String get roomEnded => 'The room has ended.';
 	@override String wantsToJoin({required Object name}) => '${name} wants to join';
 	@override String get approve => 'Approve';
+	@override String get remove => 'Remove from room';
+	@override String get removed => 'You were removed from the room.';
 }
 
 // Path: discover.groupChat
@@ -1383,6 +1385,8 @@ extension on TranslationsEn {
 			'discover.liveRoom.roomEnded' => 'The room has ended.',
 			'discover.liveRoom.wantsToJoin' => ({required Object name}) => '${name} wants to join',
 			'discover.liveRoom.approve' => 'Approve',
+			'discover.liveRoom.remove' => 'Remove from room',
+			'discover.liveRoom.removed' => 'You were removed from the room.',
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} Users',
 			'discover.groupChat.sampleVictoria' => 'I\'m really bored. Should we do something, guys?',
 			'discover.groupChat.sampleSona' => 'What can we do? What do you have in mind?',
@@ -1557,10 +1561,10 @@ extension on TranslationsEn {
 			'createProfile.interests.standUp' => 'Stand-up comedy',
 			'createProfile.interests.tech' => 'Tech',
 			'createProfile.interests.coding' => 'Coding',
-			'createProfile.interests.ai' => 'AI',
-			'createProfile.interests.podcast' => 'Podcasts',
 			_ => null,
 		} ?? switch (path) {
+			'createProfile.interests.ai' => 'AI',
+			'createProfile.interests.podcast' => 'Podcasts',
 			'createProfile.stepChatGoal' => '5/5 Chat goal',
 			'createProfile.chatGoalTitle' => 'What are you looking for today?',
 			'createProfile.chatGoalSubtitle' => 'This helps us find the right match for your mood right now.',

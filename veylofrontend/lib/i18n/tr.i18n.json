@@ -362,7 +362,9 @@
       "sampleChatBody": "Ne yapabiliriz? Aklında ne var?",
       "roomEnded": "Oda kapandı.",
       "wantsToJoin": "{name} katılmak istiyor",
-      "approve": "Onayla"
+      "approve": "Onayla",
+      "remove": "Odadan çıkar",
+      "removed": "Odadan çıkarıldın."
     },
     "groupChat": {
       "usersCount": "{count} Kullanıcı",

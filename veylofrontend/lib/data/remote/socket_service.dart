@@ -45,6 +45,7 @@ class SocketService {
     'call:error',
     'room:participant_joined',
     'room:participant_left',
+    'room:kicked',
     'room:participant_updated',
     'room:message',
     'room:ended',
