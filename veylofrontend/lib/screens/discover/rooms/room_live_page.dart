@@ -128,7 +128,10 @@ class _RoomLivePageState extends State<RoomLivePage> {
         _isHost = s.isHost;
         _me = s.me;
         _people = s.participants;
-        _messages = s.messages;
+        _messages = [
+          for (final m in s.messages)
+            if (m.toUid == null || m.toUid == s.me.uid) m,
+        ];
         _joined = true;
       });
       _scrollToEnd();
@@ -151,11 +154,17 @@ class _RoomLivePageState extends State<RoomLivePage> {
       _people = i == -1
           ? [..._people, p]
           : [for (final x in _people) x.uid == p.uid ? p : x];
-      if (p.uid == _me?.uid) _me = p;
+      if (p.uid == _me?.uid) {
+        final wasOn = _me?.micOn ?? false;
+        _me = p;
+        if (wasOn && !p.micOn) _agora.setMic(false);
+      }
     });
   }
 
   void _addMessage(RoomChatLine m) {
+    final mine = _me?.uid;
+    if (m.toUid != null && m.toUid != mine) return;
     if (!mounted || _messages.any((x) => x.id == m.id)) return;
     setState(() => _messages = [..._messages, m]);
     _scrollToEnd();
@@ -188,6 +197,14 @@ class _RoomLivePageState extends State<RoomLivePage> {
     final me = _me;
     if (me == null) return;
     final on = !me.micOn;
+    if (on && me.micLocked) {
+      try {
+        await _repo.setMic(widget.roomId, true);
+      } catch (e) {
+        if (mounted) showErrorSnackBar(context, e);
+      }
+      return;
+    }
     if (on && !await _agora.requestMic()) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -227,30 +244,68 @@ class _RoomLivePageState extends State<RoomLivePage> {
     _leave();
   }
 
-  /// Sahip, odadaki birine basınca onu çıkarır.
-  Future<void> _confirmKick(RoomParticipant member) async {
-    final remove = await showModalBottomSheet<bool>(
+  /// Üç nokta: profil isteği. Adminse yanında çıkarma ve mikrofon kilidi.
+  Future<void> _memberMenu(RoomParticipant member) async {
+    final t = Translations.of(context).discover.liveRoom;
+    final admin = _isHost && !member.isHost;
+    final action = await showModalBottomSheet<String>(
       context: context,
       backgroundColor: AppColors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) => SafeArea(
-        child: ListTile(
-          title: AppText(
-            Translations.of(context).discover.liveRoom.remove,
-            style: AppTextStyles.groupInfoLeave,
-          ),
-          onTap: () => Navigator.of(context).pop(true),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: AppText(t.seeProfile, style: AppTextStyles.groupInfoRow),
+              onTap: () => Navigator.of(context).pop('profile'),
+            ),
+            if (admin) ...[
+              ListTile(
+                title: AppText(
+                  member.micLocked ? t.unmuteMic : t.muteMic,
+                  style: AppTextStyles.groupInfoRow,
+                ),
+                onTap: () => Navigator.of(context).pop('mic'),
+              ),
+              ListTile(
+                title: AppText(t.remove, style: AppTextStyles.groupInfoLeave),
+                onTap: () => Navigator.of(context).pop('kick'),
+              ),
+            ],
+          ],
         ),
       ),
     );
-    if (remove != true || !mounted) return;
+    if (action == null || !mounted) return;
     try {
-      await _repo.kick(widget.roomId, member.uid);
+      switch (action) {
+        case 'profile':
+          await _repo.requestProfile(widget.roomId, member.uid);
+        case 'mic':
+          await _repo.setMicLock(
+            widget.roomId,
+            member.uid,
+            locked: !member.micLocked,
+          );
+        case 'kick':
+          await _repo.kick(widget.roomId, member.uid);
+      }
     } catch (e) {
       if (mounted) showErrorSnackBar(context, e);
     }
+  }
+
+  String? _notice(RoomChatLine message) {
+    final t = Translations.of(context).discover.liveRoom;
+    final name = message.sender.displayName;
+    return switch (message.kind) {
+      'profile_request' => t.wantsToSeeYou(name: name, room: _title),
+      'mic_request' => t.wantsMic(name: name),
+      _ => null,
+    };
   }
 
   void _onEnded() {
@@ -367,6 +422,8 @@ class _RoomLivePageState extends State<RoomLivePage> {
                           ),
                         ),
                         if (host?.isAi ?? false) const AiBadge(compact: true),
+                        if (host != null && host.uid != _me?.uid)
+                          _MoreDots(onTap: () => _memberMenu(host)),
                       ],
                     ),
                   ],
@@ -425,10 +482,9 @@ class _RoomLivePageState extends State<RoomLivePage> {
                                           onMic: member.uid == _me?.uid
                                               ? _toggleMic
                                               : null,
-                                          onTap:
-                                              _isHost && member.uid != _me?.uid
-                                              ? () => _confirmKick(member)
-                                              : null,
+                                          onMenu: member.uid == _me?.uid
+                                              ? null
+                                              : () => _memberMenu(member),
                                         ),
                                       ),
                                   ],
@@ -445,7 +501,10 @@ class _RoomLivePageState extends State<RoomLivePage> {
                             separatorBuilder: (_, _) =>
                                 const SizedBox(height: 10),
                             itemBuilder: (context, index) {
-                              return _ChatBubble(message: _messages[index]);
+                              return _ChatBubble(
+                                message: _messages[index],
+                                notice: _notice(_messages[index]),
+                              );
                             },
                           ),
                         ),
@@ -583,97 +642,94 @@ class _MemberTile extends StatelessWidget {
     required this.member,
     this.speaking = false,
     this.onMic,
-    this.onTap,
+    this.onMenu,
   });
 
   final RoomParticipant member;
   final bool speaking;
   final VoidCallback? onMic;
-  final VoidCallback? onTap;
+  final VoidCallback? onMenu;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: 68,
-            height: 68,
-            child: Stack(
-              clipBehavior: Clip.none,
-              alignment: Alignment.center,
-              children: [
-                if (speaking)
-                  Container(
-                    width: 68,
-                    height: 68,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: AppColors.selectionBorder,
-                        width: 2,
-                      ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        SizedBox(
+          width: 68,
+          height: 68,
+          child: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              if (speaking)
+                Container(
+                  width: 68,
+                  height: 68,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: AppColors.selectionBorder,
+                      width: 2,
                     ),
-                  ),
-                ClipOval(
-                  child: SizedBox(
-                    width: 68,
-                    height: 68,
-                    child: member.blurred
-                        ? ImageFiltered(
-                            imageFilter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                            child: ChatAvatarImage(
-                              url: member.avatarUrl,
-                              size: 68,
-                            ),
-                          )
-                        : ChatAvatarImage(url: member.avatarUrl, size: 68),
                   ),
                 ),
-                if (!member.micOn && onMic == null) ...[
-                  Container(
-                    width: 68,
-                    height: 68,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.white.withValues(alpha: 0.28),
-                    ),
-                  ),
-                  SvgPicture.asset(
-                    AppAssets.iconMicrophoneOff,
-                    width: 24,
-                    height: 24,
-                  ),
-                ],
-                if (onMic != null)
-                  Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: _ProfileMicButton(on: member.micOn, onTap: onMic!),
-                  ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 6),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Flexible(
-                child: AppText(
-                  member.displayName,
-                  style: AppTextStyles.liveRoomMemberName,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
+              ClipOval(
+                child: SizedBox(
+                  width: 68,
+                  height: 68,
+                  child: member.blurred
+                      ? ImageFiltered(
+                          imageFilter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                          child: ChatAvatarImage(
+                            url: member.avatarUrl,
+                            size: 68,
+                          ),
+                        )
+                      : ChatAvatarImage(url: member.avatarUrl, size: 68),
                 ),
               ),
-              if (member.isAi) const AiBadge(compact: true),
+              if (!member.micOn && onMic == null) ...[
+                Container(
+                  width: 68,
+                  height: 68,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.white.withValues(alpha: 0.28),
+                  ),
+                ),
+                SvgPicture.asset(
+                  AppAssets.iconMicrophoneOff,
+                  width: 24,
+                  height: 24,
+                ),
+              ],
+              if (onMic != null)
+                Positioned(
+                  right: 0,
+                  bottom: 0,
+                  child: _ProfileMicButton(on: member.micOn, onTap: onMic!),
+                ),
             ],
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 6),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Flexible(
+              child: AppText(
+                member.displayName,
+                style: AppTextStyles.liveRoomMemberName,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+              ),
+            ),
+            if (member.isAi) const AiBadge(compact: true),
+          ],
+        ),
+        if (onMenu != null) _MoreDots(onTap: onMenu!),
+      ],
     );
   }
 }
@@ -712,10 +768,29 @@ class _ProfileMicButton extends StatelessWidget {
   }
 }
 
+class _MoreDots extends StatelessWidget {
+  const _MoreDots({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: const Padding(
+        padding: EdgeInsets.only(left: 2, top: 2),
+        child: Icon(Icons.more_horiz, size: 18, color: Color(0x73000000)),
+      ),
+    );
+  }
+}
+
 class _ChatBubble extends StatelessWidget {
-  const _ChatBubble({required this.message});
+  const _ChatBubble({required this.message, this.notice});
 
   final RoomChatLine message;
+  final String? notice;
 
   @override
   Widget build(BuildContext context) {
@@ -744,12 +819,13 @@ class _ChatBubble extends StatelessWidget {
             child: Text.rich(
               TextSpan(
                 children: [
+                  if (notice == null)
+                    TextSpan(
+                      text: '${message.sender.displayName}: ',
+                      style: AppTextStyles.liveRoomChatName,
+                    ),
                   TextSpan(
-                    text: '${message.sender.displayName}: ',
-                    style: AppTextStyles.liveRoomChatName,
-                  ),
-                  TextSpan(
-                    text: message.body,
+                    text: notice ?? message.body,
                     style: AppTextStyles.liveRoomChatBody,
                   ),
                 ],

@@ -364,7 +364,12 @@
       "wantsToJoin": "{name} katılmak istiyor",
       "approve": "Onayla",
       "remove": "Odadan çıkar",
-      "removed": "Odadan çıkarıldın."
+      "removed": "Odadan çıkarıldın.",
+      "seeProfile": "Profilini görmek istiyorum",
+      "muteMic": "Mikrofonunu kapat",
+      "unmuteMic": "Mikrofonunu aç",
+      "wantsToSeeYou": "{room} odasındaki {name} seni görmek istedi.",
+      "wantsMic": "{name} mikrofonunu açmanı istiyor."
     },
     "groupChat": {
       "usersCount": "{count} Kullanıcı",

@@ -1984,6 +1984,21 @@ class Translations$discover$liveRoom$tr {
 
 	/// tr: 'Odadan çıkarıldın.'
 	String get removed => 'Odadan çıkarıldın.';
+
+	/// tr: 'Profilini görmek istiyorum'
+	String get seeProfile => 'Profilini görmek istiyorum';
+
+	/// tr: 'Mikrofonunu kapat'
+	String get muteMic => 'Mikrofonunu kapat';
+
+	/// tr: 'Mikrofonunu aç'
+	String get unmuteMic => 'Mikrofonunu aç';
+
+	/// tr: '{room} odasındaki {name} seni görmek istedi.'
+	String wantsToSeeYou({required Object room, required Object name}) => '${room} odasındaki ${name} seni görmek istedi.';
+
+	/// tr: '{name} mikrofonunu açmanı istiyor.'
+	String wantsMic({required Object name}) => '${name} mikrofonunu açmanı istiyor.';
 }
 
 // Path: discover.groupChat
@@ -2692,6 +2707,11 @@ extension on Translations {
 			'discover.liveRoom.approve' => 'Onayla',
 			'discover.liveRoom.remove' => 'Odadan çıkar',
 			'discover.liveRoom.removed' => 'Odadan çıkarıldın.',
+			'discover.liveRoom.seeProfile' => 'Profilini görmek istiyorum',
+			'discover.liveRoom.muteMic' => 'Mikrofonunu kapat',
+			'discover.liveRoom.unmuteMic' => 'Mikrofonunu aç',
+			'discover.liveRoom.wantsToSeeYou' => ({required Object room, required Object name}) => '${room} odasındaki ${name} seni görmek istedi.',
+			'discover.liveRoom.wantsMic' => ({required Object name}) => '${name} mikrofonunu açmanı istiyor.',
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} Kullanıcı',
 			'discover.groupChat.sampleVictoria' => 'Çok sıkıldım. Bir şeyler yapalım mı?',
 			'discover.groupChat.sampleSona' => 'Ne yapabiliriz? Aklında ne var?',
@@ -2861,13 +2881,13 @@ extension on Translations {
 			'createProfile.interests.travel' => 'Seyahat',
 			'createProfile.interests.camping' => 'Kamp',
 			'createProfile.interests.meditation' => 'Meditasyon',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.interests.videoGames' => 'Video oyunları',
 			'createProfile.interests.boardGames' => 'Kutu oyunları',
 			'createProfile.interests.standUp' => 'Stand-up',
 			'createProfile.interests.tech' => 'Teknoloji',
 			'createProfile.interests.coding' => 'Kodlama',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.interests.ai' => 'YZ',
 			'createProfile.interests.podcast' => 'Podcast',
 			'createProfile.stepChatGoal' => '5/5 Sohbet hedefi',

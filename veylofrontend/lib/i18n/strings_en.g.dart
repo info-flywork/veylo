@@ -871,6 +871,11 @@ class _Translations$discover$liveRoom$en extends Translations$discover$liveRoom$
 	@override String get approve => 'Approve';
 	@override String get remove => 'Remove from room';
 	@override String get removed => 'You were removed from the room.';
+	@override String get seeProfile => 'Request to see profile';
+	@override String get muteMic => 'Turn off microphone';
+	@override String get unmuteMic => 'Turn microphone on';
+	@override String wantsToSeeYou({required Object name, required Object room}) => '${name} in ${room} wants to see you.';
+	@override String wantsMic({required Object name}) => '${name} wants you to turn their microphone on.';
 }
 
 // Path: discover.groupChat
@@ -1387,6 +1392,11 @@ extension on TranslationsEn {
 			'discover.liveRoom.approve' => 'Approve',
 			'discover.liveRoom.remove' => 'Remove from room',
 			'discover.liveRoom.removed' => 'You were removed from the room.',
+			'discover.liveRoom.seeProfile' => 'Request to see profile',
+			'discover.liveRoom.muteMic' => 'Turn off microphone',
+			'discover.liveRoom.unmuteMic' => 'Turn microphone on',
+			'discover.liveRoom.wantsToSeeYou' => ({required Object name, required Object room}) => '${name} in ${room} wants to see you.',
+			'discover.liveRoom.wantsMic' => ({required Object name}) => '${name} wants you to turn their microphone on.',
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} Users',
 			'discover.groupChat.sampleVictoria' => 'I\'m really bored. Should we do something, guys?',
 			'discover.groupChat.sampleSona' => 'What can we do? What do you have in mind?',
@@ -1556,13 +1566,13 @@ extension on TranslationsEn {
 			'createProfile.interests.travel' => 'Travel',
 			'createProfile.interests.camping' => 'Camping',
 			'createProfile.interests.meditation' => 'Meditation',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.interests.videoGames' => 'Video games',
 			'createProfile.interests.boardGames' => 'Board games',
 			'createProfile.interests.standUp' => 'Stand-up comedy',
 			'createProfile.interests.tech' => 'Tech',
 			'createProfile.interests.coding' => 'Coding',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.interests.ai' => 'AI',
 			'createProfile.interests.podcast' => 'Podcasts',
 			'createProfile.stepChatGoal' => '5/5 Chat goal',
