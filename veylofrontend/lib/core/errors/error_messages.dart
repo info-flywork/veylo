@@ -13,7 +13,8 @@ String errorMessage(BuildContext context, Object error) {
       'ACCOUNT_SUSPENDED' => e.accountSuspended,
       'USER_NOT_REGISTERED' ||
       'INVALID_TOKEN' ||
-      'MISSING_TOKEN' => e.sessionExpired,
+      'MISSING_TOKEN' =>
+        FirebaseAuth.instance.currentUser == null ? e.sessionExpired : e.generic,
       'INSUFFICIENT_TOKENS' => e.insufficientTokens,
       'REQUEST_NOT_ACCEPTED' => e.requestNotAccepted,
       'REQUEST_PENDING_LIMIT' => e.requestPendingLimit,

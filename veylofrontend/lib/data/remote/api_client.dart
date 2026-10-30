@@ -37,9 +37,11 @@ class ApiClient {
             return handler.next(options);
           }
           final forceRefresh = options.extra['forceRefresh'] == true;
-          final token = await FirebaseAuth.instance.currentUser?.getIdToken(
-            forceRefresh,
-          );
+          final user = FirebaseAuth.instance.currentUser;
+          var token = await user?.getIdToken(forceRefresh);
+          if (token == null && user != null) {
+            token = await user.getIdToken(true);
+          }
           if (token != null) options.headers['Authorization'] = 'Bearer $token';
           handler.next(options);
         },
@@ -123,7 +125,8 @@ class ApiClient {
       return (await call(const {})).data;
     } on DioException catch (e) {
       final err = _map(e);
-      if (err.status == 401 && err.code == 'INVALID_TOKEN') {
+      if (err.status == 401 &&
+          (err.code == 'INVALID_TOKEN' || err.code == 'MISSING_TOKEN')) {
         try {
           return (await call(const {'forceRefresh': true})).data;
         } on DioException catch (e2) {
