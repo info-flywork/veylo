@@ -20,7 +20,7 @@ function serializeVibe(v: Vibe & { author: User }, viewerId: string, likedByMe: 
           displayName: maskName(name),
           avatarUrl: v.author.avatarBlurUrl,
           avatarBlurred: true,
-          isAi: v.author.isPersona,
+          isAi: false,
         }
       : {
           id: v.author.id,
@@ -28,7 +28,7 @@ function serializeVibe(v: Vibe & { author: User }, viewerId: string, likedByMe: 
           displayName: name,
           avatarUrl: v.author.avatarUrl,
           avatarBlurred: false,
-          isAi: v.author.isPersona,
+          isAi: false,
         },
     likeCount: v.likeCount,
     likedByMe,
@@ -52,7 +52,7 @@ async function feed(viewerId: string, q: { cursor?: string; search?: string; lim
   const where: Prisma.VibeWhereInput = {
     deletedAt: null,
     expiresAt: { gt: new Date() },
-    author: { status: 'ACTIVE', isPersona: false },
+    author: { status: 'ACTIVE' },
     ...(blocked.size ? { authorId: { notIn: [...blocked] } } : {}),
     ...(q.search ? { body: { contains: q.search } } : {}),
   };
