@@ -25,6 +25,8 @@ interface Participant {
   userId: string;
   anonymous: boolean;
   micOn: boolean;
+  /** Admin kapattıysa kullanıcı kendi başına açamaz, istek gönderir. */
+  micLocked: boolean;
   joinedAt: number;
   user: User;
 }
@@ -34,6 +36,10 @@ interface ChatLine {
   sender: ReturnType<typeof publicParticipant>;
   body: string;
   at: Date;
+  /** profile_request | mic_request. Boşsa normal sohbet. */
+  kind?: 'profile_request' | 'mic_request';
+  /** Doluysa satır yalnız bu uid'ye görünür. */
+  toUid?: number;
 }
 
 interface LiveRoom {
@@ -47,7 +53,7 @@ const live = new Map<string, LiveRoom>();
 const channelOf = (roomId: string) => `live:${roomId}`;
 
 /** Katılımcının herkese görünen hali. Anonimde id yok, ad maskeli, foto bulanık. */
-function publicParticipant(p: Pick<Participant, 'anonymous' | 'micOn' | 'user'>, hostId: string) {
+function publicParticipant(p: Pick<Participant, 'anonymous' | 'micOn' | 'micLocked' | 'user'>, hostId: string) {
   const name = p.user.displayName ?? p.user.username;
   return {
     /** Agora kanalındaki uid: konuşan göstergesi bununla eşleşir. */
@@ -59,6 +65,7 @@ function publicParticipant(p: Pick<Participant, 'anonymous' | 'micOn' | 'user'>,
     blurred: p.anonymous,
     isAi: p.user.isPersona,
     micOn: p.micOn,
+    micLocked: p.micLocked,
     isHost: p.user.id === hostId,
   };
 }
@@ -98,7 +105,10 @@ async function list(viewerId: string) {
   const items = rooms.map((room) => {
     const lr = live.get(room.id);
     const people = lr ? [...lr.participants.values()] : [];
-    const host = publicParticipant({ anonymous: room.hostAnonymous, micOn: true, user: room.host }, room.hostId);
+    const host = publicParticipant(
+      { anonymous: room.hostAnonymous, micOn: true, micLocked: false, user: room.host },
+      room.hostId,
+    );
     return {
       id: room.id,
       title: room.title,
@@ -160,7 +170,8 @@ async function join(viewerId: string, roomId: string, anonymous: boolean) {
     userId: viewerId,
     anonymous: isHost ? room.hostAnonymous : (prev?.anonymous ?? anonymous),
     // Sahip mikrofonu açık girer, diğerleri kapalı.
-    micOn: prev?.micOn ?? isHost,
+    micOn: prev?.micLocked ? false : (prev?.micOn ?? isHost),
+    micLocked: prev?.micLocked ?? false,
     joinedAt: prev?.joinedAt ?? Date.now(),
     user,
   };
@@ -183,7 +194,7 @@ async function join(viewerId: string, roomId: string, anonymous: boolean) {
 async function kick(viewerId: string, roomId: string, uid: number) {
   const r = live.get(roomId);
   if (!r || r.room.hostId !== viewerId) throw AppError.forbidden('NOT_ROOM_HOST');
-  const target = [...r.participants.values()].find((p) => agoraUid(p.userId) === uid);
+  const target = person(r, uid);
   if (!target) throw AppError.notFound('NOT_IN_ROOM');
   if (target.userId === viewerId) throw AppError.badRequest('CANNOT_KICK_SELF');
   r.participants.delete(target.userId);
@@ -210,13 +221,65 @@ async function leave(viewerId: string, roomId: string) {
   if (r.participants.size === 0) await endRoom(roomId, isHost ? 'HOST_LEFT' : 'EMPTY');
 }
 
+function person(r: LiveRoom, uid: number) {
+  return [...r.participants.values()].find((p) => agoraUid(p.userId) === uid);
+}
+
+function pushLine(
+  r: LiveRoom,
+  sender: Participant,
+  extra: { kind?: ChatLine['kind']; toUid?: number; body?: string },
+) {
+  const line: ChatLine = {
+    id: randomUUID(),
+    sender: publicParticipant(sender, r.room.hostId),
+    body: extra.body ?? '',
+    at: new Date(),
+    kind: extra.kind,
+    toUid: extra.toUid,
+  };
+  r.messages = [...r.messages, line].slice(-ROOM.historySize);
+  emitToChannel(channelOf(r.room.id), 'room:message', { roomId: r.room.id, message: line });
+  return line;
+}
+
 function setMic(viewerId: string, roomId: string, on: boolean) {
   const r = live.get(roomId);
   const p = r?.participants.get(viewerId);
   if (!r || !p) throw AppError.notFound('NOT_IN_ROOM');
+  if (p.micLocked && on) {
+    pushLine(r, p, { kind: 'mic_request', toUid: agoraUid(r.room.hostId) });
+    return { micOn: false, requested: true };
+  }
   p.micOn = on;
   emitToChannel(channelOf(roomId), 'room:participant_updated', { roomId, participant: publicParticipant(p, r.room.hostId) });
   return { micOn: on };
+}
+
+/** Admin birinin mikrofonunu kilitler ya da yeniden açar. */
+function setMicLock(viewerId: string, roomId: string, uid: number, locked: boolean) {
+  const r = live.get(roomId);
+  if (!r || r.room.hostId !== viewerId) throw AppError.forbidden('NOT_ROOM_HOST');
+  const target = person(r, uid);
+  if (!target) throw AppError.notFound('NOT_IN_ROOM');
+  if (target.userId === viewerId) throw AppError.badRequest('CANNOT_LOCK_SELF');
+  target.micLocked = locked;
+  if (locked) target.micOn = false;
+  emitToChannel(channelOf(roomId), 'room:participant_updated', {
+    roomId,
+    participant: publicParticipant(target, r.room.hostId),
+  });
+  return { micLocked: locked };
+}
+
+/** Üç nokta: karşı tarafa profil görme isteği, yalnız onun sohbet kutusuna düşer. */
+function requestProfile(viewerId: string, roomId: string, uid: number) {
+  const r = live.get(roomId);
+  const me = r?.participants.get(viewerId);
+  if (!r || !me) throw AppError.notFound('NOT_IN_ROOM');
+  const target = person(r, uid);
+  if (!target || target.userId === viewerId) throw AppError.badRequest('CANNOT_REQUEST_SELF');
+  return pushLine(r, me, { kind: 'profile_request', toUid: agoraUid(target.userId) });
 }
 
 function sendMessage(viewerId: string, roomId: string, body: string) {
@@ -268,7 +331,7 @@ async function requestJoin(viewerId: string, roomId: string, input: { message?: 
     update: { message: input.message, anonymous: input.anonymous, status: 'PENDING' },
     include: { user: true },
   });
-  const who = publicParticipant({ anonymous: req.anonymous, micOn: false, user: req.user }, room.hostId);
+  const who = publicParticipant({ anonymous: req.anonymous, micOn: false, micLocked: false, user: req.user }, room.hostId);
   emitToUser(room.hostId, 'room:request', { roomId, requestId: req.id, title: room.title, name: who.displayName });
   return { status: req.status };
 }
@@ -284,7 +347,7 @@ async function listRequests(viewerId: string, roomId: string) {
   return rows.map((r) => ({
     id: r.id,
     message: r.message,
-    user: publicParticipant({ anonymous: r.anonymous, micOn: false, user: r.user }, room.hostId),
+    user: publicParticipant({ anonymous: r.anonymous, micOn: false, micLocked: false, user: r.user }, room.hostId),
   }));
 }
 
@@ -305,6 +368,8 @@ export const roomService = {
   leave,
   kick,
   setMic,
+  setMicLock,
+  requestProfile,
   sendMessage,
   requestJoin,
   listRequests,

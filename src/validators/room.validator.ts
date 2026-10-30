@@ -23,3 +23,4 @@ export const roomJoinEvent = roomIdParams.extend({ anonymous: z.boolean().defaul
 export const roomMicEvent = roomIdParams.extend({ on: z.boolean() });
 export const roomMessageEvent = roomIdParams.extend({ body: z.string().trim().min(1).max(ROOM.messageMaxLength) });
 export const roomKickEvent = roomIdParams.extend({ uid: z.number().int().positive() });
+export const roomMicLockEvent = roomKickEvent.extend({ locked: z.boolean() });

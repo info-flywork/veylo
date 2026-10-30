@@ -1,7 +1,14 @@
 import type { Socket } from 'socket.io';
 import { AppError } from '../../errors/AppError';
 import { roomService } from '../../services/room.service';
-import { roomIdParams, roomJoinEvent, roomKickEvent, roomMessageEvent, roomMicEvent } from '../../validators/room.validator';
+import {
+  roomIdParams,
+  roomJoinEvent,
+  roomKickEvent,
+  roomMessageEvent,
+  roomMicEvent,
+  roomMicLockEvent,
+} from '../../validators/room.validator';
 import { WindowLimiter } from '../rate-limiter';
 import { on } from './socket-utils';
 
@@ -14,6 +21,10 @@ export function registerRoomHandlers(socket: Socket) {
   on(socket, 'room:join', roomJoinEvent, ({ roomId, anonymous }) => roomService.join(userId, roomId, anonymous));
   on(socket, 'room:leave', roomIdParams, ({ roomId }) => roomService.leave(userId, roomId));
   on(socket, 'room:kick', roomKickEvent, ({ roomId, uid }) => roomService.kick(userId, roomId, uid));
+  on(socket, 'room:mic_lock', roomMicLockEvent, ({ roomId, uid, locked }) =>
+    roomService.setMicLock(userId, roomId, uid, locked),
+  );
+  on(socket, 'room:profile', roomKickEvent, ({ roomId, uid }) => roomService.requestProfile(userId, roomId, uid));
   on(socket, 'room:mic', roomMicEvent, ({ roomId, on: mic }) => roomService.setMic(userId, roomId, mic));
   on(socket, 'room:message', roomMessageEvent, ({ roomId, body }) => {
     if (!messageLimiter.allow(`${userId}:${roomId}`)) throw new AppError(429, 'RATE_LIMITED', 'Çok hızlı');
