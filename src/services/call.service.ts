@@ -146,7 +146,9 @@ function schedulePersonaMatch(userId: string) {
 
 async function matchWaiting(userId: string) {
   const human = await matchOnlineHuman(userId);
-  if (!human) await matchPersona(userId);
+  // AI karakter eşleşmesi kapalı. Gerçek kullanıcı yoksa aramaya devam edilir.
+  // if (!human) await matchPersona(userId);
+  if (!human && queue.some((t) => t.userId === userId)) schedulePersonaMatch(userId);
 }
 
 /** Uygulaması açık gerçek kullanıcıyı aramaya alır. Sırada araması gerekmez. */
@@ -234,31 +236,32 @@ function declineInvite(userId: string, inviteId: string) {
   return { declined: true };
 }
 
-async function matchPersona(userId: string) {
-  const i = queue.findIndex((t) => t.userId === userId);
-  if (i === -1 || userCall.has(userId)) return;
-  const me = queue[i]!;
-  const gender = me.target === 'any' ? undefined : TARGET_GENDER[me.target];
-  const personas = await prisma.user.findMany({
-    where: {
-      isPersona: true,
-      status: 'ACTIVE',
-      ...(gender ? { gender } : {}),
-      id: { notIn: [userId, ...me.blocked] },
-    },
-    select: { id: true, gender: true },
-  });
-  const free = personas.filter((p) => !userCall.has(p.id));
-  const fresh = free.filter((p) => {
-    const last = recentPair.get(pairKey(userId, p.id));
-    return !last || Date.now() - last > CALL.rematchCooldownMs;
-  });
-  const pool = fresh.length ? fresh : free;
-  const pick = pool[Math.floor(Math.random() * pool.length)];
-  if (!pick) return;
-  queue.splice(i, 1);
-  await startCall(me, { userId: pick.id, gender: pick.gender, target: 'any', blocked: new Set(), persona: true });
-}
+// AI karakter eşleşmesi kapalı.
+// async function matchPersona(userId: string) {
+//   const i = queue.findIndex((t) => t.userId === userId);
+//   if (i === -1 || userCall.has(userId)) return;
+//   const me = queue[i]!;
+//   const gender = me.target === 'any' ? undefined : TARGET_GENDER[me.target];
+//   const personas = await prisma.user.findMany({
+//     where: {
+//       isPersona: true,
+//       status: 'ACTIVE',
+//       ...(gender ? { gender } : {}),
+//       id: { notIn: [userId, ...me.blocked] },
+//     },
+//     select: { id: true, gender: true },
+//   });
+//   const free = personas.filter((p) => !userCall.has(p.id));
+//   const fresh = free.filter((p) => {
+//     const last = recentPair.get(pairKey(userId, p.id));
+//     return !last || Date.now() - last > CALL.rematchCooldownMs;
+//   });
+//   const pool = fresh.length ? fresh : free;
+//   const pick = pool[Math.floor(Math.random() * pool.length)];
+//   if (!pick) return;
+//   queue.splice(i, 1);
+//   await startCall(me, { userId: pick.id, gender: pick.gender, target: 'any', blocked: new Set(), persona: true });
+// }
 
 function leaveQueue(userId: string) {
   clearPersonaWait(userId);

@@ -87,7 +87,7 @@ async function list(viewerId: string, box: 'inbox' | 'requests') {
     if (c.type === 'GROUP') return true;
     const peer = peerOf(c, viewerId);
     // Mesajı olmayan birebir sohbetler listede görünmez.
-    return peer && !blocked.has(peer.userId) && c.lastSeq > 0;
+    return peer && !peer.user.isPersona && !blocked.has(peer.userId) && c.lastSeq > 0;
   });
 
   // Beni kısıtlayan karşı taraflar (tek sorguda).

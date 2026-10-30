@@ -176,7 +176,7 @@ async function listFollows(
 
   const items = page
     .map((r, i) => ({ row: r, person: people[i]! }))
-    .filter(({ person }) => !hidden.has(person.id) && person.status === 'ACTIVE')
+    .filter(({ person }) => !person.isPersona && !hidden.has(person.id) && person.status === 'ACTIVE')
     .map(({ row, person }) => ({
       ...serializeUserSummary(person),
       followedAt: row.createdAt,

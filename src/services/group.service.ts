@@ -274,7 +274,10 @@ async function decideRequest(viewerId: string, conversationId: string, requestId
 async function addMembers(viewerId: string, conversationId: string, userIds: string[]) {
   const { c } = await loadAsAdmin(conversationId, viewerId);
   const candidates = [...new Set(userIds)].filter((id) => id !== viewerId && !memberOf(c, id));
-  const users = await prisma.user.findMany({ where: { id: { in: candidates }, status: 'ACTIVE' }, select: { id: true } });
+  const users = await prisma.user.findMany({
+    where: { id: { in: candidates }, status: 'ACTIVE', isPersona: false },
+    select: { id: true },
+  });
   const allowed: string[] = [];
   for (const u of users) {
     if (!(await safetyService.isBlockedBetween(viewerId, u.id))) allowed.push(u.id);
