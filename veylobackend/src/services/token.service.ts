@@ -95,7 +95,7 @@ async function history(userId: string, cursor?: string, limit = 30) {
     orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
     take: limit + 1,
     ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
-    select: { id: true, delta: true, balanceAfter: true, reason: true, createdAt: true },
+    select: { id: true, delta: true, balanceAfter: true, reason: true, meta: true, createdAt: true },
   });
   const hasMore = rows.length > limit;
   const items = hasMore ? rows.slice(0, limit) : rows;

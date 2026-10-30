@@ -10,6 +10,17 @@ export const TOKENS = {
   postBoost1Day: 100,
 } as const;
 
+/** Günlük giriş ödülü: 1-7. gün. Bir gün kaçırılırsa 1. güne döner, 7'den sonra baştan başlar. */
+export const CHECKIN_REWARDS = [10, 20, 30, 40, 50, 60, 70] as const;
+
+/** Profil Boost seçenekleri (Boost ekranı). */
+export const BOOST_OPTIONS = {
+  '30m': { minutes: 30, cost: 150, visibility: 4 },
+  '1h': { minutes: 60, cost: 250, visibility: 8 },
+  '2h': { minutes: 120, cost: 450, visibility: 16 },
+} as const;
+export type BoostOption = keyof typeof BOOST_OPTIONS;
+
 /** Mağaza ürün id'si → verilecek token. RevenueCat/App Store/Play ürün id'leri birebir aynı olmalı. */
 export const TOKEN_PRODUCTS: Record<string, number> = {
   'veylo.tokens.100': 100,

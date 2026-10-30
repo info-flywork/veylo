@@ -123,7 +123,8 @@ async function feed(viewerId: string, q: FeedQuery) {
   const boosted = q.cursor
     ? []
     : await prisma.post.findMany({
-        where: { ...base, boostedUntil: { gt: now } },
+        // Öne çıkarılan gönderiler + profil Boost'u açık kişilerin gönderileri.
+        where: { AND: [base, { OR: [{ boostedUntil: { gt: now } }, { author: { boostedUntil: { gt: now } } }] }] },
         include: { author: true },
         orderBy: { boostedUntil: 'desc' },
         take: 10,

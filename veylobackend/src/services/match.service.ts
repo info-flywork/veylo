@@ -49,8 +49,15 @@ async function search(viewerId: string, input: { mood: (typeof MOODS)[number]; i
     const common = theirs.filter((i) => mine.has(i));
     const union = new Set([...mine, ...theirs]).size || 1;
     const online = presence.isOnline(u.id);
+    // Profil Boost'u: görünürlük çarpanına göre (4x/8x/16x) üste çıkar.
+    const boost = u.boostedUntil && u.boostedUntil > new Date() ? u.boostLevel * 3 : 0;
     const score =
-      (common.length / union) * 55 + (u.chatGoal && goals.has(u.chatGoal) ? 20 : 0) + (online ? 15 : 0) + (u.avatarUrl ? 5 : 0) + Math.random() * 5;
+      (common.length / union) * 55 +
+      (u.chatGoal && goals.has(u.chatGoal) ? 20 : 0) +
+      (online ? 15 : 0) +
+      (u.avatarUrl ? 5 : 0) +
+      boost +
+      Math.random() * 5;
     return { u, common, online, score };
   });
   scored.sort((a, b) => b.score - a.score);
