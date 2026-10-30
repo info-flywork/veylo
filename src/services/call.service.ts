@@ -92,8 +92,26 @@ function compatible(me: Ticket, other: Ticket) {
   if (!presence.isOnline(other.userId)) return false;
   if (me.target !== 'any' && other.gender !== TARGET_GENDER[me.target]) return false;
   if (other.target !== 'any' && me.gender !== TARGET_GENDER[other.target]) return false;
-  const last = recentPair.get(pairKey(me.userId, other.userId));
+  return true;
+}
+
+const cooledDown = (x: string, y: string) => {
+  const last = recentPair.get(pairKey(x, y));
   return !last || Date.now() - last > CALL.rematchCooldownMs;
+};
+
+/**
+ * Sırada bekleyen uygun biri. Az önce konuşulan kişi ancak başka uygun kimse yoksa seçilir
+ * (az kullanıcı varken aynı iki kişi beklemeden tekrar eşleşebilsin).
+ */
+function findQueuedPeer(me: Ticket): Ticket | undefined {
+  const ok = queue.filter((t) => compatible(me, t));
+  return ok.find((t) => cooledDown(me.userId, t.userId)) ?? ok[0];
+}
+
+function removeFromQueue(userId: string) {
+  const i = queue.findIndex((t) => t.userId === userId);
+  if (i >= 0) queue.splice(i, 1);
 }
 
 /**
@@ -110,18 +128,18 @@ async function joinQueue(userId: string, target: CallTarget) {
   }
   const me: Ticket = { userId, gender: user.gender, target, blocked: await safetyService.blockedIdsFor(userId) };
 
-  const idx = queue.findIndex((t) => compatible(me, t));
-  if (idx === -1) {
+  const other = findQueuedPeer(me);
+  if (!other) {
     queue.push(me);
     schedulePersonaMatch(userId);
     return { status: 'searching' as const, onlineCount: presence.onlineCount };
   }
-  const [other] = queue.splice(idx, 1);
-  clearPersonaWait(other!.userId);
+  removeFromQueue(other.userId);
+  clearPersonaWait(other.userId);
   clearPersonaWait(userId);
-  cancelInvite(other!.userId, false);
+  cancelInvite(other.userId, false);
   cancelInvite(userId, false);
-  await startCall(other!, me);
+  await startCall(other, me);
   return { status: 'matched' as const };
 }
 
@@ -145,6 +163,20 @@ function schedulePersonaMatch(userId: string) {
 }
 
 async function matchWaiting(userId: string) {
+  const me = queue.find((t) => t.userId === userId);
+  if (!me || userCall.has(userId)) return;
+  // Önce sırada bekleyen başka biri: sıraya girdikleri an kaçırılmış olabilir
+  // (ör. biri bağlantısı kopup geri döndü). İkisi de arıyorsa onay beklemeden başlar.
+  const other = findQueuedPeer(me);
+  if (other) {
+    removeFromQueue(userId);
+    removeFromQueue(other.userId);
+    clearPersonaWait(other.userId);
+    cancelInvite(userId, false);
+    cancelInvite(other.userId, false);
+    await startCall(other, me);
+    return;
+  }
   const human = await matchOnlineHuman(userId);
   // AI karakter eşleşmesi kapalı. Gerçek kullanıcı yoksa aramaya devam edilir.
   // if (!human) await matchPersona(userId);
