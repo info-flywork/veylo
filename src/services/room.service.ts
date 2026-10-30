@@ -179,6 +179,20 @@ async function join(viewerId: string, roomId: string, anonymous: boolean) {
   };
 }
 
+/** Oda sahibi bir katılımcıyı çıkarır. Anonim olsa da uid yeter. */
+async function kick(viewerId: string, roomId: string, uid: number) {
+  const r = live.get(roomId);
+  if (!r || r.room.hostId !== viewerId) throw AppError.forbidden('NOT_ROOM_HOST');
+  const target = [...r.participants.values()].find((p) => agoraUid(p.userId) === uid);
+  if (!target) throw AppError.notFound('NOT_IN_ROOM');
+  if (target.userId === viewerId) throw AppError.badRequest('CANNOT_KICK_SELF');
+  r.participants.delete(target.userId);
+  leaveChannel(target.userId, channelOf(roomId));
+  emitToUser(target.userId, 'room:kicked', { roomId });
+  emitToChannel(channelOf(roomId), 'room:participant_left', { roomId, uid });
+  if (r.participants.size === 0) await endRoom(roomId, 'EMPTY');
+}
+
 async function leave(viewerId: string, roomId: string) {
   const r = live.get(roomId);
   if (!r) return;
@@ -289,6 +303,7 @@ export const roomService = {
   create,
   join,
   leave,
+  kick,
   setMic,
   sendMessage,
   requestJoin,
