@@ -211,10 +211,10 @@ class _AnonymousChatPageState extends State<AnonymousChatPage> {
                         avatarUrl: thread.avatarUrl,
                         size: 44,
                         userId: thread.peerUserId,
-                        displayName: masked,
+                        displayName: thread.peerUserId != null ? thread.title : masked,
                         username: thread.peerUsername,
-                        enabled: false,
-                        blurred: true,
+                        enabled: thread.peerUserId != null,
+                        blurred: thread.isAnonymous && thread.peerAvatarBlurred,
                       ),
                       const SizedBox(width: 10),
                       Expanded(

@@ -213,8 +213,8 @@ class _ThreadContent extends StatelessWidget {
             userId: thread.peerUserId,
             displayName: thread.isAnonymous ? thread.maskedName : thread.title,
             username: thread.peerUsername,
-            enabled: !thread.isAnonymous && !thread.isGroup,
-            blurred: thread.isAnonymous,
+            enabled: thread.peerUserId != null && !thread.isGroup,
+            blurred: thread.isAnonymous && thread.peerAvatarBlurred,
           ),
           const SizedBox(width: 10),
           Expanded(
@@ -246,10 +246,20 @@ class _ThreadContent extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 4),
-                AppText(
-                  thread.lastMessagePreview,
-                  style: AppTextStyles.chatsThreadPreview,
-                  maxLines: 1,
+                Row(
+                  children: [
+                    Expanded(
+                      child: AppText(
+                        thread.lastMessagePreview,
+                        style: AppTextStyles.chatsThreadPreview,
+                        maxLines: 1,
+                      ),
+                    ),
+                    if (thread.unreadCount > 0) ...[
+                      const SizedBox(width: 8),
+                      _UnreadCount(count: thread.unreadCount),
+                    ],
+                  ],
                 ),
               ],
             ),
@@ -264,6 +274,36 @@ class _ThreadContent extends StatelessWidget {
     final minute = at.minute.toString().padLeft(2, '0');
     final period = at.hour >= 12 ? 'PM' : 'AM';
     return '$hour:$minute $period';
+  }
+}
+
+class _UnreadCount extends StatelessWidget {
+  const _UnreadCount({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final label = count > 99 ? '99+' : '$count';
+    return Container(
+      constraints: const BoxConstraints(minWidth: 20, minHeight: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 6),
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(
+        color: AppColors.selectionBorder,
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      child: AppText(
+        label,
+        style: const TextStyle(
+          fontFamily: AppFonts.poppins,
+          fontWeight: FontWeight.w600,
+          fontSize: 11,
+          height: 1,
+          color: AppColors.white,
+        ),
+      ),
+    );
   }
 }
 

@@ -174,11 +174,32 @@ class _UnlockNoticeState extends State<_UnlockNotice> {
       'unlock:initial' => mine
           ? 'You sent a request to see their name.'
           : 'This person sent you a request to see your name.',
+      'unlock:photo:approved' => mine
+          ? 'They approved. You can see their blurred photo.'
+          : 'You approved. Your blurred photo stays visible in this chat.',
+      'unlock:photo:rejected' => mine
+          ? 'They declined the blurred photo request.'
+          : 'You declined the blurred photo request.',
+      'unlock:photo' => mine
+          ? 'You sent a request to see their blurred photo.'
+          : 'This person sent you a request to see your blurred photo.',
+      'unlock:full:approved' => mine
+          ? 'They approved. You can see their full profile.'
+          : 'You approved. Your full profile stays visible in this chat.',
+      'unlock:full:rejected' => mine
+          ? 'They declined the full profile request.'
+          : 'You declined the full profile request.',
+      'unlock:full' => mine
+          ? 'You sent a request to see their full profile.'
+          : 'This person sent you a request to see your full profile.',
       _ => mine
           ? 'You sent a request: $title'
           : 'The person you\'re chatting with sent you a request about $title',
     };
-    final canAnswer = body == 'unlock:initial' && !mine && widget.onDecision != null && widget.message.id != null;
+    final canAnswer = (body == 'unlock:initial' || body == 'unlock:photo' || body == 'unlock:full') &&
+        !mine &&
+        widget.onDecision != null &&
+        widget.message.id != null;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Center(
