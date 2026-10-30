@@ -23,6 +23,9 @@ export function peerOf(c: ConversationFull, viewerId: string) {
 }
 
 function anonymousPeer(c: ConversationFull, peerMember: NonNullable<ReturnType<typeof peerOf>>) {
+  if (peerMember.profileShared) {
+    return { ...serializeUserSummary(peerMember.user), avatarBlurred: false };
+  }
   const progress = c.connectionProgress;
   const name = peerMember.user.displayName ?? peerMember.user.username;
   const displayName = peerMember.nameShared
@@ -30,12 +33,13 @@ function anonymousPeer(c: ConversationFull, peerMember: NonNullable<ReturnType<t
     : progress >= CONNECTION.milestones.initial
       ? maskName(name)
       : '******';
+  const photoVisible = peerMember.photoShared || progress >= CONNECTION.milestones.blurredPhoto;
   return {
     id: null,
     username: null,
     displayName,
-    // %70'te sunucuda üretilmiş bulanık önizleme (ayrı rastgele yol, orijinal fotoğrafa ulaşılamaz).
-    avatarUrl: progress >= CONNECTION.milestones.blurredPhoto ? peerMember.user.avatarBlurUrl : null,
+    // Onay ya da %70: sunucuda üretilmiş bulanık önizleme (orijinal fotoğrafa ulaşılamaz).
+    avatarUrl: photoVisible ? peerMember.user.avatarBlurUrl : null,
     avatarBlurred: true,
     borderId: null,
     // Kimlik gizli olsa da AI karakter olduğu her zaman belli.
