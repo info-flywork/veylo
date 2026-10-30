@@ -64,6 +64,13 @@ model User {
   /// Askıya alma bitişi (null = süresiz). Süre dolunca giriş yapınca hesap açılır.
   suspendedUntil      DateTime?    @map("suspended_until")
   suspendedReason     String?      @map("suspended_reason") @db.VarChar(500)
+  /// Günlük ödül serisi: en son toplanan gün (1-7) ve zamanı.
+  checkinDay          Int          @default(0) @map("checkin_day") @db.TinyInt
+  lastCheckinAt       DateTime?    @map("last_checkin_at")
+  /// Profil Boost'u (Stand Out): bu zamana kadar akışlarda öne çıkar.
+  boostedUntil        DateTime?    @map("boosted_until")
+  /// Boost görünürlük çarpanı (4, 8, 16).
+  boostLevel          Int          @default(0) @map("boost_level") @db.TinyInt
   /// Uygulamanın kendi karakteri (AI / tanıtım). Gerçek kullanıcılardan ayrı tutulur.
   isPersona           Boolean      @default(false) @map("is_persona")
   lastSeenAt          DateTime?    @map("last_seen_at")
@@ -380,6 +387,8 @@ enum LedgerReason {
   BORDER_PURCHASE
   POST_BOOST
   ADMIN_ADJUST
+  DAILY_CHECKIN
+  PROFILE_BOOST
 }
 
 /// Her bakiye değişikliği buraya yazılır; users.token_balance bunun önbelleğidir.

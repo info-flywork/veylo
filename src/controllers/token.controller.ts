@@ -1,4 +1,5 @@
 import type { Request, Response } from 'express';
+import { boostService } from '../services/boost.service';
 import { storeService } from '../services/store.service';
 import { tokenService } from '../services/token.service';
 
@@ -22,4 +23,21 @@ export async function listBorders(req: Request, res: Response) {
 
 export async function purchaseBorder(req: Request, res: Response) {
   res.json(await storeService.purchaseBorder(req.user!.id, req.valid.params.borderId));
+}
+
+/** Boost ekranı: bakiye, günlük ödül, aktif boost, seçenekler ve paketler. */
+export async function boostStatus(req: Request, res: Response) {
+  res.json(await boostService.status(req.user!.id));
+}
+
+export async function checkin(req: Request, res: Response) {
+  res.json(await boostService.checkin(req.user!.id));
+}
+
+export async function boost(req: Request, res: Response) {
+  res.json(await boostService.boost(req.user!.id, req.valid.body.option));
+}
+
+export async function testPurchase(req: Request, res: Response) {
+  res.json(await boostService.testPurchase(req.user!.id, req.valid.body.productId));
 }

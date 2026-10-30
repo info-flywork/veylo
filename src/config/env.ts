@@ -31,6 +31,14 @@ const envSchema = z
      * true iken bakiye yetmese de oda, arama ve diğer ücretli işlemler geçer.
      * Mağazaya çıkmadan önce false yap.
      */
+    /**
+     * Mağaza henüz RevenueCat'e bağlı değilken: uygulamadaki paket satın alma ödeme almadan token yükler.
+     * Gerçek ödemeye geçince mutlaka false olmalı.
+     */
+    STORE_TEST_PURCHASES: z
+      .string()
+      .default('false')
+      .transform((v) => v === 'true'),
     SKIP_TOKEN_SPEND: z
       .string()
       .default('true')
