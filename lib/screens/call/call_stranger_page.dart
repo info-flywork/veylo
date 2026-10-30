@@ -23,6 +23,8 @@ enum _StrangerGender { female, male, nonBinary, preferNotToSay }
 enum _CallPhase {
   setup,
   finding,
+  /// Başka cihazdaki çevrimiçi kullanıcıya düşen arama.
+  incoming,
   inCall,
   timesUp,
   /// Keep Talking → önce gelen arama (Decline/Accept)
@@ -35,12 +37,26 @@ enum _CallPhase {
 
 /// Navbar Call — 60 Second Stranger (setup → finding → call → time's up).
 class CallStrangerPage extends StatefulWidget {
-  const CallStrangerPage({super.key});
+  const CallStrangerPage({super.key, this.incoming});
+
+  /// Sunucunun `call:incoming` olayı. Kabul edilince kanala girilir.
+  final Map<String, dynamic>? incoming;
 
   static Future<void> open(BuildContext context) {
     return Navigator.of(context).push<void>(
       MaterialPageRoute<void>(
         builder: (_) => const CallStrangerPage(),
+      ),
+    );
+  }
+
+  static Future<void> openIncoming(
+    BuildContext context,
+    Map<String, dynamic> event,
+  ) {
+    return Navigator.of(context, rootNavigator: true).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => CallStrangerPage(incoming: event),
       ),
     );
   }
@@ -72,6 +88,8 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
   String _peerAvatar = '';
   bool _peerIsAi = false;
   DateTime? _videoStartedAt;
+  RtcCredentials? _incomingRtc;
+  bool _incomingTimesUp = false;
 
   Timer? _callTimer;
   Timer? _videoTimer;
@@ -91,6 +109,14 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
       _socket.on('call:ended').listen(_onEnded),
       _socket.on('call:error').listen(_onCallError),
     ]);
+    final incoming = widget.incoming;
+    if (incoming != null) {
+      _callId = incoming['callId'] as String?;
+      _endsAt = DateTime.tryParse(incoming['endsAt'] as String? ?? '')?.toLocal();
+      _peerUid = (incoming['peerUid'] as num?)?.toInt();
+      _incomingRtc = RtcCredentials.fromJson(incoming['rtc']);
+      _phase = _CallPhase.incoming;
+    }
   }
 
   @override
@@ -191,8 +217,35 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
     return s.ceil().clamp(0, _callSeconds);
   }
 
+  Future<void> _acceptIncoming() async {
+    if (!await _agora.requestMic()) {
+      if (mounted) _toast(Translations.of(context).call.micDenied);
+      return;
+    }
+    final rtc = _incomingRtc;
+    if (rtc != null) {
+      await _agora.join(rtc);
+      _agora.setMic(_micOn);
+      _agora.setPlayback(_speakerOn);
+    }
+    if (!mounted) return;
+    if (_incomingTimesUp) {
+      setState(() => _phase = _CallPhase.timesUp);
+      return;
+    }
+    if (_peerName.isNotEmpty) {
+      setState(() => _phase = _CallPhase.namedCall);
+      return;
+    }
+    _startInCall();
+  }
+
   void _onTimesUp(Map<String, dynamic> e) {
     if (!mounted || !_isMine(e)) return;
+    if (_phase == _CallPhase.incoming) {
+      _incomingTimesUp = true;
+      return;
+    }
     _callTimer?.cancel();
     setState(() {
       _secondsLeft = 0;
@@ -218,6 +271,12 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
   void _onRevealed(Map<String, dynamic> e) {
     if (!mounted || !_isMine(e)) return;
     final peer = Map<String, dynamic>.from(e['peer'] as Map);
+    if (_phase == _CallPhase.incoming) {
+      _peerName = peer['displayName'] as String? ?? '';
+      _peerAvatar = peer['avatarUrl'] as String? ?? '';
+      _peerIsAi = peer['isAi'] == true;
+      return;
+    }
     ChatStore.instance.refresh();
     // Gelen arama ekranı: kabul edilene kadar ses kapalı.
     _agora.setMic(false);
@@ -401,6 +460,8 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
     switch (_phase) {
       case _CallPhase.finding:
         _cancelFinding();
+      case _CallPhase.incoming:
+        _endCall();
       case _CallPhase.inCall:
       case _CallPhase.timesUp:
       case _CallPhase.namedCallRinging:
@@ -481,6 +542,10 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(hPad, 0, hPad, 16 + bottom),
                     child: switch (_phase) {
+                      _CallPhase.incoming => _IncomingCallBody(
+                          onAccept: _acceptIncoming,
+                          onDecline: _endCall,
+                        ),
                       _CallPhase.inCall => _InCallBody(
                           secondsLeft: _secondsLeft,
                           speakerOn: _speakerOn,
@@ -1376,6 +1441,53 @@ class _InCallBody extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 8),
+      ],
+    );
+  }
+}
+
+class _IncomingCallBody extends StatelessWidget {
+  const _IncomingCallBody({required this.onAccept, required this.onDecline});
+
+  final VoidCallback onAccept;
+  final VoidCallback onDecline;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Translations.of(context).call;
+    return Column(
+      children: [
+        const Spacer(flex: 2),
+        AppText(
+          t.stranger,
+          style: AppTextStyles.callStrangerTitle,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 10),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40),
+          child: AppText(
+            'Someone in the app is calling you.',
+            style: AppTextStyles.callStrangerSubtitle,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        const SizedBox(height: 28),
+        AppPrimaryButton(label: 'Accept', onPressed: onAccept),
+        const SizedBox(height: 12),
+        GestureDetector(
+          onTap: onDecline,
+          behavior: HitTestBehavior.opaque,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            child: AppText(
+              t.endCall,
+              style: AppTextStyles.callEndCall,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+        const Spacer(flex: 3),
       ],
     );
   }

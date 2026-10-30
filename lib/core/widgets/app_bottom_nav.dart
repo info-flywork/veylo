@@ -3,7 +3,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/data/remote/chat_store.dart';
+import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 
 enum AppNavTab { discover, chat, call, vibes, profile }
 
@@ -79,7 +82,19 @@ class AppBottomNav extends StatelessWidget {
                   ),
                 ),
                 padding: EdgeInsets.only(bottom: bottom),
-                child: Row(
+                child: ListenableBuilder(
+                  listenable: Listenable.merge([
+                    ChatStore.instance,
+                    SessionStore.instance,
+                  ]),
+                  builder: (context, _) {
+                    final pending = ChatStore.instance.requests.length;
+                    final unread = ChatStore.instance.inbox.fold<int>(
+                      0,
+                      (sum, thread) => sum + thread.unreadCount,
+                    );
+                    final avatar = SessionStore.instance.me?.avatarUrl?.trim();
+                    return Row(
                   children: [
                     Expanded(
                       child: _NavItem(
@@ -95,6 +110,7 @@ class AppBottomNav extends StatelessWidget {
                         label: t.chat,
                         selected: current == AppNavTab.chat,
                         onTap: () => onChanged(AppNavTab.chat),
+                        showDot: pending > 0 || unread > 0,
                       ),
                     ),
                     const Expanded(child: SizedBox()),
@@ -109,12 +125,17 @@ class AppBottomNav extends StatelessWidget {
                     Expanded(
                       child: _ProfileNavItem(
                         asset: profileAsset,
+                        avatarUrl: (avatar == null || avatar.isEmpty)
+                            ? null
+                            : avatar,
                         label: t.profile,
                         selected: current == AppNavTab.profile,
                         onTap: () => onChanged(AppNavTab.profile),
                       ),
                     ),
                   ],
+                    );
+                  },
                 ),
               ),
             ),
@@ -139,12 +160,14 @@ class _NavItem extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.onTap,
+    this.showDot = false,
   });
 
   final String iconAsset;
   final String label;
   final bool selected;
   final VoidCallback onTap;
+  final bool showDot;
 
   @override
   Widget build(BuildContext context) {
@@ -158,11 +181,28 @@ class _NavItem extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SvgPicture.asset(
-              iconAsset,
-              width: 24,
-              height: 24,
-              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+            Stack(
+              clipBehavior: Clip.none,
+              children: [
+                SvgPicture.asset(
+                  iconAsset,
+                  width: 24,
+                  height: 24,
+                  colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+                ),
+                if (showDot)
+                  const Positioned(
+                    top: -2,
+                    right: -4,
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: AppColors.selectionBorder,
+                        shape: BoxShape.circle,
+                      ),
+                      child: SizedBox(width: 8, height: 8),
+                    ),
+                  ),
+              ],
             ),
             const SizedBox(height: 4),
             AppText(
@@ -267,9 +307,11 @@ class _ProfileNavItem extends StatelessWidget {
     required this.label,
     required this.selected,
     required this.onTap,
+    this.avatarUrl,
   });
 
   final String asset;
+  final String? avatarUrl;
   final String label;
   final bool selected;
   final VoidCallback onTap;
@@ -294,7 +336,9 @@ class _ProfileNavItem extends StatelessWidget {
                 ),
               ),
               child: ClipOval(
-                child: Image.asset(asset, fit: BoxFit.cover),
+                child: avatarUrl == null
+                    ? Image.asset(asset, fit: BoxFit.cover)
+                    : ChatAvatarImage(url: avatarUrl!, size: 28),
               ),
             ),
             const SizedBox(height: 4),

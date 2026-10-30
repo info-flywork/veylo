@@ -36,6 +36,8 @@ class _MainShellState extends State<MainShell> {
   StreamSubscription<String>? _pushTaps;
   StreamSubscription<Map<String, dynamic>>? _groupApproved;
   StreamSubscription<Map<String, dynamic>>? _roomApproved;
+  StreamSubscription<Map<String, dynamic>>? _callIncoming;
+  String? _incomingCallId;
 
   @override
   void initState() {
@@ -59,6 +61,14 @@ class _MainShellState extends State<MainShell> {
       );
     });
     // Gizli canlı odaya katılma isteğim onaylandı.
+    _callIncoming = SocketService.instance.on('call:incoming').listen((e) {
+      final id = e['callId'] as String?;
+      if (id == null || !mounted || _incomingCallId == id) return;
+      _incomingCallId = id;
+      CallStrangerPage.openIncoming(context, e).whenComplete(() {
+        if (_incomingCallId == id) _incomingCallId = null;
+      });
+    });
     _roomApproved = SocketService.instance.on('room:approved').listen((e) {
       final id = e['roomId'] as String?;
       if (id == null || !mounted) return;
@@ -91,6 +101,7 @@ class _MainShellState extends State<MainShell> {
     _pushTaps?.cancel();
     _groupApproved?.cancel();
     _roomApproved?.cancel();
+    _callIncoming?.cancel();
     super.dispose();
   }
 
@@ -121,7 +132,10 @@ class _MainShellState extends State<MainShell> {
       RoomStore.instance.refresh();
       DiscoverStore.instance.refresh();
     }
-    if (tab == AppNavTab.chat && _tab != tab) NoteStore.instance.refresh();
+    if (tab == AppNavTab.chat && _tab != tab) {
+      NoteStore.instance.refresh();
+      ChatStore.instance.refresh();
+    }
     // Profil: takip/takipçi sayıları ve token bakiyesi güncel olsun.
     if (tab == AppNavTab.profile && _tab != tab) {
       SessionStore.instance.refreshMe().catchError((_) {});
