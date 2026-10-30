@@ -12,7 +12,7 @@ function serializeNote(n: Note & { user: User }) {
 
 /**
  * Sohbetler ekranındaki notlar: kendi notum + takip ettiklerim, birebir sohbet ettiklerim
- * (anonim olmayan, kabul edilmiş) ve AI karakterler.
+ * (anonim olmayan, kabul edilmiş).
  */
 async function list(viewerId: string) {
   const now = new Date();
@@ -39,17 +39,14 @@ async function list(viewerId: string) {
   const rows = await prisma.note.findMany({
     where: {
       expiresAt: { gt: now },
-      user: { status: 'ACTIVE' },
-      OR: [{ userId: { in: [...known] } }, { user: { isPersona: true } }],
+      userId: { in: [...known] },
+      user: { status: 'ACTIVE', isPersona: false },
       ...(blocked.size ? { userId: { notIn: [...blocked] } } : {}),
     },
     include: { user: true },
     orderBy: { updatedAt: 'desc' },
     take: LIMIT,
   });
-  // Tanıdıklarımın notları AI karakterlerinkinden önce.
-  rows.sort((a, b) => Number(b.user.isPersona === false) - Number(a.user.isPersona === false));
-
   return { mine: mine ? serializeNote(mine) : null, items: rows.map(serializeNote) };
 }
 

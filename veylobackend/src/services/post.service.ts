@@ -100,6 +100,7 @@ async function feed(viewerId: string, q: FeedQuery) {
   const now = new Date();
   const authorWhere: Prisma.UserWhereInput = {
     status: 'ACTIVE',
+    isPersona: false,
     ...(q.gender && q.gender !== 'everyone' ? { gender: GENDER[q.gender] } : {}),
   };
   const search = q.q?.trim();

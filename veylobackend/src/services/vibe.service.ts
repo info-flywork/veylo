@@ -52,7 +52,7 @@ async function feed(viewerId: string, q: { cursor?: string; search?: string; lim
   const where: Prisma.VibeWhereInput = {
     deletedAt: null,
     expiresAt: { gt: new Date() },
-    author: { status: 'ACTIVE' },
+    author: { status: 'ACTIVE', isPersona: false },
     ...(blocked.size ? { authorId: { notIn: [...blocked] } } : {}),
     ...(q.search ? { body: { contains: q.search } } : {}),
   };
