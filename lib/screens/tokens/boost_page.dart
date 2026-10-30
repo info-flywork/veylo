@@ -37,6 +37,7 @@ class _BoostPageState extends State<BoostPage> {
   BoostStatus? _status;
   String _selected = '1h';
   bool _busy = false;
+  String? _error;
 
   @override
   void initState() {
@@ -57,9 +58,13 @@ class _BoostPageState extends State<BoostPage> {
       final s = await _repo.status();
       if (!mounted) return;
       SessionStore.instance.updateTokenBalance(s.balance);
-      setState(() => _status = s);
+      setState(() {
+        _status = s;
+        _error = null;
+      });
     } catch (e) {
-      if (mounted && _status == null) showErrorSnackBar(context, e);
+      if (!mounted || _status != null) return;
+      setState(() => _error = errorMessage(context, e));
     }
   }
 
@@ -153,7 +158,37 @@ class _BoostPageState extends State<BoostPage> {
               ),
               Expanded(
                 child: s == null
-                    ? const Center(child: CircularProgressIndicator())
+                    ? Center(
+                        child: _error == null
+                            ? const CircularProgressIndicator()
+                            : Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 32),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      _error!,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+                                        fontFamily: AppFonts.poppins,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500,
+                                        height: 22 / 15,
+                                        color: AppColors.black,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    TextButton(
+                                      onPressed: () {
+                                        setState(() => _error = null);
+                                        _load();
+                                      },
+                                      child: Text(Translations.of(context).common.retry),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                      )
                     : RefreshIndicator(
                         onRefresh: _load,
                         child: ListView(
@@ -202,15 +237,16 @@ class _BoostPageState extends State<BoostPage> {
                         ),
                       ),
               ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(16, 8, 16, bottom > 0 ? bottom : 16),
-                child: AppPrimaryButton(
-                  label: t.boostFor(count: (selected?.cost ?? 0).toString()),
-                  onPressed: selected == null || _busy
-                      ? null
-                      : () => _run(() => _repo.boost(selected.id), done: t.boostDone),
+              if (s != null)
+                Padding(
+                  padding: EdgeInsets.fromLTRB(16, 8, 16, bottom > 0 ? bottom : 16),
+                  child: AppPrimaryButton(
+                    label: t.boostFor(count: (selected?.cost ?? 0).toString()),
+                    onPressed: selected == null || _busy
+                        ? null
+                        : () => _run(() => _repo.boost(selected.id), done: t.boostDone),
+                  ),
                 ),
-              ),
             ],
           ),
         ],
