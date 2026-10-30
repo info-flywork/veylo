@@ -25,11 +25,15 @@ export function peerOf(c: ConversationFull, viewerId: string) {
 function anonymousPeer(c: ConversationFull, peerMember: NonNullable<ReturnType<typeof peerOf>>) {
   const progress = c.connectionProgress;
   const name = peerMember.user.displayName ?? peerMember.user.username;
+  const displayName = peerMember.nameShared
+    ? name
+    : progress >= CONNECTION.milestones.initial
+      ? maskName(name)
+      : '******';
   return {
     id: null,
     username: null,
-    // %25'te ilk harf açılır (Flutter'daki milestone'lar).
-    displayName: progress >= CONNECTION.milestones.initial ? maskName(name) : '******',
+    displayName,
     // %70'te sunucuda üretilmiş bulanık önizleme (ayrı rastgele yol, orijinal fotoğrafa ulaşılamaz).
     avatarUrl: progress >= CONNECTION.milestones.blurredPhoto ? peerMember.user.avatarBlurUrl : null,
     avatarBlurred: true,

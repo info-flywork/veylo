@@ -231,6 +231,8 @@ model ConversationMember {
   pinned         Boolean    @default(false)
   muted          Boolean    @default(false)
   revealConsent  Boolean    @default(false) @map("reveal_consent")
+  /// İsim isteği onaylandıysa bu üyenin adı karşı tarafa kalıcı görünür.
+  nameShared     Boolean    @default(false) @map("name_shared")
   /// Grupta "Hesabımı gizle": maskeli ad + bulanık fotoğraf, profil açılmaz.
   anonymous      Boolean    @default(false)
   joinedAt       DateTime   @default(now()) @map("joined_at")

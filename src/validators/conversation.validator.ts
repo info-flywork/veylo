@@ -42,6 +42,12 @@ export const unlockRequestBody = conversationIdParams.extend({
   milestone: z.enum(['initial', 'photo', 'full']),
 });
 
+/** İsim isteğine karşı tarafın cevabı. */
+export const unlockResponseBody = conversationIdParams.extend({
+  messageId: z.uuid(),
+  decision: z.enum(['approve', 'reject']),
+});
+
 export const settingsBody = z
   .object({ pinned: z.boolean(), muted: z.boolean() })
   .partial()
