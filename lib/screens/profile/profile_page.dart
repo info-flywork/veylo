@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/widgets/ai_badge.dart';
+import 'package:veylo/data/remote/chat_repository.dart';
 import 'package:veylo/data/remote/safety_repository.dart';
 import 'package:veylo/data/remote/user_repository.dart';
 import 'package:veylo/core/state/discover_highlight.dart';
@@ -21,6 +22,7 @@ import 'package:veylo/data/mock/profile_mock_repository.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/profile/profile_border.dart';
 import 'package:veylo/models/profile/profile_user.dart';
+import 'package:veylo/screens/chat/direct_chat_page.dart';
 import 'package:veylo/screens/profile/follow_page.dart';
 import 'package:veylo/screens/profile/profile_actions_sheet.dart';
 import 'package:veylo/screens/profile/share_profile_sheet.dart';
@@ -79,6 +81,7 @@ class _ProfilePageState extends State<ProfilePage> {
   /// Başka kullanıcının sunucudan yüklenen profili.
   ProfileUser? _remote;
   bool _followBusy = false;
+  bool _messageBusy = false;
 
   /// Gerçek gönderiler (null: örnek/mock profil).
   List<Post>? _posts;
@@ -200,8 +203,24 @@ class _ProfilePageState extends State<ProfilePage> {
     } finally {
       if (mounted) setState(() => _followBusy = false);
     }
-    if (mounted) await _loadRemote(id!);
+    if (mounted) await _loadRemote(id);
     widget.onFollowTap?.call();
+  }
+
+  /// Takip edilen profilde doğrudan sohbet açar. Karşı taraf takip etmiyorsa istek olur.
+  Future<void> _message() async {
+    final id = _remote?.id ?? widget.user?.id;
+    if (!SafetyRepository.isRealUser(id) || _messageBusy) return;
+    setState(() => _messageBusy = true);
+    try {
+      final thread = await ChatRepository.instance.createDirect(id!);
+      if (!mounted) return;
+      await DirectChatPage.open(context, thread);
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    } finally {
+      if (mounted) setState(() => _messageBusy = false);
+    }
   }
 
   @override
@@ -288,10 +307,29 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 const SizedBox(height: 18),
               ] else ...[
-                AppPrimaryButton(
-                  label: _following ? t.following : t.follow,
-                  onPressed: _toggleFollow,
-                ),
+                if (_following)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _OutlineProfileButton(
+                          label: t.following,
+                          onPressed: _followBusy ? null : _toggleFollow,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: AppPrimaryButton(
+                          label: _messageBusy ? '...' : 'Message',
+                          onPressed: _messageBusy ? null : _message,
+                        ),
+                      ),
+                    ],
+                  )
+                else
+                  AppPrimaryButton(
+                    label: t.follow,
+                    onPressed: _toggleFollow,
+                  ),
                 const SizedBox(height: 18),
               ],
               _ProfileMediaTabs(
@@ -597,6 +635,46 @@ class _StatCard extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _OutlineProfileButton extends StatelessWidget {
+  const _OutlineProfileButton({required this.label, this.onPressed});
+
+  final String label;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: AppSizes.primaryButtonHeight,
+      child: Material(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(AppBorders.buttonOuterRadius),
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(AppBorders.buttonOuterRadius),
+          child: Ink(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(AppBorders.buttonOuterRadius),
+              border: Border.all(color: AppColors.selectionBorder, width: 1.5),
+            ),
+            child: Center(
+              child: AppText(
+                label,
+                style: const TextStyle(
+                  fontFamily: AppFonts.poppins,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  height: 1,
+                  color: AppColors.selectionBorder,
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );

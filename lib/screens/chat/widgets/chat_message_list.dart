@@ -16,6 +16,7 @@ class ChatMessageList extends StatefulWidget {
     this.peerLastReadSeq,
     this.seenLabel,
     this.onRetry,
+    this.onUnlockDecision,
     this.onLoadOlder,
     this.skipFirstIncoming = false,
     this.peerAvatarUrl,
@@ -26,6 +27,7 @@ class ChatMessageList extends StatefulWidget {
   final int? peerLastReadSeq;
   final String? seenLabel;
   final ValueChanged<ChatMessage>? onRetry;
+  final Future<void> Function(ChatMessage message, String decision)? onUnlockDecision;
   final VoidCallback? onLoadOlder;
 
   /// İlk gelen mesaj [leading] içinde (istek bloğu) gösterildiyse listede tekrar gösterme.
@@ -84,7 +86,7 @@ class _ChatMessageListState extends State<ChatMessageList> {
       ...widget.leading,
       for (final (i, m) in msgs.indexed) ...[
         if (m.type == 'SYSTEM')
-          _UnlockNotice(message: m)
+          _UnlockNotice(message: m, onDecision: widget.onUnlockDecision)
         else
         _Bubble(
           message: m,
@@ -127,41 +129,146 @@ class _ChatMessageListState extends State<ChatMessageList> {
   }
 }
 
-class _UnlockNotice extends StatelessWidget {
-  const _UnlockNotice({required this.message});
+class _UnlockNotice extends StatefulWidget {
+  const _UnlockNotice({required this.message, this.onDecision});
 
   final ChatMessage message;
+  final Future<void> Function(ChatMessage message, String decision)? onDecision;
+
+  @override
+  State<_UnlockNotice> createState() => _UnlockNoticeState();
+}
+
+class _UnlockNoticeState extends State<_UnlockNotice> {
+  bool _busy = false;
+
+  Future<void> _decide(String decision) async {
+    final send = widget.onDecision;
+    if (send == null || _busy) return;
+    setState(() => _busy = true);
+    try {
+      await send(widget.message, decision);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final t = Translations.of(context).chats;
-    final title = switch (message.body) {
-      'unlock:initial' => t.milestoneInitial,
+    final body = widget.message.body;
+    final title = switch (body) {
+      'unlock:initial' || 'unlock:initial:approved' || 'unlock:initial:rejected' => t.milestoneInitial,
       'unlock:photo' => t.milestonePhoto,
       'unlock:full' => t.milestoneFull,
-      _ => message.body ?? '',
+      _ => body ?? '',
     };
-    final text = message.isMine
-        ? 'You sent a request: $title'
-        : 'The person you\'re chatting with sent you a request about $title';
+    final mine = widget.message.isMine;
+    final text = switch (body) {
+      'unlock:initial:approved' => mine
+          ? 'They approved. Their name stays visible.'
+          : 'You approved. Your name stays visible in this chat.',
+      'unlock:initial:rejected' => mine
+          ? 'They declined the name request.'
+          : 'You declined the name request.',
+      'unlock:initial' => mine
+          ? 'You sent a request to see their name.'
+          : 'This person sent you a request to see your name.',
+      _ => mine
+          ? 'You sent a request: $title'
+          : 'The person you\'re chatting with sent you a request about $title',
+    };
+    final canAnswer = body == 'unlock:initial' && !mine && widget.onDecision != null && widget.message.id != null;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Center(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            color: const Color(0x14998FED),
-            borderRadius: BorderRadius.circular(12),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 320),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: const Color(0x14998FED),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              children: [
+                AppText(
+                  text,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontFamily: AppFonts.poppins,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 13,
+                    height: 18 / 13,
+                    color: Color(0xA6000000),
+                  ),
+                ),
+                if (canAnswer) ...[
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _UnlockAction(
+                          label: t.approve,
+                          color: AppColors.strangerApprove,
+                          enabled: !_busy,
+                          onTap: () => _decide('approve'),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _UnlockAction(
+                          label: t.reject,
+                          color: AppColors.strangerReject,
+                          enabled: !_busy,
+                          onTap: () => _decide('reject'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ],
+            ),
           ),
-          child: AppText(
-            text,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontFamily: AppFonts.poppins,
-              fontWeight: FontWeight.w500,
-              fontSize: 13,
-              height: 18 / 13,
-              color: Color(0xA6000000),
+        ),
+      ),
+    );
+  }
+}
+
+class _UnlockAction extends StatelessWidget {
+  const _UnlockAction({
+    required this.label,
+    required this.color,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  final String label;
+  final Color color;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: color.withValues(alpha: 0.10),
+      borderRadius: BorderRadius.circular(8),
+      child: InkWell(
+        onTap: enabled ? onTap : null,
+        borderRadius: BorderRadius.circular(8),
+        child: SizedBox(
+          height: 40,
+          child: Center(
+            child: AppText(
+              label,
+              style: TextStyle(
+                fontFamily: AppFonts.poppins,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                height: 1,
+                color: enabled ? color : color.withValues(alpha: 0.4),
+              ),
             ),
           ),
         ),

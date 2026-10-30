@@ -295,6 +295,7 @@ class _AnonymousChatPageState extends State<AnonymousChatPage> {
                   peerLastReadSeq: thread.peerLastReadSeq,
                   seenLabel: t.seen,
                   onRetry: _ctrl.retry,
+                  onUnlockDecision: _ctrl.respondUnlock,
                   onLoadOlder: _ctrl.loadOlder,
                   skipFirstIncoming: firstIncoming != null,
                   peerAvatarUrl: thread.avatarUrl,
