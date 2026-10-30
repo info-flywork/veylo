@@ -7,6 +7,7 @@ import {
   messagesQuery,
   sendMessageBody,
   unlockRequestBody,
+  unlockResponseBody,
 } from '../../validators/conversation.validator';
 import { emitToUser } from '../emitter';
 import { WindowLimiter } from '../rate-limiter';
@@ -32,6 +33,11 @@ export function registerChatHandlers(socket: Socket) {
   /** connection:request { conversationId, milestone } → sohbete sistem satırı düşer. */
   on(socket, 'connection:request', unlockRequestBody, ({ conversationId, milestone }) =>
     conversationService.requestUnlock(userId, conversationId, milestone),
+  );
+
+  /** connection:respond { conversationId, messageId, decision } → isim kalıcı açılır veya reddedilir. */
+  on(socket, 'connection:respond', unlockResponseBody, ({ conversationId, messageId, decision }) =>
+    conversationService.respondUnlock(userId, conversationId, messageId, decision),
   );
 
   /** message:read { conversationId, seq } */

@@ -57,7 +57,11 @@ async function broadcastConversation(c: ConversationFull) {
 function previewOf(type: MessageType, body?: string | null) {
   if (type === 'IMAGE') return '📷 Photo';
   if (type === 'VOICE') return '🎤 Voice message';
-  if (type === 'SYSTEM') return 'Unlock request';
+  if (type === 'SYSTEM') {
+    if (body === 'unlock:initial:approved') return 'Name shared';
+    if (body === 'unlock:initial:rejected') return 'Name request declined';
+    return 'Unlock request';
+  }
   return (body ?? '').slice(0, 120);
 }
 
@@ -300,6 +304,14 @@ async function requestUnlock(
 ) {
   const c = await loadForMember(conversationId, viewerId);
   if (c.type !== 'ANONYMOUS') throw AppError.badRequest('NOT_ANONYMOUS');
+  if (milestone === 'initial') {
+    const peer = peerOf(c, viewerId);
+    if (peer?.nameShared) throw AppError.badRequest('NAME_ALREADY_SHARED');
+    const pending = await prisma.message.findFirst({
+      where: { conversationId, senderId: viewerId, type: 'SYSTEM', body: 'unlock:initial' },
+    });
+    if (pending) return serializeMessage(pending, c, viewerId);
+  }
   const { message } = await send(
     viewerId,
     conversationId,
@@ -307,6 +319,48 @@ async function requestUnlock(
     true,
   );
   return message;
+}
+
+/** İsim isteğini karşı taraf onaylar veya reddeder. Onayda adı kalıcı açılır. */
+async function respondUnlock(
+  viewerId: string,
+  conversationId: string,
+  messageId: string,
+  decision: 'approve' | 'reject',
+) {
+  const c = await loadForMember(conversationId, viewerId);
+  if (c.type !== 'ANONYMOUS') throw AppError.badRequest('NOT_ANONYMOUS');
+  const msg = await prisma.message.findFirst({ where: { id: messageId, conversationId: c.id } });
+  if (!msg || msg.type !== 'SYSTEM' || msg.body !== 'unlock:initial') {
+    throw AppError.badRequest('UNLOCK_NOT_PENDING');
+  }
+  if (msg.senderId === viewerId) throw AppError.forbidden('CANNOT_RESPOND_OWN_REQUEST');
+
+  const approved = decision === 'approve';
+  const body = approved ? 'unlock:initial:approved' : 'unlock:initial:rejected';
+  const preview = approved ? 'Name shared' : 'Name request declined';
+  await prisma.$transaction([
+    prisma.message.update({ where: { id: msg.id }, data: { body } }),
+    ...(approved
+      ? [
+          prisma.conversationMember.update({
+            where: { conversationId_userId: { conversationId: c.id, userId: viewerId } },
+            data: { nameShared: true },
+          }),
+        ]
+      : []),
+    ...(c.lastSeq === msg.seq
+      ? [prisma.conversation.update({ where: { id: c.id }, data: { lastMessagePreview: preview } })]
+      : []),
+  ]);
+
+  const fresh = await loadForMember(conversationId, viewerId);
+  const updated = { ...msg, body };
+  await fanOutMessage(fresh, updated, viewerId);
+  return {
+    message: serializeMessage(updated, fresh, viewerId),
+    conversation: await serializeFor(fresh, viewerId),
+  };
 }
 
 async function assertCanSend(c: ConversationFull, viewerId: string) {
@@ -594,6 +648,7 @@ export const conversationService = {
   createAnonymous,
   send,
   requestUnlock,
+  respondUnlock,
   messages,
   markRead,
   approve,
