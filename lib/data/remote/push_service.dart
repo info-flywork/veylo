@@ -235,11 +235,23 @@ class PushService {
     final message = e['message'];
     final rawConversation = e['conversation'];
     if (message is! Map || rawConversation is! Map) return;
-    if (message['isMine'] == true) return;
+    final rawBody = message['body'] as String?;
+    final notice = unlockNotice(_language, rawBody);
+    final approvedForMe = message['isMine'] == true && (rawBody?.endsWith(':approved') ?? false);
     final thread = ChatThread.fromApi(
       Map<String, dynamic>.from(rawConversation),
     );
+    if (message['isMine'] == true) {
+      if (approvedForMe && !thread.muted && notice != null) {
+        _show(conversationId: thread.id, title: notice.title, body: notice.body);
+      }
+      return;
+    }
     if (thread.muted || thread.id == ChatStore.instance.activeConversationId) {
+      return;
+    }
+    if (notice != null) {
+      _show(conversationId: thread.id, title: notice.title, body: notice.body);
       return;
     }
 
@@ -269,6 +281,17 @@ class PushService {
       _onCall(m.data['inviteId'] as String?);
       return;
     }
+    if (m.data['type'] == 'unlock') {
+      if (SocketService.instance.connected.value) return;
+      final raw = m.data['body'] as String?;
+      final notice = unlockNotice(_language, raw);
+      _show(
+        conversationId: m.data['conversationId'] as String? ?? '',
+        title: notice?.title ?? m.notification?.title ?? '',
+        body: notice?.body ?? m.notification?.body ?? '',
+      );
+      return;
+    }
     if (Platform.isIOS || SocketService.instance.connected.value) return;
     final conversationId = m.data['conversationId'] as String?;
     if (conversationId == ChatStore.instance.activeConversationId) return;
@@ -285,6 +308,7 @@ class PushService {
     required String conversationId,
     required String title,
     required String body,
+    bool playSound = true,
   }) {
     return _local.show(
       id: conversationId.hashCode & 0x7fffffff,
@@ -297,12 +321,13 @@ class PushService {
           NotificationTexts.of(_language).channelName,
           importance: Importance.high,
           priority: Priority.high,
+          playSound: playSound,
         ),
         iOS: DarwinNotificationDetails(
           presentAlert: true,
           presentBanner: true,
           presentList: true,
-          presentSound: true,
+          presentSound: playSound,
           threadIdentifier: conversationId,
         ),
       ),

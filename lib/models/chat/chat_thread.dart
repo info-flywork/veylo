@@ -33,6 +33,7 @@ class ChatThread {
     this.groupIsPrivate = false,
     this.groupRole,
     this.peerIsAi = false,
+    this.peerAvatarBlurred = true,
   }) : _isGroup = isGroup,
        _isAnonymous = isAnonymous,
        _connectionProgress = connectionProgress,
@@ -85,6 +86,9 @@ class ChatThread {
   /// Karşı taraf Veylo'nun AI karakteri (anonimken de bilinir, "AI" rozeti).
   final bool peerIsAi;
 
+  /// Anonim sohbette fotoğraf bulanık kalsın. Tam profil onayında false.
+  final bool peerAvatarBlurred;
+
   bool get isGroupAdmin => groupRole == 'OWNER' || groupRole == 'ADMIN';
 
   /// Backend'de karşılığı olmayan yerel sohbet (ör. Vibes demo akışı).
@@ -115,6 +119,7 @@ class ChatThread {
       groupIsPrivate: group?['isPrivate'] as bool? ?? false,
       groupRole: group?['myRole'] as String?,
       peerIsAi: peer?['isAi'] as bool? ?? false,
+      peerAvatarBlurred: peer?['avatarBlurred'] != false,
       // Profiller açılınca normal sohbet gibi gösterilir.
       isAnonymous: isAnonymous && !revealed,
       maskedName: isAnonymous && !revealed ? title : null,
@@ -166,6 +171,7 @@ class ChatThread {
     groupIsPrivate: groupIsPrivate,
     groupRole: groupRole,
     peerIsAi: peerIsAi,
+    peerAvatarBlurred: peerAvatarBlurred,
   );
 
   bool get isGroup => _isGroup ?? false;

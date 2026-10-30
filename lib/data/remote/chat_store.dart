@@ -191,6 +191,7 @@ class ChatStore extends ChangeNotifier {
       'username': t.peerUsername,
       'displayName': t.maskedName ?? t.title,
       'avatarUrl': t.avatarUrl.isEmpty ? null : t.avatarUrl,
+      'avatarBlurred': t.peerAvatarBlurred,
       'isAi': t.peerIsAi,
     },
     'isOnline': t.isOnline,
