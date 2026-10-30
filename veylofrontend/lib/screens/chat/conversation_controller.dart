@@ -186,6 +186,25 @@ class ConversationController extends ChangeNotifier {
     _notify();
   }
 
+  /// İsim isteğini onayla veya reddet. Onayda karşı tarafın adı kalıcı açılır.
+  Future<void> respondUnlock(ChatMessage message, String decision) async {
+    final id = message.id;
+    if (id == null || _thread.isLocalOnly) return;
+    final res = await _socket.request('connection:respond', {
+      'conversationId': _thread.id,
+      'messageId': id,
+      'decision': decision,
+    });
+    final map = Map<String, dynamic>.from(res as Map);
+    if (map['message'] is Map) {
+      _upsertMessage(ChatMessage.fromJson(Map<String, dynamic>.from(map['message'] as Map)));
+    }
+    if (map['conversation'] is Map) {
+      _onConversation(Map<String, dynamic>.from(map['conversation'] as Map));
+    }
+    _notify();
+  }
+
   /// Başarısız mesaja dokununca aynı clientMsgId ile tekrar (sunucu ikinci kez yazmaz).
   Future<void> retry(ChatMessage failed) async {
     _upsertMessage(failed.copyWith(status: ChatMessageStatus.sending));
