@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import type { Gender } from '@prisma/client';
 import { TOKENS } from '../config/constants';
 import { env } from '../config/env';
@@ -16,6 +17,8 @@ export const CALL = {
   anonSeconds: !env.isProd && env.CALL_ANON_SECONDS ? env.CALL_ANON_SECONDS : 60,
   /** Süre dolunca "devam" oyları için bekleme. */
   voteSeconds: 20,
+  /** Çevrimiçi kullanıcıya giden anonim arama isteğinin süresi. */
+  ringSeconds: 20,
   /** Bir görüntülü ödemenin süresi. */
   videoMinutes: 15,
   /** Az önce konuşulan kişiyle hemen tekrar eşleşilmez. */
@@ -40,8 +43,8 @@ interface Ticket {
   target: CallTarget;
   blocked: Set<string>;
   persona?: boolean;
-  /** Sırada değil; uygulamayı açık tutan gerçek kullanıcı. */
-  invited?: boolean;
+  /** Bu aramada daha önce teklif giden kullanıcılar. */
+  asked?: Set<string>;
 }
 
 interface LiveCall {
@@ -57,12 +60,18 @@ interface LiveCall {
   videoTimer: NodeJS.Timeout | null;
   /** Karşı taraf AI karakterse oyunu kendisi vermiş sayılır. */
   personaId: string | null;
-  /** Aramaya çekilen çevrimiçi kullanıcı. Kimliği, arayan devam deyince açılır. */
-  invitedId: string | null;
+}
+
+interface PendingInvite {
+  id: string;
+  caller: Ticket;
+  calleeId: string;
+  timer: NodeJS.Timeout;
 }
 
 const queue: Ticket[] = [];
 const personaWait = new Map<string, NodeJS.Timeout>();
+const invites = new Map<string, PendingInvite>();
 const calls = new Map<string, LiveCall>();
 const userCall = new Map<string, string>();
 const recentPair = new Map<string, number>();
@@ -110,6 +119,8 @@ async function joinQueue(userId: string, target: CallTarget) {
   const [other] = queue.splice(idx, 1);
   clearPersonaWait(other!.userId);
   clearPersonaWait(userId);
+  cancelInvite(other!.userId, false);
+  cancelInvite(userId, false);
   await startCall(other!, me);
   return { status: 'matched' as const };
 }
@@ -140,6 +151,7 @@ async function matchWaiting(userId: string) {
 
 /** Uygulaması açık gerçek kullanıcıyı aramaya alır. Sırada araması gerekmez. */
 async function matchOnlineHuman(userId: string) {
+  if (invites.has(userId)) return true;
   const i = queue.findIndex((t) => t.userId === userId);
   if (i === -1 || userCall.has(userId)) return false;
   const me = queue[i]!;
@@ -170,18 +182,56 @@ async function matchOnlineHuman(userId: string) {
     return !last || Date.now() - last > CALL.rematchCooldownMs;
   });
   const pool = fresh.length ? fresh : open;
-  const pick = pool[Math.floor(Math.random() * pool.length)];
+  const pick = pool.find((u) => !me.asked?.has(u.id) && !invites.has(u.id) && ![...invites.values()].some((v) => v.calleeId === u.id));
   if (!pick) return false;
 
-  queue.splice(i, 1);
-  await startCall(me, {
-    userId: pick.id,
-    gender: pick.gender,
+  me.asked ??= new Set();
+  me.asked.add(pick.id);
+  const invite: PendingInvite = {
+    id: randomUUID(),
+    caller: me,
+    calleeId: pick.id,
+    timer: setTimeout(() => cancelInvite(userId, true), CALL.ringSeconds * 1000),
+  };
+  invites.set(userId, invite);
+  emitToUser(pick.id, 'call:incoming', { inviteId: invite.id });
+  logger.info({ caller: userId, callee: pick.id }, 'Anonim arama onayı istendi');
+  return true;
+}
+
+function cancelInvite(callerId: string, resumeSearch: boolean) {
+  const inv = invites.get(callerId);
+  if (!inv) return;
+  clearTimeout(inv.timer);
+  invites.delete(callerId);
+  emitToUser(inv.calleeId, 'call:invite_ended', { inviteId: inv.id });
+  if (!resumeSearch || userCall.has(callerId)) return;
+  if (!queue.some((t) => t.userId === callerId) && presence.isOnline(callerId)) queue.unshift(inv.caller);
+  if (queue.some((t) => t.userId === callerId)) schedulePersonaMatch(callerId);
+}
+
+async function acceptInvite(userId: string, inviteId: string) {
+  const inv = [...invites.values()].find((v) => v.id === inviteId && v.calleeId === userId);
+  if (!inv) throw AppError.notFound('INVITE_NOT_FOUND');
+  clearTimeout(inv.timer);
+  invites.delete(inv.caller.userId);
+  clearPersonaWait(inv.caller.userId);
+  const i = queue.findIndex((t) => t.userId === inv.caller.userId);
+  if (i >= 0) queue.splice(i, 1);
+  await startCall(inv.caller, {
+    userId,
+    gender: null,
     target: 'any',
     blocked: new Set(),
-    invited: true,
   });
-  return true;
+  return { accepted: true };
+}
+
+function declineInvite(userId: string, inviteId: string) {
+  const inv = [...invites.values()].find((v) => v.id === inviteId && v.calleeId === userId);
+  if (!inv) return { declined: true };
+  cancelInvite(inv.caller.userId, true);
+  return { declined: true };
 }
 
 async function matchPersona(userId: string) {
@@ -212,6 +262,7 @@ async function matchPersona(userId: string) {
 
 function leaveQueue(userId: string) {
   clearPersonaWait(userId);
+  cancelInvite(userId, false);
   const i = queue.findIndex((t) => t.userId === userId);
   if (i >= 0) queue.splice(i, 1);
 }
@@ -258,7 +309,6 @@ async function startCall(a: Ticket, b: Ticket) {
     videoUntil: null,
     videoTimer: null,
     personaId: a.persona ? a.userId : b.persona ? b.userId : null,
-    invitedId: b.invited ? b.userId : a.invited ? a.userId : null,
   };
   calls.set(call.id, live);
   userCall.set(a.userId, call.id);
@@ -279,19 +329,8 @@ async function startCall(a: Ticket, b: Ticket) {
     });
   }
 
-  const invited = live.invitedId;
-  if (invited) {
-    const caller = invited === b.userId ? a.userId : b.userId;
-    emitToUser(invited, 'call:incoming', {
-      callId: call.id,
-      endsAt,
-      rtc: rtcCredentials(live.channel, invited),
-      peerUid: agoraUid(caller),
-    });
-  }
-
   live.timers.push(setTimeout(() => timesUp(call.id), CALL.anonSeconds * 1000));
-  logger.info({ callId: call.id, invited: Boolean(invited) }, 'Arama eşleşti');
+  logger.info({ callId: call.id }, 'Arama eşleşti');
 }
 
 function timesUp(callId: string) {
@@ -314,8 +353,6 @@ async function keepTalking(userId: string, callId: string) {
   const c = loadMine(userId, callId);
   if (c.phase !== 'vote') throw AppError.badRequest('NOT_VOTING');
   c.keep.add(userId);
-  // Çevrimiçi çekilen kişi oylama ekranında değildir; arayan devam deyince kimliği açılır.
-  if (c.invitedId && userId !== c.invitedId) c.keep.add(c.invitedId);
   emitToUser(peerOf(c, userId), 'call:peer_kept', { callId });
   if (c.keep.size < 2) return { waiting: true };
 
@@ -429,6 +466,9 @@ async function hangUp(userId: string, callId: string) {
 /** Son bağlantısı koptu: sıradan çıkar, kısa bir süre içinde dönmezse görüşmeyi bitir. */
 function onDisconnect(userId: string) {
   leaveQueue(userId);
+  for (const inv of [...invites.values()]) {
+    if (inv.calleeId === userId) cancelInvite(inv.caller.userId, true);
+  }
   const callId = userCall.get(userId);
   if (!callId) return;
   clearTimeout(graceTimers.get(userId));
@@ -450,6 +490,8 @@ function onConnect(userId: string) {
 export const callService = {
   joinQueue,
   leaveQueue,
+  acceptInvite,
+  declineInvite,
   keepTalking,
   requestVideo,
   respondVideo,
