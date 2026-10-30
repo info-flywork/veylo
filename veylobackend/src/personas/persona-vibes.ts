@@ -7,9 +7,25 @@ import { vibeSystemPrompt } from './prompts';
 
 /** Kontrol aralığı ve her turda bir karakterin paylaşma olasılığı. */
 const TICK_MS = 20 * 60 * 1000;
-const SHARE_CHANCE = 0.4;
-const MAX_PER_DAY = 2;
-const MIN_GAP_MS = 6 * 60 * 60 * 1000;
+const SHARE_CHANCE = 0.45;
+const MAX_PER_DAY = 3;
+const MIN_GAP_MS = 4 * 60 * 60 * 1000;
+
+/** Anahtar yokken de akış boş kalmasın diye kısa, insan gibi satırlar. */
+const FALLBACK_VIBES = [
+  'gece 3 ve hâlâ uyuyamıyorum',
+  'bugün kimseye anlatamadığım bir şey var',
+  'eski bir şarkı açıldı ve durdum',
+  'bazen sadece biri dinlese yeter',
+  'yarın her şeyi düzeltirim diyorum, yine',
+  'şehir çok kalabalık, ben değilim',
+  'kahve soğudu, düşünce bitmedi',
+  'tanımadığım birine yazmak istiyorum',
+  'bugün biraz daha nazik olayım dedim',
+  'aynı soruyu üçüncü kez düşündüm',
+  'yağmur varsa dışarı çıkasım geliyor',
+  'sessiz bir gün, kafam değil',
+];
 
 /** Gece 02:00-08:00 (TR saati) arası paylaşım seyrek: gerçek bir akış gibi dalgalı. */
 function quietHour() {
@@ -40,13 +56,12 @@ async function tick() {
   const def = PERSONAS.find((p) => p.username === pick?.username);
   if (!pick || !def) return;
 
-  const body = await writeVibe(def);
-  if (!body) return;
+  const body = (await writeVibe(def)) ?? fallbackVibe();
   await prisma.vibe.create({
     data: {
       authorId: pick.id,
       body,
-      anonymous: Math.random() < 0.7,
+      anonymous: Math.random() < 0.5,
       expiresAt: new Date(Date.now() + VIBE.ttlHours * 60 * 60 * 1000),
     },
   });
@@ -65,6 +80,10 @@ async function writeVibe(def: PersonaDef) {
   const text = raw?.trim().replace(/^["“”']+|["“”']+$/g, '').split('\n')[0]?.trim();
   if (!text || text.length < 4) return null;
   return text.slice(0, VIBE.maxLength);
+}
+
+function fallbackVibe() {
+  return FALLBACK_VIBES[Math.floor(Math.random() * FALLBACK_VIBES.length)]!;
 }
 
 export function startPersonaVibes() {

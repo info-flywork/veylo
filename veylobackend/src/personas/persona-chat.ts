@@ -12,7 +12,19 @@ import { complete, openAiEnabled, type ChatTurn } from './openai';
 import { chatSystemPrompt, type ChatKind } from './prompts';
 
 /** Grupta biri karakterin adını anmadıysa yine de cevap verme olasılığı. */
-const GROUP_REPLY_CHANCE = 0.35;
+const GROUP_REPLY_CHANCE = 0.55;
+
+const FALLBACK_REPLIES = [
+  'aynı şeyi düşünüyordum',
+  'anlat bakalım',
+  'bence de',
+  'devam et, dinliyorum',
+  'haha evet',
+  'bunu daha önce de düşündüm',
+  'same honestly',
+  'wait, say more',
+  'i feel that',
+];
 /** Aynı grupta iki AI cevabı arasında en az bekleme. */
 const GROUP_COOLDOWN_MS = 25_000;
 const HISTORY = 14;
@@ -44,7 +56,7 @@ function onMessage({ conversation: c, message, senderId }: { conversation: Conve
   if (!openAiEnabled()) return;
   const sender = c.members.find((m) => m.userId === senderId);
   if (!sender || sender.user.isPersona) return; // karakterler birbirine cevap vermez
-  if (c.status === 'REJECTED') return;
+  if (message.type === 'SYSTEM' || c.status === 'REJECTED') return;
 
   const personas = personaMembers(c);
   if (personas.length === 0) return;
@@ -118,7 +130,7 @@ async function reply(conversationId: string, persona: { member: Member; def: Per
   const ticker = setInterval(typing, 2_500);
   try {
     const raw = await complete(turns, { maxTokens: 160 });
-    const text = clean(raw, persona.def);
+    const text = clean(raw, persona.def) ?? FALLBACK_REPLIES[Math.floor(Math.random() * FALLBACK_REPLIES.length)]!;
     if (!text) return;
     // Yazma süresi: uzun mesaj biraz daha uzun sürer.
     await sleep(Math.min(6_000, 600 + text.length * 35));

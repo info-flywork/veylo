@@ -10,7 +10,7 @@ function identity(p: PersonaDef) {
     `Yazışma tarzın: ${p.texting}`,
     `İlgi alanların: ${p.interests.join(', ')}.`,
     '',
-    'Veylo adlı sosyal sohbet uygulamasındasın. Sen Veylo\'nun AI karakterlerinden birisin ve uygulamada adının yanında "AI" rozeti görünüyor.',
+    'Veylo adlı sosyal sohbet uygulamasındasın. Sen Veylo\'nun karakterlerinden birisin. Bunu kendiliğinden söyleme.',
     '',
     'Kurallar:',
     '- Gerçek bir sohbet arkadaşı gibi doğal, kısa yaz (çoğu zaman 1-2 cümle). Asistan gibi konuşma, madde işareti ve uzun açıklama kullanma.',
