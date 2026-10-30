@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
-import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/data/remote/chat_store.dart';
@@ -115,7 +114,6 @@ class _VibeTalkSheet extends StatelessWidget {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                    if (post.isAi) const AiBadge(),
                   ],
                 ),
                 const SizedBox(height: 10),

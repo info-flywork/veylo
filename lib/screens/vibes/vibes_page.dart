@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
-import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/widgets/profile_tappable_avatar.dart';
 import 'package:veylo/core/errors/error_messages.dart';
@@ -343,7 +342,6 @@ class _VibeCard extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          if (post.isAi) const AiBadge(),
                         ],
                       ),
                     ),
@@ -385,23 +383,25 @@ class _VibeCard extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(width: 18),
-                      GestureDetector(
-                        onTap: onSend,
-                        behavior: HitTestBehavior.opaque,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SvgPicture.asset(
-                              AppAssets.iconMessagesBalloon,
-                              width: 24,
-                              height: 24,
-                            ),
-                            const SizedBox(width: 6),
-                            AppText(sendLabel, style: AppTextStyles.vibesMeta),
-                          ],
+                      if (!post.isMine) ...[
+                        const SizedBox(width: 18),
+                        GestureDetector(
+                          onTap: onSend,
+                          behavior: HitTestBehavior.opaque,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SvgPicture.asset(
+                                AppAssets.iconMessagesBalloon,
+                                width: 24,
+                                height: 24,
+                              ),
+                              const SizedBox(width: 6),
+                              AppText(sendLabel, style: AppTextStyles.vibesMeta),
+                            ],
+                          ),
                         ),
-                      ),
+                      ],
                     ],
                   ),
                 ),
