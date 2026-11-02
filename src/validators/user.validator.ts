@@ -62,3 +62,8 @@ export const listQuery = z.object({
   cursor: z.string().optional(),
   limit: z.coerce.number().int().min(1).max(50).default(30),
 });
+
+/** Takipçi / takip listesi: isim veya kullanıcı adında arama (q). */
+export const followListQuery = listQuery.extend({
+  q: z.string().trim().max(50).optional(),
+});

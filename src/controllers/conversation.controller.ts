@@ -59,6 +59,12 @@ export async function deleteAllForMe(req: Request, res: Response) {
   res.json(await conversationService.deleteAllForMe(req.user!.id));
 }
 
+/** Gönderen mesajı herkes için geri alır. */
+export async function deleteMessage(req: Request, res: Response) {
+  await conversationService.deleteMessage(req.user!.id, cid(req), req.valid.params.messageId as string);
+  res.status(204).end();
+}
+
 export async function blockPeer(req: Request, res: Response) {
   await conversationService.blockPeer(req.user!.id, cid(req));
   res.status(204).end();

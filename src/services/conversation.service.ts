@@ -58,6 +58,7 @@ async function broadcastConversation(c: ConversationFull) {
 function previewOf(type: MessageType, body?: string | null) {
   if (type === 'IMAGE') return '📷 Photo';
   if (type === 'VOICE') return '🎤 Voice message';
+  if (body?.startsWith('sticker:')) return '🎭 Sticker';
   if (type === 'SYSTEM') {
     if (body === 'unlock:initial:approved') return 'Name shared';
     if (body === 'unlock:initial:rejected') return 'Name request declined';
@@ -449,7 +450,13 @@ async function fanOutMessage(c: ConversationFull, message: Parameters<typeof ser
       await notificationService.pushToUser(m.userId, (t) => {
         const title = c.type === 'GROUP' ? `${name} · ${c.title ?? t.group}` : name;
         const body =
-          message.type === 'IMAGE' ? t.photo : message.type === 'VOICE' ? t.voice : previewOf(message.type, message.body);
+          message.type === 'IMAGE'
+            ? t.photo
+            : message.type === 'VOICE'
+              ? t.voice
+              : message.body?.startsWith('sticker:')
+                ? t.sticker
+                : previewOf(message.type, message.body);
         return {
           title: isRequest ? t.messageRequestTitle : title,
           body: isRequest ? t.messageRequestBody(title) : body,
@@ -464,16 +471,17 @@ async function fanOutMessage(c: ConversationFull, message: Parameters<typeof ser
 async function messages(
   viewerId: string,
   conversationId: string,
-  q: { beforeSeq?: number; afterSeq?: number; limit: number },
+  q: { beforeSeq?: number; afterSeq?: number; limit: number; type?: 'TEXT' | 'IMAGE' | 'VOICE' },
 ) {
   const c = await loadForMember(conversationId, viewerId);
+  const byType = q.type ? { type: q.type } : {};
   const me = c.members.find((m) => m.userId === viewerId)!;
   const floor = me.clearedSeq;
 
   let rows;
   if (q.afterSeq !== undefined) {
     rows = await prisma.message.findMany({
-      where: { conversationId: c.id, seq: { gt: Math.max(q.afterSeq, floor) } },
+      where: { conversationId: c.id, seq: { gt: Math.max(q.afterSeq, floor) }, ...byType },
       orderBy: { seq: 'asc' },
       take: q.limit,
     });
@@ -482,6 +490,7 @@ async function messages(
       where: {
         conversationId: c.id,
         seq: { gt: floor, ...(q.beforeSeq ? { lt: q.beforeSeq } : {}) },
+        ...byType,
       },
       orderBy: { seq: 'desc' },
       take: q.limit,
@@ -502,7 +511,10 @@ async function messages(
   return {
     items: rows.map((m) => serializeMessage(m, c, viewerId, former)),
     lastSeq: c.lastSeq,
-    hasMore: q.afterSeq !== undefined ? rows.length === q.limit : (rows[0]?.seq ?? 0) > floor + 1,
+    hasMore:
+      q.afterSeq !== undefined || q.type
+        ? rows.length === q.limit
+        : (rows[0]?.seq ?? 0) > floor + 1,
   };
 }
 
@@ -525,6 +537,39 @@ async function markRead(viewerId: string, conversationId: string, seq: number) {
       }),
   );
   return { seq: target };
+}
+
+/**
+ * Mesajı herkes için geri alır (yalnızca gönderen). Satır silinir; seq sayacı geri gitmez.
+ * Son mesaj silindiyse sohbet özeti bir önceki mesaja döner. Üyelere `message:deleted` gider.
+ */
+async function deleteMessage(viewerId: string, conversationId: string, messageId: string) {
+  const c = await loadForMember(conversationId, viewerId);
+  const msg = await prisma.message.findFirst({ where: { id: messageId, conversationId: c.id } });
+  if (!msg) throw AppError.notFound('MESSAGE_NOT_FOUND');
+  if (msg.senderId !== viewerId) throw AppError.forbidden('NOT_MESSAGE_SENDER');
+  if (msg.type === 'SYSTEM') throw AppError.badRequest('CANNOT_DELETE_SYSTEM_MESSAGE');
+
+  await prisma.message.delete({ where: { id: msg.id } });
+
+  let fresh = c;
+  if (c.lastSeq === msg.seq) {
+    const prev = await prisma.message.findFirst({
+      where: { conversationId: c.id },
+      orderBy: { seq: 'desc' },
+    });
+    const preview = prev ? previewOf(prev.type, prev.body) : '';
+    await prisma.conversation.update({
+      where: { id: c.id },
+      data: { lastMessagePreview: preview, lastMessageAt: prev?.createdAt ?? c.lastMessageAt },
+    });
+    fresh = { ...c, lastMessagePreview: preview, lastMessageAt: prev?.createdAt ?? c.lastMessageAt };
+  }
+
+  for (const m of c.members) {
+    emitToUser(m.userId, 'message:deleted', { conversationId: c.id, messageId: msg.id, seq: msg.seq });
+  }
+  if (fresh !== c) await broadcastConversation(fresh);
 }
 
 // ───────────────────────────── istekler ─────────────────────────────
@@ -644,9 +689,28 @@ async function blockPeer(viewerId: string, conversationId: string) {
 async function reportPeer(
   viewerId: string,
   conversationId: string,
-  input: { reason: Prisma.ReportCreateInput['reason']; details?: string; alsoBlock: boolean },
+  input: { reason: Prisma.ReportCreateInput['reason']; details?: string; alsoBlock: boolean; messageId?: string },
 ) {
   const c = await loadForMember(conversationId, viewerId);
+  // Mesaj şikayeti: hedef mesajın göndereni (grupta da çalışır). Mesaj sonradan geri alınsa da
+  // içerik incelenebilsin diye metni rapora eklenir.
+  if (input.messageId) {
+    const msg = await prisma.message.findFirst({ where: { id: input.messageId, conversationId: c.id } });
+    if (!msg || msg.type === 'SYSTEM') throw AppError.notFound('MESSAGE_NOT_FOUND');
+    if (msg.senderId === viewerId) throw AppError.badRequest('CANNOT_REPORT_SELF');
+    const snapshot = msg.type === 'TEXT' ? `"${msg.body ?? ''}"` : `[${msg.type}] ${msg.mediaUrl ?? ''}`;
+    const result = await safetyService.report({
+      reporterId: viewerId,
+      targetUserId: msg.senderId,
+      context: 'CHAT',
+      conversationId: c.id,
+      contentId: msg.id,
+      reason: input.reason,
+      details: [snapshot, input.details].filter(Boolean).join('\n').slice(0, 1000),
+    });
+    if (input.alsoBlock && c.type !== 'GROUP') await blockPeer(viewerId, conversationId);
+    return result;
+  }
   const peer = c.type === 'GROUP' ? null : peerOf(c, viewerId);
   if (!peer) throw AppError.badRequest('NO_PEER');
   const result = await safetyService.report({
@@ -684,6 +748,7 @@ export const conversationService = {
   respondUnlock,
   messages,
   markRead,
+  deleteMessage,
   approve,
   reject,
   reveal,
