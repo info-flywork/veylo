@@ -11,29 +11,40 @@ import { personaLimits } from './limits';
 import { complete, openAiEnabled, type ChatTurn } from './openai';
 import { chatSystemPrompt, type ChatKind } from './prompts';
 
-/** Grupta biri karakterin adını anmadıysa yine de cevap verme olasılığı. */
-const GROUP_REPLY_CHANCE = 0.55;
-
-const FALLBACK_REPLIES = [
+const TR_REPLIES = [
   'aynı şeyi düşünüyordum',
-  'anlat bakalım',
-  'bence de',
-  'devam et, dinliyorum',
-  'haha evet',
+  'anlat bakalım, dinliyorum',
+  'bence de, devam et',
   'bunu daha önce de düşündüm',
+  'valla evet',
+  'biraz açar mısın',
+  'ben de öyle hissediyorum',
+  'haha tam olarak',
+  'sonra ne oldu',
+  'buna katılırım',
+];
+const EN_REPLIES = [
   'same honestly',
   'wait, say more',
   'i feel that',
+  'okay and then',
+  'yeah i get that',
+  'haha true',
+  'keep going',
+  'that’s fair',
 ];
-/** Aynı grupta iki AI cevabı arasında en az bekleme. */
-const GROUP_COOLDOWN_MS = 25_000;
 const HISTORY = 14;
+/** Grupta gerçek biri susunca cevap bu sürenin içinde gelsin. */
+const GROUP_DELAY_MIN = 45_000;
+const GROUP_DELAY_MAX = 58_000;
+/** Birebir sohbette cevap 1, 2 ya da 3 dakika sonra. */
+const DIRECT_DELAYS = [60_000, 120_000, 180_000];
 
 type Member = ConversationFull['members'][number];
 
 /** Sohbet başına bekleyen cevap: yeni mesaj gelirse zamanlayıcı baştan başlar (birleşik cevap). */
 const pending = new Map<string, NodeJS.Timeout>();
-const lastGroupReply = new Map<string, number>();
+const replying = new Set<string>();
 
 const rand = (min: number, max: number) => min + Math.random() * (max - min);
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -52,8 +63,39 @@ function mentions(text: string, def: PersonaDef) {
   return t.includes(first) || t.includes(def.username.toLocaleLowerCase('tr'));
 }
 
+function soundsTurkish(text: string) {
+  return /[çğıöşüÇĞİÖŞÜ]|\b(ben|sen|bir|değil|mi|mı|ne|çok|var|yok|selam|merhaba|evet|hayır)\b/i.test(text);
+}
+
+function fallbackReply(sample: string) {
+  const pool = soundsTurkish(sample) ? TR_REPLIES : EN_REPLIES;
+  return pool[Math.floor(Math.random() * pool.length)]!;
+}
+
+function delayFor(kind: string) {
+  if (kind === 'GROUP') return rand(GROUP_DELAY_MIN, GROUP_DELAY_MAX);
+  const base = DIRECT_DELAYS[Math.floor(Math.random() * DIRECT_DELAYS.length)]!;
+  return base + rand(-8_000, 8_000);
+}
+
+function schedule(
+  conversationId: string,
+  persona: { member: Member; def: PersonaDef },
+  userId: string,
+  delay: number,
+) {
+  const key = `${conversationId}:${persona.member.userId}`;
+  clearTimeout(pending.get(key));
+  pending.set(
+    key,
+    setTimeout(() => {
+      pending.delete(key);
+      void reply(conversationId, persona, userId).catch((err) => logger.warn({ err }, 'AI karakter cevabı başarısız'));
+    }, delay),
+  );
+}
+
 function onMessage({ conversation: c, message, senderId }: { conversation: ConversationFull; message: Message; senderId: string }) {
-  if (!openAiEnabled()) return;
   const sender = c.members.find((m) => m.userId === senderId);
   if (!sender || sender.user.isPersona) return; // karakterler birbirine cevap vermez
   if (message.type === 'SYSTEM' || c.status === 'REJECTED') return;
@@ -64,32 +106,64 @@ function onMessage({ conversation: c, message, senderId }: { conversation: Conve
   let chosen: { member: Member; def: PersonaDef } | undefined;
   if (c.type === 'GROUP') {
     const text = message.body ?? '';
-    chosen = personas.find((p) => mentions(text, p.def));
-    if (!chosen) {
-      if (Date.now() - (lastGroupReply.get(c.id) ?? 0) < GROUP_COOLDOWN_MS) return;
-      if (Math.random() > GROUP_REPLY_CHANCE) return;
-      chosen = personas[Math.floor(Math.random() * personas.length)];
-    }
+    chosen = personas.find((p) => mentions(text, p.def)) ?? personas[Math.floor(Math.random() * personas.length)];
   } else {
     chosen = personas[0];
   }
   if (!chosen) return;
 
-  // Aynı sohbette art arda gelen mesajlar tek cevapta toplanır.
-  const key = `${c.id}:${chosen.member.userId}`;
-  clearTimeout(pending.get(key));
-  const target = chosen;
-  pending.set(
-    key,
-    setTimeout(() => {
-      pending.delete(key);
-      void reply(c.id, target, senderId).catch((err) => logger.warn({ err }, 'AI karakter cevabı başarısız'));
-    }, rand(1_500, 4_000)),
-  );
+  // Grupta gerçek biri bir dakika içinde yazarsa zamanlayıcı sıfırlanır ve karakter susar.
+  // Birebirde art arda gelen mesajlar tek cevapta toplanır; süre 1, 2 ya da 3 dakika.
+  schedule(c.id, chosen, senderId, delayFor(c.type));
+}
+
+/** Sunucu yeniden başlarsa, bir dakikadır cevapsız kalan grup mesajını kaçırma. */
+async function catchUpQuietGroups() {
+  const convos = await prisma.conversation.findMany({
+    where: {
+      type: 'GROUP',
+      status: 'ACCEPTED',
+      lastMessageAt: {
+        gte: new Date(Date.now() - 15 * 60 * 1000),
+        lte: new Date(Date.now() - GROUP_DELAY_MAX),
+      },
+      lastSenderId: { not: null },
+    },
+    select: { id: true, lastSenderId: true },
+    take: 12,
+  });
+  if (convos.length === 0) return;
+  const humans = await prisma.user.findMany({
+    where: { id: { in: convos.map((c) => c.lastSenderId!) }, isPersona: false },
+    select: { id: true },
+  });
+  const humanIds = new Set(humans.map((h) => h.id));
+  for (const convo of convos) {
+    if (!convo.lastSenderId || !humanIds.has(convo.lastSenderId)) continue;
+    if ([...pending.keys()].some((key) => key.startsWith(`${convo.id}:`))) continue;
+    try {
+      const loaded = await conversationService.loadForMember(convo.id, convo.lastSenderId);
+      const personas = personaMembers(loaded);
+      const chosen = personas[Math.floor(Math.random() * personas.length)];
+      if (!chosen) continue;
+      schedule(convo.id, chosen, convo.lastSenderId, rand(2_000, 8_000));
+    } catch (err) {
+      logger.warn({ err, conversationId: convo.id }, 'Sessiz grup okunamadı');
+    }
+  }
 }
 
 async function reply(conversationId: string, persona: { member: Member; def: PersonaDef }, userId: string) {
-  if (!personaLimits.takeUserReply(userId)) return;
+  if (replying.has(conversationId)) return;
+  replying.add(conversationId);
+  try {
+    await deliver(conversationId, persona, userId);
+  } finally {
+    replying.delete(conversationId);
+  }
+}
+
+async function deliver(conversationId: string, persona: { member: Member; def: PersonaDef }, userId: string) {
   const personaId = persona.member.userId;
   let c = await conversationService.loadForMember(conversationId, personaId);
 
@@ -99,6 +173,15 @@ async function reply(conversationId: string, persona: { member: Member; def: Per
     c = await conversationService.loadForMember(conversationId, personaId);
   }
   if (c.status !== 'ACCEPTED') return;
+
+  const latest = await prisma.message.findFirst({
+    where: { conversationId: c.id },
+    orderBy: { seq: 'desc' },
+    select: { senderId: true, sender: { select: { isPersona: true } } },
+  });
+  // Bu arada bir karakter yazdıysa ya da başka bir gerçek kullanıcı cevap verdiyse sus.
+  if (!latest || latest.sender.isPersona || latest.senderId !== userId) return;
+  if (!personaLimits.takeUserReply(userId)) return;
 
   const history = await prisma.message.findMany({
     where: { conversationId: c.id },
@@ -129,13 +212,14 @@ async function reply(conversationId: string, persona: { member: Member; def: Per
   // İstemci "yazıyor"u 3 sn sonra gizler; cevap üretilirken yenilenir.
   const ticker = setInterval(typing, 2_500);
   try {
-    const raw = await complete(turns, { maxTokens: 160 });
-    const text = clean(raw, persona.def) ?? FALLBACK_REPLIES[Math.floor(Math.random() * FALLBACK_REPLIES.length)]!;
+    const lastHuman = [...history].reverse().find((m) => m.senderId === userId);
+    const sample = lastHuman?.body ?? '';
+    const raw = openAiEnabled() ? await complete(turns, { maxTokens: 160 }) : null;
+    const text = clean(raw, persona.def) ?? fallbackReply(sample);
     if (!text) return;
     // Yazma süresi: uzun mesaj biraz daha uzun sürer.
     await sleep(Math.min(6_000, 600 + text.length * 35));
     await conversationService.send(personaId, c.id, { clientMsgId: randomUUID(), type: 'TEXT', body: text });
-    if (kind === 'GROUP') lastGroupReply.set(c.id, Date.now());
   } finally {
     clearInterval(ticker);
   }
@@ -165,4 +249,7 @@ export function startPersonaChat() {
   chatEvents.on('reveal:consent', (e) => {
     void onRevealConsent(e).catch((err) => logger.warn({ err }, 'AI karakter reveal onayı başarısız'));
   });
+  const catchUp = () => void catchUpQuietGroups().catch((err) => logger.warn({ err }, 'Sessiz grup taraması başarısız'));
+  setTimeout(catchUp, 20_000);
+  setInterval(catchUp, 30_000).unref();
 }
