@@ -24,7 +24,10 @@ function identity(p: PersonaDef) {
   ].join('\n');
 }
 
-export function chatSystemPrompt(p: PersonaDef, ctx: { kind: ChatKind; groupTitle?: string | null; quote?: string | null }) {
+export function chatSystemPrompt(
+  p: PersonaDef,
+  ctx: { kind: ChatKind; groupTitle?: string | null; quote?: string | null; language?: 'tr' | 'en' | 'other' },
+) {
   const lines = [identity(p), ''];
   if (ctx.kind === 'ANONYMOUS') {
     lines.push(
@@ -37,6 +40,13 @@ export function chatSystemPrompt(p: PersonaDef, ctx: { kind: ChatKind; groupTitl
     );
   } else {
     lines.push('Bu birebir bir sohbet. Son mesaja değin, kısa yaz ve ara sıra bir soruyla devam ettir. Her cevapta aynı kalıbı kullanma.');
+  }
+  if (ctx.language === 'tr') {
+    lines.push('Son mesaj Türkçe. Cevabın tamamı Türkçe olsun. İngilizce kelime ve cümle kullanma.');
+  } else if (ctx.language === 'en') {
+    lines.push('The latest message is English. Reply only in English.');
+  } else {
+    lines.push('Karşı tarafın son mesajıyla aynı dilde cevap ver. Dili değiştirme.');
   }
   return lines.join('\n');
 }
