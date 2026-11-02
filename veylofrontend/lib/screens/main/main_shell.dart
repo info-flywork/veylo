@@ -12,6 +12,7 @@ import 'package:veylo/data/remote/room_store.dart';
 import 'package:veylo/data/remote/socket_service.dart';
 import 'package:veylo/data/remote/vibe_store.dart';
 import 'package:veylo/screens/discover/rooms/room_approved_sheet.dart';
+import 'package:veylo/screens/discover/rooms/room_list_item.dart';
 import 'package:veylo/data/remote/discover_store.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/screens/call/call_stranger_page.dart';
@@ -116,9 +117,25 @@ class _MainShellState extends State<MainShell> {
     });
   }
 
-  /// Bildirime dokunuldu: Chats sekmesine geç ve sohbeti aç.
+  /// Bildirime dokunuldu: oda ise odaya, değilse sohbete gider.
   Future<void> _openConversation(String id) async {
     if (!mounted) return;
+    final room = RoomPush.parse(id);
+    if (room != null) {
+      Navigator.of(context).popUntil((r) => r.isFirst);
+      setState(() => _tab = AppNavTab.discover);
+      await openLiveRoom(
+        context,
+        RoomListItem(
+          id: room.roomId,
+          title: room.title,
+          count: 1,
+          isPrivate: room.isPrivate,
+          avatars: const [],
+        ),
+      );
+      return;
+    }
     Navigator.of(context).popUntil((r) => r.isFirst);
     setState(() => _tab = AppNavTab.chat);
     try {
