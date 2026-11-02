@@ -13,6 +13,7 @@ class Me {
     this.borderId,
     this.gender,
     this.heightCm,
+    this.languages = const [],
     this.relationshipGoal,
     this.zodiac,
     this.education,
@@ -40,6 +41,9 @@ class Me {
   /// FEMALE | MALE | NON_BINARY | PREFER_NOT_TO_SAY
   final String? gender;
   final int? heightCm;
+
+  /// Konuştuğu diller (`en`, `tr` …) — Edit Profile > Languages.
+  final List<String> languages;
   final String? relationshipGoal;
   final String? zodiac;
   final String? education;
@@ -67,6 +71,9 @@ class Me {
       borderId: j['borderId'] as String?,
       gender: j['gender'] as String?,
       heightCm: (j['heightCm'] as num?)?.toInt(),
+      languages: [
+        for (final l in (j['languages'] as List?) ?? const []) '$l',
+      ],
       relationshipGoal: j['relationshipGoal'] as String?,
       zodiac: j['zodiac'] as String?,
       education: j['education'] as String?,
@@ -98,6 +105,7 @@ class Me {
     borderId: borderId,
     gender: gender,
     heightCm: heightCm,
+    languages: languages,
     relationshipGoal: relationshipGoal,
     zodiac: zodiac,
     education: education,

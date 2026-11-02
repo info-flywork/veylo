@@ -4,7 +4,6 @@ import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
-import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/widgets/profile_tappable_avatar.dart';
 import 'package:veylo/data/remote/chat_repository.dart';
@@ -12,6 +11,7 @@ import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/data/remote/group_repository.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/models/chat/chat_message.dart';
 import 'package:veylo/models/group/group_models.dart';
 import 'package:veylo/screens/profile/profile_navigation.dart';
 
@@ -19,9 +19,9 @@ class _GroupMember {
   const _GroupMember({
     required this.name,
     required this.avatar,
+    required this.source,
     this.role,
     this.isYou = false,
-    this.source,
   });
 
   final String name;
@@ -29,30 +29,27 @@ class _GroupMember {
   final String? role;
   final bool isYou;
 
-  /// Gerçek grupta üye (demo modunda null).
-  final GroupMember? source;
+  final GroupMember source;
 }
 
-/// Grup sohbetinden açılan bilgi / ayarlar ekranı.
-/// [conversationId] verilirse gerçek grup; yoksa örnek verilerle gösterilir.
-/// Gruptan ayrılınca `true` döner.
+/// Grup sohbetinden açılan bilgi / ayarlar ekranı. Gruptan ayrılınca `true` döner.
 class GroupInfoPage extends StatefulWidget {
   const GroupInfoPage({
     super.key,
     required this.title,
-    this.memberCount = 6,
-    this.conversationId,
+    required this.conversationId,
+    this.memberCount = 1,
   });
 
   final String title;
   final int memberCount;
-  final String? conversationId;
+  final String conversationId;
 
   static Future<bool?> open(
     BuildContext context, {
     required String title,
-    int memberCount = 6,
-    String? conversationId,
+    required String conversationId,
+    int memberCount = 1,
   }) {
     return Navigator.of(context).push<bool>(
       MaterialPageRoute<bool>(
@@ -79,19 +76,19 @@ class _GroupInfoPageState extends State<GroupInfoPage> {
   static const _membersBg = Color(0xFFF4F4F9);
   static const _rowBorder = Color(0xFFE2E2E2);
 
-  String? get _id => widget.conversationId;
+  String get _id => widget.conversationId;
 
   @override
   void initState() {
     super.initState();
-    if (_id != null) _load();
+    _load();
   }
 
   Future<void> _load() async {
     try {
-      final info = await _repo.info(_id!);
+      final info = await _repo.info(_id);
       final requests = info.amAdmin && info.pendingRequests > 0
-          ? await _repo.requests(_id!)
+          ? await _repo.requests(_id)
           : const <GroupJoinRequest>[];
       if (!mounted) return;
       setState(() => _apply(info, requests));
@@ -116,27 +113,47 @@ class _GroupInfoPageState extends State<GroupInfoPage> {
   }
 
   Future<void> _setNotifications(bool on) async {
-    final id = _id;
-    if (id == null) return setState(() => _notifications = on);
     setState(() => _notifications = on);
-    await _run(() => ChatRepository.instance.setMuted(id, !on));
+    await _run(() => ChatRepository.instance.setMuted(_id, !on));
   }
 
   Future<void> _setPrivate(bool on) async {
-    final id = _id;
-    if (id == null) return setState(() => _private = on);
-    if (!(_info?.amAdmin ?? false)) return;
+    if (!(_info?.amAdmin ?? false)) {
+      final t = Translations.of(context).discover.groupInfo;
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(t.adminOnly),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      return;
+    }
     setState(() => _private = on);
     await _run(() async {
-      final info = await _repo.setPrivate(id, on);
+      final info = await _repo.setPrivate(_id, on);
       if (mounted) setState(() => _apply(info));
     });
   }
 
+  void _openGallery() {
+    final t = Translations.of(context).discover.groupInfo;
+    Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => _GroupGalleryPage(
+          conversationId: _id,
+          title: t.gallery,
+          emptyLabel: t.galleryEmpty,
+        ),
+      ),
+    );
+  }
+
   Future<void> _decide(GroupJoinRequest r, bool approve) async {
     await _run(() async {
-      final rest = await _repo.decide(_id!, r.id, approve: approve);
-      final info = await _repo.info(_id!);
+      final rest = await _repo.decide(_id, r.id, approve: approve);
+      final info = await _repo.info(_id);
       if (mounted) setState(() => _apply(info, rest));
     });
   }
@@ -160,7 +177,7 @@ class _GroupInfoPageState extends State<GroupInfoPage> {
     );
     if (picked == null || picked.isEmpty) return;
     await _run(() async {
-      final updated = await _repo.addMembers(_id!, picked);
+      final updated = await _repo.addMembers(_id, picked);
       if (mounted) setState(() => _apply(updated));
     });
   }
@@ -201,18 +218,17 @@ class _GroupInfoPageState extends State<GroupInfoPage> {
     await _run(() async {
       final updated = action == 'role'
           ? await _repo.setRole(
-              _id!,
+              _id,
               m.memberId,
               m.role == 'ADMIN' ? 'MEMBER' : 'ADMIN',
             )
-          : await _repo.removeMember(_id!, m.memberId);
+          : await _repo.removeMember(_id, m.memberId);
       if (mounted) setState(() => _apply(updated));
     });
   }
 
   Future<void> _leave() async {
     final id = _id;
-    if (id == null) return Navigator.of(context).pop();
     final t = Translations.of(context).discover.groupInfo;
     final ok = await showDialog<bool>(
       context: context,
@@ -241,46 +257,23 @@ class _GroupInfoPageState extends State<GroupInfoPage> {
   List<_GroupMember> _members(Translations tr) {
     final t = tr.discover.groupInfo;
     final info = _info;
-    if (info != null) {
-      return [
-        for (final m in info.members)
-          _GroupMember(
-            name: m.isYou ? t.you : m.displayName,
-            avatar: (m.avatarUrl?.isNotEmpty ?? false)
-                ? m.avatarUrl!
-                : AppAssets.strangerAvatar,
-            role: m.isAdmin ? t.admin : null,
-            isYou: m.isYou,
-            source: m,
-          ),
-      ];
-    }
+    if (info == null) return const [];
     return [
-      _GroupMember(
-        name: t.you,
-        avatar: AppAssets.fakePerson01,
-        role: t.admin,
-        isYou: true,
-      ),
-      const _GroupMember(name: 'Lyra', avatar: AppAssets.fakePerson02),
-      const _GroupMember(name: 'Jessica', avatar: AppAssets.fakePerson05),
-      const _GroupMember(name: 'Sona', avatar: AppAssets.fakePerson03),
-      const _GroupMember(name: 'Clara', avatar: AppAssets.fakePerson06),
-      const _GroupMember(name: 'Victoria', avatar: AppAssets.fakePerson07),
+      for (final m in info.members)
+        _GroupMember(
+          name: m.isYou ? t.you : m.displayName,
+          avatar: (m.avatarUrl?.isNotEmpty ?? false)
+              ? m.avatarUrl!
+              : AppAssets.strangerAvatar,
+          role: m.isAdmin ? t.admin : null,
+          isYou: m.isYou,
+          source: m,
+        ),
     ];
   }
 
   void _openMember(_GroupMember member) {
     final m = member.source;
-    if (m == null) {
-      openUserProfile(
-        context,
-        displayName: member.isYou ? null : member.name,
-        avatarUrl: member.avatar,
-        userId: member.isYou ? 'user_self' : null,
-      );
-      return;
-    }
     // Anonim üyenin profili açılmaz.
     if (m.userId == null) return;
     openUserProfile(
@@ -301,7 +294,8 @@ class _GroupInfoPageState extends State<GroupInfoPage> {
     final info = _info;
     final title = info?.title ?? widget.title;
     final memberCount = info?.memberCount ?? widget.memberCount;
-    final canAdd = _id == null || (info?.amAdmin ?? false);
+    final canAdd = info?.amAdmin ?? false;
+    final amAdmin = info?.amAdmin ?? false;
     final members = _members(tr);
 
     return Scaffold(
@@ -337,12 +331,16 @@ class _GroupInfoPageState extends State<GroupInfoPage> {
               children: [
                 AppText(t.media, style: AppTextStyles.groupInfoSection),
                 const SizedBox(height: 8),
-                _SettingsRow(
-                  icon: AppAssets.iconGallery,
-                  label: t.gallery,
-                  trailing: const Icon(
-                    Icons.chevron_right_rounded,
-                    color: AppColors.black,
+                GestureDetector(
+                  onTap: _openGallery,
+                  behavior: HitTestBehavior.opaque,
+                  child: _SettingsRow(
+                    icon: AppAssets.iconGallery,
+                    label: t.gallery,
+                    trailing: const Icon(
+                      Icons.chevron_right_rounded,
+                      color: AppColors.black,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -356,26 +354,17 @@ class _GroupInfoPageState extends State<GroupInfoPage> {
                     onChanged: _setNotifications,
                   ),
                 ),
-                _SettingsRow(
-                  icon: AppAssets.iconBlock,
-                  label: t.blocked,
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AppText('0', style: AppTextStyles.groupInfoRow),
-                      const Icon(
-                        Icons.chevron_right_rounded,
-                        color: AppColors.black,
-                      ),
-                    ],
-                  ),
-                ),
+                // Grupta ayrı bir engelleme listesi yok (engelleme kişi bazlı, Profil'den).
                 _SettingsRow(
                   icon: AppAssets.iconPrivateLock,
                   label: t.private,
-                  trailing: _GreenToggle(
-                    value: _private,
-                    onChanged: _setPrivate,
+                  // Yalnız yöneticiler değiştirebilir; diğerlerine soluk görünür.
+                  trailing: Opacity(
+                    opacity: amAdmin ? 1 : 0.45,
+                    child: _GreenToggle(
+                      value: _private,
+                      onChanged: _setPrivate,
+                    ),
                   ),
                 ),
                 if (_requests.isNotEmpty) ...[
@@ -460,9 +449,7 @@ class _GroupInfoPageState extends State<GroupInfoPage> {
                           borderColor: _rowBorder,
                           child: GestureDetector(
                             onTap: () => _openMember(member),
-                            onLongPress: member.source == null
-                                ? null
-                                : () => _memberActions(member.source!),
+                            onLongPress: () => _memberActions(member.source),
                             behavior: HitTestBehavior.opaque,
                             child: Row(
                               children: [
@@ -472,13 +459,9 @@ class _GroupInfoPageState extends State<GroupInfoPage> {
                                   displayName: member.isYou
                                       ? null
                                       : member.name,
-                                  userId: member.source != null
-                                      ? member.source!.userId
-                                      : (member.isYou ? 'user_self' : null),
-                                  enabled:
-                                      member.source == null ||
-                                      member.source!.userId != null,
-                                  blurred: member.source?.blurred ?? false,
+                                  userId: member.source.userId,
+                                  enabled: member.source.userId != null,
+                                  blurred: member.source.blurred,
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
@@ -495,8 +478,6 @@ class _GroupInfoPageState extends State<GroupInfoPage> {
                                                   .groupInfoMemberName,
                                             ),
                                           ),
-                                          if (member.source?.isAi ?? false)
-                                            const AiBadge(compact: true),
                                         ],
                                       ),
                                       if (member.role != null) ...[
@@ -587,7 +568,6 @@ class _RequestRow extends StatelessWidget {
                       style: AppTextStyles.groupInfoMemberName,
                     ),
                   ),
-                  if (u.isAi) const AiBadge(compact: true),
                 ],
               ),
               if (message.isNotEmpty) ...[
@@ -872,6 +852,158 @@ class _GreenToggle extends StatelessWidget {
                   ),
                 ),
               ),
+      ),
+    );
+  }
+}
+
+/// Grubun paylaşılan fotoğrafları (resim mesajları), en yeniler üstte.
+class _GroupGalleryPage extends StatefulWidget {
+  const _GroupGalleryPage({
+    required this.conversationId,
+    required this.title,
+    required this.emptyLabel,
+  });
+
+  final String conversationId;
+  final String title;
+  final String emptyLabel;
+
+  @override
+  State<_GroupGalleryPage> createState() => _GroupGalleryPageState();
+}
+
+class _GroupGalleryPageState extends State<_GroupGalleryPage> {
+  final _scroll = ScrollController();
+  List<ChatMessage> _items = const [];
+  bool _loaded = false;
+  bool _loading = false;
+  bool _hasMore = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _scroll.addListener(() {
+      if (_scroll.position.extentAfter < 400) _loadMore();
+    });
+    _loadMore();
+  }
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadMore() async {
+    if (_loading || !_hasMore) return;
+    _loading = true;
+    try {
+      final before = _items.isEmpty ? null : _items.last.seq;
+      final page = await GroupRepository.instance.images(
+        widget.conversationId,
+        beforeSeq: before,
+      );
+      if (!mounted) return;
+      setState(() {
+        _items = [
+          ..._items,
+          ...page.items.reversed.where((m) => m.mediaUrl != null),
+        ];
+        _hasMore = page.hasMore;
+        _loaded = true;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _loaded = true);
+      showErrorSnackBar(context, e);
+    } finally {
+      _loading = false;
+    }
+  }
+
+  void _open(String url) {
+    showDialog<void>(
+      context: context,
+      barrierColor: AppColors.black.withValues(alpha: 0.9),
+      builder: (context) => GestureDetector(
+        onTap: () => Navigator.of(context).pop(),
+        child: InteractiveViewer(child: Center(child: Image.network(url))),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final top = MediaQuery.paddingOf(context).top;
+    final bottom = MediaQuery.paddingOf(context).bottom;
+
+    return Scaffold(
+      backgroundColor: AppColors.white,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(8, top + 8, 16, 8),
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: const Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    size: 20,
+                    color: AppColors.black,
+                  ),
+                ),
+                Expanded(
+                  child: AppText(
+                    widget.title,
+                    style: AppTextStyles.groupInfoTitle,
+                    maxLines: 1,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: !_loaded
+                ? const Center(child: CircularProgressIndicator())
+                : _items.isEmpty
+                ? Center(
+                    child: AppText(
+                      widget.emptyLabel,
+                      style: AppTextStyles.groupInfoRow,
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                : GridView.builder(
+                    controller: _scroll,
+                    padding: EdgeInsets.fromLTRB(16, 10, 16, 24 + bottom),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 4,
+                          crossAxisSpacing: 4,
+                        ),
+                    itemCount: _items.length,
+                    itemBuilder: (context, index) {
+                      final url = _items[index].mediaUrl!;
+                      return GestureDetector(
+                        onTap: () => _open(url),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            url,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, _, _) =>
+                                const ColoredBox(color: AppColors.inputFill),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
       ),
     );
   }

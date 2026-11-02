@@ -1,16 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
+import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_edit_sheet.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
 
-/// Change Password — Figma bottom sheet (Password + Confirm + Save).
-Future<({String password, String confirm})?> showChangePasswordSheet(
-  BuildContext context,
-) {
-  return showAppEditSheet<({String password, String confirm})>(
+/// Change Password — Figma bottom sheet (Current + Password + Confirm + Save).
+/// Şifreyi sheet içinde değiştirir; başarılıysa `true` ile kapanır.
+Future<bool?> showChangePasswordSheet(BuildContext context) {
+  return showAppEditSheet<bool>(
     context: context,
     builder: (_) => const _ChangePasswordSheet(),
   );
@@ -24,23 +26,68 @@ class _ChangePasswordSheet extends StatefulWidget {
 }
 
 class _ChangePasswordSheetState extends State<_ChangePasswordSheet> {
+  final _currentController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmController = TextEditingController();
+  var _obscureCurrent = true;
   var _obscurePassword = true;
   var _obscureConfirm = true;
+  var _busy = false;
+  String? _error;
 
   @override
   void dispose() {
+    _currentController.dispose();
     _passwordController.dispose();
     _confirmController.dispose();
     super.dispose();
   }
 
-  void _save() {
+  Future<void> _save() async {
+    if (_busy) return;
+    final t = Translations.of(context);
+    final current = _currentController.text;
     final password = _passwordController.text;
     final confirm = _confirmController.text;
-    if (password.isEmpty || confirm.isEmpty) return;
-    Navigator.of(context).pop((password: password, confirm: confirm));
+    if (current.isEmpty || password.isEmpty || confirm.isEmpty) {
+      return setState(() => _error = t.errors.fillAllFields);
+    }
+    if (password != confirm) {
+      return setState(() => _error = t.profile.passwordMismatch);
+    }
+    if (password.length < 6) {
+      return setState(() => _error = t.errors.weakPassword);
+    }
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      await SessionStore.instance.changePassword(
+        currentPassword: current,
+        newPassword: password,
+      );
+      if (mounted) Navigator.of(context).pop(true);
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _busy = false;
+        _error = _message(t, e);
+      });
+    }
+  }
+
+  /// Mevcut şifre yanlışsa giriş hatası yerine ekrana özel metin.
+  String _message(Translations t, Object e) {
+    if (e is FirebaseAuthException) {
+      switch (e.code) {
+        case 'wrong-password':
+        case 'invalid-credential':
+        case 'invalid-login-credentials':
+          return t.profile.currentPasswordWrong;
+      }
+    }
+    return errorMessage(context, e);
   }
 
   @override
@@ -49,12 +96,22 @@ class _ChangePasswordSheetState extends State<_ChangePasswordSheet> {
 
     return AppEditSheet(
       title: t.profile.changePassword,
-      saveLabel: t.profile.save,
+      saveLabel: _busy ? '...' : t.profile.save,
       onSave: _save,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const SizedBox(height: 8),
+          _LabeledPasswordField(
+            label: t.profile.currentPassword,
+            controller: _currentController,
+            obscure: _obscureCurrent,
+            onToggleObscure: () =>
+                setState(() => _obscureCurrent = !_obscureCurrent),
+            hint: t.profile.passwordPlaceholder,
+            textInputAction: TextInputAction.next,
+          ),
+          const SizedBox(height: 24),
           _LabeledPasswordField(
             label: t.auth.password,
             controller: _passwordController,
@@ -75,6 +132,10 @@ class _ChangePasswordSheetState extends State<_ChangePasswordSheet> {
             textInputAction: TextInputAction.done,
             onSubmitted: (_) => _save(),
           ),
+          if (_error != null) ...[
+            const SizedBox(height: 12),
+            AppText(_error!, style: AppTextStyles.fieldError),
+          ],
           const SizedBox(height: 8),
         ],
       ),

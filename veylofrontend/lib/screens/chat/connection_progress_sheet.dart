@@ -5,11 +5,13 @@ import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/models/chat/chat_message.dart';
 
 /// Anonim sohbet — Connection Progress bottom sheet.
 Future<void> showConnectionProgressSheet(
   BuildContext context, {
   required int progress,
+  List<ChatMessage> messages = const [],
   Future<void> Function(String milestone)? onRequest,
 }) {
   return showModalBottomSheet<void>(
@@ -21,6 +23,7 @@ Future<void> showConnectionProgressSheet(
     ),
     builder: (_) => ConnectionProgressSheet(
       progress: progress,
+      messages: messages,
       onRequest: onRequest,
     ),
   );
@@ -30,10 +33,14 @@ class ConnectionProgressSheet extends StatefulWidget {
   const ConnectionProgressSheet({
     super.key,
     required this.progress,
+    this.messages = const [],
     this.onRequest,
   });
 
   final int progress;
+
+  /// Sohbetteki kilit satırları: bekleyen isteğim "Gönderildi", onaylanan adımda istek yok.
+  final List<ChatMessage> messages;
   final Future<void> Function(String milestone)? onRequest;
 
   @override
@@ -41,7 +48,18 @@ class ConnectionProgressSheet extends StatefulWidget {
 }
 
 class _ConnectionProgressSheetState extends State<ConnectionProgressSheet> {
-  final Set<String> _sent = {};
+  late final Set<String> _sent = {
+    for (final m in widget.messages)
+      if (m.isMine && m.type == 'SYSTEM' && (m.body?.startsWith('unlock:') ?? false))
+        if (m.body!.split(':').length == 2) m.body!.split(':')[1],
+  };
+
+  /// Karşı tarafın onayladığı adımlar (isteğe gerek yok).
+  late final Set<String> _shared = {
+    for (final m in widget.messages)
+      if (m.isMine && m.type == 'SYSTEM' && (m.body?.endsWith(':approved') ?? false))
+        m.body!.split(':')[1],
+  };
   String? _busy;
 
   Future<void> _request(String id) async {
@@ -73,7 +91,7 @@ class _ConnectionProgressSheetState extends State<ConnectionProgressSheet> {
       (
         id: 'photo',
         title: t.milestonePhoto,
-        hintUnlocked: t.milestonePhotoHint,
+        hintUnlocked: t.milestonePhotoUnlocked,
         hintLocked: t.milestonePhotoHint,
         at: 70,
       ),
@@ -133,17 +151,25 @@ class _ConnectionProgressSheetState extends State<ConnectionProgressSheet> {
           for (var i = 0; i < milestones.length; i++) ...[
             if (i > 0)
               const Divider(height: 1, thickness: 1, color: Color(0xFFE8E8E8)),
-            _MilestoneRow(
-              title: milestones[i].title,
-              subtitle: widget.progress >= milestones[i].at
-                  ? milestones[i].hintUnlocked
-                  : milestones[i].hintLocked,
-              unlocked: widget.progress >= milestones[i].at,
-              requestLabel: _sent.contains(milestones[i].id) ? 'Sent' : 'Request',
-              busy: _busy == milestones[i].id,
-              onRequest: widget.onRequest == null || _sent.contains(milestones[i].id)
-                  ? null
-                  : () => _request(milestones[i].id),
+            Builder(
+              builder: (context) {
+                final m = milestones[i];
+                final reached = widget.progress >= m.at;
+                // İstek yalnızca ulaşılmış ve karşı tarafça henüz açılmamış adımda.
+                final requestable = reached && !_shared.contains(m.id);
+                final sent = requestable && _sent.contains(m.id);
+                return _MilestoneRow(
+                  title: m.title,
+                  subtitle: reached ? m.hintUnlocked : m.hintLocked,
+                  unlocked: reached,
+                  sent: sent,
+                  requestLabel: sent ? t.requestSent : t.requestAction,
+                  busy: _busy == m.id,
+                  onRequest: widget.onRequest == null || !requestable || sent
+                      ? null
+                      : () => _request(m.id),
+                );
+              },
             ),
           ],
         ],
@@ -157,6 +183,7 @@ class _MilestoneRow extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.unlocked,
+    required this.sent,
     required this.requestLabel,
     required this.busy,
     this.onRequest,
@@ -165,6 +192,7 @@ class _MilestoneRow extends StatelessWidget {
   final String title;
   final String subtitle;
   final bool unlocked;
+  final bool sent;
   final String requestLabel;
   final bool busy;
   final VoidCallback? onRequest;
@@ -218,7 +246,7 @@ class _MilestoneRow extends StatelessWidget {
               ],
             ),
           ),
-          if (onRequest != null || requestLabel == 'Sent')
+          if (onRequest != null || sent)
             GestureDetector(
               onTap: busy ? null : onRequest,
               behavior: HitTestBehavior.opaque,

@@ -107,6 +107,7 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
   }
 
   Future<void> _fetch() async {
+    final unknown = Translations.of(context).discover.story.unknownTrack;
     try {
       final response = await _dio.get<Map<String, dynamic>>(
         'https://api.jamendo.com/v3.0/tracks/',
@@ -122,8 +123,8 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
         final m = raw as Map<String, dynamic>;
         final sec = (m['duration'] as num?)?.toInt() ?? 0;
         return StoryMusicTrack(
-          title: (m['name'] as String?) ?? 'Unknown',
-          artist: (m['artist_name'] as String?) ?? 'Unknown',
+          title: (m['name'] as String?) ?? unknown,
+          artist: (m['artist_name'] as String?) ?? unknown,
           durationSec: sec,
           durationLabel: _fmt(sec),
           imageUrl: m['image'] as String?,
@@ -247,6 +248,7 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
     try {
       await _player.stop();
     } catch (_) {}
+    if (!mounted) return;
     Navigator.of(context).pop(
       track.copyWith(
         clipStartSec: _clipStart.inSeconds,

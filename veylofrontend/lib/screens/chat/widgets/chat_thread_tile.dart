@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
-import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/widgets/profile_tappable_avatar.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/chat/chat_thread.dart';
+import 'package:veylo/screens/chat/widgets/chat_swipe_action.dart';
 
 const _kThreadAvatarSize = 58.0;
 const _kThreadRowHeight = 58.0;
-const _kActionSize = 44.0;
-const _kActionGap = 10.0;
-const _kActionsPadding = 4.0;
+const _kActionGap = kChatSwipeActionGap;
+const _kActionsPadding = kChatSwipeActionsPadding;
 
-/// 3 buton + 2 gap + sağ padding
-const _kRevealWidth = (_kActionSize * 3) + (_kActionGap * 2) + _kActionsPadding;
-
-const _kPinBg = Color(0xFF7C6CD6);
-const _kBlockBg = Color(0xFF6B6480);
-const _kDeleteBg = Color(0xFFD4537E);
+const _kPinBg = kChatSwipePinBg;
+const _kBlockBg = kChatSwipeBlockBg;
+const _kDeleteBg = kChatSwipeDeleteBg;
 
 /// Sunucu sohbet özetini İngilizce saklar. Listedeki satır seçilen dilde okunur.
 String localizedChatPreview(BuildContext context, String raw) {
@@ -34,6 +29,8 @@ String localizedChatPreview(BuildContext context, String raw) {
     'Profile request declined' => t.previewProfileDeclined,
     '📷 Photo' => t.previewPhoto,
     '🎤 Voice message' => t.previewVoice,
+    '🎭 Sticker' => t.previewSticker,
+    _ when raw.startsWith('sticker:') => t.previewSticker,
     _ => raw,
   };
 }
@@ -67,6 +64,15 @@ class _ChatThreadTileState extends State<ChatThreadTile>
   late final AnimationController _controller;
   double _dragExtent = 0;
 
+  /// Verilmeyen aksiyonun butonu gösterilmez; hiç aksiyon yoksa kaydırma kapalı.
+  int get _actionCount => [
+    widget.onPin,
+    widget.onBlock,
+    widget.onDelete,
+  ].where((a) => a != null).length;
+
+  double get _revealWidth => chatSwipeRevealWidth(_actionCount);
+
   @override
   void initState() {
     super.initState();
@@ -75,7 +81,7 @@ class _ChatThreadTileState extends State<ChatThreadTile>
       duration: const Duration(milliseconds: 220),
       value: widget.isOpen ? 1 : 0,
     );
-    _dragExtent = widget.isOpen ? -_kRevealWidth : 0;
+    _dragExtent = widget.isOpen ? -_revealWidth : 0;
   }
 
   @override
@@ -99,7 +105,7 @@ class _ChatThreadTileState extends State<ChatThreadTile>
 
   void _open({bool notify = true}) {
     _controller.animateTo(1, curve: Curves.easeOutCubic);
-    _dragExtent = -_kRevealWidth;
+    _dragExtent = -_revealWidth;
     if (notify) widget.onOpenChanged?.call(true);
   }
 
@@ -110,14 +116,15 @@ class _ChatThreadTileState extends State<ChatThreadTile>
   }
 
   void _onHorizontalDragUpdate(DragUpdateDetails details) {
-    final next = (_dragExtent + details.delta.dx).clamp(-_kRevealWidth, 0.0);
+    final next = (_dragExtent + details.delta.dx).clamp(-_revealWidth, 0.0);
     setState(() => _dragExtent = next);
-    _controller.value = (-_dragExtent / _kRevealWidth).clamp(0.0, 1.0);
+    if (_revealWidth == 0) return;
+    _controller.value = (-_dragExtent / _revealWidth).clamp(0.0, 1.0);
   }
 
   void _onHorizontalDragEnd(DragEndDetails details) {
     final velocity = details.primaryVelocity ?? 0;
-    final shouldOpen = velocity < -400 || _dragExtent < -_kRevealWidth * 0.4;
+    final shouldOpen = velocity < -400 || _dragExtent < -_revealWidth * 0.4;
     if (shouldOpen) {
       _open();
     } else {
@@ -131,6 +138,20 @@ class _ChatThreadTileState extends State<ChatThreadTile>
       height: _kThreadRowHeight,
       child: Stack(
         children: [
+          // Figma: açıkken butonların arkası da satırla aynı açık mor zeminde.
+          Positioned.fill(
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (context, _) => ColoredBox(
+                color: Color.alphaBlend(
+                  const Color(
+                    0xFF998FED,
+                  ).withValues(alpha: 0.1 * _controller.value),
+                  AppColors.white,
+                ),
+              ),
+            ),
+          ),
           Positioned.fill(
             child: Align(
               alignment: Alignment.centerRight,
@@ -139,32 +160,40 @@ class _ChatThreadTileState extends State<ChatThreadTile>
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _SwipeActionButton(
-                      color: _kPinBg,
-                      iconAsset: AppAssets.iconPinned,
-                      onTap: () {
-                        widget.onPin?.call();
-                        _close();
-                      },
-                    ),
-                    const SizedBox(width: _kActionGap),
-                    _SwipeActionButton(
-                      color: _kBlockBg,
-                      iconAsset: AppAssets.iconBlock,
-                      onTap: () {
-                        widget.onBlock?.call();
-                        _close();
-                      },
-                    ),
-                    const SizedBox(width: _kActionGap),
-                    _SwipeActionButton(
-                      color: _kDeleteBg,
-                      iconAsset: AppAssets.iconTrash,
-                      onTap: () {
-                        widget.onDelete?.call();
-                        _close();
-                      },
-                    ),
+                    for (final (i, action) in [
+                      if (widget.onPin != null)
+                        ChatSwipeActionButton(
+                          color: _kPinBg,
+                          iconAsset: AppAssets.iconPinAction,
+                          // Sabitliyse buton sabitlemeyi kaldırır.
+                          crossedOut: widget.thread.pinned,
+                          onTap: () {
+                            widget.onPin?.call();
+                            _close();
+                          },
+                        ),
+                      if (widget.onBlock != null)
+                        ChatSwipeActionButton(
+                          color: _kBlockBg,
+                          iconAsset: AppAssets.iconBlock,
+                          onTap: () {
+                            widget.onBlock?.call();
+                            _close();
+                          },
+                        ),
+                      if (widget.onDelete != null)
+                        ChatSwipeActionButton(
+                          color: _kDeleteBg,
+                          iconAsset: AppAssets.iconTrash,
+                          onTap: () {
+                            widget.onDelete?.call();
+                            _close();
+                          },
+                        ),
+                    ].indexed) ...[
+                      if (i > 0) const SizedBox(width: _kActionGap),
+                      action,
+                    ],
                   ],
                 ),
               ),
@@ -173,13 +202,17 @@ class _ChatThreadTileState extends State<ChatThreadTile>
           AnimatedBuilder(
             animation: _controller,
             builder: (context, child) {
-              final offset = -_kRevealWidth * _controller.value;
+              final offset = -_revealWidth * _controller.value;
               final openAmount = _controller.value;
               return Transform.translate(
                 offset: Offset(offset, 0),
                 child: GestureDetector(
-                  onHorizontalDragUpdate: _onHorizontalDragUpdate,
-                  onHorizontalDragEnd: _onHorizontalDragEnd,
+                  onHorizontalDragUpdate: _actionCount == 0
+                      ? null
+                      : _onHorizontalDragUpdate,
+                  onHorizontalDragEnd: _actionCount == 0
+                      ? null
+                      : _onHorizontalDragEnd,
                   onTap: () {
                     if (_controller.value > 0.05) {
                       _close();
@@ -252,7 +285,6 @@ class _ThreadContent extends StatelessWidget {
                               maxLines: 1,
                             ),
                           ),
-                          if (thread.peerIsAi) const AiBadge(compact: true),
                         ],
                       ),
                     ),
@@ -336,45 +368,6 @@ class _UnreadCount extends StatelessWidget {
           fontSize: 11,
           height: 1,
           color: AppColors.white,
-        ),
-      ),
-    );
-  }
-}
-
-class _SwipeActionButton extends StatelessWidget {
-  const _SwipeActionButton({
-    required this.color,
-    required this.iconAsset,
-    required this.onTap,
-  });
-
-  final Color color;
-  final String iconAsset;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: color,
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: SizedBox(
-          width: _kActionSize,
-          height: _kActionSize,
-          child: Center(
-            child: SvgPicture.asset(
-              iconAsset,
-              width: 24,
-              height: 24,
-              colorFilter: const ColorFilter.mode(
-                AppColors.white,
-                BlendMode.srcIn,
-              ),
-            ),
-          ),
         ),
       ),
     );

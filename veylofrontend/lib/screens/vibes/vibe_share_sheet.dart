@@ -105,6 +105,8 @@ class _VibeComposeSheetState extends State<_VibeComposeSheet> {
         ? t.vibes.replyTitle
         : t.vibes.shareTitle;
     final canSend = _controller.text.trim().isNotEmpty;
+    // Cevap her zaman anonim mesaj isteği olarak gider; anonimlik seçeneği yalnızca paylaşımda.
+    final isReply = widget.mode == VibeComposeMode.reply;
 
     return Padding(
       padding: EdgeInsets.only(bottom: keyboard),
@@ -133,9 +135,10 @@ class _VibeComposeSheetState extends State<_VibeComposeSheet> {
             const SizedBox(height: 12),
             _ShareField(
               controller: _controller,
-              hint: t.vibes.shareHint,
+              hint: isReply ? t.vibes.replyHint : t.vibes.shareHint,
               onChanged: (_) => setState(() {}),
             ),
+            if (!isReply) ...[
             const SizedBox(height: 12),
             SizedBox(
               height: 50,
@@ -168,9 +171,10 @@ class _VibeComposeSheetState extends State<_VibeComposeSheet> {
                 ),
               ),
             ),
+            ],
             const SizedBox(height: 12),
             AppPrimaryButton(
-              label: t.vibes.sendMessage,
+              label: isReply ? t.vibes.sendMessage : t.vibes.post,
               onPressed: canSend ? _onSend : null,
             ),
           ],

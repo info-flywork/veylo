@@ -42,14 +42,33 @@ class UserRepository {
     SessionStore.instance.adjustFollowCounts(followerDelta: -1);
   }
 
-  /// kind: followers | following
-  Future<List<FollowUser>> follows(String userId, String kind) async {
+  /// kind: followers | following. Sayfalı: [cursor] önceki sayfanın `nextCursor`'ı;
+  /// [query] isim / kullanıcı adında sunucu tarafı arama.
+  Future<({List<FollowUser> items, String? nextCursor})> follows(
+    String userId,
+    String kind, {
+    String? cursor,
+    String? query,
+    int limit = 30,
+  }) async {
+    final q = query?.trim();
     final res =
-        await _api.get('/users/$userId/$kind', query: {'limit': '50'}) as Map;
-    return [
-      for (final j in (res['items'] as List).cast<Map>())
-        FollowUser.fromApi(Map<String, dynamic>.from(j)),
-    ];
+        await _api.get(
+              '/users/$userId/$kind',
+              query: {
+                'limit': '$limit',
+                'cursor': ?cursor,
+                if (q != null && q.isNotEmpty) 'q': q,
+              },
+            )
+            as Map;
+    return (
+      items: [
+        for (final j in (res['items'] as List).cast<Map>())
+          FollowUser.fromApi(Map<String, dynamic>.from(j)),
+      ],
+      nextCursor: res['nextCursor'] as String?,
+    );
   }
 
   Future<UsernameAvailability> usernameAvailability(String username) async {

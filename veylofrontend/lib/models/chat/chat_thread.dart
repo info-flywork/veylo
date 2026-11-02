@@ -142,6 +142,7 @@ class ChatThread {
     bool? isOnline,
     int? peerLastReadSeq,
     int? unreadCount,
+    bool? muted,
   }) => ChatThread(
     id: id,
     title: title,
@@ -165,7 +166,7 @@ class ChatThread {
     myRevealConsent: myRevealConsent,
     peerRevealConsent: peerRevealConsent,
     pinned: pinned,
-    muted: muted,
+    muted: muted ?? this.muted,
     peerLastReadSeq: peerLastReadSeq ?? this.peerLastReadSeq,
     contextQuote: contextQuote,
     groupIsPrivate: groupIsPrivate,

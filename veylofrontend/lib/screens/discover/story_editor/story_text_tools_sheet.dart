@@ -143,11 +143,10 @@ TextStyle _fontStyle(String id) {
 
 @immutable
 final class _FontOption {
-  const _FontOption(this.id, this.label, {this.locked = false});
+  const _FontOption(this.id, this.label);
 
   final String id;
   final String label;
-  final bool locked;
 }
 
 const _fonts = [
@@ -163,9 +162,9 @@ const _fonts = [
   _FontOption('muna', 'Muna'),
   _FontOption('mysoul', 'My Soul'),
   _FontOption('noteworthy', 'Noteworthy'),
-  _FontOption('oxygen', 'Oxygen', locked: true),
-  _FontOption('ponomar', 'Ponomar', locked: true),
-  _FontOption('puritan', 'Puritan', locked: true),
+  _FontOption('oxygen', 'Oxygen'),
+  _FontOption('ponomar', 'Ponomar'),
+  _FontOption('puritan', 'Puritan'),
 ];
 
 const _colors = [
@@ -577,7 +576,7 @@ final class _FontsPanel extends StatelessWidget {
         final font = _fonts[index];
         final selected = font.id == selectedId;
         return GestureDetector(
-          onTap: font.locked ? null : () => onSelect(font.id),
+          onTap: () => onSelect(font.id),
           child: Stack(
             clipBehavior: Clip.none,
             children: [
@@ -601,9 +600,7 @@ final class _FontsPanel extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: _fontStyle(font.id).copyWith(
-                      color: AppColors.white.withValues(
-                        alpha: font.locked ? 0.45 : 1,
-                      ),
+                      color: AppColors.white,
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                       height: 22 / 16,
@@ -611,21 +608,6 @@ final class _FontsPanel extends StatelessWidget {
                   ),
                 ),
               ),
-              if (font.locked)
-                Positioned(
-                  right: -10,
-                  bottom: -10,
-                  child: Container(
-                    width: 32,
-                    height: 32,
-                    padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF1A151B),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const _StoryIcon(AppAssets.iconStoryLock, size: 16),
-                  ),
-                ),
             ],
           ),
         );
@@ -1196,7 +1178,7 @@ final class _CustomColorPickerDialogState extends State<_CustomColorPickerDialog
                                 ),
                               ),
                               child: Text(
-                                'Done',
+                                Translations.of(context).storyText.done,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 16,

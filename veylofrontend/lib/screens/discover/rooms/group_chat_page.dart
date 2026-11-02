@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/theme/theme.dart';
-import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/widgets/profile_tappable_avatar.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/chat/chat_message.dart';
 import 'package:veylo/models/chat/chat_thread.dart';
 import 'package:veylo/screens/chat/conversation_controller.dart';
+import 'package:veylo/screens/chat/chat_sticker.dart';
+import 'package:veylo/screens/chat/widgets/chat_attachment.dart';
+import 'package:veylo/screens/chat/widgets/chat_composer.dart';
 import 'package:veylo/screens/discover/rooms/group_info_page.dart';
 import 'package:veylo/screens/profile/profile_navigation.dart';
 
@@ -17,17 +18,20 @@ class _GroupMessage {
   const _GroupMessage({
     required this.name,
     required this.body,
+    required this.type,
+    required this.mediaUrl,
     required this.avatar,
     this.isMine = false,
     this.userId,
     this.blurred = false,
     this.failed = false,
     this.source,
-    this.isAi = false,
   });
 
   final String name;
   final String body;
+  final String type;
+  final String? mediaUrl;
   final String avatar;
   final bool isMine;
 
@@ -36,11 +40,12 @@ class _GroupMessage {
   final bool blurred;
   final bool failed;
   final ChatMessage? source;
-  final bool isAi;
 
   factory _GroupMessage.from(ChatMessage m) => _GroupMessage(
     name: m.senderName ?? '',
-    body: m.displayText,
+    body: m.body ?? '',
+    type: m.type,
+    mediaUrl: m.mediaUrl,
     avatar: (m.senderAvatarUrl?.isNotEmpty ?? false)
         ? m.senderAvatarUrl!
         : AppAssets.strangerAvatar,
@@ -49,53 +54,21 @@ class _GroupMessage {
     blurred: m.senderBlurred,
     failed: m.status == ChatMessageStatus.failed,
     source: m,
-    isAi: m.senderIsAi,
   );
 }
 
 /// Grup kartına tıklanınca açılan sohbet ekranı (Nighttime Chats).
-/// [thread] verilirse gerçek grup sohbeti; verilmezse (AI Match gibi henüz
-/// bağlanmamış akışlar) örnek mesajlarla gösterilir.
 class GroupChatPage extends StatefulWidget {
   const GroupChatPage({
     super.key,
     required this.title,
     required this.memberCount,
-    this.avatars = const [
-      AppAssets.fakePerson02,
-      AppAssets.fakePerson01,
-      AppAssets.fakePerson05,
-    ],
-    this.thread,
+    required this.thread,
   });
 
   final String title;
   final int memberCount;
-  final List<String> avatars;
-  final ChatThread? thread;
-
-  static Future<void> open(
-    BuildContext context, {
-    required String title,
-    required int memberCount,
-    List<String>? avatars,
-  }) {
-    return Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => GroupChatPage(
-          title: title,
-          memberCount: memberCount,
-          avatars:
-              avatars ??
-              const [
-                AppAssets.fakePerson02,
-                AppAssets.fakePerson01,
-                AppAssets.fakePerson05,
-              ],
-        ),
-      ),
-    );
-  }
+  final ChatThread thread;
 
   /// Gerçek grup sohbeti.
   static Future<void> openThread(BuildContext context, ChatThread thread) {
@@ -121,10 +94,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
   @override
   void initState() {
     super.initState();
-    final thread = widget.thread;
-    if (thread != null) {
-      _ctrl = ConversationController(thread)..start();
-    }
+    _ctrl = ConversationController(widget.thread)..start();
     _input.addListener(() => setState(() {}));
   }
 
@@ -149,12 +119,11 @@ class _GroupChatPageState extends State<GroupChatPage> {
   }
 
   Future<void> _openInfo(String title, int memberCount) async {
-    final thread = _ctrl?.thread;
     final left = await GroupInfoPage.open(
       context,
       title: title,
       memberCount: memberCount,
-      conversationId: thread?.id,
+      conversationId: _ctrl?.thread.id ?? widget.thread.id,
     );
     if (left == true && mounted) Navigator.of(context).pop();
   }
@@ -178,32 +147,13 @@ class _GroupChatPageState extends State<GroupChatPage> {
     final thread = ctrl?.thread;
     final title = thread?.title ?? widget.title;
     final memberCount = thread?.memberCount ?? widget.memberCount;
-    final avatars = thread == null
-        ? widget.avatars
-        : ((thread.groupAvatarUrls?.isNotEmpty ?? false)
-              ? thread.groupAvatarUrls!
-              : const [AppAssets.strangerAvatar]);
+    final avatars = (thread?.groupAvatarUrls?.isNotEmpty ?? false)
+        ? thread!.groupAvatarUrls!
+        : const [AppAssets.strangerAvatar];
 
     final messages = ctrl != null
         ? [for (final m in ctrl.messages) _GroupMessage.from(m)]
-        : [
-            _GroupMessage(
-              name: 'Victoria',
-              body: t.sampleVictoria,
-              avatar: AppAssets.fakePerson05,
-            ),
-            _GroupMessage(
-              name: 'Sona',
-              body: t.sampleSona,
-              avatar: AppAssets.fakePerson03,
-            ),
-            _GroupMessage(
-              name: '',
-              body: t.sampleOwn,
-              avatar: AppAssets.fakePerson01,
-              isMine: true,
-            ),
-          ];
+        : const <_GroupMessage>[];
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -278,11 +228,33 @@ class _GroupChatPageState extends State<GroupChatPage> {
           ),
           Padding(
             padding: EdgeInsets.fromLTRB(16, 8, 16, bottom > 0 ? bottom : 8),
-            child: _GroupMessageInput(
+            child: ChatComposer(
               hint: live.messageHint,
               controller: _input,
               onSend: _send,
               onChanged: (_) => ctrl?.onTyping(),
+              onSticker: (asset) async {
+                final current = _ctrl;
+                if (current == null) return;
+                await current.send(ChatSticker.encode(asset));
+                if (!context.mounted) return;
+                final err = current.lastError;
+                if (err != null) {
+                  current.lastError = null;
+                  showErrorSnackBar(context, err);
+                }
+              },
+              onMedia: (kind, path) async {
+                final current = _ctrl;
+                if (current == null) return;
+                await current.sendMedia(kind, path);
+                if (!context.mounted) return;
+                final err = current.lastError;
+                if (err != null) {
+                  current.lastError = null;
+                  showErrorSnackBar(context, err);
+                }
+              },
             ),
           ),
         ],
@@ -350,22 +322,7 @@ class _GroupChatBubble extends StatelessWidget {
               constraints: BoxConstraints(
                 maxWidth: MediaQuery.sizeOf(context).width * 0.75,
               ),
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: const BoxDecoration(
-                  color: AppColors.selectionBorder,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16),
-                    bottomLeft: Radius.circular(16),
-                    bottomRight: Radius.circular(4),
-                  ),
-                ),
-                child: AppText(
-                  message.body,
-                  style: AppTextStyles.groupChatOwnBody,
-                ),
-              ),
+              child: _GroupBubbleBody(message: message, mine: true),
             ),
           ),
         ),
@@ -408,26 +365,11 @@ class _GroupChatBubble extends StatelessWidget {
                         style: AppTextStyles.groupChatSender,
                       ),
                     ),
-                    if (message.isAi) const AiBadge(compact: true),
                   ],
                 ),
               ),
               const SizedBox(height: 4),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: const BoxDecoration(
-                  color: _incomingBg,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(16),
-                    bottomRight: Radius.circular(16),
-                    bottomLeft: Radius.circular(16),
-                  ),
-                ),
-                child: AppText(
-                  message.body,
-                  style: AppTextStyles.groupChatBody,
-                ),
-              ),
+              _GroupBubbleBody(message: message, mine: false),
             ],
           ),
         ),
@@ -436,94 +378,37 @@ class _GroupChatBubble extends StatelessWidget {
   }
 }
 
-class _GroupMessageInput extends StatelessWidget {
-  const _GroupMessageInput({
-    required this.hint,
-    required this.controller,
-    required this.onSend,
-    this.onChanged,
-  });
+class _GroupBubbleBody extends StatelessWidget {
+  const _GroupBubbleBody({required this.message, required this.mine});
 
-  final String hint;
-  final TextEditingController controller;
-  final VoidCallback onSend;
-  final ValueChanged<String>? onChanged;
+  final _GroupMessage message;
+  final bool mine;
 
   @override
   Widget build(BuildContext context) {
+    final sticker = ChatSticker.assetOf(message.body);
+    if (sticker != null) return ChatStickerImage(asset: sticker);
     return Container(
-      height: 56,
-      padding: const EdgeInsets.fromLTRB(6, 6, 10, 6),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.sheetMuted,
-        borderRadius: BorderRadius.circular(9999),
+        color: mine ? AppColors.selectionBorder : _GroupChatBubble._incomingBg,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(mine ? 16 : 0),
+          topRight: const Radius.circular(16),
+          bottomRight: Radius.circular(mine ? 4 : 16),
+          bottomLeft: const Radius.circular(16),
+        ),
       ),
-      child: Row(
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.selectionBorder,
+      child: message.type == 'TEXT'
+          ? AppText(
+              message.body,
+              style: mine ? AppTextStyles.groupChatOwnBody : AppTextStyles.groupChatBody,
+            )
+          : ChatAttachment(
+              type: message.type,
+              url: message.mediaUrl,
+              mine: mine,
             ),
-            alignment: Alignment.center,
-            child: SvgPicture.asset(
-              AppAssets.cameraIcon,
-              width: 24,
-              height: 24,
-              colorFilter: const ColorFilter.mode(
-                AppColors.white,
-                BlendMode.srcIn,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: TextField(
-              controller: controller,
-              onChanged: onChanged,
-              onSubmitted: (_) => onSend(),
-              textInputAction: TextInputAction.send,
-              style: AppTextStyles.liveRoomMessageHint,
-              cursorColor: AppColors.selectionBorder,
-              decoration: InputDecoration(
-                isDense: true,
-                border: InputBorder.none,
-                hintText: hint,
-                hintStyle: AppTextStyles.liveRoomMessageHint,
-                contentPadding: EdgeInsets.zero,
-              ),
-            ),
-          ),
-          const SizedBox(width: 6),
-          SvgPicture.asset(AppAssets.iconSticker, width: 28, height: 28),
-          const SizedBox(width: 8),
-          SvgPicture.asset(AppAssets.imageIcon, width: 28, height: 28),
-          const SizedBox(width: 8),
-          // Yazı varken mikrofon yerine gönder (direkt sohbetteki düğmeyle aynı).
-          if (controller.text.trim().isEmpty)
-            SvgPicture.asset(AppAssets.iconMicrophone, width: 28, height: 28)
-          else
-            GestureDetector(
-              onTap: onSend,
-              child: Container(
-                width: 28,
-                height: 28,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.selectionBorder,
-                ),
-                alignment: Alignment.center,
-                child: const Icon(
-                  Icons.send_rounded,
-                  size: 15,
-                  color: AppColors.white,
-                ),
-              ),
-            ),
-        ],
-      ),
     );
   }
 }

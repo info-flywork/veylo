@@ -12,16 +12,38 @@ import 'package:veylo/data/remote/group_store.dart';
 import 'package:veylo/data/remote/room_repository.dart';
 import 'package:veylo/data/remote/room_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/models/chat/chat_thread.dart';
 import 'package:veylo/screens/discover/rooms/create_room_or_group_sheet.dart';
-import 'package:veylo/screens/discover/rooms/group_chat_page.dart';
-import 'package:veylo/screens/discover/rooms/room_live_page.dart';
 
-Future<void> showCreateRoomNameSheet(
+/// İsim penceresi kapanınca açılacak oda ya da grup.
+sealed class CreatedSpace {
+  const CreatedSpace();
+}
+
+class CreatedRoom extends CreatedSpace {
+  const CreatedRoom({
+    required this.id,
+    required this.title,
+    required this.anonymous,
+  });
+
+  final String id;
+  final String title;
+  final bool anonymous;
+}
+
+class CreatedGroup extends CreatedSpace {
+  const CreatedGroup(this.thread);
+
+  final ChatThread thread;
+}
+
+Future<CreatedSpace?> showCreateRoomNameSheet(
   BuildContext context, {
   required CreateSpaceType type,
   bool hideAccount = false,
 }) {
-  return showModalBottomSheet<void>(
+  return showModalBottomSheet<CreatedSpace>(
     context: context,
     backgroundColor: AppColors.white,
     isScrollControlled: true,
@@ -54,7 +76,6 @@ class _CreateRoomNameSheetState extends State<_CreateRoomNameSheet> {
   Future<void> _createGroup(String name) async {
     if (_creating) return;
     setState(() => _creating = true);
-    final nav = Navigator.of(context, rootNavigator: true);
     try {
       final thread = await GroupRepository.instance.create(
         title: name,
@@ -63,8 +84,8 @@ class _CreateRoomNameSheetState extends State<_CreateRoomNameSheet> {
       ChatStore.instance.replace(thread);
       GroupStore.instance.refresh();
       if (!mounted) return;
-      nav.pop();
-      await GroupChatPage.openThread(nav.context, thread);
+      // Pencere kendi kapanışını yutsun diye ekranı burada açmıyoruz.
+      Navigator.of(context).pop(CreatedGroup(thread));
     } catch (e) {
       if (mounted) {
         setState(() => _creating = false);
@@ -73,11 +94,10 @@ class _CreateRoomNameSheetState extends State<_CreateRoomNameSheet> {
     }
   }
 
-  /// Oda açmak 50 token; açan kişi doğrudan odaya girer.
+  /// Oda açmak 50 token. Ekran, pencere tamamen kapanınca açılır.
   Future<void> _createRoom(String name) async {
     if (_creating) return;
     setState(() => _creating = true);
-    final nav = Navigator.of(context, rootNavigator: true);
     try {
       final id = await RoomRepository.instance.create(
         title: name,
@@ -85,12 +105,8 @@ class _CreateRoomNameSheetState extends State<_CreateRoomNameSheet> {
       );
       RoomStore.instance.refresh();
       if (!mounted) return;
-      nav.pop();
-      await RoomLivePage.open(
-        nav.context,
-        roomId: id,
-        roomTitle: name,
-        anonymous: widget.hideAccount,
+      Navigator.of(context).pop(
+        CreatedRoom(id: id, title: name, anonymous: widget.hideAccount),
       );
     } catch (e) {
       if (mounted) {

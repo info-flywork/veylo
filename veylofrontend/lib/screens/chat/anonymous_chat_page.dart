@@ -3,49 +3,30 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/theme/theme.dart';
-import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/widgets/profile_tappable_avatar.dart';
 import 'package:veylo/i18n/strings.g.dart';
-import 'package:veylo/models/chat/chat_message.dart';
 import 'package:veylo/models/chat/chat_thread.dart';
+import 'package:veylo/screens/chat/chat_actions_sheet.dart';
+import 'package:veylo/screens/chat/chat_sticker.dart';
 import 'package:veylo/screens/chat/connection_progress_sheet.dart';
 import 'package:veylo/screens/chat/conversation_controller.dart';
 import 'package:veylo/screens/chat/direct_chat_page.dart';
 import 'package:veylo/screens/chat/reveal_profile_sheet.dart';
+import 'package:veylo/screens/chat/widgets/chat_composer.dart';
 import 'package:veylo/screens/chat/widgets/chat_message_list.dart';
 import 'package:veylo/screens/chat/widgets/stranger_request_block.dart';
 
 /// Anonim kullanıcı ile birebir sohbet — Connection header + progress sheet.
 class AnonymousChatPage extends StatefulWidget {
-  const AnonymousChatPage({
-    super.key,
-    required this.thread,
-    this.vibeQuote,
-    this.initialOutgoingMessage,
-  });
+  const AnonymousChatPage({super.key, required this.thread});
 
   final ChatThread thread;
 
-  /// Vibe cevabı akışında karşı tarafın vibe metni (sol balon).
-  final String? vibeQuote;
-
-  /// Kullanıcının vibe cevabı (sağ balon).
-  final String? initialOutgoingMessage;
-
-  static Future<void> open(
-    BuildContext context,
-    ChatThread thread, {
-    String? vibeQuote,
-    String? initialOutgoingMessage,
-  }) {
+  static Future<void> open(BuildContext context, ChatThread thread) {
     return Navigator.of(context).push<void>(
       MaterialPageRoute<void>(
-        builder: (_) => AnonymousChatPage(
-          thread: thread,
-          vibeQuote: vibeQuote,
-          initialOutgoingMessage: initialOutgoingMessage,
-        ),
+        builder: (_) => AnonymousChatPage(thread: thread),
       ),
     );
   }
@@ -123,37 +104,18 @@ class _AnonymousChatPageState extends State<AnonymousChatPage> {
       await showConnectionProgressSheet(
         context,
         progress: progress,
-        onRequest: thread.isLocalOnly ? null : _ctrl.requestUnlock,
+        messages: _ctrl.messages,
+        onRequest: _ctrl.requestUnlock,
       );
       return;
     }
-    final reveal = await showRevealProfileSheet(context, peerUsername: name);
+    final reveal = await showRevealProfileSheet(
+      context,
+      peerUsername: name,
+      myConsent: thread.myRevealConsent,
+      peerConsent: thread.peerRevealConsent,
+    );
     if (reveal == true && mounted) await _requestAction(_ctrl.reveal);
-  }
-
-  /// Backend'i olmayan yerel sohbet (Vibes demo akışı): eski davranış.
-  List<ChatMessage> _localMessages(String sample) {
-    final outgoing = widget.initialOutgoingMessage?.trim();
-    if ((widget.vibeQuote?.trim().isNotEmpty ?? false) ||
-        (outgoing?.isNotEmpty ?? false)) {
-      return [
-        if (outgoing != null && outgoing.isNotEmpty)
-          ChatMessage(
-            clientMsgId: 'local_out',
-            isMine: true,
-            body: outgoing,
-            createdAt: DateTime.now(),
-          ),
-      ];
-    }
-    return [
-      ChatMessage(
-        clientMsgId: 'local_in',
-        isMine: false,
-        body: sample,
-        createdAt: DateTime.now(),
-      ),
-    ];
   }
 
   @override
@@ -168,15 +130,8 @@ class _AnonymousChatPageState extends State<AnonymousChatPage> {
         final thread = _ctrl.thread;
         final progress = thread.connectionProgress.clamp(0, 100);
         final masked = thread.maskedName ?? '**********';
-        final local = thread.isLocalOnly;
-        final preview = thread.lastMessagePreview.trim();
-        final sample = thread.isStrangerRequest
-            ? (preview.isNotEmpty ? preview : t.strangerSampleMessage)
-            : (preview.isNotEmpty ? preview : t.sampleAnonymousMessage);
-        final messages = local ? _localMessages(sample) : _ctrl.messages;
-        final quote = local
-            ? widget.vibeQuote?.trim()
-            : thread.contextQuote?.trim();
+        final messages = _ctrl.messages;
+        final quote = thread.contextQuote?.trim();
         // Bana gelen istek: ilk mesaj Approve / Block / Reject ile gösterilir.
         final firstIncoming = thread.isStrangerRequest
             ? messages.where((m) => !m.isMine).firstOrNull
@@ -237,7 +192,6 @@ class _AnonymousChatPageState extends State<AnonymousChatPage> {
                                     maxLines: 1,
                                   ),
                                 ),
-                                if (thread.peerIsAi) const AiBadge(),
                               ],
                             ),
                             const SizedBox(height: 2),
@@ -254,19 +208,22 @@ class _AnonymousChatPageState extends State<AnonymousChatPage> {
                                   ),
                                 ),
                                 const SizedBox(width: 6),
-                                AppText(
-                                  _ctrl.peerTyping
-                                      ? t.typing
-                                      : (thread.isOnline
-                                            ? t.online
-                                            : t.offline),
-                                  style: const TextStyle(
-                                    fontFamily: AppFonts.poppins,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14,
-                                    height: 16 / 14,
-                                    letterSpacing: 14 * -0.02,
-                                    color: Color(0xA6000000),
+                                Flexible(
+                                  child: AppText(
+                                    _ctrl.peerTyping
+                                        ? t.typing
+                                        : (thread.isOnline
+                                              ? t.online
+                                              : t.offline),
+                                    maxLines: 1,
+                                    style: const TextStyle(
+                                      fontFamily: AppFonts.poppins,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 14,
+                                      height: 16 / 14,
+                                      letterSpacing: 14 * -0.02,
+                                      color: Color(0xA6000000),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -280,6 +237,10 @@ class _AnonymousChatPageState extends State<AnonymousChatPage> {
                         percentLabel: t.connectionPercent(n: progress),
                         progress: progress / 100,
                         onTap: () => _onConnectionTap(thread, progress),
+                      ),
+                      const SizedBox(width: 4),
+                      ChatHeaderMoreButton(
+                        onPressed: () => showChatActionsMenu(context, _ctrl),
                       ),
                     ],
                   ),
@@ -299,6 +260,8 @@ class _AnonymousChatPageState extends State<AnonymousChatPage> {
                   onLoadOlder: _ctrl.loadOlder,
                   skipFirstIncoming: firstIncoming != null,
                   peerAvatarUrl: thread.avatarUrl,
+                  onDeleteMessage: (m) => deleteChatMessage(context, _ctrl, m),
+                  onReportMessage: (m) => reportChatMessage(context, _ctrl, m),
                   leading: [
                     if (quote != null && quote.isNotEmpty)
                       ChatQuoteBubble(text: quote),
@@ -309,7 +272,7 @@ class _AnonymousChatPageState extends State<AnonymousChatPage> {
                         approveLabel: t.approve,
                         blockLabel: t.blockUser,
                         rejectLabel: t.reject,
-                        showActions: !local && !_handlingRequest,
+                        showActions: !_handlingRequest,
                         onApprove: () => _requestAction(_ctrl.approve),
                         onBlock: () =>
                             _requestAction(_ctrl.blockPeer, close: true),
@@ -326,11 +289,13 @@ class _AnonymousChatPageState extends State<AnonymousChatPage> {
                   16,
                   bottom > 0 ? bottom : 8,
                 ),
-                child: _AnonymousMessageInput(
+                child: ChatComposer(
                   hint: t.messageHint,
                   controller: _input,
                   onChanged: (_) => _ctrl.onTyping(),
                   onSend: _send,
+                  onSticker: (asset) => _ctrl.send(ChatSticker.encode(asset)),
+                  onMedia: (kind, path) => _ctrl.sendMedia(kind, path),
                 ),
               ),
             ],
@@ -422,87 +387,6 @@ class _ConnectionPill extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _AnonymousMessageInput extends StatelessWidget {
-  const _AnonymousMessageInput({
-    required this.hint,
-    required this.controller,
-    required this.onSend,
-    this.onChanged,
-  });
-
-  final String hint;
-  final TextEditingController controller;
-  final VoidCallback onSend;
-  final ValueChanged<String>? onChanged;
-
-  static const _fill = Color(0xFFF4F4F9);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 56,
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: _fill,
-        borderRadius: BorderRadius.circular(9999),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: controller,
-              onChanged: onChanged,
-              onSubmitted: (_) => onSend(),
-              textInputAction: TextInputAction.send,
-              style: const TextStyle(
-                fontFamily: AppFonts.poppins,
-                fontWeight: FontWeight.w400,
-                fontSize: 16,
-                height: 18 / 16,
-                letterSpacing: 16 * -0.02,
-                color: AppColors.textOnLight,
-              ),
-              cursorColor: AppColors.selectionBorder,
-              decoration: InputDecoration(
-                isDense: true,
-                border: InputBorder.none,
-                hintText: hint,
-                hintStyle: TextStyle(
-                  fontFamily: AppFonts.poppins,
-                  fontWeight: FontWeight.w400,
-                  fontSize: 16,
-                  height: 18 / 16,
-                  letterSpacing: 16 * -0.02,
-                  color: AppColors.textOnLight.withValues(alpha: 0.45),
-                ),
-                contentPadding: EdgeInsets.zero,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          GestureDetector(
-            onTap: onSend,
-            child: Container(
-              width: 36,
-              height: 36,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.selectionBorder,
-              ),
-              alignment: Alignment.center,
-              child: const Icon(
-                Icons.send_rounded,
-                size: 18,
-                color: AppColors.white,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

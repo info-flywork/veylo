@@ -89,40 +89,23 @@ class RoomListCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        if (item.isRequested) return;
-        if (isGroup && item.id != null) {
+        if (item.isRequested && !item.isMember) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              SnackBar(
+                content: Text(t.requestPending),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+          return;
+        }
+        if (item.id == null) return;
+        if (isGroup) {
           _openGroup(context, item);
           return;
         }
-        if (item.id != null) {
-          openLiveRoom(context, item);
-          return;
-        }
-        if (isGroup) {
-          if (locked) {
-            showPrivateRoomRequestSheet(
-              context,
-              roomTitle: item.title,
-              memberCount: item.count,
-              isGroup: true,
-            );
-          } else {
-            GroupChatPage.open(
-              context,
-              title: item.title,
-              memberCount: item.count,
-              avatars: item.avatars,
-            );
-          }
-          return;
-        }
-        if (locked) {
-          showPrivateRoomRequestSheet(
-            context,
-            roomTitle: item.title,
-            memberCount: item.count,
-          );
-        }
+        openLiveRoom(context, item);
       },
       behavior: HitTestBehavior.opaque,
       child: Container(

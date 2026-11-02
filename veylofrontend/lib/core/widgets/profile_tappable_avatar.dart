@@ -1,8 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:veylo/data/remote/safety_repository.dart';
+import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 import 'package:veylo/screens/profile/profile_navigation.dart';
+import 'package:veylo/screens/profile/profile_page.dart';
 
 /// Kullanıcı avatarı — tıklanınca profil açar.
 /// [enabled] false ise (anonim / blur) navigasyon yok.
@@ -28,8 +31,18 @@ class ProfileTappableAvatar extends StatelessWidget {
   final bool blurred;
   final BoxFit fit;
 
+  /// Gerçek (UUID) kullanıcı id'si yoksa profil açılmaz; örnek profile düşmesin.
+  bool get _tappable => enabled && SafetyRepository.isRealUser(userId);
+
   void _open(BuildContext context) {
-    if (!enabled) return;
+    if (!_tappable) return;
+    // Kendi avatarım: kendi profilim (Profil sekmesindeki ekranın aynısı).
+    if (userId == SessionStore.instance.me?.id) {
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(builder: (_) => const ProfilePage()),
+      );
+      return;
+    }
     openUserProfile(
       context,
       userId: userId,
@@ -50,7 +63,7 @@ class ProfileTappableAvatar extends StatelessWidget {
     }
 
     return GestureDetector(
-      onTap: enabled ? () => _open(context) : null,
+      onTap: _tappable ? () => _open(context) : null,
       behavior: HitTestBehavior.opaque,
       child: ClipOval(
         child: SizedBox(width: size, height: size, child: image),

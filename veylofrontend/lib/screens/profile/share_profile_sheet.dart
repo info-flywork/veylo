@@ -1,38 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
+import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
 
-/// Başka kullanıcı profili — Share with Friends (chain.png).
+/// Profil bağlantısını kopyalar ya da telefonun paylaşım sayfasından birine yollar.
 Future<void> showShareProfileSheet(
   BuildContext context, {
   required String username,
+  String? displayName,
 }) {
   final handle = username.startsWith('@') ? username.substring(1) : username;
   return showModalBottomSheet<void>(
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
-    builder: (_) => ShareProfileSheet(profileLink: 'veylo.app/$handle'),
+    builder: (_) => ShareProfileSheet(
+      profileLink: 'veylo.app/$handle',
+      displayName: (displayName ?? handle).trim(),
+    ),
   );
 }
 
 class ShareProfileSheet extends StatelessWidget {
-  const ShareProfileSheet({super.key, required this.profileLink});
+  const ShareProfileSheet({
+    super.key,
+    required this.profileLink,
+    required this.displayName,
+  });
 
   final String profileLink;
+  final String displayName;
 
   static const _iconSize = 100.0;
   static const _iconBg = Color(0xFFF8FCFF);
 
   Future<void> _copy(BuildContext context) async {
-    final url = profileLink.startsWith('http')
-        ? profileLink
-        : 'https://$profileLink';
-    await Clipboard.setData(ClipboardData(text: url));
+    await Clipboard.setData(ClipboardData(text: _url));
     await HapticFeedback.lightImpact();
     if (!context.mounted) return;
     final msg = Translations.of(context).profile.shareLinkCopied;
@@ -45,6 +53,26 @@ class ShareProfileSheet extends StatelessWidget {
         duration: const Duration(seconds: 2),
       ),
     );
+  }
+
+  String get _url =>
+      profileLink.startsWith('http') ? profileLink : 'https://$profileLink';
+
+  Future<void> _send(BuildContext context) async {
+    final box = context.findRenderObject() as RenderBox?;
+    final origin = box == null
+        ? null
+        : box.localToGlobal(Offset.zero) & box.size;
+    final text = Translations.of(context).profile.shareMessage(
+      name: displayName,
+      url: _url,
+    );
+    final result = await SharePlus.instance.share(
+      ShareParams(text: text, sharePositionOrigin: origin),
+    );
+    if (result.status == ShareResultStatus.success && context.mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -134,6 +162,11 @@ class ShareProfileSheet extends StatelessWidget {
                         ],
                       ),
                     ),
+                  ),
+                  const SizedBox(height: 16),
+                  AppPrimaryButton(
+                    label: t.shareSend,
+                    onPressed: () => _send(context),
                   ),
                 ],
               ),

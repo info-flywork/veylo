@@ -4,8 +4,13 @@ import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_back_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/core/errors/error_messages.dart';
+import 'package:veylo/data/remote/chat_repository.dart';
 import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/models/chat/chat_thread.dart';
+import 'package:veylo/models/profile/profile_user.dart';
+import 'package:veylo/screens/profile/block_user_sheet.dart';
 import 'package:veylo/screens/chat/anonymous_chat_page.dart';
 import 'package:veylo/screens/chat/direct_chat_page.dart';
 import 'package:veylo/screens/chat/widgets/chat_thread_tile.dart';
@@ -52,12 +57,15 @@ class ChatRequestPage extends StatelessWidget {
                   separatorBuilder: (_, _) => const SizedBox(height: 8),
                   itemBuilder: (context, index) {
                     final thread = requests[index];
+                    // İstekte sabitleme yok; Engelle ve Sil (= isteği reddet).
                     return ChatThreadTile(
                       key: ValueKey(thread.id),
                       thread: thread,
                       onTap: () => thread.isAnonymous
                           ? AnonymousChatPage.open(context, thread)
                           : DirectChatPage.open(context, thread),
+                      onBlock: () => _block(context, thread),
+                      onDelete: () => _reject(context, thread),
                     );
                   },
                 );
@@ -68,6 +76,34 @@ class ChatRequestPage extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> _reject(BuildContext context, ChatThread thread) async {
+  ChatStore.instance.remove(thread.id);
+  try {
+    await ChatRepository.instance.reject(thread.id);
+  } catch (e) {
+    if (context.mounted) showErrorSnackBar(context, e);
+    await ChatStore.instance.refresh();
+  }
+}
+
+void _block(BuildContext context, ChatThread thread) {
+  showBlockUserSheet(
+    context,
+    user: ProfileUser(
+      id: thread.peerUserId ?? '',
+      displayName: thread.maskedName ?? thread.title,
+      username: thread.peerUsername,
+      avatarUrl: thread.avatarUrl,
+      bio: '',
+      likeCount: 0,
+      followCount: 0,
+      followerCount: 0,
+    ),
+    conversationId: thread.id,
+    onDone: () => ChatStore.instance.remove(thread.id),
+  );
 }
 
 class _RequestEmptyState extends StatelessWidget {

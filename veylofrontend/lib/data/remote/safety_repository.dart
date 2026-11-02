@@ -29,7 +29,8 @@ class SafetyRepository {
   }
 
   Future<void> restrict(String? userId) async {
-    if (!isRealUser(userId)) return;
+    // Örnek profilde başarı taklidi yapılmaz.
+    if (!isRealUser(userId)) throw const ApiException(status: 404, code: 'PEER_UNAVAILABLE');
     await _api.post(
       '/safety/blocks',
       body: {'userId': userId, 'type': 'RESTRICT'},
@@ -38,7 +39,20 @@ class SafetyRepository {
 
   Future<void> unblock(String userId) => _api.delete('/safety/blocks/$userId');
 
-  /// Ekranda neden listesi olmadığı için serbest metin "OTHER" olarak gönderilir.
+  /// Bildirim nedenleri — backend `ReportReason` enum'u ile aynı sıra.
+  static const reportReasons = [
+    'HARASSMENT',
+    'HATE_SPEECH',
+    'NUDITY',
+    'UNDERAGE',
+    'SPAM',
+    'SCAM',
+    'VIOLENCE',
+    'IMPERSONATION',
+    'OTHER',
+  ];
+
+  /// [reason]: [reportReasons] değerlerinden biri.
   Future<void> report({
     String? userId,
     String? conversationId,
@@ -52,7 +66,7 @@ class SafetyRepository {
         details: details,
       );
     }
-    if (!isRealUser(userId)) return;
+    if (!isRealUser(userId)) throw const ApiException(status: 404, code: 'PEER_UNAVAILABLE');
     await _api.post(
       '/safety/reports',
       body: {

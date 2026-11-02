@@ -3,6 +3,7 @@ import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_edit_sheet.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/screens/profile/widgets/picker_clear_action.dart';
 
 enum RelationshipGoal {
   longTermOpenToShort,
@@ -16,20 +17,23 @@ const _kItemExtent = 36.0;
 const _kVisibleItems = 5;
 
 /// Relationship Goals — görünüm sabit liste; kaydırınca ortadaki seçilir.
-Future<RelationshipGoal?> showRelationshipGoalsSheet(
+/// Sonuç: [PickedValue.value] null ise kullanıcı değeri temizledi.
+Future<PickedValue<RelationshipGoal>?> showRelationshipGoalsSheet(
   BuildContext context, {
   RelationshipGoal initial = RelationshipGoal.newFriends,
+  bool canClear = false,
 }) {
-  return showAppEditSheet<RelationshipGoal>(
+  return showAppEditSheet<PickedValue<RelationshipGoal>>(
     context: context,
-    builder: (_) => _RelationshipGoalsSheet(initial: initial),
+    builder: (_) => _RelationshipGoalsSheet(initial: initial, canClear: canClear),
   );
 }
 
 class _RelationshipGoalsSheet extends StatefulWidget {
-  const _RelationshipGoalsSheet({required this.initial});
+  const _RelationshipGoalsSheet({required this.initial, this.canClear = false});
 
   final RelationshipGoal initial;
+  final bool canClear;
 
   @override
   State<_RelationshipGoalsSheet> createState() =>
@@ -83,60 +87,71 @@ class _RelationshipGoalsSheetState extends State<_RelationshipGoalsSheet> {
     return AppEditSheet(
       title: t.profile.relationshipGoals,
       saveLabel: t.profile.save,
-      onSave: () => Navigator.of(context).pop(_selected),
+      onSave: () => Navigator.of(context).pop(PickedValue(_selected)),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 12),
-          SizedBox(
-        height: _kItemExtent * _kVisibleItems,
-        child: ListWheelScrollView.useDelegate(
-          controller: _controller,
-          itemExtent: _kItemExtent,
-          // Düz görünüm — 3D tekerlek ölçeklemesi yok.
-          diameterRatio: 100,
-          perspective: 0.0001,
-          useMagnifier: false,
-          physics: const FixedExtentScrollPhysics(),
-          onSelectedItemChanged: (index) {
-            setState(() => _selected = RelationshipGoal.values[index]);
-          },
-          childDelegate: ListWheelChildBuilderDelegate(
-            childCount: RelationshipGoal.values.length,
-            builder: (context, index) {
-              final option = RelationshipGoal.values[index];
-              final selected = option == _selected;
-              return GestureDetector(
-                onTap: () {
-                  _controller.animateToItem(
-                    index,
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.easeOut,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 12),
+              SizedBox(
+            height: _kItemExtent * _kVisibleItems,
+            child: ListWheelScrollView.useDelegate(
+              controller: _controller,
+              itemExtent: _kItemExtent,
+              // Düz görünüm — 3D tekerlek ölçeklemesi yok.
+              diameterRatio: 100,
+              perspective: 0.0001,
+              useMagnifier: false,
+              physics: const FixedExtentScrollPhysics(),
+              onSelectedItemChanged: (index) {
+                setState(() => _selected = RelationshipGoal.values[index]);
+              },
+              childDelegate: ListWheelChildBuilderDelegate(
+                childCount: RelationshipGoal.values.length,
+                builder: (context, index) {
+                  final option = RelationshipGoal.values[index];
+                  final selected = option == _selected;
+                  return GestureDetector(
+                    onTap: () {
+                      _controller.animateToItem(
+                        index,
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.easeOut,
+                      );
+                    },
+                    behavior: HitTestBehavior.opaque,
+                    child: Center(
+                      child: AppText(
+                        _label(t, option),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontFamily: AppFonts.poppins,
+                          fontWeight: FontWeight.w500,
+                          fontSize: selected ? 24 : _idleFontSize(option),
+                          height: 1,
+                          color: selected
+                              ? AppColors.black
+                              : const Color(0x40000000),
+                        ),
+                      ),
+                    ),
                   );
                 },
-                behavior: HitTestBehavior.opaque,
-                child: Center(
-                  child: AppText(
-                    _label(t, option),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontFamily: AppFonts.poppins,
-                      fontWeight: FontWeight.w500,
-                      fontSize: selected ? 24 : _idleFontSize(option),
-                      height: 1,
-                      color: selected
-                          ? AppColors.black
-                          : const Color(0x40000000),
-                    ),
-                  ),
-                ),
-              );
-            },
+              ),
+            ),
+              ),
+            ],
           ),
-        ),
-          ),
+          if (widget.canClear)
+            PickerClearAction(
+              onTap: () =>
+                  Navigator.of(context).pop(PickedValue<RelationshipGoal>(null)),
+            ),
         ],
       ),
     );

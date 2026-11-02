@@ -150,6 +150,37 @@ class _Translations$chats$hi extends Translations$chats$tr {
 	@override String get unlockFullPendingTheirs => 'यह व्यक्ति आपकी पूरी प्रोफ़ाइल देखना चाहता है।';
 	@override String unlockSent({required Object title}) => 'आपने अनुरोध भेजा: ${title}';
 	@override String unlockReceived({required Object title}) => 'जिससे आप चैट कर रहे हैं उसने ${title} के बारे में अनुरोध भेजा।';
+	@override String get requestAction => 'अनुरोध';
+	@override String get requestSent => 'भेजा गया';
+	@override String get previewUnlock => 'अनलॉक अनुरोध';
+	@override String get previewNameShared => 'नाम साझा हुआ';
+	@override String get previewNameDeclined => 'नाम अनुरोध अस्वीकार';
+	@override String get previewPhotoShared => 'फ़ोटो साझा हुई';
+	@override String get previewPhotoDeclined => 'फ़ोटो अनुरोध अस्वीकार';
+	@override String get previewProfileShared => 'प्रोफ़ाइल साझा हुई';
+	@override String get previewProfileDeclined => 'प्रोफ़ाइल अनुरोध अस्वीकार';
+	@override String get previewPhoto => 'फ़ोटो';
+	@override String get previewVoice => 'वॉइस संदेश';
+	@override String get micNeeded => 'माइक्रोफ़ोन की अनुमति चाहिए';
+	@override String get previewSticker => 'स्टिकर';
+	@override String get stickerEmpty => 'कोई हाल का स्टिकर नहीं';
+	@override String get messageCopied => 'संदेश कॉपी हो गया';
+	@override String get reportReasonSubtitle => 'आप इस संदेश की रिपोर्ट क्यों कर रहे हैं?';
+	@override String get reasonHarassment => 'उत्पीड़न या धमकाना';
+	@override String get reasonHateSpeech => 'नफ़रत भरी बातें';
+	@override String get reasonNudity => 'नग्नता या यौन सामग्री';
+	@override String get reasonSpam => 'स्पैम';
+	@override String get reasonScam => 'धोखाधड़ी';
+	@override String get reasonViolence => 'हिंसा या धमकी';
+	@override String get reasonOther => 'अन्य';
+	@override String get mute => 'म्यूट करें';
+	@override String get unmute => 'अनम्यूट करें';
+	@override String get deleteChat => 'चैट हटाएं';
+	@override String get emptyThreadsTitle => 'अभी कोई चैट नहीं';
+	@override String get emptyThreadsSubtitle => 'जब आप किसी से बात करना शुरू करेंगे, आपकी चैट यहाँ दिखेंगी।';
+	@override String get noSearchResults => 'कोई परिणाम नहीं मिला';
+	@override String get milestonePhotoUnlocked => '70% पर खुला';
+	@override String revealPeerWants({required Object name}) => '${name} अपनी प्रोफ़ाइल दिखाना चाहते हैं';
 }
 
 // Path: profile
@@ -192,6 +223,9 @@ class _Translations$profile$hi extends Translations$profile$tr {
 	@override String get notifications => 'नोटिफ़िकेशन';
 	@override String get password => 'पासवर्ड';
 	@override String get deleteConversation => 'चैट डिलीट करें';
+	@override String get deleteAllTitle => 'क्या आप सभी चैट डिलीट करना चाहते हैं?';
+	@override String get deleteAllBody => 'पुष्टि करने पर सभी संदेश डिलीट हो जाएँगे';
+	@override String get deleteAllAction => 'डिलीट';
 	@override String get faqHelp => 'FAQ और सहायता';
 	@override String get restorePurchases => 'खरीदारी रीस्टोर करें';
 	@override String get termsOfService => 'सेवा की शर्तें';
@@ -225,6 +259,16 @@ class _Translations$profile$hi extends Translations$profile$tr {
 	@override String get educationPhd => 'PhD / डॉक्टरेट';
 	@override String get voiceRecord => 'वॉइस रिकॉर्ड';
 	@override String get addVoice => 'वॉइस जोड़ें';
+	@override String get voiceShared => 'आपकी प्रोफ़ाइल पर शेयर है';
+	@override String voiceHint({required Object seconds}) => '${seconds} सेकंड तक का छोटा परिचय रिकॉर्ड करें';
+	@override String voiceRecording({required Object seconds}) => 'रिकॉर्ड हो रहा है ${seconds} से';
+	@override String get voiceReady => 'आपकी आवाज़ तैयार है';
+	@override String get voicePlay => 'चलाएँ';
+	@override String get voicePause => 'रोकें';
+	@override String get voiceShare => 'प्रोफ़ाइल पर शेयर करें';
+	@override String get voiceSaving => 'सेव हो रहा है…';
+	@override String get voiceRemove => 'प्रोफ़ाइल से हटाएँ';
+	@override String get voiceLabel => 'आवाज़';
 	@override String get lifestyle => 'लाइफ़स्टाइल';
 	@override String get pets => 'पालतू जानवर';
 	@override String get petsValue => 'मेरे पास बिल्ली है';
@@ -262,15 +306,16 @@ class _Translations$profile$hi extends Translations$profile$tr {
 	@override String get borderBuySection => 'बॉर्डर खरीदें';
 	@override String get borderBuyCta => 'बॉर्डर खरीदें';
 	@override String borderToken({required Object count}) => '${count} टोकन';
-	@override String get borderAmethystWings => 'Amethyst Wings';
-	@override String get borderGoldenPhoenix => 'Golden Phoenix';
-	@override String get borderFrostCrown => 'Frost Crown';
-	@override String get borderEmeraldWhisper => 'Emerald Whisper';
-	@override String get borderRoseQuartz => 'Rose Quartz';
-	@override String get borderStarlitComet => 'Starlit Comet';
-	@override String get borderCrimsonRoyal => 'Crimson Royal';
-	@override String get borderSapphireHalo => 'Sapphire Halo';
+	@override String get borderAmethystWings => 'नीलम पंख';
+	@override String get borderGoldenPhoenix => 'स्वर्ण फ़ीनिक्स';
+	@override String get borderFrostCrown => 'पाला मुकुट';
+	@override String get borderEmeraldWhisper => 'पन्ना फुसफुसाहट';
+	@override String get borderRoseQuartz => 'गुलाबी स्फटिक';
+	@override String get borderStarlitComet => 'तारों वाला धूमकेतु';
+	@override String get borderCrimsonRoyal => 'किरमिजी राजसी';
+	@override String get borderSapphireHalo => 'नीलम प्रभामंडल';
 	@override String get follow => 'फ़ॉलो करें';
+	@override String get message => 'संदेश';
 	@override String get following => 'फ़ॉलो कर रहे हैं';
 	@override String get followPageTitle => 'फ़ॉलो';
 	@override String get followTabFollowing => 'फ़ॉलोइंग';
@@ -307,6 +352,37 @@ class _Translations$profile$hi extends Translations$profile$tr {
 	@override String emailVerificationSent({required Object email}) => 'हमने ${email} पर कन्फ़र्मेशन लिंक भेजा है। कन्फ़र्म करने के बाद आपका ईमेल बदल जाएगा।';
 	@override String get passwordChanged => 'आपका पासवर्ड अपडेट हो गया है।';
 	@override String get passwordMismatch => 'पासवर्ड मेल नहीं खाते।';
+	@override String get shareSend => 'भेजें';
+	@override String shareMessage({required Object name, required Object url}) => '${name} — Veylo प्रोफ़ाइल: ${url}';
+	@override String get currentPassword => 'मौजूदा पासवर्ड';
+	@override String get currentPasswordWrong => 'आपका मौजूदा पासवर्ड गलत है।';
+	@override String get reportReasonLabel => 'कारण';
+	@override String get reportReasonHarassment => 'उत्पीड़न या धमकाना';
+	@override String get reportReasonHateSpeech => 'नफ़रत भरी बातें';
+	@override String get reportReasonNudity => 'नग्नता या यौन सामग्री';
+	@override String get reportReasonUnderage => '18 साल से कम';
+	@override String get reportReasonSpam => 'स्पैम';
+	@override String get reportReasonScam => 'धोखाधड़ी';
+	@override String get reportReasonViolence => 'हिंसा या धमकी';
+	@override String get reportReasonImpersonation => 'किसी और का रूप धारण करना';
+	@override String get reportReasonOther => 'अन्य';
+	@override String blockedDone({required Object username}) => '${username} को ब्लॉक कर दिया गया।';
+	@override String restrictedDone({required Object username}) => '${username} को प्रतिबंधित कर दिया गया।';
+	@override String get emptyPosts => 'अभी कोई पोस्ट नहीं';
+	@override String get emptyVideos => 'अभी कोई वीडियो नहीं';
+	@override String get emptySaved => 'अभी कोई सेव की गई पोस्ट नहीं';
+	@override String get clearSelection => 'चयन हटाएँ';
+	@override String get genderNonBinary => 'नॉन-बाइनरी';
+	@override String get voiceAdded => 'आवाज़ जोड़ी गई';
+	@override String get discardTitle => 'बिना सेव किए बदलाव';
+	@override String get discardBody => 'अभी बाहर निकलने पर आपके बदलाव खो जाएँगे।';
+	@override String get discardConfirm => 'बदलाव हटाएँ';
+	@override String get keepEditing => 'एडिट जारी रखें';
+	@override String get borderNone => 'कोई बॉर्डर नहीं';
+	@override String get borderOwned => 'आपके पास है';
+	@override String get borderEquipCta => 'बॉर्डर लगाएँ';
+	@override String get borderRemoveCta => 'बॉर्डर हटाएँ';
+	@override String get followEmpty => 'यहाँ अभी कोई नहीं है';
 }
 
 // Path: nav
@@ -319,7 +395,7 @@ class _Translations$nav$hi extends Translations$nav$tr {
 	@override String get discover => 'डिस्कवर';
 	@override String get chat => 'चैट';
 	@override String get call => 'कॉल';
-	@override String get vibes => 'Vibes';
+	@override String get vibes => 'वाइब्स';
 	@override String get profile => 'प्रोफ़ाइल';
 }
 
@@ -362,6 +438,7 @@ class _Translations$call$hi extends Translations$call$tr {
 	@override String get noMatchTitle => 'अभी कोई उपलब्ध नहीं है';
 	@override String get noMatchBody => 'इस समय बात करने के लिए कोई नहीं मिला। थोड़ी देर बाद फिर से कोशिश करें।';
 	@override String get noMatchOk => 'ठीक है';
+	@override String get cameraDenied => 'वीडियो कॉल के लिए कैमरा एक्सेस ज़रूरी है। आप इसे सेटिंग्स में चालू कर सकते हैं।';
 }
 
 // Path: vibes
@@ -382,6 +459,12 @@ class _Translations$vibes$hi extends Translations$vibes$tr {
 	@override String get deleteTitle => 'यह Vibe डिलीट करें?';
 	@override String get delete => 'डिलीट करें';
 	@override String get cancel => 'रद्द करें';
+	@override String get post => 'पोस्ट करें';
+	@override String get replyHint => 'अपना जवाब लिखें';
+	@override String get sortNewest => 'सबसे नए';
+	@override String get sortPopular => 'सबसे लोकप्रिय';
+	@override String get loadFailed => 'वाइब्स लोड नहीं हो सकीं।';
+	@override String get noResults => 'कोई परिणाम नहीं मिला';
 }
 
 // Path: discover
@@ -394,7 +477,7 @@ class _Translations$discover$hi extends Translations$discover$tr {
 	@override String get title => 'डिस्कवर';
 	@override String get tabRooms => 'रूम';
 	@override String get tabDiscover => 'डिस्कवर';
-	@override String get tabAiMatch => 'AI Match';
+	@override String get tabAiMatch => 'AI मैच';
 	@override late final _Translations$discover$aiMatch$hi aiMatch = _Translations$discover$aiMatch$hi._(_root);
 	@override String get searchHint => 'खोजें';
 	@override String get allRooms => 'सभी रूम';
@@ -422,6 +505,7 @@ class _Translations$discover$hi extends Translations$discover$tr {
 	@override late final _Translations$discover$highlight$hi highlight = _Translations$discover$highlight$hi._(_root);
 	@override late final _Translations$discover$stats$hi stats = _Translations$discover$stats$hi._(_root);
 	@override String hostedBy({required Object name}) => 'होस्ट: ${name}';
+	@override String get requestPending => 'आपका अनुरोध भेजा गया है, मंज़ूरी का इंतज़ार है।';
 }
 
 // Path: common
@@ -700,6 +784,7 @@ class _Translations$storyText$hi extends Translations$storyText$tr {
 	@override String get uppercase => 'अपरकेस';
 	@override String get underline => 'अंडरलाइन';
 	@override String get cancel => 'रद्द करें';
+	@override String get done => 'हो गया';
 	@override String get galleryError => 'गैलरी नहीं खुल सकी';
 }
 
@@ -710,7 +795,7 @@ class _Translations$tokens$hi extends Translations$tokens$tr {
 	final TranslationsHi _root; // ignore: unused_field
 
 	// Translations
-	@override String get boostTitle => 'Boost';
+	@override String get boostTitle => 'बूस्ट';
 	@override String get history => 'इतिहास';
 	@override String get yourBalance => 'आपका बैलेंस';
 	@override String balanceTokens({required Object count}) => '${count} टोकन';
@@ -724,7 +809,7 @@ class _Translations$tokens$hi extends Translations$tokens$tr {
 	@override String get duration1h => '1 घंटा';
 	@override String get duration2h => '2 घंटे';
 	@override String visibility({required Object n}) => '${n}x विज़िबिलिटी';
-	@override String boostFor({required Object count}) => '${count} टोकन में Boost';
+	@override String boostFor({required Object count}) => '${count} टोकन में बूस्ट';
 	@override String boostActive({required Object time}) => '${time} तक Boost';
 	@override String get boostDone => 'आपकी प्रोफ़ाइल Boost हो गई!';
 	@override String get historyEmpty => 'अभी तक कोई टोकन गतिविधि नहीं';
@@ -773,8 +858,8 @@ class _Translations$discover$aiMatch$hi extends Translations$discover$aiMatch$tr
 	@override String get statMatchRate => 'मैच रेट';
 	@override String get statAvgTime => 'औसत समय';
 	@override String get statActiveValue => '843';
-	@override String get statMatchValue => '87%';
-	@override String get statAvgValue => '8s';
+	@override String statMatchValue({required Object value}) => '${value}%';
+	@override String statAvgValue({required Object value}) => '${value}s';
 	@override String get startSmartMatch => 'स्मार्ट मैच शुरू करें';
 	@override String get findingTitle => 'आपका मैच ढूँढ रहे हैं';
 	@override String get findingSubtitle => 'आपके मूड और रुचियों को सही व्यक्ति से मिला रहे हैं';
@@ -793,6 +878,8 @@ class _Translations$discover$aiMatch$hi extends Translations$discover$aiMatch$tr
 	@override String get swipeNext => 'अगला';
 	@override String get swipeFinger => 'उंगली से स्वाइप करें';
 	@override String get noMatch => 'अभी कोई मैच नहीं मिला। थोड़ी देर बाद फिर कोशिश करें।';
+	@override String likeSent({required Object name}) => 'आपने ${name} को फ़ॉलो किया';
+	@override String get lastMatch => 'आपने सभी मैच देख लिए। और के लिए फिर से खोजें।';
 }
 
 // Path: discover.privateRoom
@@ -889,6 +976,14 @@ class _Translations$discover$liveRoom$hi extends Translations$discover$liveRoom$
 	@override String get roomEnded => 'रूम खत्म हो गया है।';
 	@override String wantsToJoin({required Object name}) => '${name} जॉइन करना चाहते हैं';
 	@override String get approve => 'स्वीकार करें';
+	@override String get reject => 'अस्वीकार करें';
+	@override String get pendingRequests => 'जुड़ने के अनुरोध';
+	@override String get noRequests => 'कोई लंबित अनुरोध नहीं।';
+	@override String get muteMic => 'माइक्रोफ़ोन बंद करें';
+	@override String get unmuteMic => 'माइक्रोफ़ोन चालू करें';
+	@override String get remove => 'रूम से हटाएं';
+	@override String get removed => 'आपको रूम से हटा दिया गया।';
+	@override String get seeProfile => 'प्रोफ़ाइल देखने का अनुरोध करें';
 }
 
 // Path: discover.groupChat
@@ -933,6 +1028,8 @@ class _Translations$discover$groupInfo$hi extends Translations$discover$groupInf
 	@override String get leaveConfirm => 'यह ग्रुप छोड़ें?';
 	@override String get leave => 'छोड़ें';
 	@override String get cancel => 'रद्द करें';
+	@override String get galleryEmpty => 'अभी तक कोई फ़ोटो शेयर नहीं की गई।';
+	@override String get adminOnly => 'इसे सिर्फ़ एडमिन बदल सकते हैं।';
 }
 
 // Path: discover.filters
@@ -993,8 +1090,10 @@ class _Translations$discover$story$hi extends Translations$discover$story$tr {
 	@override String get musicTitle => 'म्यूज़िक';
 	@override String get musicEmpty => 'कोई म्यूज़िक नहीं मिला।';
 	@override String get musicError => 'म्यूज़िक लोड नहीं हो सका।';
+	@override String get unknownTrack => 'अज्ञात';
 	@override String get downloaded => 'गैलरी में सेव हो गया';
 	@override String get downloadFailed => 'सेव नहीं हो सका';
+	@override String get savedToDraft => 'ड्राफ़्ट में सेव हो गया';
 }
 
 // Path: discover.highlight
@@ -1131,6 +1230,37 @@ extension on TranslationsHi {
 			'chats.unlockFullPendingTheirs' => 'यह व्यक्ति आपकी पूरी प्रोफ़ाइल देखना चाहता है।',
 			'chats.unlockSent' => ({required Object title}) => 'आपने अनुरोध भेजा: ${title}',
 			'chats.unlockReceived' => ({required Object title}) => 'जिससे आप चैट कर रहे हैं उसने ${title} के बारे में अनुरोध भेजा।',
+			'chats.requestAction' => 'अनुरोध',
+			'chats.requestSent' => 'भेजा गया',
+			'chats.previewUnlock' => 'अनलॉक अनुरोध',
+			'chats.previewNameShared' => 'नाम साझा हुआ',
+			'chats.previewNameDeclined' => 'नाम अनुरोध अस्वीकार',
+			'chats.previewPhotoShared' => 'फ़ोटो साझा हुई',
+			'chats.previewPhotoDeclined' => 'फ़ोटो अनुरोध अस्वीकार',
+			'chats.previewProfileShared' => 'प्रोफ़ाइल साझा हुई',
+			'chats.previewProfileDeclined' => 'प्रोफ़ाइल अनुरोध अस्वीकार',
+			'chats.previewPhoto' => 'फ़ोटो',
+			'chats.previewVoice' => 'वॉइस संदेश',
+			'chats.micNeeded' => 'माइक्रोफ़ोन की अनुमति चाहिए',
+			'chats.previewSticker' => 'स्टिकर',
+			'chats.stickerEmpty' => 'कोई हाल का स्टिकर नहीं',
+			'chats.messageCopied' => 'संदेश कॉपी हो गया',
+			'chats.reportReasonSubtitle' => 'आप इस संदेश की रिपोर्ट क्यों कर रहे हैं?',
+			'chats.reasonHarassment' => 'उत्पीड़न या धमकाना',
+			'chats.reasonHateSpeech' => 'नफ़रत भरी बातें',
+			'chats.reasonNudity' => 'नग्नता या यौन सामग्री',
+			'chats.reasonSpam' => 'स्पैम',
+			'chats.reasonScam' => 'धोखाधड़ी',
+			'chats.reasonViolence' => 'हिंसा या धमकी',
+			'chats.reasonOther' => 'अन्य',
+			'chats.mute' => 'म्यूट करें',
+			'chats.unmute' => 'अनम्यूट करें',
+			'chats.deleteChat' => 'चैट हटाएं',
+			'chats.emptyThreadsTitle' => 'अभी कोई चैट नहीं',
+			'chats.emptyThreadsSubtitle' => 'जब आप किसी से बात करना शुरू करेंगे, आपकी चैट यहाँ दिखेंगी।',
+			'chats.noSearchResults' => 'कोई परिणाम नहीं मिला',
+			'chats.milestonePhotoUnlocked' => '70% पर खुला',
+			'chats.revealPeerWants' => ({required Object name}) => '${name} अपनी प्रोफ़ाइल दिखाना चाहते हैं',
 			'profile.eyebrow' => 'प्रोफ़ाइल',
 			'profile.title' => 'सेटिंग्स',
 			'profile.editProfile' => 'प्रोफ़ाइल एडिट करें',
@@ -1164,6 +1294,9 @@ extension on TranslationsHi {
 			'profile.notifications' => 'नोटिफ़िकेशन',
 			'profile.password' => 'पासवर्ड',
 			'profile.deleteConversation' => 'चैट डिलीट करें',
+			'profile.deleteAllTitle' => 'क्या आप सभी चैट डिलीट करना चाहते हैं?',
+			'profile.deleteAllBody' => 'पुष्टि करने पर सभी संदेश डिलीट हो जाएँगे',
+			'profile.deleteAllAction' => 'डिलीट',
 			'profile.faqHelp' => 'FAQ और सहायता',
 			'profile.restorePurchases' => 'खरीदारी रीस्टोर करें',
 			'profile.termsOfService' => 'सेवा की शर्तें',
@@ -1197,6 +1330,16 @@ extension on TranslationsHi {
 			'profile.educationPhd' => 'PhD / डॉक्टरेट',
 			'profile.voiceRecord' => 'वॉइस रिकॉर्ड',
 			'profile.addVoice' => 'वॉइस जोड़ें',
+			'profile.voiceShared' => 'आपकी प्रोफ़ाइल पर शेयर है',
+			'profile.voiceHint' => ({required Object seconds}) => '${seconds} सेकंड तक का छोटा परिचय रिकॉर्ड करें',
+			'profile.voiceRecording' => ({required Object seconds}) => 'रिकॉर्ड हो रहा है ${seconds} से',
+			'profile.voiceReady' => 'आपकी आवाज़ तैयार है',
+			'profile.voicePlay' => 'चलाएँ',
+			'profile.voicePause' => 'रोकें',
+			'profile.voiceShare' => 'प्रोफ़ाइल पर शेयर करें',
+			'profile.voiceSaving' => 'सेव हो रहा है…',
+			'profile.voiceRemove' => 'प्रोफ़ाइल से हटाएँ',
+			'profile.voiceLabel' => 'आवाज़',
 			'profile.lifestyle' => 'लाइफ़स्टाइल',
 			'profile.pets' => 'पालतू जानवर',
 			'profile.petsValue' => 'मेरे पास बिल्ली है',
@@ -1234,15 +1377,16 @@ extension on TranslationsHi {
 			'profile.borderBuySection' => 'बॉर्डर खरीदें',
 			'profile.borderBuyCta' => 'बॉर्डर खरीदें',
 			'profile.borderToken' => ({required Object count}) => '${count} टोकन',
-			'profile.borderAmethystWings' => 'Amethyst Wings',
-			'profile.borderGoldenPhoenix' => 'Golden Phoenix',
-			'profile.borderFrostCrown' => 'Frost Crown',
-			'profile.borderEmeraldWhisper' => 'Emerald Whisper',
-			'profile.borderRoseQuartz' => 'Rose Quartz',
-			'profile.borderStarlitComet' => 'Starlit Comet',
-			'profile.borderCrimsonRoyal' => 'Crimson Royal',
-			'profile.borderSapphireHalo' => 'Sapphire Halo',
+			'profile.borderAmethystWings' => 'नीलम पंख',
+			'profile.borderGoldenPhoenix' => 'स्वर्ण फ़ीनिक्स',
+			'profile.borderFrostCrown' => 'पाला मुकुट',
+			'profile.borderEmeraldWhisper' => 'पन्ना फुसफुसाहट',
+			'profile.borderRoseQuartz' => 'गुलाबी स्फटिक',
+			'profile.borderStarlitComet' => 'तारों वाला धूमकेतु',
+			'profile.borderCrimsonRoyal' => 'किरमिजी राजसी',
+			'profile.borderSapphireHalo' => 'नीलम प्रभामंडल',
 			'profile.follow' => 'फ़ॉलो करें',
+			'profile.message' => 'संदेश',
 			'profile.following' => 'फ़ॉलो कर रहे हैं',
 			'profile.followPageTitle' => 'फ़ॉलो',
 			'profile.followTabFollowing' => 'फ़ॉलोइंग',
@@ -1279,10 +1423,41 @@ extension on TranslationsHi {
 			'profile.emailVerificationSent' => ({required Object email}) => 'हमने ${email} पर कन्फ़र्मेशन लिंक भेजा है। कन्फ़र्म करने के बाद आपका ईमेल बदल जाएगा।',
 			'profile.passwordChanged' => 'आपका पासवर्ड अपडेट हो गया है।',
 			'profile.passwordMismatch' => 'पासवर्ड मेल नहीं खाते।',
+			'profile.shareSend' => 'भेजें',
+			'profile.shareMessage' => ({required Object name, required Object url}) => '${name} — Veylo प्रोफ़ाइल: ${url}',
+			'profile.currentPassword' => 'मौजूदा पासवर्ड',
+			'profile.currentPasswordWrong' => 'आपका मौजूदा पासवर्ड गलत है।',
+			'profile.reportReasonLabel' => 'कारण',
+			'profile.reportReasonHarassment' => 'उत्पीड़न या धमकाना',
+			'profile.reportReasonHateSpeech' => 'नफ़रत भरी बातें',
+			'profile.reportReasonNudity' => 'नग्नता या यौन सामग्री',
+			'profile.reportReasonUnderage' => '18 साल से कम',
+			'profile.reportReasonSpam' => 'स्पैम',
+			'profile.reportReasonScam' => 'धोखाधड़ी',
+			'profile.reportReasonViolence' => 'हिंसा या धमकी',
+			'profile.reportReasonImpersonation' => 'किसी और का रूप धारण करना',
+			'profile.reportReasonOther' => 'अन्य',
+			'profile.blockedDone' => ({required Object username}) => '${username} को ब्लॉक कर दिया गया।',
+			'profile.restrictedDone' => ({required Object username}) => '${username} को प्रतिबंधित कर दिया गया।',
+			'profile.emptyPosts' => 'अभी कोई पोस्ट नहीं',
+			'profile.emptyVideos' => 'अभी कोई वीडियो नहीं',
+			'profile.emptySaved' => 'अभी कोई सेव की गई पोस्ट नहीं',
+			'profile.clearSelection' => 'चयन हटाएँ',
+			'profile.genderNonBinary' => 'नॉन-बाइनरी',
+			'profile.voiceAdded' => 'आवाज़ जोड़ी गई',
+			'profile.discardTitle' => 'बिना सेव किए बदलाव',
+			'profile.discardBody' => 'अभी बाहर निकलने पर आपके बदलाव खो जाएँगे।',
+			'profile.discardConfirm' => 'बदलाव हटाएँ',
+			'profile.keepEditing' => 'एडिट जारी रखें',
+			'profile.borderNone' => 'कोई बॉर्डर नहीं',
+			'profile.borderOwned' => 'आपके पास है',
+			'profile.borderEquipCta' => 'बॉर्डर लगाएँ',
+			'profile.borderRemoveCta' => 'बॉर्डर हटाएँ',
+			'profile.followEmpty' => 'यहाँ अभी कोई नहीं है',
 			'nav.discover' => 'डिस्कवर',
 			'nav.chat' => 'चैट',
 			'nav.call' => 'कॉल',
-			'nav.vibes' => 'Vibes',
+			'nav.vibes' => 'वाइब्स',
 			'nav.profile' => 'प्रोफ़ाइल',
 			'call.title' => '60 सेकंड स्ट्रेंजर',
 			'call.subtitle' => 'किसी अनजान व्यक्ति से 60 सेकंड बात करें — पूरी तरह गुमनाम। न प्रोफ़ाइल, न फ़ोटो, न नाम। बस एक आवाज़ और एक पल।',
@@ -1316,6 +1491,7 @@ extension on TranslationsHi {
 			'call.noMatchTitle' => 'अभी कोई उपलब्ध नहीं है',
 			'call.noMatchBody' => 'इस समय बात करने के लिए कोई नहीं मिला। थोड़ी देर बाद फिर से कोशिश करें।',
 			'call.noMatchOk' => 'ठीक है',
+			'call.cameraDenied' => 'वीडियो कॉल के लिए कैमरा एक्सेस ज़रूरी है। आप इसे सेटिंग्स में चालू कर सकते हैं।',
 			'vibes.search' => 'खोजें',
 			'vibes.sendMessage' => 'मैसेज भेजें',
 			'vibes.wantsToTalk' => 'अभी इस बारे में बात करना चाहते हैं',
@@ -1327,10 +1503,16 @@ extension on TranslationsHi {
 			'vibes.deleteTitle' => 'यह Vibe डिलीट करें?',
 			'vibes.delete' => 'डिलीट करें',
 			'vibes.cancel' => 'रद्द करें',
+			'vibes.post' => 'पोस्ट करें',
+			'vibes.replyHint' => 'अपना जवाब लिखें',
+			'vibes.sortNewest' => 'सबसे नए',
+			'vibes.sortPopular' => 'सबसे लोकप्रिय',
+			'vibes.loadFailed' => 'वाइब्स लोड नहीं हो सकीं।',
+			'vibes.noResults' => 'कोई परिणाम नहीं मिला',
 			'discover.title' => 'डिस्कवर',
 			'discover.tabRooms' => 'रूम',
 			'discover.tabDiscover' => 'डिस्कवर',
-			'discover.tabAiMatch' => 'AI Match',
+			'discover.tabAiMatch' => 'AI मैच',
 			'discover.aiMatch.feelingTitle' => 'आज आप कैसा महसूस कर रहे हैं',
 			'discover.aiMatch.feelingSubtitle' => 'आपकी पसंद के आधार पर AI सबसे अच्छा मैच ढूँढता है',
 			'discover.aiMatch.lookingTitle' => 'आप क्या ढूँढ रहे हैं?',
@@ -1349,8 +1531,8 @@ extension on TranslationsHi {
 			'discover.aiMatch.statMatchRate' => 'मैच रेट',
 			'discover.aiMatch.statAvgTime' => 'औसत समय',
 			'discover.aiMatch.statActiveValue' => '843',
-			'discover.aiMatch.statMatchValue' => '87%',
-			'discover.aiMatch.statAvgValue' => '8s',
+			'discover.aiMatch.statMatchValue' => ({required Object value}) => '${value}%',
+			'discover.aiMatch.statAvgValue' => ({required Object value}) => '${value}s',
 			'discover.aiMatch.startSmartMatch' => 'स्मार्ट मैच शुरू करें',
 			'discover.aiMatch.findingTitle' => 'आपका मैच ढूँढ रहे हैं',
 			'discover.aiMatch.findingSubtitle' => 'आपके मूड और रुचियों को सही व्यक्ति से मिला रहे हैं',
@@ -1369,6 +1551,8 @@ extension on TranslationsHi {
 			'discover.aiMatch.swipeNext' => 'अगला',
 			'discover.aiMatch.swipeFinger' => 'उंगली से स्वाइप करें',
 			'discover.aiMatch.noMatch' => 'अभी कोई मैच नहीं मिला। थोड़ी देर बाद फिर कोशिश करें।',
+			'discover.aiMatch.likeSent' => ({required Object name}) => 'आपने ${name} को फ़ॉलो किया',
+			'discover.aiMatch.lastMatch' => 'आपने सभी मैच देख लिए। और के लिए फिर से खोजें।',
 			'discover.searchHint' => 'खोजें',
 			'discover.allRooms' => 'सभी रूम',
 			'discover.allGroups' => 'सभी ग्रुप',
@@ -1423,6 +1607,14 @@ extension on TranslationsHi {
 			'discover.liveRoom.roomEnded' => 'रूम खत्म हो गया है।',
 			'discover.liveRoom.wantsToJoin' => ({required Object name}) => '${name} जॉइन करना चाहते हैं',
 			'discover.liveRoom.approve' => 'स्वीकार करें',
+			'discover.liveRoom.reject' => 'अस्वीकार करें',
+			'discover.liveRoom.pendingRequests' => 'जुड़ने के अनुरोध',
+			'discover.liveRoom.noRequests' => 'कोई लंबित अनुरोध नहीं।',
+			'discover.liveRoom.muteMic' => 'माइक्रोफ़ोन बंद करें',
+			'discover.liveRoom.unmuteMic' => 'माइक्रोफ़ोन चालू करें',
+			'discover.liveRoom.remove' => 'रूम से हटाएं',
+			'discover.liveRoom.removed' => 'आपको रूम से हटा दिया गया।',
+			'discover.liveRoom.seeProfile' => 'प्रोफ़ाइल देखने का अनुरोध करें',
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} यूज़र',
 			'discover.groupChat.sampleVictoria' => 'मैं बहुत बोर हो रही हूँ। दोस्तों, कुछ करें?',
 			'discover.groupChat.sampleSona' => 'क्या करें? आपके मन में क्या है?',
@@ -1449,6 +1641,8 @@ extension on TranslationsHi {
 			'discover.groupInfo.leaveConfirm' => 'यह ग्रुप छोड़ें?',
 			'discover.groupInfo.leave' => 'छोड़ें',
 			'discover.groupInfo.cancel' => 'रद्द करें',
+			'discover.groupInfo.galleryEmpty' => 'अभी तक कोई फ़ोटो शेयर नहीं की गई।',
+			'discover.groupInfo.adminOnly' => 'इसे सिर्फ़ एडमिन बदल सकते हैं।',
 			'discover.filters.title' => 'फ़िल्टर',
 			'discover.filters.ageRange' => 'उम्र सीमा',
 			'discover.filters.ageRangeValue' => ({required Object min, required Object max}) => '${min}-${max}',
@@ -1482,8 +1676,12 @@ extension on TranslationsHi {
 			'discover.story.musicTitle' => 'म्यूज़िक',
 			'discover.story.musicEmpty' => 'कोई म्यूज़िक नहीं मिला।',
 			'discover.story.musicError' => 'म्यूज़िक लोड नहीं हो सका।',
+			'discover.story.unknownTrack' => 'अज्ञात',
 			'discover.story.downloaded' => 'गैलरी में सेव हो गया',
+			_ => null,
+		} ?? switch (path) {
 			'discover.story.downloadFailed' => 'सेव नहीं हो सका',
+			'discover.story.savedToDraft' => 'ड्राफ़्ट में सेव हो गया',
 			'discover.highlight.title' => 'हाइलाइट',
 			'discover.highlight.view' => 'देखें',
 			'discover.highlight.aiComments' => 'AI कमेंट',
@@ -1498,6 +1696,7 @@ extension on TranslationsHi {
 			'discover.stats.boostCta' => '1 दिन बूस्ट करें - 100 टोकन',
 			'discover.stats.boosted' => 'बूस्ट हो गया! आपकी पोस्ट 24 घंटे तक सबसे ऊपर रहेगी।',
 			'discover.hostedBy' => ({required Object name}) => 'होस्ट: ${name}',
+			'discover.requestPending' => 'आपका अनुरोध भेजा गया है, मंज़ूरी का इंतज़ार है।',
 			'common.loading' => 'लोड हो रहा है…',
 			'common.retry' => 'फिर कोशिश करें',
 			'common.cancel' => 'रद्द करें',
@@ -1579,8 +1778,6 @@ extension on TranslationsHi {
 			'createProfile.interestsSubtitle' => 'कम से कम 5 चुनें — इससे हम आपको ऐसे लोगों से मिला पाएँगे जो सच में आपको समझें।',
 			'createProfile.interests.music' => 'म्यूज़िक',
 			'createProfile.interests.movies' => 'फ़िल्में',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.interests.tvShows' => 'TV शो',
 			'createProfile.interests.reading' => 'पढ़ना',
 			'createProfile.interests.painting' => 'पेंटिंग',
@@ -1700,8 +1897,9 @@ extension on TranslationsHi {
 			'storyText.uppercase' => 'अपरकेस',
 			'storyText.underline' => 'अंडरलाइन',
 			'storyText.cancel' => 'रद्द करें',
+			'storyText.done' => 'हो गया',
 			'storyText.galleryError' => 'गैलरी नहीं खुल सकी',
-			'tokens.boostTitle' => 'Boost',
+			'tokens.boostTitle' => 'बूस्ट',
 			'tokens.history' => 'इतिहास',
 			'tokens.yourBalance' => 'आपका बैलेंस',
 			'tokens.balanceTokens' => ({required Object count}) => '${count} टोकन',
@@ -1715,7 +1913,7 @@ extension on TranslationsHi {
 			'tokens.duration1h' => '1 घंटा',
 			'tokens.duration2h' => '2 घंटे',
 			'tokens.visibility' => ({required Object n}) => '${n}x विज़िबिलिटी',
-			'tokens.boostFor' => ({required Object count}) => '${count} टोकन में Boost',
+			'tokens.boostFor' => ({required Object count}) => '${count} टोकन में बूस्ट',
 			'tokens.boostActive' => ({required Object time}) => '${time} तक Boost',
 			'tokens.boostDone' => 'आपकी प्रोफ़ाइल Boost हो गई!',
 			'tokens.historyEmpty' => 'अभी तक कोई टोकन गतिविधि नहीं',

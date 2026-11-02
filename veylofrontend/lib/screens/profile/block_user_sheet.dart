@@ -17,6 +17,7 @@ Future<void> showBlockUserSheet(
   required ProfileUser user,
   String? conversationId,
   VoidCallback? onDone,
+  bool leaveProfile = false,
 }) {
   return showProfileConfirmSheet(
     context,
@@ -24,6 +25,7 @@ Future<void> showBlockUserSheet(
     action: ProfileConfirmAction.block,
     conversationId: conversationId,
     onDone: onDone,
+    leaveProfile: leaveProfile,
   );
 }
 
@@ -31,11 +33,13 @@ Future<void> showBlockUserSheet(
 Future<void> showRestrictUserSheet(
   BuildContext context, {
   required ProfileUser user,
+  bool leaveProfile = false,
 }) {
   return showProfileConfirmSheet(
     context,
     user: user,
     action: ProfileConfirmAction.restrict,
+    leaveProfile: leaveProfile,
   );
 }
 
@@ -45,6 +49,7 @@ Future<void> showProfileConfirmSheet(
   required ProfileConfirmAction action,
   String? conversationId,
   VoidCallback? onDone,
+  bool leaveProfile = false,
 }) {
   return showModalBottomSheet<void>(
     context: context,
@@ -56,6 +61,7 @@ Future<void> showProfileConfirmSheet(
       action: action,
       conversationId: conversationId,
       onDone: onDone,
+      leaveProfile: leaveProfile,
     ),
   );
 }
@@ -68,25 +74,49 @@ class BlockUserSheet extends StatelessWidget {
     this.action = ProfileConfirmAction.block,
     this.conversationId,
     this.onDone,
+    this.leaveProfile = false,
   });
 
   final ProfileUser user;
   final String? conversationId;
   final VoidCallback? onDone;
 
+  /// Profil ekranından açıldıysa işlem bitince o profilden çıkılır.
+  final bool leaveProfile;
+
   /// Engelle / kısıtla; başarılıysa true.
   Future<bool> _apply() async {
+    final messenger = ScaffoldMessenger.maybeOf(parentContext);
+    final t = Translations.of(parentContext).profile;
+    final isRestrict = action == ProfileConfirmAction.restrict;
+    final done = isRestrict
+        ? t.restrictedDone(username: _handle)
+        : t.blockedDone(username: _handle);
     try {
-      if (action == ProfileConfirmAction.restrict) {
+      if (isRestrict) {
         await SafetyRepository.instance.restrict(user.id);
       } else {
         await SafetyRepository.instance.block(userId: user.id, conversationId: conversationId);
       }
       onDone?.call();
+      // Sadece sunucuda gerçekten yapıldıysa (yerel taslak sohbette istek gitmez).
+      if (conversationId != null || SafetyRepository.isRealUser(user.id)) {
+        messenger?.showSnackBar(
+          SnackBar(content: Text(done), behavior: SnackBarBehavior.floating),
+        );
+      }
       return true;
     } catch (e) {
       if (parentContext.mounted) showErrorSnackBar(parentContext, e);
       return false;
+    }
+  }
+
+  /// Engellenen kişinin profilinden çık (kısıtlamada profil görünür kalır).
+  void _leave() {
+    if (action != ProfileConfirmAction.block) return;
+    if (leaveProfile && parentContext.mounted) {
+      Navigator.of(parentContext).maybePop();
     }
   }
   final BuildContext parentContext;
@@ -149,9 +179,9 @@ class BlockUserSheet extends StatelessWidget {
                       color: _btnColor,
                       borderRadius: BorderRadius.circular(999),
                       child: InkWell(
-                        onTap: () {
+                        onTap: () async {
                           Navigator.of(context).pop();
-                          _apply();
+                          if (await _apply()) _leave();
                         },
                         borderRadius: BorderRadius.circular(999),
                         child: Center(
@@ -176,12 +206,13 @@ class BlockUserSheet extends StatelessWidget {
                       // "Engelle ve raporla": önce engelle, sonra rapor penceresi.
                       if (!await _apply()) return;
                       if (parentContext.mounted) {
-                        showReportUserSheet(
+                        await showReportUserSheet(
                           parentContext,
                           user: user,
                           conversationId: conversationId,
                         );
                       }
+                      _leave();
                     },
                     child: AppText(
                       secondary,

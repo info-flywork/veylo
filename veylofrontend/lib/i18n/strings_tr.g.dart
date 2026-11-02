@@ -280,6 +280,99 @@ class Translations$chats$tr {
 
 	/// tr: 'Sohbet ettiğin kişi {title} hakkında istek gönderdi.'
 	String unlockReceived({required Object title}) => 'Sohbet ettiğin kişi ${title} hakkında istek gönderdi.';
+
+	/// tr: 'İstek'
+	String get requestAction => 'İstek';
+
+	/// tr: 'Gönderildi'
+	String get requestSent => 'Gönderildi';
+
+	/// tr: 'Kilit isteği'
+	String get previewUnlock => 'Kilit isteği';
+
+	/// tr: 'İsim paylaşıldı'
+	String get previewNameShared => 'İsim paylaşıldı';
+
+	/// tr: 'İsim isteği reddedildi'
+	String get previewNameDeclined => 'İsim isteği reddedildi';
+
+	/// tr: 'Fotoğraf paylaşıldı'
+	String get previewPhotoShared => 'Fotoğraf paylaşıldı';
+
+	/// tr: 'Fotoğraf isteği reddedildi'
+	String get previewPhotoDeclined => 'Fotoğraf isteği reddedildi';
+
+	/// tr: 'Profil paylaşıldı'
+	String get previewProfileShared => 'Profil paylaşıldı';
+
+	/// tr: 'Profil isteği reddedildi'
+	String get previewProfileDeclined => 'Profil isteği reddedildi';
+
+	/// tr: 'Fotoğraf'
+	String get previewPhoto => 'Fotoğraf';
+
+	/// tr: 'Sesli mesaj'
+	String get previewVoice => 'Sesli mesaj';
+
+	/// tr: 'Mikrofon izni gerekli'
+	String get micNeeded => 'Mikrofon izni gerekli';
+
+	/// tr: 'Çıkartma'
+	String get previewSticker => 'Çıkartma';
+
+	/// tr: 'Son kullanılan çıkartma yok'
+	String get stickerEmpty => 'Son kullanılan çıkartma yok';
+
+	/// tr: 'Mesaj kopyalandı'
+	String get messageCopied => 'Mesaj kopyalandı';
+
+	/// tr: 'Bu mesajı neden şikayet ediyorsun?'
+	String get reportReasonSubtitle => 'Bu mesajı neden şikayet ediyorsun?';
+
+	/// tr: 'Taciz veya zorbalık'
+	String get reasonHarassment => 'Taciz veya zorbalık';
+
+	/// tr: 'Nefret söylemi'
+	String get reasonHateSpeech => 'Nefret söylemi';
+
+	/// tr: 'Çıplaklık veya cinsel içerik'
+	String get reasonNudity => 'Çıplaklık veya cinsel içerik';
+
+	/// tr: 'Spam'
+	String get reasonSpam => 'Spam';
+
+	/// tr: 'Dolandırıcılık'
+	String get reasonScam => 'Dolandırıcılık';
+
+	/// tr: 'Şiddet veya tehdit'
+	String get reasonViolence => 'Şiddet veya tehdit';
+
+	/// tr: 'Diğer'
+	String get reasonOther => 'Diğer';
+
+	/// tr: 'Sessize al'
+	String get mute => 'Sessize al';
+
+	/// tr: 'Sesi aç'
+	String get unmute => 'Sesi aç';
+
+	/// tr: 'Sohbeti sil'
+	String get deleteChat => 'Sohbeti sil';
+
+	/// tr: 'Henüz sohbet yok'
+	String get emptyThreadsTitle => 'Henüz sohbet yok';
+
+	/// tr: 'Biriyle konuşmaya başladığında sohbetlerin burada görünür.'
+	String get emptyThreadsSubtitle => 'Biriyle konuşmaya başladığında sohbetlerin burada görünür.';
+
+	/// tr: 'Sonuç bulunamadı'
+	String get noSearchResults => 'Sonuç bulunamadı';
+
+	/// tr: '%70'te açıldı'
+	String get milestonePhotoUnlocked => '%70\'te açıldı';
+
+	/// tr: '{name} profilini açmak istiyor'
+	String revealPeerWants({required Object name}) => '${name} profilini açmak istiyor';
 }
 
 // Path: profile
@@ -320,8 +413,8 @@ class Translations$profile$tr {
 	/// tr: 'Gönderi'
 	String get tabPosts => 'Gönderi';
 
-	/// tr: 'Video'
-	String get tabVideo => 'Video';
+	/// tr: 'Videolar'
+	String get tabVideo => 'Videolar';
 
 	/// tr: 'Kaydedilenler'
 	String get tabSaved => 'Kaydedilenler';
@@ -388,6 +481,15 @@ class Translations$profile$tr {
 
 	/// tr: 'Sohbetleri Sil'
 	String get deleteConversation => 'Sohbetleri Sil';
+
+	/// tr: 'Tüm sohbetleri silmek istediğinden emin misin?'
+	String get deleteAllTitle => 'Tüm sohbetleri silmek istediğinden emin misin?';
+
+	/// tr: 'Onaylarsan tüm mesajlar silinir'
+	String get deleteAllBody => 'Onaylarsan tüm mesajlar silinir';
+
+	/// tr: 'Sil'
+	String get deleteAllAction => 'Sil';
 
 	/// tr: 'SSS ve Yardım'
 	String get faqHelp => 'SSS ve Yardım';
@@ -487,6 +589,36 @@ class Translations$profile$tr {
 
 	/// tr: 'Ses Ekle'
 	String get addVoice => 'Ses Ekle';
+
+	/// tr: 'Profilinde paylaşıldı'
+	String get voiceShared => 'Profilinde paylaşıldı';
+
+	/// tr: 'En fazla {seconds} saniyelik kısa bir tanıtım kaydet'
+	String voiceHint({required Object seconds}) => 'En fazla ${seconds} saniyelik kısa bir tanıtım kaydet';
+
+	/// tr: 'Kaydediliyor {seconds} sn'
+	String voiceRecording({required Object seconds}) => 'Kaydediliyor ${seconds} sn';
+
+	/// tr: 'Sesin hazır'
+	String get voiceReady => 'Sesin hazır';
+
+	/// tr: 'Oynat'
+	String get voicePlay => 'Oynat';
+
+	/// tr: 'Duraklat'
+	String get voicePause => 'Duraklat';
+
+	/// tr: 'Profilde paylaş'
+	String get voiceShare => 'Profilde paylaş';
+
+	/// tr: 'Kaydediliyor…'
+	String get voiceSaving => 'Kaydediliyor…';
+
+	/// tr: 'Profilden kaldır'
+	String get voiceRemove => 'Profilden kaldır';
+
+	/// tr: 'Ses'
+	String get voiceLabel => 'Ses';
 
 	/// tr: 'Yaşam Tarzı'
 	String get lifestyle => 'Yaşam Tarzı';
@@ -599,32 +731,35 @@ class Translations$profile$tr {
 	/// tr: '{count} Token'
 	String borderToken({required Object count}) => '${count} Token';
 
-	/// tr: 'Amethyst Wings'
-	String get borderAmethystWings => 'Amethyst Wings';
+	/// tr: 'Ametist Kanatlar'
+	String get borderAmethystWings => 'Ametist Kanatlar';
 
-	/// tr: 'Golden Phoenix'
-	String get borderGoldenPhoenix => 'Golden Phoenix';
+	/// tr: 'Altın Anka'
+	String get borderGoldenPhoenix => 'Altın Anka';
 
-	/// tr: 'Frost Crown'
-	String get borderFrostCrown => 'Frost Crown';
+	/// tr: 'Buz Tacı'
+	String get borderFrostCrown => 'Buz Tacı';
 
-	/// tr: 'Emerald Whisper'
-	String get borderEmeraldWhisper => 'Emerald Whisper';
+	/// tr: 'Zümrüt Fısıltı'
+	String get borderEmeraldWhisper => 'Zümrüt Fısıltı';
 
-	/// tr: 'Rose Quartz'
-	String get borderRoseQuartz => 'Rose Quartz';
+	/// tr: 'Pembe Kuvars'
+	String get borderRoseQuartz => 'Pembe Kuvars';
 
-	/// tr: 'Starlit Comet'
-	String get borderStarlitComet => 'Starlit Comet';
+	/// tr: 'Yıldızlı Kuyrukluyıldız'
+	String get borderStarlitComet => 'Yıldızlı Kuyrukluyıldız';
 
-	/// tr: 'Crimson Royal'
-	String get borderCrimsonRoyal => 'Crimson Royal';
+	/// tr: 'Kırmızı Asalet'
+	String get borderCrimsonRoyal => 'Kırmızı Asalet';
 
-	/// tr: 'Sapphire Halo'
-	String get borderSapphireHalo => 'Sapphire Halo';
+	/// tr: 'Safir Hale'
+	String get borderSapphireHalo => 'Safir Hale';
 
 	/// tr: 'Takip Et'
 	String get follow => 'Takip Et';
+
+	/// tr: 'Mesaj'
+	String get message => 'Mesaj';
 
 	/// tr: 'Takip Ediliyor'
 	String get following => 'Takip Ediliyor';
@@ -733,6 +868,99 @@ class Translations$profile$tr {
 
 	/// tr: 'Şifreler eşleşmiyor.'
 	String get passwordMismatch => 'Şifreler eşleşmiyor.';
+
+	/// tr: 'Gönder'
+	String get shareSend => 'Gönder';
+
+	/// tr: '{name} — Veylo profili: {url}'
+	String shareMessage({required Object name, required Object url}) => '${name} — Veylo profili: ${url}';
+
+	/// tr: 'Mevcut Şifre'
+	String get currentPassword => 'Mevcut Şifre';
+
+	/// tr: 'Mevcut şifren yanlış.'
+	String get currentPasswordWrong => 'Mevcut şifren yanlış.';
+
+	/// tr: 'Neden'
+	String get reportReasonLabel => 'Neden';
+
+	/// tr: 'Taciz veya zorbalık'
+	String get reportReasonHarassment => 'Taciz veya zorbalık';
+
+	/// tr: 'Nefret söylemi'
+	String get reportReasonHateSpeech => 'Nefret söylemi';
+
+	/// tr: 'Çıplaklık veya cinsel içerik'
+	String get reportReasonNudity => 'Çıplaklık veya cinsel içerik';
+
+	/// tr: '18 yaşından küçük'
+	String get reportReasonUnderage => '18 yaşından küçük';
+
+	/// tr: 'Spam'
+	String get reportReasonSpam => 'Spam';
+
+	/// tr: 'Dolandırıcılık'
+	String get reportReasonScam => 'Dolandırıcılık';
+
+	/// tr: 'Şiddet veya tehdit'
+	String get reportReasonViolence => 'Şiddet veya tehdit';
+
+	/// tr: 'Başkasını taklit etme'
+	String get reportReasonImpersonation => 'Başkasını taklit etme';
+
+	/// tr: 'Diğer'
+	String get reportReasonOther => 'Diğer';
+
+	/// tr: '{username} engellendi.'
+	String blockedDone({required Object username}) => '${username} engellendi.';
+
+	/// tr: '{username} kısıtlandı.'
+	String restrictedDone({required Object username}) => '${username} kısıtlandı.';
+
+	/// tr: 'Henüz gönderi yok'
+	String get emptyPosts => 'Henüz gönderi yok';
+
+	/// tr: 'Henüz video yok'
+	String get emptyVideos => 'Henüz video yok';
+
+	/// tr: 'Henüz kaydedilen gönderi yok'
+	String get emptySaved => 'Henüz kaydedilen gönderi yok';
+
+	/// tr: 'Seçimi temizle'
+	String get clearSelection => 'Seçimi temizle';
+
+	/// tr: 'Non-binary'
+	String get genderNonBinary => 'Non-binary';
+
+	/// tr: 'Ses eklendi'
+	String get voiceAdded => 'Ses eklendi';
+
+	/// tr: 'Değişiklikler kaydedilmedi'
+	String get discardTitle => 'Değişiklikler kaydedilmedi';
+
+	/// tr: 'Çıkarsan yaptığın değişiklikler kaybolacak.'
+	String get discardBody => 'Çıkarsan yaptığın değişiklikler kaybolacak.';
+
+	/// tr: 'Değişiklikleri sil'
+	String get discardConfirm => 'Değişiklikleri sil';
+
+	/// tr: 'Düzenlemeye devam et'
+	String get keepEditing => 'Düzenlemeye devam et';
+
+	/// tr: 'Çerçevesiz'
+	String get borderNone => 'Çerçevesiz';
+
+	/// tr: 'Sahipsin'
+	String get borderOwned => 'Sahipsin';
+
+	/// tr: 'Çerçeveyi Tak'
+	String get borderEquipCta => 'Çerçeveyi Tak';
+
+	/// tr: 'Çerçeveyi Kaldır'
+	String get borderRemoveCta => 'Çerçeveyi Kaldır';
+
+	/// tr: 'Burada henüz kimse yok'
+	String get followEmpty => 'Burada henüz kimse yok';
 }
 
 // Path: nav
@@ -752,8 +980,8 @@ class Translations$nav$tr {
 	/// tr: 'Ara'
 	String get call => 'Ara';
 
-	/// tr: 'Vibes'
-	String get vibes => 'Vibes';
+	/// tr: 'Vibeler'
+	String get vibes => 'Vibeler';
 
 	/// tr: 'Profil'
 	String get profile => 'Profil';
@@ -791,8 +1019,8 @@ class Translations$call$tr {
 	/// tr: 'Erkek'
 	String get male => 'Erkek';
 
-	/// tr: 'Non-binary'
-	String get nonBinary => 'Non-binary';
+	/// tr: 'İkili olmayan'
+	String get nonBinary => 'İkili olmayan';
 
 	/// tr: 'Fark etmez'
 	String get preferNotToSay => 'Fark etmez';
@@ -862,6 +1090,9 @@ class Translations$call$tr {
 
 	/// tr: 'Tamam'
 	String get noMatchOk => 'Tamam';
+
+	/// tr: 'Görüntülü arama için kamera izni gerekli. Ayarlar'dan açabilirsin.'
+	String get cameraDenied => 'Görüntülü arama için kamera izni gerekli. Ayarlar\'dan açabilirsin.';
 }
 
 // Path: vibes
@@ -904,6 +1135,24 @@ class Translations$vibes$tr {
 
 	/// tr: 'Vazgeç'
 	String get cancel => 'Vazgeç';
+
+	/// tr: 'Paylaş'
+	String get post => 'Paylaş';
+
+	/// tr: 'Cevabını yaz'
+	String get replyHint => 'Cevabını yaz';
+
+	/// tr: 'En yeniler'
+	String get sortNewest => 'En yeniler';
+
+	/// tr: 'En popülerler'
+	String get sortPopular => 'En popülerler';
+
+	/// tr: 'Vibe'lar yüklenemedi.'
+	String get loadFailed => 'Vibe\'lar yüklenemedi.';
+
+	/// tr: 'Sonuç bulunamadı'
+	String get noResults => 'Sonuç bulunamadı';
 }
 
 // Path: discover
@@ -923,8 +1172,8 @@ class Translations$discover$tr {
 	/// tr: 'Keşfet'
 	String get tabDiscover => 'Keşfet';
 
-	/// tr: 'AI Match'
-	String get tabAiMatch => 'AI Match';
+	/// tr: 'AI Eşleşme'
+	String get tabAiMatch => 'AI Eşleşme';
 
 	late final Translations$discover$aiMatch$tr aiMatch = Translations$discover$aiMatch$tr.internal(_root);
 
@@ -980,6 +1229,9 @@ class Translations$discover$tr {
 
 	/// tr: '{name} sunuyor'
 	String hostedBy({required Object name}) => '${name} sunuyor';
+
+	/// tr: 'İsteğin gönderildi, onay bekleniyor.'
+	String get requestPending => 'İsteğin gönderildi, onay bekleniyor.';
 }
 
 // Path: common
@@ -1125,8 +1377,8 @@ class Translations$onboarding$tr {
 	/// tr: 'Kimliğini paylaşmadan yeni insanlarla tanış ve sohbet et.'
 	String get page1Subtitle => 'Kimliğini paylaşmadan yeni insanlarla tanış ve sohbet et.';
 
-	/// tr: 'Yaz. Konuş. Vibes’i hisset.'
-	String get page2Title => 'Yaz. Konuş. Vibes’i hisset.';
+	/// tr: 'Yaz. Konuş. Vibeleri hisset.'
+	String get page2Title => 'Yaz. Konuş. Vibeleri hisset.';
 
 	/// tr: 'Anonim başla; hazır olunca yaz, ara veya yüz yüze geç.'
 	String get page2Subtitle => 'Anonim başla; hazır olunca yaz, ara veya yüz yüze geç.';
@@ -1248,8 +1500,8 @@ class Translations$createProfile$tr {
 	/// tr: 'Erkek'
 	String get genderMale => 'Erkek';
 
-	/// tr: 'Non-binary'
-	String get genderNonBinary => 'Non-binary';
+	/// tr: 'İkili olmayan'
+	String get genderNonBinary => 'İkili olmayan';
 
 	/// tr: 'Belirtmek istemiyorum'
 	String get genderPreferNotToSay => 'Belirtmek istemiyorum';
@@ -1436,8 +1688,8 @@ class Translations$faq$tr {
 	/// tr: '60 Saniyelik Yabancı nedir?'
 	String get q5 => '60 Saniyelik Yabancı nedir?';
 
-	/// tr: 'Vibes nedir?'
-	String get q6 => 'Vibes nedir?';
+	/// tr: 'Vibeler nedir?'
+	String get q6 => 'Vibeler nedir?';
 
 	/// tr: 'Profilimi nasıl düzenlerim?'
 	String get q7 => 'Profilimi nasıl düzenlerim?';
@@ -1478,8 +1730,8 @@ class Translations$faq$tr {
 	/// tr: 'Ara sekmesinden kısa süreli rastgele bir eşleşme bulabilirsin. Süre bitince görüşmeyi uzatmayı seçebilir veya kapatabilirsin.'
 	String get a5 => 'Ara sekmesinden kısa süreli rastgele bir eşleşme bulabilirsin. Süre bitince görüşmeyi uzatmayı seçebilir veya kapatabilirsin.';
 
-	/// tr: 'Vibes, yakındaki veya keşfedilebilir insanları harita / liste üzerinden görmeni sağlar. İlgilendiğin kişiye yaklaşıp sohbet başlatabilirsin.'
-	String get a6 => 'Vibes, yakındaki veya keşfedilebilir insanları harita / liste üzerinden görmeni sağlar. İlgilendiğin kişiye yaklaşıp sohbet başlatabilirsin.';
+	/// tr: 'Vibeler, yakındaki veya keşfedilebilir insanları harita / liste üzerinden görmeni sağlar. İlgilendiğin kişiye yaklaşıp sohbet başlatabilirsin.'
+	String get a6 => 'Vibeler, yakındaki veya keşfedilebilir insanları harita / liste üzerinden görmeni sağlar. İlgilendiğin kişiye yaklaşıp sohbet başlatabilirsin.';
 
 	/// tr: 'Profil sekmesinden Profili Düzenle’ye girerek adını, fotoğraflarını, hakkında bilgilerini ve ilgi alanlarını güncelleyebilirsin. Değişiklikler kaydettikten sonra görünür olur.'
 	String get a7 => 'Profil sekmesinden Profili Düzenle’ye girerek adını, fotoğraflarını, hakkında bilgilerini ve ilgi alanlarını güncelleyebilirsin. Değişiklikler kaydettikten sonra görünür olur.';
@@ -1616,6 +1868,9 @@ class Translations$storyText$tr {
 	/// tr: 'İptal'
 	String get cancel => 'İptal';
 
+	/// tr: 'Bitti'
+	String get done => 'Bitti';
+
 	/// tr: 'Galeri açılamadı'
 	String get galleryError => 'Galeri açılamadı';
 }
@@ -1628,8 +1883,8 @@ class Translations$tokens$tr {
 
 	// Translations
 
-	/// tr: 'Boost'
-	String get boostTitle => 'Boost';
+	/// tr: 'Öne Çıkar'
+	String get boostTitle => 'Öne Çıkar';
 
 	/// tr: 'Geçmiş'
 	String get history => 'Geçmiş';
@@ -1670,8 +1925,8 @@ class Translations$tokens$tr {
 	/// tr: '{n} kat görünürlük'
 	String visibility({required Object n}) => '${n} kat görünürlük';
 
-	/// tr: '{count} token ile Boost'
-	String boostFor({required Object count}) => '${count} token ile Boost';
+	/// tr: '{count} token ile öne çıkar'
+	String boostFor({required Object count}) => '${count} token ile öne çıkar';
 
 	/// tr: '{time} saatine kadar öne çıkarıldı'
 	String boostActive({required Object time}) => '${time} saatine kadar öne çıkarıldı';
@@ -1799,11 +2054,11 @@ class Translations$discover$aiMatch$tr {
 	/// tr: '843'
 	String get statActiveValue => '843';
 
-	/// tr: '87%'
-	String get statMatchValue => '87%';
+	/// tr: '{value}%'
+	String statMatchValue({required Object value}) => '${value}%';
 
-	/// tr: '8 sn'
-	String get statAvgValue => '8 sn';
+	/// tr: '{value} sn'
+	String statAvgValue({required Object value}) => '${value} sn';
 
 	/// tr: 'Akıllı Eşleşmeyi Başlat'
 	String get startSmartMatch => 'Akıllı Eşleşmeyi Başlat';
@@ -1858,6 +2113,12 @@ class Translations$discover$aiMatch$tr {
 
 	/// tr: 'Şu an uygun kimse yok. Biraz sonra tekrar dene.'
 	String get noMatch => 'Şu an uygun kimse yok. Biraz sonra tekrar dene.';
+
+	/// tr: '{name} takip edildi'
+	String likeSent({required Object name}) => '${name} takip edildi';
+
+	/// tr: 'Tüm eşleşmeleri gördün. Daha fazlası için yeniden ara.'
+	String get lastMatch => 'Tüm eşleşmeleri gördün. Daha fazlası için yeniden ara.';
 }
 
 // Path: discover.privateRoom
@@ -2059,6 +2320,15 @@ class Translations$discover$liveRoom$tr {
 
 	/// tr: '{name} mikrofonunu açmanı istiyor.'
 	String wantsMic({required Object name}) => '${name} mikrofonunu açmanı istiyor.';
+
+	/// tr: 'Reddet'
+	String get reject => 'Reddet';
+
+	/// tr: 'Katılma istekleri'
+	String get pendingRequests => 'Katılma istekleri';
+
+	/// tr: 'Bekleyen istek yok.'
+	String get noRequests => 'Bekleyen istek yok.';
 }
 
 // Path: discover.groupChat
@@ -2155,6 +2425,12 @@ class Translations$discover$groupInfo$tr {
 
 	/// tr: 'Vazgeç'
 	String get cancel => 'Vazgeç';
+
+	/// tr: 'Henüz paylaşılan fotoğraf yok.'
+	String get galleryEmpty => 'Henüz paylaşılan fotoğraf yok.';
+
+	/// tr: 'Bunu yalnızca yöneticiler değiştirebilir.'
+	String get adminOnly => 'Bunu yalnızca yöneticiler değiştirebilir.';
 }
 
 // Path: discover.filters
@@ -2282,11 +2558,17 @@ class Translations$discover$story$tr {
 	/// tr: 'Müzikler yüklenemedi.'
 	String get musicError => 'Müzikler yüklenemedi.';
 
+	/// tr: 'Bilinmiyor'
+	String get unknownTrack => 'Bilinmiyor';
+
 	/// tr: 'Galeriye kaydedildi'
 	String get downloaded => 'Galeriye kaydedildi';
 
 	/// tr: 'Kaydedilemedi'
 	String get downloadFailed => 'Kaydedilemedi';
+
+	/// tr: 'Taslağa kaydedildi'
+	String get savedToDraft => 'Taslağa kaydedildi';
 }
 
 // Path: discover.highlight
@@ -2375,8 +2657,8 @@ class Translations$createProfile$interests$tr {
 	/// tr: 'Tiyatro'
 	String get theatre => 'Tiyatro';
 
-	/// tr: 'Fitness'
-	String get fitness => 'Fitness';
+	/// tr: 'Spor'
+	String get fitness => 'Spor';
 
 	/// tr: 'Yüzme'
 	String get swimming => 'Yüzme';
@@ -2493,6 +2775,37 @@ extension on Translations {
 			'chats.unlockFullPendingTheirs' => 'Tam profilini görmek için sana istek gönderdi.',
 			'chats.unlockSent' => ({required Object title}) => 'İstek gönderdin: ${title}',
 			'chats.unlockReceived' => ({required Object title}) => 'Sohbet ettiğin kişi ${title} hakkında istek gönderdi.',
+			'chats.requestAction' => 'İstek',
+			'chats.requestSent' => 'Gönderildi',
+			'chats.previewUnlock' => 'Kilit isteği',
+			'chats.previewNameShared' => 'İsim paylaşıldı',
+			'chats.previewNameDeclined' => 'İsim isteği reddedildi',
+			'chats.previewPhotoShared' => 'Fotoğraf paylaşıldı',
+			'chats.previewPhotoDeclined' => 'Fotoğraf isteği reddedildi',
+			'chats.previewProfileShared' => 'Profil paylaşıldı',
+			'chats.previewProfileDeclined' => 'Profil isteği reddedildi',
+			'chats.previewPhoto' => 'Fotoğraf',
+			'chats.previewVoice' => 'Sesli mesaj',
+			'chats.micNeeded' => 'Mikrofon izni gerekli',
+			'chats.previewSticker' => 'Çıkartma',
+			'chats.stickerEmpty' => 'Son kullanılan çıkartma yok',
+			'chats.messageCopied' => 'Mesaj kopyalandı',
+			'chats.reportReasonSubtitle' => 'Bu mesajı neden şikayet ediyorsun?',
+			'chats.reasonHarassment' => 'Taciz veya zorbalık',
+			'chats.reasonHateSpeech' => 'Nefret söylemi',
+			'chats.reasonNudity' => 'Çıplaklık veya cinsel içerik',
+			'chats.reasonSpam' => 'Spam',
+			'chats.reasonScam' => 'Dolandırıcılık',
+			'chats.reasonViolence' => 'Şiddet veya tehdit',
+			'chats.reasonOther' => 'Diğer',
+			'chats.mute' => 'Sessize al',
+			'chats.unmute' => 'Sesi aç',
+			'chats.deleteChat' => 'Sohbeti sil',
+			'chats.emptyThreadsTitle' => 'Henüz sohbet yok',
+			'chats.emptyThreadsSubtitle' => 'Biriyle konuşmaya başladığında sohbetlerin burada görünür.',
+			'chats.noSearchResults' => 'Sonuç bulunamadı',
+			'chats.milestonePhotoUnlocked' => '%70\'te açıldı',
+			'chats.revealPeerWants' => ({required Object name}) => '${name} profilini açmak istiyor',
 			'profile.eyebrow' => 'Profil',
 			'profile.title' => 'Ayarlar',
 			'profile.editProfile' => 'Profili Düzenle',
@@ -2503,7 +2816,7 @@ extension on Translations {
 			'profile.promoSubtitle' => 'Öne çık, listenin en üstünde görün',
 			'profile.standOut' => 'Öne Çık',
 			'profile.tabPosts' => 'Gönderi',
-			'profile.tabVideo' => 'Video',
+			'profile.tabVideo' => 'Videolar',
 			'profile.tabSaved' => 'Kaydedilenler',
 			'profile.save' => 'Kaydet',
 			'profile.changePhoto' => 'Fotoğrafı Değiştir',
@@ -2526,6 +2839,9 @@ extension on Translations {
 			'profile.notifications' => 'Bildirimler',
 			'profile.password' => 'Şifre',
 			'profile.deleteConversation' => 'Sohbetleri Sil',
+			'profile.deleteAllTitle' => 'Tüm sohbetleri silmek istediğinden emin misin?',
+			'profile.deleteAllBody' => 'Onaylarsan tüm mesajlar silinir',
+			'profile.deleteAllAction' => 'Sil',
 			'profile.faqHelp' => 'SSS ve Yardım',
 			'profile.restorePurchases' => 'Satın Alımları Geri Yükle',
 			'profile.termsOfService' => 'Hizmet Şartları',
@@ -2559,6 +2875,16 @@ extension on Translations {
 			'profile.educationPhd' => 'Doktora',
 			'profile.voiceRecord' => 'Ses Kaydı',
 			'profile.addVoice' => 'Ses Ekle',
+			'profile.voiceShared' => 'Profilinde paylaşıldı',
+			'profile.voiceHint' => ({required Object seconds}) => 'En fazla ${seconds} saniyelik kısa bir tanıtım kaydet',
+			'profile.voiceRecording' => ({required Object seconds}) => 'Kaydediliyor ${seconds} sn',
+			'profile.voiceReady' => 'Sesin hazır',
+			'profile.voicePlay' => 'Oynat',
+			'profile.voicePause' => 'Duraklat',
+			'profile.voiceShare' => 'Profilde paylaş',
+			'profile.voiceSaving' => 'Kaydediliyor…',
+			'profile.voiceRemove' => 'Profilden kaldır',
+			'profile.voiceLabel' => 'Ses',
 			'profile.lifestyle' => 'Yaşam Tarzı',
 			'profile.pets' => 'Evcil Hayvanlar',
 			'profile.petsValue' => 'Kedim var',
@@ -2596,15 +2922,16 @@ extension on Translations {
 			'profile.borderBuySection' => 'Çerçeve satın al',
 			'profile.borderBuyCta' => 'Çerçeve Satın Al',
 			'profile.borderToken' => ({required Object count}) => '${count} Token',
-			'profile.borderAmethystWings' => 'Amethyst Wings',
-			'profile.borderGoldenPhoenix' => 'Golden Phoenix',
-			'profile.borderFrostCrown' => 'Frost Crown',
-			'profile.borderEmeraldWhisper' => 'Emerald Whisper',
-			'profile.borderRoseQuartz' => 'Rose Quartz',
-			'profile.borderStarlitComet' => 'Starlit Comet',
-			'profile.borderCrimsonRoyal' => 'Crimson Royal',
-			'profile.borderSapphireHalo' => 'Sapphire Halo',
+			'profile.borderAmethystWings' => 'Ametist Kanatlar',
+			'profile.borderGoldenPhoenix' => 'Altın Anka',
+			'profile.borderFrostCrown' => 'Buz Tacı',
+			'profile.borderEmeraldWhisper' => 'Zümrüt Fısıltı',
+			'profile.borderRoseQuartz' => 'Pembe Kuvars',
+			'profile.borderStarlitComet' => 'Yıldızlı Kuyrukluyıldız',
+			'profile.borderCrimsonRoyal' => 'Kırmızı Asalet',
+			'profile.borderSapphireHalo' => 'Safir Hale',
 			'profile.follow' => 'Takip Et',
+			'profile.message' => 'Mesaj',
 			'profile.following' => 'Takip Ediliyor',
 			'profile.followPageTitle' => 'Takip',
 			'profile.followTabFollowing' => 'Takip',
@@ -2641,10 +2968,41 @@ extension on Translations {
 			'profile.emailVerificationSent' => ({required Object email}) => '${email} adresine onay bağlantısı gönderdik. Onaylayınca e-postan değişir.',
 			'profile.passwordChanged' => 'Şifren güncellendi.',
 			'profile.passwordMismatch' => 'Şifreler eşleşmiyor.',
+			'profile.shareSend' => 'Gönder',
+			'profile.shareMessage' => ({required Object name, required Object url}) => '${name} — Veylo profili: ${url}',
+			'profile.currentPassword' => 'Mevcut Şifre',
+			'profile.currentPasswordWrong' => 'Mevcut şifren yanlış.',
+			'profile.reportReasonLabel' => 'Neden',
+			'profile.reportReasonHarassment' => 'Taciz veya zorbalık',
+			'profile.reportReasonHateSpeech' => 'Nefret söylemi',
+			'profile.reportReasonNudity' => 'Çıplaklık veya cinsel içerik',
+			'profile.reportReasonUnderage' => '18 yaşından küçük',
+			'profile.reportReasonSpam' => 'Spam',
+			'profile.reportReasonScam' => 'Dolandırıcılık',
+			'profile.reportReasonViolence' => 'Şiddet veya tehdit',
+			'profile.reportReasonImpersonation' => 'Başkasını taklit etme',
+			'profile.reportReasonOther' => 'Diğer',
+			'profile.blockedDone' => ({required Object username}) => '${username} engellendi.',
+			'profile.restrictedDone' => ({required Object username}) => '${username} kısıtlandı.',
+			'profile.emptyPosts' => 'Henüz gönderi yok',
+			'profile.emptyVideos' => 'Henüz video yok',
+			'profile.emptySaved' => 'Henüz kaydedilen gönderi yok',
+			'profile.clearSelection' => 'Seçimi temizle',
+			'profile.genderNonBinary' => 'Non-binary',
+			'profile.voiceAdded' => 'Ses eklendi',
+			'profile.discardTitle' => 'Değişiklikler kaydedilmedi',
+			'profile.discardBody' => 'Çıkarsan yaptığın değişiklikler kaybolacak.',
+			'profile.discardConfirm' => 'Değişiklikleri sil',
+			'profile.keepEditing' => 'Düzenlemeye devam et',
+			'profile.borderNone' => 'Çerçevesiz',
+			'profile.borderOwned' => 'Sahipsin',
+			'profile.borderEquipCta' => 'Çerçeveyi Tak',
+			'profile.borderRemoveCta' => 'Çerçeveyi Kaldır',
+			'profile.followEmpty' => 'Burada henüz kimse yok',
 			'nav.discover' => 'Keşfet',
 			'nav.chat' => 'Sohbet',
 			'nav.call' => 'Ara',
-			'nav.vibes' => 'Vibes',
+			'nav.vibes' => 'Vibeler',
 			'nav.profile' => 'Profil',
 			'call.title' => '60 Saniyelik Yabancı',
 			'call.subtitle' => 'Rastgele bir yabancıyla 60 saniye konuş — tamamen anonim. Profil yok, fotoğraf yok, isim yok. Sadece bir ses ve bir an.',
@@ -2654,7 +3012,7 @@ extension on Translations {
 			'call.cancel' => 'İptal',
 			'call.female' => 'Kadın',
 			'call.male' => 'Erkek',
-			'call.nonBinary' => 'Non-binary',
+			'call.nonBinary' => 'İkili olmayan',
 			'call.preferNotToSay' => 'Fark etmez',
 			'call.anonymousBadge' => '🎙️ Anonim sesli arama',
 			'call.stranger' => 'Yabancı',
@@ -2678,6 +3036,7 @@ extension on Translations {
 			'call.noMatchTitle' => 'Şu an uygun kimse yok',
 			'call.noMatchBody' => 'Şu anda konuşmaya müsait bir anonim kullanıcı bulamadık. Biraz sonra tekrar dene.',
 			'call.noMatchOk' => 'Tamam',
+			'call.cameraDenied' => 'Görüntülü arama için kamera izni gerekli. Ayarlar\'dan açabilirsin.',
 			'vibes.search' => 'Ara',
 			'vibes.sendMessage' => 'Mesaj Gönder',
 			'vibes.wantsToTalk' => 'Şu an bunun hakkında konuşmak istiyor',
@@ -2689,10 +3048,16 @@ extension on Translations {
 			'vibes.deleteTitle' => 'Bu vibe silinsin mi?',
 			'vibes.delete' => 'Sil',
 			'vibes.cancel' => 'Vazgeç',
+			'vibes.post' => 'Paylaş',
+			'vibes.replyHint' => 'Cevabını yaz',
+			'vibes.sortNewest' => 'En yeniler',
+			'vibes.sortPopular' => 'En popülerler',
+			'vibes.loadFailed' => 'Vibe\'lar yüklenemedi.',
+			'vibes.noResults' => 'Sonuç bulunamadı',
 			'discover.title' => 'Keşfet',
 			'discover.tabRooms' => 'Odalar',
 			'discover.tabDiscover' => 'Keşfet',
-			'discover.tabAiMatch' => 'AI Match',
+			'discover.tabAiMatch' => 'AI Eşleşme',
 			'discover.aiMatch.feelingTitle' => 'Bugün nasıl hissediyorsun',
 			'discover.aiMatch.feelingSubtitle' => 'AI, seçimine göre en iyi eşleşmeyi bulur',
 			'discover.aiMatch.lookingTitle' => 'Ne arıyorsun?',
@@ -2711,8 +3076,8 @@ extension on Translations {
 			'discover.aiMatch.statMatchRate' => 'Eşleşme oranı',
 			'discover.aiMatch.statAvgTime' => 'Ort. süre',
 			'discover.aiMatch.statActiveValue' => '843',
-			'discover.aiMatch.statMatchValue' => '87%',
-			'discover.aiMatch.statAvgValue' => '8 sn',
+			'discover.aiMatch.statMatchValue' => ({required Object value}) => '${value}%',
+			'discover.aiMatch.statAvgValue' => ({required Object value}) => '${value} sn',
 			'discover.aiMatch.startSmartMatch' => 'Akıllı Eşleşmeyi Başlat',
 			'discover.aiMatch.findingTitle' => 'Eşleşmen aranıyor',
 			'discover.aiMatch.findingSubtitle' => 'Ruh halin ve ilgi alanların doğru kişiyle eşleştiriliyor',
@@ -2731,6 +3096,8 @@ extension on Translations {
 			'discover.aiMatch.swipeNext' => 'Sonraki',
 			'discover.aiMatch.swipeFinger' => 'Parmağını Kaydır',
 			'discover.aiMatch.noMatch' => 'Şu an uygun kimse yok. Biraz sonra tekrar dene.',
+			'discover.aiMatch.likeSent' => ({required Object name}) => '${name} takip edildi',
+			'discover.aiMatch.lastMatch' => 'Tüm eşleşmeleri gördün. Daha fazlası için yeniden ara.',
 			'discover.searchHint' => 'Ara',
 			'discover.allRooms' => 'Tüm Odalar',
 			'discover.allGroups' => 'Tüm Gruplar',
@@ -2792,6 +3159,9 @@ extension on Translations {
 			'discover.liveRoom.unmuteMic' => 'Mikrofonunu aç',
 			'discover.liveRoom.wantsToSeeYou' => ({required Object room, required Object name}) => '${room} odasındaki ${name} seni görmek istedi.',
 			'discover.liveRoom.wantsMic' => ({required Object name}) => '${name} mikrofonunu açmanı istiyor.',
+			'discover.liveRoom.reject' => 'Reddet',
+			'discover.liveRoom.pendingRequests' => 'Katılma istekleri',
+			'discover.liveRoom.noRequests' => 'Bekleyen istek yok.',
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} Kullanıcı',
 			'discover.groupChat.sampleVictoria' => 'Çok sıkıldım. Bir şeyler yapalım mı?',
 			'discover.groupChat.sampleSona' => 'Ne yapabiliriz? Aklında ne var?',
@@ -2818,6 +3188,8 @@ extension on Translations {
 			'discover.groupInfo.leaveConfirm' => 'Bu gruptan ayrılmak istiyor musun?',
 			'discover.groupInfo.leave' => 'Ayrıl',
 			'discover.groupInfo.cancel' => 'Vazgeç',
+			'discover.groupInfo.galleryEmpty' => 'Henüz paylaşılan fotoğraf yok.',
+			'discover.groupInfo.adminOnly' => 'Bunu yalnızca yöneticiler değiştirebilir.',
 			'discover.filters.title' => 'Filtreler',
 			'discover.filters.ageRange' => 'Yaş aralığı',
 			'discover.filters.ageRangeValue' => ({required Object min, required Object max}) => '${min}-${max}',
@@ -2851,8 +3223,12 @@ extension on Translations {
 			'discover.story.musicTitle' => 'Müzik',
 			'discover.story.musicEmpty' => 'Müzik bulunamadı.',
 			'discover.story.musicError' => 'Müzikler yüklenemedi.',
+			_ => null,
+		} ?? switch (path) {
+			'discover.story.unknownTrack' => 'Bilinmiyor',
 			'discover.story.downloaded' => 'Galeriye kaydedildi',
 			'discover.story.downloadFailed' => 'Kaydedilemedi',
+			'discover.story.savedToDraft' => 'Taslağa kaydedildi',
 			'discover.highlight.title' => 'Öne Çıkan',
 			'discover.highlight.view' => 'Görüntüle',
 			'discover.highlight.aiComments' => 'AI yorumlar',
@@ -2867,6 +3243,7 @@ extension on Translations {
 			'discover.stats.boostCta' => '1 gün boyunca öne çıkar - 100 token',
 			'discover.stats.boosted' => 'Öne çıkarıldı! Gönderin 24 saat boyunca en üstte.',
 			'discover.hostedBy' => ({required Object name}) => '${name} sunuyor',
+			'discover.requestPending' => 'İsteğin gönderildi, onay bekleniyor.',
 			'common.loading' => 'Yükleniyor…',
 			'common.retry' => 'Tekrar dene',
 			'common.cancel' => 'İptal',
@@ -2903,7 +3280,7 @@ extension on Translations {
 			'onboarding.skip' => 'Atla',
 			'onboarding.page1Title' => 'Kendin ol. Anonim kal.',
 			'onboarding.page1Subtitle' => 'Kimliğini paylaşmadan yeni insanlarla tanış ve sohbet et.',
-			'onboarding.page2Title' => 'Yaz. Konuş. Vibes’i hisset.',
+			'onboarding.page2Title' => 'Yaz. Konuş. Vibeleri hisset.',
 			'onboarding.page2Subtitle' => 'Anonim başla; hazır olunca yaz, ara veya yüz yüze geç.',
 			'onboarding.page3Title' => 'İnsanlarını bul. Sohbete katıl.',
 			'onboarding.page3Subtitle' => 'Yeni insanlarla odalara gir ve anı birlikte paylaş.',
@@ -2941,9 +3318,7 @@ extension on Translations {
 			'createProfile.genderSubtitleLine2' => 'kişiselleştirmek için kullanabiliriz.',
 			'createProfile.genderFemale' => 'Kadın',
 			'createProfile.genderMale' => 'Erkek',
-			_ => null,
-		} ?? switch (path) {
-			'createProfile.genderNonBinary' => 'Non-binary',
+			'createProfile.genderNonBinary' => 'İkili olmayan',
 			'createProfile.genderPreferNotToSay' => 'Belirtmek istemiyorum',
 			'createProfile.stepInterests' => '4/5 İlgi alanları',
 			'createProfile.interestsTitle' => 'Nelerden hoşlanırsın?',
@@ -2955,7 +3330,7 @@ extension on Translations {
 			'createProfile.interests.painting' => 'Resim',
 			'createProfile.interests.photography' => 'Fotoğraf',
 			'createProfile.interests.theatre' => 'Tiyatro',
-			'createProfile.interests.fitness' => 'Fitness',
+			'createProfile.interests.fitness' => 'Spor',
 			'createProfile.interests.swimming' => 'Yüzme',
 			'createProfile.interests.football' => 'Futbol',
 			'createProfile.interests.basketball' => 'Basketbol',
@@ -3021,7 +3396,7 @@ extension on Translations {
 			'faq.q3' => 'Bağlantı İlerlemesi ne işe yarar?',
 			'faq.q4' => 'Profilimi nasıl açarım?',
 			'faq.q5' => '60 Saniyelik Yabancı nedir?',
-			'faq.q6' => 'Vibes nedir?',
+			'faq.q6' => 'Vibeler nedir?',
 			'faq.q7' => 'Profilimi nasıl düzenlerim?',
 			'faq.q8' => 'Bildirimleri nasıl yönetirim?',
 			'faq.q9' => 'Satın alımları nasıl geri yüklerim?',
@@ -3035,7 +3410,7 @@ extension on Translations {
 			'faq.a3' => 'Sohbet ettikçe bağlantı yüzdeniz artar. Belirli eşiklerde isim baş harfi, bulanık fotoğraf ve tam profil gibi adımlar açılır. Detayları Bağlantı göstergesine dokunarak görebilirsin.',
 			'faq.a4' => 'Bağlantı %100 olduğunda Profilimi aç ile talep gönderebilirsin. Karşı taraf da kabul ederse karşılıklı tam profiller görünür.',
 			'faq.a5' => 'Ara sekmesinden kısa süreli rastgele bir eşleşme bulabilirsin. Süre bitince görüşmeyi uzatmayı seçebilir veya kapatabilirsin.',
-			'faq.a6' => 'Vibes, yakındaki veya keşfedilebilir insanları harita / liste üzerinden görmeni sağlar. İlgilendiğin kişiye yaklaşıp sohbet başlatabilirsin.',
+			'faq.a6' => 'Vibeler, yakındaki veya keşfedilebilir insanları harita / liste üzerinden görmeni sağlar. İlgilendiğin kişiye yaklaşıp sohbet başlatabilirsin.',
 			'faq.a7' => 'Profil sekmesinden Profili Düzenle’ye girerek adını, fotoğraflarını, hakkında bilgilerini ve ilgi alanlarını güncelleyebilirsin. Değişiklikler kaydettikten sonra görünür olur.',
 			'faq.a8' => 'Ayarlar’daki Bildirimler bölümünden mesaj, eşleşme ve diğer uyarıları açıp kapatabilirsin.',
 			'faq.a9' => 'Ayarlar → Hesap Yönetimi → Satın Alımları Geri Yükle’ye dokun. Aynı mağaza hesabındaki uygun satın alımlar geri yüklenir.',
@@ -3069,8 +3444,9 @@ extension on Translations {
 			'storyText.uppercase' => 'Büyük harf',
 			'storyText.underline' => 'Altı çizili',
 			'storyText.cancel' => 'İptal',
+			'storyText.done' => 'Bitti',
 			'storyText.galleryError' => 'Galeri açılamadı',
-			'tokens.boostTitle' => 'Boost',
+			'tokens.boostTitle' => 'Öne Çıkar',
 			'tokens.history' => 'Geçmiş',
 			'tokens.yourBalance' => 'Bakiyen',
 			'tokens.balanceTokens' => ({required Object count}) => '${count} Token',
@@ -3084,7 +3460,7 @@ extension on Translations {
 			'tokens.duration1h' => '1 saat',
 			'tokens.duration2h' => '2 saat',
 			'tokens.visibility' => ({required Object n}) => '${n} kat görünürlük',
-			'tokens.boostFor' => ({required Object count}) => '${count} token ile Boost',
+			'tokens.boostFor' => ({required Object count}) => '${count} token ile öne çıkar',
 			'tokens.boostActive' => ({required Object time}) => '${time} saatine kadar öne çıkarıldı',
 			'tokens.boostDone' => 'Profilin öne çıkarıldı!',
 			'tokens.historyEmpty' => 'Henüz token hareketi yok',

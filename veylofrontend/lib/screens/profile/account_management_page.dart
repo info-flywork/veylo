@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/navigation/session_navigation.dart';
 import 'package:veylo/data/remote/chat_repository.dart';
@@ -16,6 +17,7 @@ import 'package:veylo/screens/profile/change_password_sheet.dart';
 import 'package:veylo/screens/profile/delete_account_sheet.dart';
 import 'package:veylo/screens/profile/delete_conversation_sheet.dart';
 import 'package:veylo/screens/profile/faq_help_sheet.dart';
+import 'package:veylo/screens/profile/language_sheet.dart';
 import 'package:veylo/screens/profile/legal_doc_sheet.dart';
 import 'package:veylo/screens/profile/logout_sheet.dart';
 import 'package:veylo/screens/profile/share_app_sheet.dart';
@@ -24,6 +26,8 @@ const _kContentWidth = 398.0;
 const _kIconMuted = Color(0xFF7E8896);
 const _kRowFill = Color(0x0D998FED); // #998FED @ 5%
 const _kRowBorder = Color(0x3383A0B4); // #83A0B4 @ 20%
+/// App Store Apple ID (Android: com.flywork.veylo — paket adından bulunur).
+const _kAppStoreId = '6829639382';
 
 /// Settings — Figma Profile / Account Settings.
 class AccountManagementPage extends StatefulWidget {
@@ -42,20 +46,63 @@ class AccountManagementPage extends StatefulWidget {
 }
 
 class _AccountManagementPageState extends State<AccountManagementPage> {
-  final String _email = SessionStore.instance.me?.email ?? '';
+  /// Sunucudaki e-posta; doğrulama sonrası backend güncelleyince yenilenir.
+  String get _email => SessionStore.instance.me?.email ?? '';
   bool _notificationsEnabled = true;
+
+  /// Bildirim ayarı kaydı (Save'e basınca bitmesi beklenir).
+  Future<void>? _pendingNotifications;
 
   @override
   void initState() {
     super.initState();
+    SessionStore.instance.addListener(_onSession);
+    SessionStore.instance.refreshMe().catchError((_) {});
     PushService.instance.isEnabled().then((v) {
       if (mounted) setState(() => _notificationsEnabled = v);
     });
   }
 
+  @override
+  void dispose() {
+    SessionStore.instance.removeListener(_onSession);
+    super.dispose();
+  }
+
+  void _onSession() {
+    if (mounted) setState(() {});
+  }
+
   Future<void> _setNotifications(bool on) async {
     setState(() => _notificationsEnabled = on);
-    await PushService.instance.setEnabled(on);
+    final pending = PushService.instance.setEnabled(on);
+    _pendingNotifications = pending;
+    await pending;
+  }
+
+  /// Ayarlar anında uygulanır; Save bekleyen kaydı tamamlayıp ekranı kapatır.
+  Future<void> _save() async {
+    try {
+      await _pendingNotifications;
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+      return;
+    }
+    if (mounted) Navigator.of(context).pop();
+  }
+
+  /// Uygulama dili (Edit Profile > Languages artık konuşulan dilleri düzenler).
+  Future<void> _openAppLanguage() async {
+    final result = await showLanguageSheet(context);
+    if (result != null && mounted) setState(() {});
+  }
+
+  Future<void> _rateApp() async {
+    try {
+      await InAppReview.instance.openStoreListing(appStoreId: _kAppStoreId);
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    }
   }
 
   void _snack(String msg) {
@@ -76,6 +123,8 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
     if (result == null || result == _email || !mounted) return;
     try {
       await session.changeEmail(result);
+      // E-posta doğrulanınca değişir; satır sunucudaki değerle güncel kalsın.
+      session.refreshMe().catchError((_) {});
       if (mounted) {
         _snack(
           Translations.of(context).profile.emailVerificationSent(email: result),
@@ -91,18 +140,10 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
     if (!session.hasPasswordLogin) {
       return _snack(Translations.of(context).errors.socialAccount);
     }
-    final result = await showChangePasswordSheet(context);
-    if (result == null || !mounted) return;
-    final t = Translations.of(context);
-    if (result.password != result.confirm) {
-      return _snack(t.profile.passwordMismatch);
-    }
-    try {
-      await session.changePassword(result.password);
-      if (mounted) _snack(t.profile.passwordChanged);
-    } catch (e) {
-      if (mounted) showErrorSnackBar(context, e);
-    }
+    // Sheet şifreyi kendisi değiştirir (mevcut şifreyle yeniden doğrulama + hatalar içeride).
+    final changed = await showChangePasswordSheet(context);
+    if (changed != true || !mounted) return;
+    _snack(Translations.of(context).profile.passwordChanged);
   }
 
   Future<void> _toWelcome() async {
@@ -151,7 +192,12 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
 
   /// Token'lar tüketilebilir ürün: bakiye sunucuda tutulur, "geri yükleme" bakiyeyi yeniler.
   Future<void> _restorePurchases() async {
-    await SessionStore.instance.refreshMe().catchError((_) {});
+    try {
+      await SessionStore.instance.refreshMe();
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+      return;
+    }
     if (!mounted) return;
     final msg = Translations.of(context).profile.restorePurchasesDone;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -182,7 +228,7 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
             title: t.title,
             saveLabel: t.save,
             onBack: () => Navigator.of(context).pop(),
-            onSave: () => Navigator.of(context).pop(),
+            onSave: _save,
           ),
           Expanded(
             child: SingleChildScrollView(
@@ -201,9 +247,7 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                   _SettingsRow(
                     iconAsset: AppAssets.iconOkeyHand,
                     label: t.rateApp,
-                    onTap: () {
-                      // TODO: store puanlama
-                    },
+                    onTap: _rateApp,
                   ),
                   const SizedBox(height: 24),
                   AppText(
@@ -220,6 +264,15 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                       onChanged: (v) =>
                           _setNotifications(v),
                     ),
+                  ),
+                  const SizedBox(height: 8),
+                  _SettingsRow(
+                    iconAsset: AppAssets.iconEpTranslation,
+                    label: t.language,
+                    value: AppLanguage.fromCode(
+                      LocaleSettings.currentLocale.languageCode,
+                    ).label,
+                    onTap: _openAppLanguage,
                   ),
                   const SizedBox(height: 8),
                   _SettingsRow(

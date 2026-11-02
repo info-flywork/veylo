@@ -7,6 +7,7 @@ import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/data/remote/chat_repository.dart';
 import 'package:veylo/data/remote/chat_store.dart';
+import 'package:veylo/data/remote/group_repository.dart';
 import 'package:veylo/data/remote/note_store.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
@@ -231,9 +232,37 @@ class _ChatsPageState extends State<ChatsPage> {
                       horizontal: 4,
                       vertical: 4,
                     ),
-                    child: AppText(
-                      t.request,
-                      style: AppTextStyles.chatsRequestLink,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AppText(
+                          t.request,
+                          style: AppTextStyles.chatsRequestLink,
+                        ),
+                        if (ChatStore.instance.requests.isNotEmpty) ...[
+                          const SizedBox(width: 6),
+                          Container(
+                            constraints: const BoxConstraints(minWidth: 18),
+                            height: 18,
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            alignment: Alignment.center,
+                            decoration: const BoxDecoration(
+                              color: AppColors.selectionBorder,
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(9),
+                              ),
+                            ),
+                            child: AppText(
+                              '${ChatStore.instance.requests.length}',
+                              style: AppTextStyles.chatsRequestLink.copyWith(
+                                color: AppColors.white,
+                                fontSize: 11,
+                                height: 1,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                 ),
@@ -242,52 +271,64 @@ class _ChatsPageState extends State<ChatsPage> {
           ),
           const SizedBox(height: 12),
           Expanded(
-            child: ListView.separated(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 110),
-              itemCount: threads.length,
-              separatorBuilder: (_, _) => const SizedBox(height: 8),
-              itemBuilder: (context, index) {
-                final thread = threads[index];
-                return ChatThreadTile(
-                  key: ValueKey(thread.id),
-                  thread: thread,
-                  isOpen: _openThreadId == thread.id,
-                  onOpenChanged: (open) {
-                    final id = thread.id;
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      if (!mounted) return;
-                      setState(() {
-                        _openThreadId = open ? id : null;
-                      });
-                    });
+            child: threads.isEmpty
+                ? _ThreadsEmptyState(
+                    searching: _searchCtrl.text.trim().isNotEmpty,
+                    loading: widget.threads == null &&
+                        ChatStore.instance.loading,
+                  )
+                : ListView.separated(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 110),
+                  itemCount: threads.length,
+                  separatorBuilder: (_, _) => const SizedBox(height: 8),
+                  itemBuilder: (context, index) {
+                    final thread = threads[index];
+                    return ChatThreadTile(
+                      key: ValueKey(thread.id),
+                      thread: thread,
+                      isOpen: _openThreadId == thread.id,
+                      onOpenChanged: (open) {
+                        final id = thread.id;
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          if (!mounted) return;
+                          setState(() {
+                            _openThreadId = open ? id : null;
+                          });
+                        });
+                      },
+                      onPin: () => widget.onPinThread != null
+                          ? widget.onPinThread!(thread)
+                          : _togglePin(thread),
+                      // Grupta engellenecek tek kişi yok: gruptan ayrılır.
+                      onBlock: () => widget.onBlockThread != null
+                          ? widget.onBlockThread!(thread)
+                          : thread.isGroup
+                          ? _leaveGroup(context, thread)
+                          : _block(context, thread),
+                      onDelete: () {
+                        if (widget.onDeleteThread != null) {
+                          widget.onDeleteThread!(thread);
+                          setState(() {
+                            _threadItems.removeWhere((e) => e.id == thread.id);
+                          });
+                        } else {
+                          // Liste ChatStore'dan gelir; silme sunucuya yazılır.
+                          _delete(thread);
+                        }
+                        if (_openThreadId == thread.id) {
+                          setState(() => _openThreadId = null);
+                        }
+                      },
+                      onTap: () {
+                        if (widget.onOpenThread != null) {
+                          widget.onOpenThread!(context, thread);
+                          return;
+                        }
+                        openThread(context, thread);
+                      },
+                    );
                   },
-                  onPin: () => widget.onPinThread != null
-                      ? widget.onPinThread!(thread)
-                      : _togglePin(thread),
-                  onBlock: () => widget.onBlockThread != null
-                      ? widget.onBlockThread!(thread)
-                      : _block(context, thread),
-                  onDelete: () {
-                    if (widget.onDeleteThread != null) {
-                      widget.onDeleteThread!(thread);
-                    } else {
-                      _delete(thread);
-                    }
-                    setState(() {
-                      _threadItems.removeWhere((e) => e.id == thread.id);
-                      if (_openThreadId == thread.id) _openThreadId = null;
-                    });
-                  },
-                  onTap: () {
-                    if (widget.onOpenThread != null) {
-                      widget.onOpenThread!(context, thread);
-                      return;
-                    }
-                    openThread(context, thread);
-                  },
-                );
-              },
-            ),
+                ),
           ),
         ],
       ),
@@ -312,6 +353,35 @@ class _ChatsPageState extends State<ChatsPage> {
       await ChatRepository.instance.deleteForMe(thread.id);
     } catch (e) {
       if (mounted) showErrorSnackBar(context, e);
+      await ChatStore.instance.refresh();
+    }
+  }
+
+  /// Gruptan ayrılır (grup id'si sohbet id'siyle aynı).
+  Future<void> _leaveGroup(BuildContext context, ChatThread thread) async {
+    final t = Translations.of(context).discover.groupInfo;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(t.leaveConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(t.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(t.leave),
+          ),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    ChatStore.instance.remove(thread.id);
+    try {
+      await GroupRepository.instance.leave(thread.id);
+    } catch (e) {
+      if (mounted) showErrorSnackBar(this.context, e);
       await ChatStore.instance.refresh();
     }
   }
@@ -346,6 +416,44 @@ class _ChatsPageState extends State<ChatsPage> {
       return;
     }
     DirectChatPage.open(context, thread);
+  }
+}
+
+/// Sohbet yok / aramada sonuç yok (İstekler ekranındaki boş durumla aynı yazı stilleri).
+class _ThreadsEmptyState extends StatelessWidget {
+  const _ThreadsEmptyState({required this.searching, required this.loading});
+
+  final bool searching;
+  final bool loading;
+
+  @override
+  Widget build(BuildContext context) {
+    if (loading) {
+      return const Center(
+        child: CircularProgressIndicator(color: AppColors.brandPurple),
+      );
+    }
+    final t = Translations.of(context).chats;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(32, 40, 32, 110),
+      child: Column(
+        children: [
+          AppText(
+            searching ? t.noSearchResults : t.emptyThreadsTitle,
+            style: AppTextStyles.requestEmptyTitle,
+            textAlign: TextAlign.center,
+          ),
+          if (!searching) ...[
+            const SizedBox(height: 10),
+            AppText(
+              t.emptyThreadsSubtitle,
+              style: AppTextStyles.requestEmptySubtitle,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ],
+      ),
+    );
   }
 }
 

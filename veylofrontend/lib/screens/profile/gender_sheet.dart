@@ -3,28 +3,33 @@ import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_edit_sheet.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/screens/profile/widgets/picker_clear_action.dart';
 
 enum ProfileGender {
   female,
   male,
+  nonBinary,
   preferNotToSay,
 }
 
 /// Gender seçenek listesi ile [AppEditSheet].
-Future<ProfileGender?> showGenderSheet(
+/// Sonuç: [PickedValue.value] null ise kullanıcı değeri temizledi.
+Future<PickedValue<ProfileGender>?> showGenderSheet(
   BuildContext context, {
   ProfileGender initial = ProfileGender.male,
+  bool canClear = false,
 }) {
-  return showAppEditSheet<ProfileGender>(
+  return showAppEditSheet<PickedValue<ProfileGender>>(
     context: context,
-    builder: (_) => _GenderSheet(initial: initial),
+    builder: (_) => _GenderSheet(initial: initial, canClear: canClear),
   );
 }
 
 class _GenderSheet extends StatefulWidget {
-  const _GenderSheet({required this.initial});
+  const _GenderSheet({required this.initial, this.canClear = false});
 
   final ProfileGender initial;
+  final bool canClear;
 
   @override
   State<_GenderSheet> createState() => _GenderSheetState();
@@ -44,6 +49,7 @@ class _GenderSheetState extends State<_GenderSheet> {
     return switch (g) {
       ProfileGender.female => p.genderFemale,
       ProfileGender.male => p.genderMale,
+      ProfileGender.nonBinary => p.genderNonBinary,
       ProfileGender.preferNotToSay => p.genderPreferNotToSay,
     };
   }
@@ -55,34 +61,45 @@ class _GenderSheetState extends State<_GenderSheet> {
     return AppEditSheet(
       title: t.profile.gender,
       saveLabel: t.profile.save,
-      onSave: () => Navigator.of(context).pop(_selected),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (final (i, option) in ProfileGender.values.indexed) ...[
-              if (i > 0) const SizedBox(height: 16),
-              GestureDetector(
-                onTap: () => setState(() => _selected = option),
-                behavior: HitTestBehavior.opaque,
-                child: SizedBox(
-                  height: 30,
-                  width: double.infinity,
-                  child: Center(
-                    child: AppText(
-                      _label(t, option),
-                      style: option == _selected
-                          ? AppTextStyles.editSheetOptionSelected
-                          : AppTextStyles.editSheetOptionIdle,
-                      textAlign: TextAlign.center,
+      onSave: () => Navigator.of(context).pop(PickedValue(_selected)),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (final (i, option) in ProfileGender.values.indexed) ...[
+                  if (i > 0) const SizedBox(height: 16),
+                  GestureDetector(
+                    onTap: () => setState(() => _selected = option),
+                    behavior: HitTestBehavior.opaque,
+                    child: SizedBox(
+                      height: 30,
+                      width: double.infinity,
+                      child: Center(
+                        child: AppText(
+                          _label(t, option),
+                          style: option == _selected
+                              ? AppTextStyles.editSheetOptionSelected
+                              : AppTextStyles.editSheetOptionIdle,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-            ],
-          ],
-        ),
+                ],
+              ],
+            ),
+          ),
+          if (widget.canClear)
+            PickerClearAction(
+              onTap: () =>
+                  Navigator.of(context).pop(PickedValue<ProfileGender>(null)),
+            ),
+        ],
       ),
     );
   }

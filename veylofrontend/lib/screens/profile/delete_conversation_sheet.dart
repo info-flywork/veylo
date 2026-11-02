@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:veylo/core/theme/theme.dart';
+import 'package:veylo/i18n/strings.g.dart';
 
 /// Tüm sohbetleri silme onay sheet'i.
 Future<bool> showDeleteConversationSheet(BuildContext context) async {
@@ -20,11 +21,11 @@ class DeleteConversationSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bottom = MediaQuery.paddingOf(context).bottom;
-
-    // Figma kopyası (EN).
-    const title = 'Are you sure want to delete all conversation';
-    const subtitle = 'If you confirm, all messages will be deleted';
-    const delete = 'Delete';
+    final t = Translations.of(context).profile;
+    final title = t.deleteAllTitle;
+    final subtitle = t.deleteAllBody;
+    final delete = t.deleteAllAction;
+    final cancel = Translations.of(context).common.cancel;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(16, 10, 16, 10 + bottom),
@@ -84,6 +85,30 @@ class DeleteConversationSheet extends StatelessWidget {
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   height: 20 / 16,
+                  color: AppColors.white,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          // Logout sheet'teki Cancel ile aynı: siyah, tam genişlik pill.
+          GestureDetector(
+            onTap: () => Navigator.of(context).pop(false),
+            behavior: HitTestBehavior.opaque,
+            child: Container(
+              width: double.infinity,
+              height: 52,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: AppColors.black,
+                borderRadius: BorderRadius.circular(9999),
+              ),
+              child: Text(
+                cancel,
+                style: const TextStyle(
+                  fontFamily: AppFonts.poppins,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
                   color: AppColors.white,
                 ),
               ),

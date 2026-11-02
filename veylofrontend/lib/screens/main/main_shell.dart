@@ -60,7 +60,6 @@ class _MainShellState extends State<MainShell> {
       showRoomApprovedSheet(
         context,
         roomTitle: e['title'] as String? ?? '',
-        isGroup: true,
         conversationId: id,
       );
     });
@@ -117,6 +116,14 @@ class _MainShellState extends State<MainShell> {
     });
   }
 
+  /// Oda listesinde bu odaya girme iznim var mı (istek onaylanmış / sahibi benim).
+  bool _roomAccess(String roomId) {
+    for (final r in RoomStore.instance.rooms) {
+      if (r.id == roomId) return r.hasAccess;
+    }
+    return false;
+  }
+
   /// Bildirime dokunuldu: oda ise odaya, değilse sohbete gider.
   Future<void> _openConversation(String id) async {
     if (!mounted) return;
@@ -124,6 +131,9 @@ class _MainShellState extends State<MainShell> {
     if (room != null) {
       Navigator.of(context).popUntil((r) => r.isFirst);
       setState(() => _tab = AppNavTab.discover);
+      // Gizli oda: izin bildirimde yoksa güncel listeden bakılır (onaylıysa tekrar istek yok).
+      if (room.isPrivate && !room.hasAccess) await RoomStore.instance.refresh();
+      if (!mounted) return;
       await openLiveRoom(
         context,
         RoomListItem(
@@ -131,6 +141,7 @@ class _MainShellState extends State<MainShell> {
           title: room.title,
           count: 1,
           isPrivate: room.isPrivate,
+          isMember: room.hasAccess || _roomAccess(room.roomId),
           avatars: const [],
         ),
       );

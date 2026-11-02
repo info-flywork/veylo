@@ -62,6 +62,25 @@ class RoomChatLine {
   final int? toUid;
 }
 
+/// Gizli odaya bekleyen katılma isteği (`GET /rooms/:id/requests`).
+class RoomJoinRequest {
+  const RoomJoinRequest({
+    required this.id,
+    required this.user,
+    this.message,
+  });
+
+  factory RoomJoinRequest.fromJson(Map<String, dynamic> j) => RoomJoinRequest(
+    id: j['id'] as String,
+    user: RoomParticipant.fromJson(Map<String, dynamic>.from(j['user'] as Map)),
+    message: j['message'] as String?,
+  );
+
+  final String id;
+  final RoomParticipant user;
+  final String? message;
+}
+
 /// `GET /rooms` satırı.
 class LiveRoomSummary {
   const LiveRoomSummary({

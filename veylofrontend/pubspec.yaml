@@ -58,6 +58,9 @@ dependencies:
   permission_handler: ^13.0.2
   record: ^7.1.2
   wakelock_plus: ^1.8.2
+  sticker_keyboard: ^0.1.0
+  share_plus: ^13.3.1
+  in_app_review: ^2.0.12
 
 dev_dependencies:
   flutter_test:
@@ -121,6 +124,11 @@ flutter:
     - assets/icons/editProfile/
     - assets/icons/story/
     - assets/flags/
+    - assets/stickers/faces/
+    - assets/stickers/hearts/
+    - assets/stickers/hands/
+    - assets/stickers/animals/
+    - assets/stickers/food/
 
   fonts:
     - family: Poppins

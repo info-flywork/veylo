@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/data/remote/safety_repository.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/profile/profile_user.dart';
 import 'package:veylo/screens/profile/block_user_sheet.dart';
 import 'package:veylo/screens/profile/report_user_sheet.dart';
 
 /// Başka profil — Restrict / Block / Report menüsü.
+/// Örnek (backend'de olmayan) profillerde menü açılmaz — işlem taklidi yapılmaz.
 Future<void> showProfileActionsSheet(
   BuildContext context, {
   required ProfileUser user,
-}) {
+}) async {
+  if (!SafetyRepository.isRealUser(user.id)) return;
   return showModalBottomSheet<void>(
     context: context,
     backgroundColor: AppColors.white,
@@ -50,7 +53,11 @@ class _ProfileActionsSheet extends StatelessWidget {
                 Navigator.of(context).pop();
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   if (parentContext.mounted) {
-                    showRestrictUserSheet(parentContext, user: user);
+                    showRestrictUserSheet(
+                      parentContext,
+                      user: user,
+                      leaveProfile: true,
+                    );
                   }
                 });
               },
@@ -61,7 +68,11 @@ class _ProfileActionsSheet extends StatelessWidget {
               Navigator.of(context).pop();
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (parentContext.mounted) {
-                  showBlockUserSheet(parentContext, user: user);
+                  showBlockUserSheet(
+                    parentContext,
+                    user: user,
+                    leaveProfile: true,
+                  );
                 }
               });
             },

@@ -23,7 +23,6 @@ class _StoryCameraPageState extends State<StoryCameraPage> {
 
   /// 0 = Draft, 1 = Story
   int _mode = 1;
-  bool _flashOff = true;
   bool _useFront = false;
   File? _galleryThumb;
 
@@ -40,7 +39,7 @@ class _StoryCameraPageState extends State<StoryCameraPage> {
     if (!mounted) return;
     await Navigator.of(context).push<void>(
       MaterialPageRoute<void>(
-        builder: (_) => StoryEditorPage(file: file),
+        builder: (_) => StoryEditorPage(file: file, saveAsDraft: _mode == 0),
       ),
     );
   }
@@ -87,10 +86,8 @@ class _StoryCameraPageState extends State<StoryCameraPage> {
   Widget build(BuildContext context) {
     return _CameraView(
       mode: _mode,
-      flashOff: _flashOff,
       galleryThumb: _galleryThumb,
       onClose: () => Navigator.of(context).pop(),
-      onToggleFlash: () => setState(() => _flashOff = !_flashOff),
       onModeChanged: (m) => setState(() => _mode = m),
       onFlip: () => setState(() => _useFront = !_useFront),
       onCapture: _capture,
@@ -102,10 +99,8 @@ class _StoryCameraPageState extends State<StoryCameraPage> {
 class _CameraView extends StatelessWidget {
   const _CameraView({
     required this.mode,
-    required this.flashOff,
     required this.galleryThumb,
     required this.onClose,
-    required this.onToggleFlash,
     required this.onModeChanged,
     required this.onFlip,
     required this.onCapture,
@@ -113,10 +108,8 @@ class _CameraView extends StatelessWidget {
   });
 
   final int mode;
-  final bool flashOff;
   final File? galleryThumb;
   final VoidCallback onClose;
-  final VoidCallback onToggleFlash;
   final ValueChanged<int> onModeChanged;
   final VoidCallback onFlip;
   final VoidCallback onCapture;
@@ -151,22 +144,7 @@ class _CameraView extends StatelessWidget {
                           size: 20,
                         ),
                       ),
-                      const Spacer(),
-                      GestureDetector(
-                        onTap: onToggleFlash,
-                        behavior: HitTestBehavior.opaque,
-                        child: SizedBox(
-                          width: 32,
-                          height: 32,
-                          child: Icon(
-                            flashOff
-                                ? Icons.flash_off_rounded
-                                : Icons.flash_on_rounded,
-                            color: AppColors.white,
-                            size: 26,
-                          ),
-                        ),
-                      ),
+                      // Flaş: çekim sistem kamerasında yapılır, flaş orada seçilir.
                     ],
                   ),
                 ),
@@ -204,9 +182,13 @@ class _CameraView extends StatelessWidget {
                       height: 48,
                       child: galleryThumb != null
                           ? Image.file(galleryThumb!, fit: BoxFit.cover)
-                          : Image.asset(
-                              AppAssets.fakePerson07,
-                              fit: BoxFit.cover,
+                          : ColoredBox(
+                              color: AppColors.white.withValues(alpha: 0.12),
+                              child: const Icon(
+                                Icons.photo_library_outlined,
+                                color: AppColors.white,
+                                size: 24,
+                              ),
                             ),
                     ),
                   ),

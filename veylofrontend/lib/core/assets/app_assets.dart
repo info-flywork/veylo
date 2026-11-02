@@ -196,6 +196,7 @@ abstract final class AppAssets {
   static const String iconAddPeople = 'assets/icons/addPeople.svg';
   static const String iconBlock = 'assets/icons/block.svg';
   static const String iconPinned = 'assets/icons/pinned.svg';
+  static const String iconPinAction = 'assets/icons/pinAction.svg';
   static const String iconArrangement = 'assets/icons/arrangement.svg';
   static const String iconTrash = 'assets/icons/trash.svg';
   static const String iconStartGroup = 'assets/icons/startGroup.svg';
@@ -208,6 +209,8 @@ abstract final class AppAssets {
   static const String iconYourMatchPrevious = '$_yourMatchDir/previous.svg';
   static const String iconYourMatchSwiperFinger =
       '$_yourMatchDir/swiperFinger.svg';
+  static const String iconYourMatchClose = '$_yourMatchDir/close.svg';
+  static const String iconYourMatchHeart = '$_yourMatchDir/heart.svg';
 
   static const String _emotionsDir = 'assets/icons/emotions';
   static const String emotionSad = '$_emotionsDir/sad.png';

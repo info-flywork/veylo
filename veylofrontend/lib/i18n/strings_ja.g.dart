@@ -150,6 +150,37 @@ class _Translations$chats$ja extends Translations$chats$tr {
 	@override String get unlockFullPendingTheirs => 'この人があなたのプロフィール全体を見たいとリクエストしました。';
 	@override String unlockSent({required Object title}) => 'リクエストを送りました: ${title}';
 	@override String unlockReceived({required Object title}) => 'チャット相手が${title}についてリクエストを送りました。';
+	@override String get requestAction => 'リクエスト';
+	@override String get requestSent => '送信済み';
+	@override String get previewUnlock => '解除リクエスト';
+	@override String get previewNameShared => '名前を共有しました';
+	@override String get previewNameDeclined => '名前のリクエストは拒否されました';
+	@override String get previewPhotoShared => '写真を共有しました';
+	@override String get previewPhotoDeclined => '写真のリクエストは拒否されました';
+	@override String get previewProfileShared => 'プロフィールを共有しました';
+	@override String get previewProfileDeclined => 'プロフィールのリクエストは拒否されました';
+	@override String get previewPhoto => '写真';
+	@override String get previewVoice => 'ボイスメッセージ';
+	@override String get micNeeded => 'マイクの許可が必要です';
+	@override String get previewSticker => 'スタンプ';
+	@override String get stickerEmpty => '最近のスタンプはありません';
+	@override String get messageCopied => 'メッセージをコピーしました';
+	@override String get reportReasonSubtitle => 'このメッセージを報告する理由は？';
+	@override String get reasonHarassment => '嫌がらせ・いじめ';
+	@override String get reasonHateSpeech => 'ヘイトスピーチ';
+	@override String get reasonNudity => 'ヌード・性的なコンテンツ';
+	@override String get reasonSpam => 'スパム';
+	@override String get reasonScam => '詐欺';
+	@override String get reasonViolence => '暴力・脅迫';
+	@override String get reasonOther => 'その他';
+	@override String get mute => 'ミュート';
+	@override String get unmute => 'ミュート解除';
+	@override String get deleteChat => 'チャットを削除';
+	@override String get emptyThreadsTitle => 'まだチャットはありません';
+	@override String get emptyThreadsSubtitle => '誰かと話し始めると、ここにチャットが表示されます。';
+	@override String get noSearchResults => '結果が見つかりません';
+	@override String get milestonePhotoUnlocked => '70%で解除済み';
+	@override String revealPeerWants({required Object name}) => '${name}さんがプロフィールの公開を希望しています';
 }
 
 // Path: profile
@@ -192,6 +223,9 @@ class _Translations$profile$ja extends Translations$profile$tr {
 	@override String get notifications => '通知';
 	@override String get password => 'パスワード';
 	@override String get deleteConversation => '会話を削除';
+	@override String get deleteAllTitle => 'すべての会話を削除しますか？';
+	@override String get deleteAllBody => '確認すると、すべてのメッセージが削除されます';
+	@override String get deleteAllAction => '削除';
 	@override String get faqHelp => 'よくある質問とヘルプ';
 	@override String get restorePurchases => '購入を復元';
 	@override String get termsOfService => '利用規約';
@@ -225,6 +259,16 @@ class _Translations$profile$ja extends Translations$profile$tr {
 	@override String get educationPhd => '博士';
 	@override String get voiceRecord => 'ボイス録音';
 	@override String get addVoice => 'ボイスを追加';
+	@override String get voiceShared => 'プロフィールで共有中';
+	@override String voiceHint({required Object seconds}) => '${seconds}秒までの短い紹介を録音';
+	@override String voiceRecording({required Object seconds}) => '録音中 ${seconds}秒';
+	@override String get voiceReady => '音声の準備ができました';
+	@override String get voicePlay => '再生';
+	@override String get voicePause => '一時停止';
+	@override String get voiceShare => 'プロフィールに共有';
+	@override String get voiceSaving => '保存中…';
+	@override String get voiceRemove => 'プロフィールから削除';
+	@override String get voiceLabel => 'ボイス';
 	@override String get lifestyle => 'ライフスタイル';
 	@override String get pets => 'ペット';
 	@override String get petsValue => '猫を飼っています';
@@ -262,15 +306,16 @@ class _Translations$profile$ja extends Translations$profile$tr {
 	@override String get borderBuySection => 'フレームを購入';
 	@override String get borderBuyCta => 'フレームを購入';
 	@override String borderToken({required Object count}) => '${count} トークン';
-	@override String get borderAmethystWings => 'Amethyst Wings';
-	@override String get borderGoldenPhoenix => 'Golden Phoenix';
-	@override String get borderFrostCrown => 'Frost Crown';
-	@override String get borderEmeraldWhisper => 'Emerald Whisper';
-	@override String get borderRoseQuartz => 'Rose Quartz';
-	@override String get borderStarlitComet => 'Starlit Comet';
-	@override String get borderCrimsonRoyal => 'Crimson Royal';
-	@override String get borderSapphireHalo => 'Sapphire Halo';
+	@override String get borderAmethystWings => 'アメジストの翼';
+	@override String get borderGoldenPhoenix => '黄金の不死鳥';
+	@override String get borderFrostCrown => '霜の冠';
+	@override String get borderEmeraldWhisper => 'エメラルドのささやき';
+	@override String get borderRoseQuartz => 'ローズクォーツ';
+	@override String get borderStarlitComet => '星の彗星';
+	@override String get borderCrimsonRoyal => 'クリムゾンロイヤル';
+	@override String get borderSapphireHalo => 'サファイアの光輪';
 	@override String get follow => 'フォロー';
+	@override String get message => 'メッセージ';
 	@override String get following => 'フォロー中';
 	@override String get followPageTitle => 'フォロー';
 	@override String get followTabFollowing => 'フォロー中';
@@ -307,6 +352,37 @@ class _Translations$profile$ja extends Translations$profile$tr {
 	@override String emailVerificationSent({required Object email}) => '${email} に確認リンクを送信しました。確認後にメールアドレスが変更されます。';
 	@override String get passwordChanged => 'パスワードを更新しました。';
 	@override String get passwordMismatch => 'パスワードが一致しません。';
+	@override String get shareSend => '送る';
+	@override String shareMessage({required Object name, required Object url}) => '${name}のVeyloプロフィール: ${url}';
+	@override String get currentPassword => '現在のパスワード';
+	@override String get currentPasswordWrong => '現在のパスワードが正しくありません。';
+	@override String get reportReasonLabel => '理由';
+	@override String get reportReasonHarassment => '嫌がらせ・いじめ';
+	@override String get reportReasonHateSpeech => 'ヘイトスピーチ';
+	@override String get reportReasonNudity => 'ヌード・性的なコンテンツ';
+	@override String get reportReasonUnderage => '18歳未満';
+	@override String get reportReasonSpam => 'スパム';
+	@override String get reportReasonScam => '詐欺';
+	@override String get reportReasonViolence => '暴力・脅迫';
+	@override String get reportReasonImpersonation => 'なりすまし';
+	@override String get reportReasonOther => 'その他';
+	@override String blockedDone({required Object username}) => '${username}さんをブロックしました。';
+	@override String restrictedDone({required Object username}) => '${username}さんを制限しました。';
+	@override String get emptyPosts => 'まだ投稿がありません';
+	@override String get emptyVideos => 'まだ動画がありません';
+	@override String get emptySaved => '保存した投稿はまだありません';
+	@override String get clearSelection => '選択をクリア';
+	@override String get genderNonBinary => 'ノンバイナリー';
+	@override String get voiceAdded => 'ボイスを追加済み';
+	@override String get discardTitle => '保存されていない変更';
+	@override String get discardBody => '今戻ると変更内容は失われます。';
+	@override String get discardConfirm => '変更を破棄';
+	@override String get keepEditing => '編集を続ける';
+	@override String get borderNone => 'フレームなし';
+	@override String get borderOwned => '購入済み';
+	@override String get borderEquipCta => 'フレームを使う';
+	@override String get borderRemoveCta => 'フレームを外す';
+	@override String get followEmpty => 'まだ誰もいません';
 }
 
 // Path: nav
@@ -319,7 +395,7 @@ class _Translations$nav$ja extends Translations$nav$tr {
 	@override String get discover => '発見';
 	@override String get chat => 'チャット';
 	@override String get call => '通話';
-	@override String get vibes => 'Vibes';
+	@override String get vibes => 'バイブス';
 	@override String get profile => 'プロフィール';
 }
 
@@ -362,6 +438,7 @@ class _Translations$call$ja extends Translations$call$tr {
 	@override String get noMatchTitle => '今は話せる人がいません';
 	@override String get noMatchBody => '現在、話せる相手が見つかりませんでした。少し時間をおいてもう一度お試しください。';
 	@override String get noMatchOk => 'OK';
+	@override String get cameraDenied => 'ビデオ通話にはカメラへのアクセスが必要です。設定から有効にできます。';
 }
 
 // Path: vibes
@@ -382,6 +459,12 @@ class _Translations$vibes$ja extends Translations$vibes$tr {
 	@override String get deleteTitle => 'このVibeを削除しますか？';
 	@override String get delete => '削除';
 	@override String get cancel => 'キャンセル';
+	@override String get post => '投稿';
+	@override String get replyHint => '返信を書く';
+	@override String get sortNewest => '新しい順';
+	@override String get sortPopular => '人気順';
+	@override String get loadFailed => 'Vibeを読み込めませんでした。';
+	@override String get noResults => '結果が見つかりません';
 }
 
 // Path: discover
@@ -394,7 +477,7 @@ class _Translations$discover$ja extends Translations$discover$tr {
 	@override String get title => '発見';
 	@override String get tabRooms => 'ルーム';
 	@override String get tabDiscover => '発見';
-	@override String get tabAiMatch => 'AI Match';
+	@override String get tabAiMatch => 'AIマッチ';
 	@override late final _Translations$discover$aiMatch$ja aiMatch = _Translations$discover$aiMatch$ja._(_root);
 	@override String get searchHint => '検索';
 	@override String get allRooms => 'すべてのルーム';
@@ -422,6 +505,7 @@ class _Translations$discover$ja extends Translations$discover$tr {
 	@override late final _Translations$discover$highlight$ja highlight = _Translations$discover$highlight$ja._(_root);
 	@override late final _Translations$discover$stats$ja stats = _Translations$discover$stats$ja._(_root);
 	@override String hostedBy({required Object name}) => 'ホスト：${name}';
+	@override String get requestPending => 'リクエストを送信しました。承認をお待ちください。';
 }
 
 // Path: common
@@ -700,6 +784,7 @@ class _Translations$storyText$ja extends Translations$storyText$tr {
 	@override String get uppercase => '大文字';
 	@override String get underline => '下線';
 	@override String get cancel => 'キャンセル';
+	@override String get done => '完了';
 	@override String get galleryError => 'ギャラリーを開けませんでした';
 }
 
@@ -710,7 +795,7 @@ class _Translations$tokens$ja extends Translations$tokens$tr {
 	final TranslationsJa _root; // ignore: unused_field
 
 	// Translations
-	@override String get boostTitle => 'Boost';
+	@override String get boostTitle => 'ブースト';
 	@override String get history => '履歴';
 	@override String get yourBalance => '残高';
 	@override String balanceTokens({required Object count}) => '${count} トークン';
@@ -724,7 +809,7 @@ class _Translations$tokens$ja extends Translations$tokens$tr {
 	@override String get duration1h => '1時間';
 	@override String get duration2h => '2時間';
 	@override String visibility({required Object n}) => '表示回数${n}倍';
-	@override String boostFor({required Object count}) => '${count}トークンでBoost';
+	@override String boostFor({required Object count}) => '${count}トークンでブースト';
 	@override String boostActive({required Object time}) => '${time}までBoost中';
 	@override String get boostDone => 'プロフィールをBoostしました！';
 	@override String get historyEmpty => 'トークンの履歴はまだありません';
@@ -773,8 +858,8 @@ class _Translations$discover$aiMatch$ja extends Translations$discover$aiMatch$tr
 	@override String get statMatchRate => 'マッチ率';
 	@override String get statAvgTime => '平均時間';
 	@override String get statActiveValue => '843';
-	@override String get statMatchValue => '87%';
-	@override String get statAvgValue => '8秒';
+	@override String statMatchValue({required Object value}) => '${value}%';
+	@override String statAvgValue({required Object value}) => '${value}秒';
 	@override String get startSmartMatch => 'スマートマッチ開始';
 	@override String get findingTitle => '相手を探しています';
 	@override String get findingSubtitle => 'あなたの気分と興味にぴったりの相手をマッチング中';
@@ -793,6 +878,8 @@ class _Translations$discover$aiMatch$ja extends Translations$discover$aiMatch$tr
 	@override String get swipeNext => '次へ';
 	@override String get swipeFinger => 'スワイプしてね';
 	@override String get noMatch => '今はマッチする人がいません。しばらくしてからもう一度お試しください。';
+	@override String likeSent({required Object name}) => '${name}さんをフォローしました';
+	@override String get lastMatch => 'すべてのマッチを見ました。もう一度検索してみてください。';
 }
 
 // Path: discover.privateRoom
@@ -889,6 +976,14 @@ class _Translations$discover$liveRoom$ja extends Translations$discover$liveRoom$
 	@override String get roomEnded => 'ルームは終了しました。';
 	@override String wantsToJoin({required Object name}) => '${name}さんが参加を希望しています';
 	@override String get approve => '承認';
+	@override String get reject => '拒否';
+	@override String get pendingRequests => '参加リクエスト';
+	@override String get noRequests => '保留中のリクエストはありません。';
+	@override String get muteMic => 'マイクをオフにする';
+	@override String get unmuteMic => 'マイクをオンにする';
+	@override String get remove => 'ルームから削除';
+	@override String get removed => 'ルームから削除されました。';
+	@override String get seeProfile => 'プロフィールの閲覧をリクエスト';
 }
 
 // Path: discover.groupChat
@@ -933,6 +1028,8 @@ class _Translations$discover$groupInfo$ja extends Translations$discover$groupInf
 	@override String get leaveConfirm => 'このグループを退出しますか？';
 	@override String get leave => '退出';
 	@override String get cancel => 'キャンセル';
+	@override String get galleryEmpty => 'まだ共有された写真はありません。';
+	@override String get adminOnly => 'これを変更できるのは管理者だけです。';
 }
 
 // Path: discover.filters
@@ -993,8 +1090,10 @@ class _Translations$discover$story$ja extends Translations$discover$story$tr {
 	@override String get musicTitle => 'ミュージック';
 	@override String get musicEmpty => '曲が見つかりません。';
 	@override String get musicError => '曲を読み込めませんでした。';
+	@override String get unknownTrack => '不明';
 	@override String get downloaded => 'ギャラリーに保存しました';
 	@override String get downloadFailed => '保存できませんでした';
+	@override String get savedToDraft => '下書きに保存しました';
 }
 
 // Path: discover.highlight
@@ -1131,6 +1230,37 @@ extension on TranslationsJa {
 			'chats.unlockFullPendingTheirs' => 'この人があなたのプロフィール全体を見たいとリクエストしました。',
 			'chats.unlockSent' => ({required Object title}) => 'リクエストを送りました: ${title}',
 			'chats.unlockReceived' => ({required Object title}) => 'チャット相手が${title}についてリクエストを送りました。',
+			'chats.requestAction' => 'リクエスト',
+			'chats.requestSent' => '送信済み',
+			'chats.previewUnlock' => '解除リクエスト',
+			'chats.previewNameShared' => '名前を共有しました',
+			'chats.previewNameDeclined' => '名前のリクエストは拒否されました',
+			'chats.previewPhotoShared' => '写真を共有しました',
+			'chats.previewPhotoDeclined' => '写真のリクエストは拒否されました',
+			'chats.previewProfileShared' => 'プロフィールを共有しました',
+			'chats.previewProfileDeclined' => 'プロフィールのリクエストは拒否されました',
+			'chats.previewPhoto' => '写真',
+			'chats.previewVoice' => 'ボイスメッセージ',
+			'chats.micNeeded' => 'マイクの許可が必要です',
+			'chats.previewSticker' => 'スタンプ',
+			'chats.stickerEmpty' => '最近のスタンプはありません',
+			'chats.messageCopied' => 'メッセージをコピーしました',
+			'chats.reportReasonSubtitle' => 'このメッセージを報告する理由は？',
+			'chats.reasonHarassment' => '嫌がらせ・いじめ',
+			'chats.reasonHateSpeech' => 'ヘイトスピーチ',
+			'chats.reasonNudity' => 'ヌード・性的なコンテンツ',
+			'chats.reasonSpam' => 'スパム',
+			'chats.reasonScam' => '詐欺',
+			'chats.reasonViolence' => '暴力・脅迫',
+			'chats.reasonOther' => 'その他',
+			'chats.mute' => 'ミュート',
+			'chats.unmute' => 'ミュート解除',
+			'chats.deleteChat' => 'チャットを削除',
+			'chats.emptyThreadsTitle' => 'まだチャットはありません',
+			'chats.emptyThreadsSubtitle' => '誰かと話し始めると、ここにチャットが表示されます。',
+			'chats.noSearchResults' => '結果が見つかりません',
+			'chats.milestonePhotoUnlocked' => '70%で解除済み',
+			'chats.revealPeerWants' => ({required Object name}) => '${name}さんがプロフィールの公開を希望しています',
 			'profile.eyebrow' => 'プロフィール',
 			'profile.title' => '設定',
 			'profile.editProfile' => 'プロフィールを編集',
@@ -1164,6 +1294,9 @@ extension on TranslationsJa {
 			'profile.notifications' => '通知',
 			'profile.password' => 'パスワード',
 			'profile.deleteConversation' => '会話を削除',
+			'profile.deleteAllTitle' => 'すべての会話を削除しますか？',
+			'profile.deleteAllBody' => '確認すると、すべてのメッセージが削除されます',
+			'profile.deleteAllAction' => '削除',
 			'profile.faqHelp' => 'よくある質問とヘルプ',
 			'profile.restorePurchases' => '購入を復元',
 			'profile.termsOfService' => '利用規約',
@@ -1197,6 +1330,16 @@ extension on TranslationsJa {
 			'profile.educationPhd' => '博士',
 			'profile.voiceRecord' => 'ボイス録音',
 			'profile.addVoice' => 'ボイスを追加',
+			'profile.voiceShared' => 'プロフィールで共有中',
+			'profile.voiceHint' => ({required Object seconds}) => '${seconds}秒までの短い紹介を録音',
+			'profile.voiceRecording' => ({required Object seconds}) => '録音中 ${seconds}秒',
+			'profile.voiceReady' => '音声の準備ができました',
+			'profile.voicePlay' => '再生',
+			'profile.voicePause' => '一時停止',
+			'profile.voiceShare' => 'プロフィールに共有',
+			'profile.voiceSaving' => '保存中…',
+			'profile.voiceRemove' => 'プロフィールから削除',
+			'profile.voiceLabel' => 'ボイス',
 			'profile.lifestyle' => 'ライフスタイル',
 			'profile.pets' => 'ペット',
 			'profile.petsValue' => '猫を飼っています',
@@ -1234,15 +1377,16 @@ extension on TranslationsJa {
 			'profile.borderBuySection' => 'フレームを購入',
 			'profile.borderBuyCta' => 'フレームを購入',
 			'profile.borderToken' => ({required Object count}) => '${count} トークン',
-			'profile.borderAmethystWings' => 'Amethyst Wings',
-			'profile.borderGoldenPhoenix' => 'Golden Phoenix',
-			'profile.borderFrostCrown' => 'Frost Crown',
-			'profile.borderEmeraldWhisper' => 'Emerald Whisper',
-			'profile.borderRoseQuartz' => 'Rose Quartz',
-			'profile.borderStarlitComet' => 'Starlit Comet',
-			'profile.borderCrimsonRoyal' => 'Crimson Royal',
-			'profile.borderSapphireHalo' => 'Sapphire Halo',
+			'profile.borderAmethystWings' => 'アメジストの翼',
+			'profile.borderGoldenPhoenix' => '黄金の不死鳥',
+			'profile.borderFrostCrown' => '霜の冠',
+			'profile.borderEmeraldWhisper' => 'エメラルドのささやき',
+			'profile.borderRoseQuartz' => 'ローズクォーツ',
+			'profile.borderStarlitComet' => '星の彗星',
+			'profile.borderCrimsonRoyal' => 'クリムゾンロイヤル',
+			'profile.borderSapphireHalo' => 'サファイアの光輪',
 			'profile.follow' => 'フォロー',
+			'profile.message' => 'メッセージ',
 			'profile.following' => 'フォロー中',
 			'profile.followPageTitle' => 'フォロー',
 			'profile.followTabFollowing' => 'フォロー中',
@@ -1279,10 +1423,41 @@ extension on TranslationsJa {
 			'profile.emailVerificationSent' => ({required Object email}) => '${email} に確認リンクを送信しました。確認後にメールアドレスが変更されます。',
 			'profile.passwordChanged' => 'パスワードを更新しました。',
 			'profile.passwordMismatch' => 'パスワードが一致しません。',
+			'profile.shareSend' => '送る',
+			'profile.shareMessage' => ({required Object name, required Object url}) => '${name}のVeyloプロフィール: ${url}',
+			'profile.currentPassword' => '現在のパスワード',
+			'profile.currentPasswordWrong' => '現在のパスワードが正しくありません。',
+			'profile.reportReasonLabel' => '理由',
+			'profile.reportReasonHarassment' => '嫌がらせ・いじめ',
+			'profile.reportReasonHateSpeech' => 'ヘイトスピーチ',
+			'profile.reportReasonNudity' => 'ヌード・性的なコンテンツ',
+			'profile.reportReasonUnderage' => '18歳未満',
+			'profile.reportReasonSpam' => 'スパム',
+			'profile.reportReasonScam' => '詐欺',
+			'profile.reportReasonViolence' => '暴力・脅迫',
+			'profile.reportReasonImpersonation' => 'なりすまし',
+			'profile.reportReasonOther' => 'その他',
+			'profile.blockedDone' => ({required Object username}) => '${username}さんをブロックしました。',
+			'profile.restrictedDone' => ({required Object username}) => '${username}さんを制限しました。',
+			'profile.emptyPosts' => 'まだ投稿がありません',
+			'profile.emptyVideos' => 'まだ動画がありません',
+			'profile.emptySaved' => '保存した投稿はまだありません',
+			'profile.clearSelection' => '選択をクリア',
+			'profile.genderNonBinary' => 'ノンバイナリー',
+			'profile.voiceAdded' => 'ボイスを追加済み',
+			'profile.discardTitle' => '保存されていない変更',
+			'profile.discardBody' => '今戻ると変更内容は失われます。',
+			'profile.discardConfirm' => '変更を破棄',
+			'profile.keepEditing' => '編集を続ける',
+			'profile.borderNone' => 'フレームなし',
+			'profile.borderOwned' => '購入済み',
+			'profile.borderEquipCta' => 'フレームを使う',
+			'profile.borderRemoveCta' => 'フレームを外す',
+			'profile.followEmpty' => 'まだ誰もいません',
 			'nav.discover' => '発見',
 			'nav.chat' => 'チャット',
 			'nav.call' => '通話',
-			'nav.vibes' => 'Vibes',
+			'nav.vibes' => 'バイブス',
 			'nav.profile' => 'プロフィール',
 			'call.title' => '60秒ストレンジャー',
 			'call.subtitle' => '知らない誰かと60秒間おしゃべり。完全匿名で、プロフィールも写真も名前もなし。声とその瞬間だけ。',
@@ -1316,6 +1491,7 @@ extension on TranslationsJa {
 			'call.noMatchTitle' => '今は話せる人がいません',
 			'call.noMatchBody' => '現在、話せる相手が見つかりませんでした。少し時間をおいてもう一度お試しください。',
 			'call.noMatchOk' => 'OK',
+			'call.cameraDenied' => 'ビデオ通話にはカメラへのアクセスが必要です。設定から有効にできます。',
 			'vibes.search' => '検索',
 			'vibes.sendMessage' => 'メッセージを送る',
 			'vibes.wantsToTalk' => '今このことについて話したい',
@@ -1327,10 +1503,16 @@ extension on TranslationsJa {
 			'vibes.deleteTitle' => 'このVibeを削除しますか？',
 			'vibes.delete' => '削除',
 			'vibes.cancel' => 'キャンセル',
+			'vibes.post' => '投稿',
+			'vibes.replyHint' => '返信を書く',
+			'vibes.sortNewest' => '新しい順',
+			'vibes.sortPopular' => '人気順',
+			'vibes.loadFailed' => 'Vibeを読み込めませんでした。',
+			'vibes.noResults' => '結果が見つかりません',
 			'discover.title' => '発見',
 			'discover.tabRooms' => 'ルーム',
 			'discover.tabDiscover' => '発見',
-			'discover.tabAiMatch' => 'AI Match',
+			'discover.tabAiMatch' => 'AIマッチ',
 			'discover.aiMatch.feelingTitle' => '今日の気分は？',
 			'discover.aiMatch.feelingSubtitle' => '選んだ気分をもとにAIがぴったりの相手を探します',
 			'discover.aiMatch.lookingTitle' => '何を探していますか？',
@@ -1349,8 +1531,8 @@ extension on TranslationsJa {
 			'discover.aiMatch.statMatchRate' => 'マッチ率',
 			'discover.aiMatch.statAvgTime' => '平均時間',
 			'discover.aiMatch.statActiveValue' => '843',
-			'discover.aiMatch.statMatchValue' => '87%',
-			'discover.aiMatch.statAvgValue' => '8秒',
+			'discover.aiMatch.statMatchValue' => ({required Object value}) => '${value}%',
+			'discover.aiMatch.statAvgValue' => ({required Object value}) => '${value}秒',
 			'discover.aiMatch.startSmartMatch' => 'スマートマッチ開始',
 			'discover.aiMatch.findingTitle' => '相手を探しています',
 			'discover.aiMatch.findingSubtitle' => 'あなたの気分と興味にぴったりの相手をマッチング中',
@@ -1369,6 +1551,8 @@ extension on TranslationsJa {
 			'discover.aiMatch.swipeNext' => '次へ',
 			'discover.aiMatch.swipeFinger' => 'スワイプしてね',
 			'discover.aiMatch.noMatch' => '今はマッチする人がいません。しばらくしてからもう一度お試しください。',
+			'discover.aiMatch.likeSent' => ({required Object name}) => '${name}さんをフォローしました',
+			'discover.aiMatch.lastMatch' => 'すべてのマッチを見ました。もう一度検索してみてください。',
 			'discover.searchHint' => '検索',
 			'discover.allRooms' => 'すべてのルーム',
 			'discover.allGroups' => 'すべてのグループ',
@@ -1423,6 +1607,14 @@ extension on TranslationsJa {
 			'discover.liveRoom.roomEnded' => 'ルームは終了しました。',
 			'discover.liveRoom.wantsToJoin' => ({required Object name}) => '${name}さんが参加を希望しています',
 			'discover.liveRoom.approve' => '承認',
+			'discover.liveRoom.reject' => '拒否',
+			'discover.liveRoom.pendingRequests' => '参加リクエスト',
+			'discover.liveRoom.noRequests' => '保留中のリクエストはありません。',
+			'discover.liveRoom.muteMic' => 'マイクをオフにする',
+			'discover.liveRoom.unmuteMic' => 'マイクをオンにする',
+			'discover.liveRoom.remove' => 'ルームから削除',
+			'discover.liveRoom.removed' => 'ルームから削除されました。',
+			'discover.liveRoom.seeProfile' => 'プロフィールの閲覧をリクエスト',
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count}人のユーザー',
 			'discover.groupChat.sampleVictoria' => 'すごく退屈。みんなで何かしない？',
 			'discover.groupChat.sampleSona' => '何する？何かアイデアある？',
@@ -1449,6 +1641,8 @@ extension on TranslationsJa {
 			'discover.groupInfo.leaveConfirm' => 'このグループを退出しますか？',
 			'discover.groupInfo.leave' => '退出',
 			'discover.groupInfo.cancel' => 'キャンセル',
+			'discover.groupInfo.galleryEmpty' => 'まだ共有された写真はありません。',
+			'discover.groupInfo.adminOnly' => 'これを変更できるのは管理者だけです。',
 			'discover.filters.title' => 'フィルター',
 			'discover.filters.ageRange' => '年齢',
 			'discover.filters.ageRangeValue' => ({required Object min, required Object max}) => '${min}-${max}',
@@ -1482,8 +1676,12 @@ extension on TranslationsJa {
 			'discover.story.musicTitle' => 'ミュージック',
 			'discover.story.musicEmpty' => '曲が見つかりません。',
 			'discover.story.musicError' => '曲を読み込めませんでした。',
+			'discover.story.unknownTrack' => '不明',
 			'discover.story.downloaded' => 'ギャラリーに保存しました',
+			_ => null,
+		} ?? switch (path) {
 			'discover.story.downloadFailed' => '保存できませんでした',
+			'discover.story.savedToDraft' => '下書きに保存しました',
 			'discover.highlight.title' => 'ハイライト',
 			'discover.highlight.view' => '表示',
 			'discover.highlight.aiComments' => 'AIコメント',
@@ -1498,6 +1696,7 @@ extension on TranslationsJa {
 			'discover.stats.boostCta' => '1日ブースト - 100トークン',
 			'discover.stats.boosted' => 'ブースト完了！投稿が24時間トップに表示されます。',
 			'discover.hostedBy' => ({required Object name}) => 'ホスト：${name}',
+			'discover.requestPending' => 'リクエストを送信しました。承認をお待ちください。',
 			'common.loading' => '読み込み中…',
 			'common.retry' => '再試行',
 			'common.cancel' => 'キャンセル',
@@ -1579,8 +1778,6 @@ extension on TranslationsJa {
 			'createProfile.interestsSubtitle' => '5つ以上選んでね。あなたを本当に分かってくれる人とマッチしやすくなります。',
 			'createProfile.interests.music' => '音楽',
 			'createProfile.interests.movies' => '映画',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.interests.tvShows' => 'ドラマ・TV',
 			'createProfile.interests.reading' => '読書',
 			'createProfile.interests.painting' => '絵画',
@@ -1700,8 +1897,9 @@ extension on TranslationsJa {
 			'storyText.uppercase' => '大文字',
 			'storyText.underline' => '下線',
 			'storyText.cancel' => 'キャンセル',
+			'storyText.done' => '完了',
 			'storyText.galleryError' => 'ギャラリーを開けませんでした',
-			'tokens.boostTitle' => 'Boost',
+			'tokens.boostTitle' => 'ブースト',
 			'tokens.history' => '履歴',
 			'tokens.yourBalance' => '残高',
 			'tokens.balanceTokens' => ({required Object count}) => '${count} トークン',
@@ -1715,7 +1913,7 @@ extension on TranslationsJa {
 			'tokens.duration1h' => '1時間',
 			'tokens.duration2h' => '2時間',
 			'tokens.visibility' => ({required Object n}) => '表示回数${n}倍',
-			'tokens.boostFor' => ({required Object count}) => '${count}トークンでBoost',
+			'tokens.boostFor' => ({required Object count}) => '${count}トークンでブースト',
 			'tokens.boostActive' => ({required Object time}) => '${time}までBoost中',
 			'tokens.boostDone' => 'プロフィールをBoostしました！',
 			'tokens.historyEmpty' => 'トークンの履歴はまだありません',

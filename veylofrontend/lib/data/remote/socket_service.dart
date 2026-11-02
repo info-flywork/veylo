@@ -23,6 +23,7 @@ class SocketService {
 
   static const _events = [
     'message:new',
+    'message:deleted',
     'conversation:updated',
     'conversation:read',
     'conversation:removed',

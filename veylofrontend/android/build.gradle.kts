@@ -1,3 +1,6 @@
+// Agora eklentisi compileSdk yazılmazsa 31 kullanır; bağımlılıkları 36 ister.
+extra["compileSdkVersion"] = 37
+
 allprojects {
     repositories {
         google()

@@ -19,11 +19,15 @@ class RoomPush {
     required this.roomId,
     required this.title,
     required this.isPrivate,
+    this.hasAccess = false,
   });
 
   final String roomId;
   final String title;
   final bool isPrivate;
+
+  /// Gizli odaya girme izni (istek onaylandı bildirimi): tekrar istek sorulmaz.
+  final bool hasAccess;
 
   static RoomPush? parse(String payload) {
     if (!payload.startsWith('{')) return null;
@@ -36,6 +40,7 @@ class RoomPush {
         roomId: id,
         title: raw['title'] as String? ?? '',
         isPrivate: raw['isPrivate'] == true,
+        hasAccess: raw['hasAccess'] == true,
       );
     } catch (_) {
       return null;
@@ -48,6 +53,7 @@ class RoomPush {
       'roomId': data['roomId'],
       'title': data['title'] ?? '',
       'isPrivate': data['isPrivate'] == '1' || data['isPrivate'] == true,
+      'hasAccess': data['hasAccess'] == '1' || data['hasAccess'] == true,
     });
   }
 }
@@ -249,7 +255,7 @@ class PushService {
       _onCall(data['inviteId'] as String?);
       return;
     }
-    if (data['type'] == 'roomCreated') {
+    if (data['type'] == 'roomCreated' || data['type'] == 'roomApproved') {
       _onTap(RoomPush.encode(data));
       return;
     }
@@ -325,7 +331,7 @@ class PushService {
       _onCall(m.data['inviteId'] as String?);
       return;
     }
-    if (m.data['type'] == 'roomCreated') {
+    if (m.data['type'] == 'roomCreated' || m.data['type'] == 'roomApproved') {
       final n = m.notification;
       if (!Platform.isIOS && n != null) {
         _show(

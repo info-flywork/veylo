@@ -41,6 +41,11 @@ class _ReportUserSheetState extends State<ReportUserSheet> {
 
   bool _sending = false;
 
+  /// Backend `ReportReason` değeri; seçilmeden gönderilemez.
+  String? _reason;
+
+  bool get _canSend => _reason != null && !_sending;
+
   @override
   void dispose() {
     _controller.dispose();
@@ -48,7 +53,8 @@ class _ReportUserSheetState extends State<ReportUserSheet> {
   }
 
   Future<void> _send() async {
-    if (_sending) return;
+    final reason = _reason;
+    if (reason == null || _sending) return;
     setState(() => _sending = true);
     final messenger = ScaffoldMessenger.of(context);
     final sent = Translations.of(context).profile.reportSent;
@@ -56,6 +62,7 @@ class _ReportUserSheetState extends State<ReportUserSheet> {
       await SafetyRepository.instance.report(
         userId: widget.user.id,
         conversationId: widget.conversationId,
+        reason: reason,
         details: _controller.text.trim(),
       );
       if (!mounted) return;
@@ -78,6 +85,8 @@ class _ReportUserSheetState extends State<ReportUserSheet> {
       padding: EdgeInsets.only(bottom: keyboard),
       child: SafeArea(
         top: false,
+        // Nedenler + klavye küçük ekranda taşmasın.
+        child: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.fromLTRB(16, 10, 16, 16 + bottom),
           child: Column(
@@ -116,6 +125,37 @@ class _ReportUserSheetState extends State<ReportUserSheet> {
                   color: Color(0xA61A1714),
                 ),
                 textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: AppText(
+                  t.reportReasonLabel,
+                  style: const TextStyle(
+                    fontFamily: AppFonts.poppins,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                    height: 1,
+                    letterSpacing: 14 * -0.02,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final reason in SafetyRepository.reportReasons)
+                      _ReasonChip(
+                        label: _reasonLabel(Translations.of(context), reason),
+                        selected: _reason == reason,
+                        onTap: () => setState(() => _reason = reason),
+                      ),
+                  ],
+                ),
               ),
               const SizedBox(height: 16),
               Align(
@@ -200,20 +240,89 @@ class _ReportUserSheetState extends State<ReportUserSheet> {
               ),
               const SizedBox(height: 14),
               GestureDetector(
-                onTap: _send,
-                child: AppText(
-                  t.sendReport,
-                  style: const TextStyle(
-                    fontFamily: AppFonts.poppins,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    height: 20 / 16,
-                    color: _sendColor,
+                onTap: _canSend ? _send : null,
+                child: Opacity(
+                  opacity: _canSend ? 1 : 0.4,
+                  child: AppText(
+                    _sending ? '...' : t.sendReport,
+                    style: const TextStyle(
+                      fontFamily: AppFonts.poppins,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      height: 20 / 16,
+                      color: _sendColor,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
                 ),
               ),
             ],
+          ),
+        ),
+        ),
+      ),
+    );
+  }
+}
+
+String _reasonLabel(Translations root, String reason) {
+  final t = root.profile;
+  return switch (reason) {
+    'HARASSMENT' => t.reportReasonHarassment,
+    'HATE_SPEECH' => t.reportReasonHateSpeech,
+    'NUDITY' => t.reportReasonNudity,
+    'UNDERAGE' => t.reportReasonUnderage,
+    'SPAM' => t.reportReasonSpam,
+    'SCAM' => t.reportReasonScam,
+    'VIOLENCE' => t.reportReasonViolence,
+    'IMPERSONATION' => t.reportReasonImpersonation,
+    _ => t.reportReasonOther,
+  };
+}
+
+/// Neden seçeneği — Follow Sort satırlarıyla aynı seçili / boş renkler.
+class _ReasonChip extends StatelessWidget {
+  const _ReasonChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  static const _selectedFill = Color(0x0D998FED); // #998FED @ 5%
+  static const _idleFill = Color(0xFFF4F4F9);
+  static const _idleText = Color(0x66000000); // #000 @ 40%
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: selected ? _selectedFill : _idleFill,
+      borderRadius: BorderRadius.circular(10),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: selected ? AppColors.selectionBorder : Colors.transparent,
+              width: 1,
+            ),
+          ),
+          child: AppText(
+            label,
+            style: TextStyle(
+              fontFamily: AppFonts.poppins,
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+              height: 18 / 14,
+              letterSpacing: 14 * -0.02,
+              color: selected ? AppColors.selectionBorder : _idleText,
+            ),
           ),
         ),
       ),

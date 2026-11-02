@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'package:veylo/data/remote/api_client.dart';
 import 'package:veylo/data/remote/chat_repository.dart';
@@ -29,8 +30,13 @@ class ConversationController extends ChangeNotifier {
   DateTime _lastTypingSent = DateTime(2000);
   bool _disposed = false;
 
+  /// "Benim için sil" ile gizlenen karşı taraf mesajları (cihazda saklanır).
+  Set<String> _hidden = const {};
+
   ChatThread get thread => _thread;
-  List<ChatMessage> get messages => _messages;
+  List<ChatMessage> get messages => _hidden.isEmpty
+      ? _messages
+      : _messages.where((m) => m.id == null || !_hidden.contains(m.id)).toList();
   bool get loading => _loading;
   bool get hasMore => _hasMore;
   bool get peerTyping => _peerTyping;
@@ -49,6 +55,12 @@ class ConversationController extends ChangeNotifier {
     ChatStore.instance.activeConversationId = _thread.id;
     _subs
       ..add(_socket.on('message:new').where(_mine).listen(_onMessage))
+      ..add(
+        _socket.on('message:deleted').where(_mine).listen((e) {
+          _removeMessage(e['messageId'] as String?);
+          _notify();
+        }),
+      )
       ..add(
         _socket
             .on('conversation:updated')
@@ -72,6 +84,7 @@ class ConversationController extends ChangeNotifier {
       );
     _socket.reconnects.addListener(_syncMissed);
 
+    _hidden = await _loadHidden();
     try {
       _thread = (await _repo.get(_thread.id)).copyWith(unreadCount: 0);
       final page = await _repo.messages(_thread.id);
@@ -160,6 +173,22 @@ class ConversationController extends ChangeNotifier {
     }
   }
 
+  /// Fotoğraf veya ses: önce dosya yüklenir, sonra mesaj gider.
+  Future<void> sendMedia(String kind, String path) async {
+    if (_thread.isLocalOnly || path.isEmpty) return;
+    final pending = ChatMessage(
+      clientMsgId: _uuid.v4(),
+      isMine: true,
+      type: kind == 'voice' ? 'VOICE' : 'IMAGE',
+      mediaUrl: path,
+      createdAt: DateTime.now(),
+      status: ChatMessageStatus.sending,
+    );
+    _messages = [..._messages, pending];
+    _notify();
+    await _deliver(pending);
+  }
+
   /// Mesaj hemen ekranda görünür ("gönderiliyor"), sunucu onaylayınca kesinleşir.
   Future<void> send(String text) async {
     final body = text.trim();
@@ -214,31 +243,48 @@ class ConversationController extends ChangeNotifier {
   }
 
   Future<void> _deliver(ChatMessage msg) async {
-    final payload = {
-      'conversationId': _thread.id,
-      'clientMsgId': msg.clientMsgId,
-      'type': 'TEXT',
-      'body': msg.body,
-    };
+    var current = msg;
     try {
+      if (current.type != 'TEXT' && (current.mediaId == null || current.mediaId!.isEmpty)) {
+        final kind = current.type == 'VOICE' ? 'voice' : 'image';
+        final uploaded = await ApiClient.instance.upload(
+          '/media/chat',
+          current.mediaUrl!,
+          query: {'kind': kind},
+        );
+        final map = Map<String, dynamic>.from(uploaded as Map);
+        current = current.copyWith(
+          mediaId: map['mediaId'] as String?,
+          mediaUrl: map['url'] as String? ?? current.mediaUrl,
+        );
+        _upsertMessage(current);
+      }
+      final payload = {
+        'conversationId': _thread.id,
+        'clientMsgId': current.clientMsgId,
+        'type': current.type,
+        if (current.type == 'TEXT') 'body': current.body,
+        if (current.type != 'TEXT') 'mediaId': current.mediaId,
+      };
       final dynamic res = _socket.connected.value
           ? await _socket.request('message:send', payload)
           : await ApiClient.instance.post(
               '/conversations/${_thread.id}/messages',
               body: {
-                'clientMsgId': msg.clientMsgId,
-                'type': 'TEXT',
-                'body': msg.body,
+                'clientMsgId': current.clientMsgId,
+                'type': current.type,
+                if (current.type == 'TEXT') 'body': current.body,
+                if (current.type != 'TEXT') 'mediaId': current.mediaId,
               },
             );
       _upsertMessage(
         ChatMessage.fromJson(Map<String, dynamic>.from(res as Map)),
       );
     } on ApiException catch (e) {
-      _upsertMessage(msg.copyWith(status: ChatMessageStatus.failed));
+      _upsertMessage(current.copyWith(status: ChatMessageStatus.failed));
       lastError = e;
     } catch (e) {
-      _upsertMessage(msg.copyWith(status: ChatMessageStatus.failed));
+      _upsertMessage(current.copyWith(status: ChatMessageStatus.failed));
     }
     _notify();
   }
@@ -272,6 +318,77 @@ class ConversationController extends ChangeNotifier {
       _notify();
     });
     _notify();
+  }
+
+  // ───────────── mesaj işlemleri ─────────────
+
+  String get _hiddenKey => 'chat_hidden_messages_${_thread.id}';
+
+  Future<Set<String>> _loadHidden() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return (prefs.getStringList(_hiddenKey) ?? const <String>[]).toSet();
+    } catch (_) {
+      return const {};
+    }
+  }
+
+  void _removeMessage(String? id) {
+    if (id == null) return;
+    _messages = _messages.where((m) => m.id != id).toList();
+  }
+
+  /// Kendi mesajım: herkes için geri alınır. Karşı tarafın mesajı: yalnızca bende gizlenir.
+  Future<void> deleteMessage(ChatMessage message) async {
+    final id = message.id;
+    if (!message.isMine) {
+      if (id == null) return;
+      _hidden = {..._hidden, id};
+      _notify();
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setStringList(_hiddenKey, _hidden.toList());
+      } catch (_) {}
+      return;
+    }
+    // Sunucuya ulaşmamış (gönderiliyor / başarısız) mesaj sadece ekrandan kalkar.
+    if (id == null) {
+      _messages = _messages
+          .where((m) => m.clientMsgId != message.clientMsgId)
+          .toList();
+      _notify();
+      return;
+    }
+    final before = _messages;
+    _removeMessage(id);
+    _notify();
+    try {
+      await _repo.deleteMessage(_thread.id, id);
+    } catch (_) {
+      _messages = before;
+      _notify();
+      rethrow;
+    }
+  }
+
+  /// Tek bir mesajı şikayet et (sunucuda mesaj id'si içerik olarak saklanır).
+  Future<void> reportMessage(ChatMessage message, String reason) async {
+    final id = message.id;
+    if (id == null || message.isMine) return;
+    await _repo.reportPeer(_thread.id, reason: reason, messageId: id);
+  }
+
+  Future<void> setMuted(bool muted) async {
+    await _repo.setMuted(_thread.id, muted);
+    _thread = _thread.copyWith(muted: muted);
+    ChatStore.instance.replace(_thread);
+    _notify();
+  }
+
+  /// Sohbeti yalnızca benim için siler.
+  Future<void> deleteChat() async {
+    await _repo.deleteForMe(_thread.id);
+    ChatStore.instance.remove(_thread.id);
   }
 
   // ───────────── istek / güvenlik / açılma ─────────────

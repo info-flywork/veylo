@@ -84,6 +84,27 @@ class RoomRepository {
     body: {if (message != null && message.isNotEmpty) 'message': message},
   );
 
+  /// Sahip: bekleyen katılma istekleri.
+  Future<List<RoomJoinRequest>> requests(String roomId) async =>
+      _requestList(await _api.get('/rooms/$roomId/requests'));
+
+  /// Sahip: isteği onayla / reddet. Kalan bekleyen istekleri döner.
+  Future<List<RoomJoinRequest>> decideRequest(
+    String roomId,
+    String requestId, {
+    required bool approve,
+  }) async => _requestList(
+    await _api.post(
+      '/rooms/$roomId/requests/$requestId',
+      body: {'approve': approve},
+    ),
+  );
+
+  List<RoomJoinRequest> _requestList(Object? res) => [
+    for (final j in ((res as Map)['items'] as List).cast<Map>())
+      RoomJoinRequest.fromJson(Map<String, dynamic>.from(j)),
+  ];
+
   Future<RoomSession> join(String roomId, {bool anonymous = false}) async =>
       RoomSession.fromJson(
         Map<String, dynamic>.from(

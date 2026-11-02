@@ -66,8 +66,11 @@ class _FiltersSheetState extends State<FiltersSheet> {
     _InterestItem('podcast', AppAssets.interestPodcast),
   ];
 
-  RangeValues _age = const RangeValues(18, 35);
-  double _distance = 25;
+  late RangeValues _age = RangeValues(
+    widget.initial.ageMin,
+    widget.initial.ageMax,
+  );
+  late double _distance = widget.initial.distanceKm;
   late String _showMe = widget.initial.gender;
   late final Set<String> _interests = {...widget.initial.interests};
   late bool _activeNow = widget.initial.onlineOnly;
@@ -372,6 +375,9 @@ class _FiltersSheetState extends State<FiltersSheet> {
                     gender: _showMe,
                     interests: {..._interests},
                     onlineOnly: _activeNow,
+                    ageMin: _age.start,
+                    ageMax: _age.end,
+                    distanceKm: _distance,
                   ),
                 ),
               ),

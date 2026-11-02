@@ -1,4 +1,5 @@
 import 'package:veylo/data/remote/api_client.dart';
+import 'package:veylo/models/chat/chat_message.dart';
 import 'package:veylo/models/chat/chat_thread.dart';
 import 'package:veylo/models/group/group_models.dart';
 
@@ -17,6 +18,30 @@ class GroupRepository {
   static final GroupRepository instance = GroupRepository._();
 
   final _api = ApiClient.instance;
+
+  /// Grup galerisi: resim mesajları ([beforeSeq] ile daha eskiler).
+  Future<({List<ChatMessage> items, bool hasMore})> images(
+    String conversationId, {
+    int? beforeSeq,
+  }) async {
+    final res =
+        await _api.get(
+              '/conversations/$conversationId/messages',
+              query: {
+                'type': 'IMAGE',
+                'limit': '60',
+                if (beforeSeq != null) 'beforeSeq': '$beforeSeq',
+              },
+            )
+            as Map;
+    return (
+      items: [
+        for (final j in (res['items'] as List).cast<Map>())
+          ChatMessage.fromJson(Map<String, dynamic>.from(j)),
+      ],
+      hasMore: res['hasMore'] as bool? ?? false,
+    );
+  }
 
   Future<List<GroupSummary>> discover({String? query}) async {
     final res = await _api.get('/groups', query: {'q': ?query}) as Map;

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
+import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/data/remote/chat_repository.dart';
 import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/core/theme/theme.dart';
@@ -14,8 +15,6 @@ import 'package:veylo/screens/discover/rooms/room_live_page.dart';
 Future<void> showRoomApprovedSheet(
   BuildContext context, {
   required String roomTitle,
-  bool isGroup = false,
-  int memberCount = 1,
   String? conversationId,
   String? roomId,
 }) {
@@ -25,8 +24,6 @@ Future<void> showRoomApprovedSheet(
     isScrollControlled: true,
     builder: (context) => _RoomApprovedSheet(
       roomTitle: roomTitle,
-      isGroup: isGroup,
-      memberCount: memberCount,
       conversationId: conversationId,
       roomId: roomId,
     ),
@@ -36,15 +33,11 @@ Future<void> showRoomApprovedSheet(
 class _RoomApprovedSheet extends StatelessWidget {
   const _RoomApprovedSheet({
     required this.roomTitle,
-    this.isGroup = false,
-    this.memberCount = 1,
     this.conversationId,
     this.roomId,
   });
 
   final String roomTitle;
-  final bool isGroup;
-  final int memberCount;
 
   /// Gerçek grup: Continue grubu sunucudan yükleyip açar.
   final String? conversationId;
@@ -93,8 +86,6 @@ class _RoomApprovedSheet extends StatelessWidget {
                     label: t.continueLabel,
                     onPressed: () {
                       final title = roomTitle;
-                      final group = isGroup;
-                      final count = memberCount;
                       final navigator = Navigator.of(context);
                       navigator.pop();
                       final id = conversationId;
@@ -109,23 +100,22 @@ class _RoomApprovedSheet extends StatelessWidget {
                                 thread,
                               );
                             })
-                            .catchError((_) {});
+                            .catchError((Object e) {
+                              if (navigator.mounted) {
+                                showErrorSnackBar(navigator.context, e);
+                              }
+                            });
                         return;
                       }
+                      final room = roomId;
+                      if (room == null) return;
                       WidgetsBinding.instance.addPostFrameCallback((_) {
-                        if (group) {
-                          GroupChatPage.open(
-                            navigator.context,
-                            title: title,
-                            memberCount: count,
-                          );
-                        } else if (roomId != null) {
-                          RoomLivePage.open(
-                            navigator.context,
-                            roomId: roomId!,
-                            roomTitle: title,
-                          );
-                        }
+                        if (!navigator.mounted) return;
+                        RoomLivePage.open(
+                          navigator.context,
+                          roomId: room,
+                          roomTitle: title,
+                        );
                       });
                     },
                   ),

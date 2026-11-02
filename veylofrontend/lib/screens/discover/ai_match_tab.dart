@@ -48,13 +48,23 @@ class _AiMatchTabState extends State<AiMatchTab> {
   /// Gerçek çevrimiçi sayısı (yüklenene kadar null).
   int? _online;
 
+  /// Son aramalardan sunucunun hesapladığı oran ve ortalama süre.
+  int? _matchRate;
+  int? _avgMs;
+
   @override
   void initState() {
     super.initState();
     MatchRepository.instance
-        .onlineCount()
-        .then((n) {
-          if (mounted) setState(() => _online = n);
+        .stats()
+        .then((s) {
+          if (mounted) {
+            setState(() {
+              _online = s.onlineCount;
+              _matchRate = s.matchRatePercent;
+              _avgMs = s.avgResponseMs;
+            });
+          }
         })
         .catchError((Object _) {});
   }
@@ -204,14 +214,20 @@ class _AiMatchTabState extends State<AiMatchTab> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: _StatCard(
-                      value: t.statMatchValue,
+                      value: _matchRate == null
+                          ? '–'
+                          : t.statMatchValue(value: '$_matchRate'),
                       label: t.statMatchRate,
                     ),
                   ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: _StatCard(
-                      value: t.statAvgValue,
+                      value: _avgMs == null
+                          ? '–'
+                          : t.statAvgValue(
+                              value: (_avgMs! / 1000).toStringAsFixed(1),
+                            ),
                       label: t.statAvgTime,
                     ),
                   ),

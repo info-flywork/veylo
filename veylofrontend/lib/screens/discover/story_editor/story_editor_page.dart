@@ -17,13 +17,21 @@ import 'package:veylo/data/remote/post_repository.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/screens/discover/story_editor/story_draft_sheet.dart';
 import 'package:veylo/screens/discover/story_editor/story_music_sheet.dart';
+import 'package:veylo/screens/discover/story_editor/story_sticker_sheet.dart';
 import 'package:veylo/screens/discover/story_editor/story_text_tools_sheet.dart';
 
 /// Capture sonrası Stories tarzı müdahale ekranı.
 class StoryEditorPage extends StatefulWidget {
-  const StoryEditorPage({super.key, required this.file});
+  const StoryEditorPage({
+    super.key,
+    required this.file,
+    this.saveAsDraft = false,
+  });
 
   final File file;
+
+  /// Kamerada TASLAK seçiliyse ana buton gönderiyi taslak olarak kaydeder.
+  final bool saveAsDraft;
 
   @override
   State<StoryEditorPage> createState() => _StoryEditorPageState();
@@ -38,6 +46,12 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
   bool _textEditorOpen = false;
   Offset _textOffset = const Offset(0, -80);
   StoryMusicTrack? _music;
+
+  /// Görsele eklenen çıkartmalar (asset + ekran konumu, merkez).
+  final _stickers = <({String asset, Offset center})>[];
+  static const _stickerSize = 96.0;
+
+  bool get _hasOverlay => _textDraft.hasContent || _stickers.isNotEmpty;
 
   /// Görsel + yazı katmanı: paylaşırken tek görsele çevrilir.
   final _canvasKey = GlobalKey();
@@ -95,7 +109,7 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
       builder: (_) => const Center(child: CircularProgressIndicator()),
     );
     try {
-      final file = _textDraft.hasContent ? await _renderCanvas() : widget.file;
+      final file = _hasOverlay ? await _renderCanvas() : widget.file;
       final music = _music;
       final post = await PostRepository.instance.create(
         imagePath: file.path,
@@ -146,6 +160,18 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
     });
   }
 
+  Future<void> _openStickers() async {
+    final asset = await showStoryStickerSheet(context);
+    if (asset == null || !mounted) return;
+    final size = MediaQuery.sizeOf(context);
+    setState(() {
+      _stickers.add((
+        asset: asset,
+        center: Offset(size.width / 2, size.height / 2),
+      ));
+    });
+  }
+
   Future<void> _openMusic() async {
     final track = await showStoryMusicSheet(context);
     if (track == null || !mounted) return;
@@ -180,7 +206,9 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
   Future<void> _download() async {
     final t = Translations.of(context).discover.story;
     try {
-      await Gal.putImage(widget.file.path);
+      // Yazı/çıkartma katmanıyla birlikte, ekranda görünen hali kaydedilir.
+      final file = _hasOverlay ? await _renderCanvas() : widget.file;
+      await Gal.putImage(file.path);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(t.downloaded)),
@@ -194,12 +222,23 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
   }
 
   Future<void> _share() async {
+    final draft = widget.saveAsDraft;
+    final messenger = ScaffoldMessenger.of(context);
+    final savedText = Translations.of(context).discover.story.savedToDraft;
     await _audio.pause();
-    final ok = await _publish(draft: false);
+    final ok = await _publish(draft: draft);
     if (!ok || !mounted) return;
     Navigator.of(context)
       ..pop() // editor
       ..pop(); // camera
+    if (draft) {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(savedText),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   @override
@@ -228,6 +267,28 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
                   fit: BoxFit.cover,
                   filterQuality: FilterQuality.high,
                 ),
+                // Çıkartmalar: sürükle taşı, basılı tut kaldır.
+                for (var i = 0; i < _stickers.length; i++)
+                  Positioned(
+                    left: _stickers[i].center.dx - _stickerSize / 2,
+                    top: _stickers[i].center.dy - _stickerSize / 2,
+                    width: _stickerSize,
+                    height: _stickerSize,
+                    child: GestureDetector(
+                      onPanUpdate: (d) => setState(() {
+                        final s = _stickers[i];
+                        _stickers[i] = (
+                          asset: s.asset,
+                          center: s.center + d.delta,
+                        );
+                      }),
+                      onLongPress: () => setState(() => _stickers.removeAt(i)),
+                      child: Image.asset(
+                        _stickers[i].asset,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
                 // Paylaşırken görsele işlenen yazı (editörde aşağıdaki katman görünür).
                 if (_capturing && hasText)
                   Positioned(
@@ -314,9 +375,7 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
                               const SizedBox(height: 20),
                               _ToolIcon(
                                 asset: AppAssets.iconStorySticker,
-                                onTap: () => _openTextTools(
-                                  mode: StoryTextToolMode.style,
-                                ),
+                                onTap: _openStickers,
                               ),
                               const SizedBox(height: 20),
                               _ToolIcon(
@@ -454,7 +513,9 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
                                         ),
                                         const SizedBox(width: 8),
                                         AppText(
-                                          t.share,
+                                          widget.saveAsDraft
+                                              ? t.saveToDraft
+                                              : t.share,
                                           style: AppTextStyles.storyShare,
                                         ),
                                       ],

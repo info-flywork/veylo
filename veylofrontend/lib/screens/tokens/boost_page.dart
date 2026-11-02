@@ -21,11 +21,20 @@ const _pillBg = Color(0xFFE9DEFF);
 
 /// Boost: bakiye, günlük ödül, profil öne çıkarma ve token geçmişi.
 class BoostPage extends StatefulWidget {
-  const BoostPage({super.key});
+  const BoostPage({super.key, this.startCallAfter = false});
 
-  static Future<void> open(BuildContext context) => Navigator.of(context).push(
-    MaterialPageRoute<void>(builder: (_) => const BoostPage()),
-  );
+  /// Arama ekranından gelindiyse boost bitince (veya zaten aktifse) arama başlar.
+  final bool startCallAfter;
+
+  static Future<bool> open(BuildContext context, {bool startCallAfter = false}) {
+    return Navigator.of(context)
+        .push<bool>(
+          MaterialPageRoute<bool>(
+            builder: (_) => BoostPage(startCallAfter: startCallAfter),
+          ),
+        )
+        .then((started) => started ?? false);
+  }
 
   @override
   State<BoostPage> createState() => _BoostPageState();
@@ -77,6 +86,10 @@ class _BoostPageState extends State<BoostPage> {
       if (!mounted) return;
       SessionStore.instance.updateTokenBalance(s.balance);
       setState(() => _status = s);
+      if (done != null && widget.startCallAfter) {
+        Navigator.of(context).pop(true);
+        return;
+      }
       if (done != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(done), behavior: SnackBarBehavior.floating),
@@ -84,31 +97,30 @@ class _BoostPageState extends State<BoostPage> {
       }
     } catch (e) {
       if (!mounted) return;
-      var error = e;
-      if (e is ApiException && e.isNetwork) {
-        try {
-          final s = await action();
-          if (!mounted) return;
-          SessionStore.instance.updateTokenBalance(s.balance);
-          setState(() => _status = s);
-          if (done != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(done), behavior: SnackBarBehavior.floating),
-            );
-          }
-          return;
-        } catch (e2) {
-          if (!mounted) return;
-          error = e2;
-        }
-      }
-      if (!await handleInsufficientTokens(context, error)) {
-        if (mounted) showErrorSnackBar(context, error);
+      // Ağ hatasında yazma isteği (boost / ödül) tekrar gönderilmez: sunucuya ulaşmış
+      // olabilir, ikinci kez token düşer. Onun yerine güncel durum okunur.
+      if (e is ApiException && e.isNetwork) await _refreshAfterNetworkError();
+      if (!mounted) return;
+      if (!await handleInsufficientTokens(context, e)) {
+        if (mounted) showErrorSnackBar(context, e);
       } else {
         _load();
       }
     } finally {
       if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  /// Durumu okur (okuma güvenli olduğu için bir kez yeniden denenir).
+  Future<void> _refreshAfterNetworkError() async {
+    for (var attempt = 0; attempt < 2; attempt++) {
+      try {
+        final s = await _repo.status();
+        if (!mounted) return;
+        SessionStore.instance.updateTokenBalance(s.balance);
+        setState(() => _status = s);
+        return;
+      } catch (_) {}
     }
   }
 
@@ -260,10 +272,19 @@ class _BoostPageState extends State<BoostPage> {
                 Padding(
                   padding: EdgeInsets.fromLTRB(16, 8, 16, bottom > 0 ? bottom : 16),
                   child: AppPrimaryButton(
-                    label: t.boostFor(count: (selected?.cost ?? 0).toString()),
-                    onPressed: selected == null || _busy
+                    label: widget.startCallAfter && s.boostUntil != null
+                        ? Translations.of(context).call.callStranger
+                        : t.boostFor(count: (selected?.cost ?? 0).toString()),
+                    onPressed: _busy
                         ? null
-                        : () => _run(() => _repo.boost(selected.id), done: t.boostDone),
+                        : widget.startCallAfter && s.boostUntil != null
+                            ? () => Navigator.of(context).pop(true)
+                            : selected == null
+                                ? null
+                                : () => _run(
+                                      () => _repo.boost(selected.id),
+                                      done: t.boostDone,
+                                    ),
                   ),
                 ),
             ],
