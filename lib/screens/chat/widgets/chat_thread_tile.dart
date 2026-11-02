@@ -5,6 +5,7 @@ import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/widgets/profile_tappable_avatar.dart';
+import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/chat/chat_thread.dart';
 
 const _kThreadAvatarSize = 58.0;
@@ -19,6 +20,23 @@ const _kRevealWidth = (_kActionSize * 3) + (_kActionGap * 2) + _kActionsPadding;
 const _kPinBg = Color(0xFF7C6CD6);
 const _kBlockBg = Color(0xFF6B6480);
 const _kDeleteBg = Color(0xFFD4537E);
+
+/// Sunucu sohbet özetini İngilizce saklar. Listedeki satır seçilen dilde okunur.
+String localizedChatPreview(BuildContext context, String raw) {
+  final t = Translations.of(context).chats;
+  return switch (raw) {
+    'Unlock request' => t.previewUnlock,
+    'Name shared' => t.previewNameShared,
+    'Name request declined' => t.previewNameDeclined,
+    'Photo shared' => t.previewPhotoShared,
+    'Photo request declined' => t.previewPhotoDeclined,
+    'Profile shared' => t.previewProfileShared,
+    'Profile request declined' => t.previewProfileDeclined,
+    '📷 Photo' => t.previewPhoto,
+    '🎤 Voice message' => t.previewVoice,
+    _ => raw,
+  };
+}
 
 class ChatThreadTile extends StatefulWidget {
   const ChatThreadTile({
@@ -250,7 +268,7 @@ class _ThreadContent extends StatelessWidget {
                   children: [
                     Expanded(
                       child: AppText(
-                        thread.lastMessagePreview,
+                        localizedChatPreview(context, thread.lastMessagePreview),
                         style: AppTextStyles.chatsThreadPreview,
                         maxLines: 1,
                       ),
@@ -269,11 +287,28 @@ class _ThreadContent extends StatelessWidget {
     );
   }
 
-  static String _formatTime(DateTime at) {
-    final hour = at.hour % 12 == 0 ? 12 : at.hour % 12;
+  String _formatTime(DateTime at) {
+    final code = LocaleSettings.currentLocale.languageCode;
     final minute = at.minute.toString().padLeft(2, '0');
-    final period = at.hour >= 12 ? 'PM' : 'AM';
-    return '$hour:$minute $period';
+    final hour24 = at.hour.toString().padLeft(2, '0');
+    final hour12 = at.hour % 12 == 0 ? 12 : at.hour % 12;
+    final afternoon = at.hour >= 12;
+    switch (code) {
+      case 'tr':
+        return '$hour12:$minute ${afternoon ? 'ös' : 'öö'}';
+      case 'ja':
+        return '${afternoon ? '午後' : '午前'}$hour12:$minute';
+      case 'ko':
+        return '${afternoon ? '오후' : '오전'} $hour12:$minute';
+      case 'zh':
+        return '${afternoon ? '下午' : '上午'}$hour12:$minute';
+      case 'hi':
+        return '$hour12:$minute ${afternoon ? 'pm' : 'am'}';
+      case 'en':
+        return '$hour12:$minute ${afternoon ? 'PM' : 'AM'}';
+      default:
+        return '$hour24:$minute';
+    }
   }
 }
 
