@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ import 'package:veylo/screens/discover/rooms/group_chat_page.dart';
 const _kContentWidth = 398.0;
 const _kCardRadius = 20.0;
 const _kActionSize = 52.0;
+const _kHintDuration = Duration(seconds: 3);
 
 class _MatchProfile {
   const _MatchProfile({
@@ -78,7 +80,9 @@ class YourMatchPage extends StatefulWidget {
 
 class _YourMatchPageState extends State<YourMatchPage> {
   late final PageController _pageController;
-  bool _showSwipeHint = true;
+  final _cardLink = LayerLink();
+  Timer? _hintTimer;
+  late bool _showSwipeHint = _cards.isNotEmpty;
   bool _opening = false;
 
   /// Gösterilen kartlar: gerçek eşleşmeler ya da (önizlemede) örnekler.
@@ -102,12 +106,20 @@ class _YourMatchPageState extends State<YourMatchPage> {
   void initState() {
     super.initState();
     _pageController = PageController();
+    // Kaydırma ipucu birkaç saniye görünür, sonra kendiliğinden kaybolur.
+    if (_showSwipeHint) _hintTimer = Timer(_kHintDuration, _hideHint);
   }
 
   @override
   void dispose() {
+    _hintTimer?.cancel();
     _pageController.dispose();
     super.dispose();
+  }
+
+  void _hideHint() {
+    _hintTimer?.cancel();
+    if (mounted && _showSwipeHint) setState(() => _showSwipeHint = false);
   }
 
   void _goToNextMatch() {
@@ -161,96 +173,130 @@ class _YourMatchPageState extends State<YourMatchPage> {
 
     return Scaffold(
       backgroundColor: AppColors.white,
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(hPad, topInset + 12, hPad, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AppText(t.yourMatchTitle, style: AppTextStyles.yourMatchTitle),
-            const SizedBox(height: 6),
-            AppText(
-              t.yourMatchSubtitle,
-              style: AppTextStyles.yourMatchSubtitle,
+      body: Stack(
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(hPad, topInset + 12, hPad, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppText(t.yourMatchTitle, style: AppTextStyles.yourMatchTitle),
+                const SizedBox(height: 6),
+                AppText(
+                  t.yourMatchSubtitle,
+                  style: AppTextStyles.yourMatchSubtitle,
+                ),
+                const SizedBox(height: 28),
+                Expanded(
+                  child: _cards.isEmpty
+                      ? Center(
+                          child: AppText(
+                            t.noMatch,
+                            style: AppTextStyles.yourMatchSubtitle,
+                            textAlign: TextAlign.center,
+                          ),
+                        )
+                      : CompositedTransformTarget(
+                          link: _cardLink,
+                          child: PageView.builder(
+                            controller: _pageController,
+                            itemCount: _cards.length,
+                            itemBuilder: (context, index) {
+                              final match = _cards[index];
+                              return _MatchCard(
+                                imageAsset: match.imageAsset,
+                                vibeLabel: t.vibeMatch(
+                                  percent: match.vibePercent,
+                                ),
+                                nameAge: match.age > 0
+                                    ? t.matchNameAge(
+                                        name: match.name,
+                                        age: match.age,
+                                      )
+                                    : match.name,
+                                bio: match.userId == null
+                                    ? t.matchBio
+                                    : (match.bio ?? ''),
+                              );
+                            },
+                          ),
+                        ),
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 13, 0, 13 + bottomInset),
+                  child: Row(
+                    children: [
+                      _CircleAction(
+                        background: AppColors.black.withValues(alpha: 0.10),
+                        onTap: () => Navigator.of(context).maybePop(),
+                        child: SvgPicture.asset(
+                          AppAssets.iconYourMatchClose,
+                          width: 32,
+                          height: 32,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: AppPrimaryButton(
+                          label: t.startChatting,
+                          leading: SvgPicture.asset(
+                            AppAssets.iconYourMatchChatting,
+                            width: 24,
+                            height: 24,
+                          ),
+                          onPressed: _startChatting,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      _CircleAction(
+                        background: const Color(0x1AEC1C24),
+                        onTap: _goToNextMatch,
+                        child: SvgPicture.asset(
+                          AppAssets.iconYourMatchHeart,
+                          width: 32,
+                          height: 32,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 28),
-            Expanded(
-              child: _cards.isEmpty
-                  ? Center(
-                      child: AppText(
-                        t.noMatch,
-                        style: AppTextStyles.yourMatchSubtitle,
-                        textAlign: TextAlign.center,
+          ),
+          // Figma: ilk açılışta ekran kararır, ipucu kartın ortasında görünür.
+          // Dokununca ya da birkaç saniye sonra kaybolur.
+          Positioned.fill(
+            child: IgnorePointer(
+              ignoring: !_showSwipeHint,
+              child: AnimatedOpacity(
+                opacity: _showSwipeHint ? 1 : 0,
+                duration: const Duration(milliseconds: 350),
+                child: Listener(
+                  behavior: HitTestBehavior.opaque,
+                  onPointerDown: (_) => _hideHint(),
+                  child: Stack(
+                    children: [
+                      const Positioned.fill(
+                        child: ColoredBox(color: Color(0x99000000)),
                       ),
-                    )
-                  : PageView.builder(
-                      controller: _pageController,
-                      itemCount: _cards.length,
-                      itemBuilder: (context, index) {
-                        final match = _cards[index];
-                        return _MatchCard(
-                          imageAsset: match.imageAsset,
-                          vibeLabel: t.vibeMatch(percent: match.vibePercent),
-                          nameAge: match.age > 0
-                              ? t.matchNameAge(name: match.name, age: match.age)
-                              : match.name,
-                          bio: match.userId == null
-                              ? t.matchBio
-                              : (match.bio ?? ''),
-                          showSwipeHint: _showSwipeHint,
-                          swipePreviousLabel: t.swipePrevious,
-                          swipeNextLabel: t.swipeNext,
-                          swipeFingerLabel: t.swipeFinger,
-                        );
-                      },
-                    ),
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(0, 13, 0, 13 + bottomInset),
-              child: Row(
-                children: [
-                  _CircleAction(
-                    background: AppColors.textPrimary.withValues(alpha: 0.10),
-                    // İpucu açıksa kapatır; değilse (ya da sonuç yoksa) ekrandan çıkar.
-                    onTap: () => _showSwipeHint && _cards.isNotEmpty
-                        ? setState(() => _showSwipeHint = false)
-                        : Navigator.of(context).maybePop(),
-                    child: SvgPicture.asset(
-                      AppAssets.iconClose,
-                      width: 32,
-                      height: 32,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: AppPrimaryButton(
-                      label: t.startChatting,
-                      leading: SvgPicture.asset(
-                        AppAssets.iconYourMatchChatting,
-                        width: 24,
-                        height: 24,
+                      CompositedTransformFollower(
+                        link: _cardLink,
+                        showWhenUnlinked: false,
+                        targetAnchor: Alignment.center,
+                        followerAnchor: Alignment.center,
+                        child: _SwipeHintOverlay(
+                          previousLabel: t.swipePrevious,
+                          nextLabel: t.swipeNext,
+                          fingerLabel: t.swipeFinger,
+                        ),
                       ),
-                      onPressed: _startChatting,
-                    ),
+                    ],
                   ),
-                  const SizedBox(width: 12),
-                  _CircleAction(
-                    background: const Color(0x1AEC1C24),
-                    onTap: _goToNextMatch,
-                    child: SvgPicture.asset(
-                      AppAssets.iconHeart,
-                      width: 26,
-                      height: 24,
-                      colorFilter: const ColorFilter.mode(
-                        Color(0xFFC23041),
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -262,20 +308,12 @@ class _MatchCard extends StatelessWidget {
     required this.vibeLabel,
     required this.nameAge,
     required this.bio,
-    required this.showSwipeHint,
-    required this.swipePreviousLabel,
-    required this.swipeNextLabel,
-    required this.swipeFingerLabel,
   });
 
   final String imageAsset;
   final String vibeLabel;
   final String nameAge;
   final String bio;
-  final bool showSwipeHint;
-  final String swipePreviousLabel;
-  final String swipeNextLabel;
-  final String swipeFingerLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -314,14 +352,6 @@ class _MatchCard extends StatelessWidget {
               ),
             ),
           ),
-          if (showSwipeHint)
-            Center(
-              child: _SwipeHintOverlay(
-                previousLabel: swipePreviousLabel,
-                nextLabel: swipeNextLabel,
-                fingerLabel: swipeFingerLabel,
-              ),
-            ),
           Positioned(
             left: 16,
             right: 16,
@@ -374,7 +404,7 @@ class _SwipeHintOverlay extends StatelessWidget {
 
   static const _sideLabelStyle = TextStyle(
     fontFamily: AppFonts.poppins,
-    fontWeight: FontWeight.w700,
+    fontWeight: FontWeight.w500,
     fontSize: 16,
     height: 1,
     color: AppColors.white,
@@ -385,7 +415,7 @@ class _SwipeHintOverlay extends StatelessWidget {
 
   static const _fingerLabelStyle = TextStyle(
     fontFamily: AppFonts.poppins,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w400,
     fontSize: 20,
     height: 1,
     color: AppColors.white,

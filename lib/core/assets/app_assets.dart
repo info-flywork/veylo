@@ -208,6 +208,8 @@ abstract final class AppAssets {
   static const String iconYourMatchPrevious = '$_yourMatchDir/previous.svg';
   static const String iconYourMatchSwiperFinger =
       '$_yourMatchDir/swiperFinger.svg';
+  static const String iconYourMatchClose = '$_yourMatchDir/close.svg';
+  static const String iconYourMatchHeart = '$_yourMatchDir/heart.svg';
 
   static const String _emotionsDir = 'assets/icons/emotions';
   static const String emotionSad = '$_emotionsDir/sad.png';
