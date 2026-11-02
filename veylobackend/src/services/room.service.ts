@@ -8,6 +8,7 @@ import { prisma } from '../lib/prisma';
 import { emitToChannel, emitToUser, joinChannel, leaveChannel } from '../realtime/emitter';
 import { presence } from '../realtime/presence.store';
 import { maskName } from '../utils/mask';
+import { notificationService } from './notification.service';
 import { safetyService } from './safety.service';
 import { tokenService } from './token.service';
 
@@ -144,7 +145,53 @@ async function create(viewerId: string, input: { title: string; anonymous: boole
     emitToUser(viewerId, 'tokens:updated', { balance, delta: -TOKENS.roomCreate, reason: 'ROOM_CREATE' });
     return created;
   });
+  void notifyFriends(viewerId, room).catch((err) => logger.warn({ err }, 'Oda bildirimi gönderilemedi'));
   return { id: room.id, title: room.title, isPrivate: room.isPrivate };
+}
+
+/** Takip eden ve takip edilen arkadaşlara, cihaz dilinde oda bildirimi. */
+async function notifyFriends(hostId: string, room: { id: string; title: string; isPrivate: boolean; hostAnonymous: boolean }) {
+  const links = await prisma.follow.findMany({
+    where: { OR: [{ followerId: hostId }, { followingId: hostId }] },
+    select: { followerId: true, followingId: true },
+  });
+  const ids = new Set<string>();
+  for (const link of links) ids.add(link.followerId === hostId ? link.followingId : link.followerId);
+  ids.delete(hostId);
+  if (ids.size === 0) return;
+
+  const blocked = await safetyService.blockedIdsFor(hostId);
+  const friends = await prisma.user.findMany({
+    where: { id: { in: [...ids] }, status: 'ACTIVE', isPersona: false },
+    select: { id: true },
+  });
+  const host = room.hostAnonymous
+    ? null
+    : await prisma.user.findUnique({ where: { id: hostId }, select: { displayName: true, username: true } });
+  const name = host?.displayName ?? host?.username ?? '';
+  const hideName = room.hostAnonymous || name.length === 0;
+
+  await Promise.all(
+    friends
+      .filter((f) => !blocked.has(f.id))
+      .map((f) =>
+        notificationService.pushToUser(
+          f.id,
+          (t) => ({
+            title: t.roomCreatedTitle,
+            body: hideName ? t.roomCreatedAnonymousBody(room.title) : t.roomCreatedBody(name, room.title),
+            data: {
+              type: 'roomCreated',
+              roomId: room.id,
+              title: room.title,
+              isPrivate: room.isPrivate ? '1' : '0',
+            },
+            threadId: room.id,
+          }),
+          { evenIfOnline: true },
+        ),
+      ),
+  );
 }
 
 // ───────────────────────────── canlı katılım (socket) ─────────────────────────────
