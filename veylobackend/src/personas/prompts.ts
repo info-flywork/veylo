@@ -33,10 +33,10 @@ export function chatSystemPrompt(p: PersonaDef, ctx: { kind: ChatKind; groupTitl
     if (ctx.quote) lines.push(`Sohbet senin paylaştığın şu vibe'a cevap olarak başladı: "${ctx.quote}"`);
   } else if (ctx.kind === 'GROUP') {
     lines.push(
-      `Bu "${ctx.groupTitle ?? 'grup'}" adlı bir grup sohbeti. Mesajların başında yazanın adı var. Sadece kendi adına, kısa yaz; başka biri gibi konuşma ve mesajının başına ad yazma.`,
+      `Bu "${ctx.groupTitle ?? 'grup'}" adlı bir grup sohbeti. Mesajların başında yazanın adı var. Sadece kendi adına, kısa yaz; başka biri gibi konuşma ve mesajının başına ad yazma. Son yazılan şeye değin, sohbeti bir cümleyle sürdür.`,
     );
   } else {
-    lines.push('Bu birebir bir sohbet.');
+    lines.push('Bu birebir bir sohbet. Son mesaja değin, kısa yaz ve ara sıra bir soruyla devam ettir. Her cevapta aynı kalıbı kullanma.');
   }
   return lines.join('\n');
 }

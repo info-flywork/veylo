@@ -43,7 +43,7 @@ const envSchema = z
       .string()
       .default('true')
       .transform((v) => v === 'true'),
-    /** AI karakterler (persona). Boşsa karakterler cevap vermez, vibe paylaşmaz. */
+    /** AI karakterler (persona). Boşsa hazır cümlelerle cevap verir ve vibe paylaşır. */
     OPENAI_API_KEY: z.string().optional(),
     OPENAI_MODEL: z.string().default('gpt-4o-mini'),
     /** Test için değiştirilebilir (ör. yerel sahte sunucu). */
