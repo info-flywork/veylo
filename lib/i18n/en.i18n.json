@@ -67,7 +67,38 @@
     "unlockFullPendingMine": "You sent a request to see their full profile.",
     "unlockFullPendingTheirs": "This person sent you a request to see your full profile.",
     "unlockSent": "You sent a request: {title}",
-    "unlockReceived": "The person you're chatting with sent you a request about {title}"
+    "unlockReceived": "The person you're chatting with sent you a request about {title}",
+    "requestAction": "Request",
+    "requestSent": "Sent",
+    "previewUnlock": "Unlock request",
+    "previewNameShared": "Name shared",
+    "previewNameDeclined": "Name request declined",
+    "previewPhotoShared": "Photo shared",
+    "previewPhotoDeclined": "Photo request declined",
+    "previewProfileShared": "Profile shared",
+    "previewProfileDeclined": "Profile request declined",
+    "previewPhoto": "Photo",
+    "previewVoice": "Voice message",
+    "micNeeded": "Microphone permission is needed",
+    "previewSticker": "Sticker",
+    "stickerEmpty": "No recent stickers",
+    "messageCopied": "Message copied",
+    "reportReasonSubtitle": "Why are you reporting this message?",
+    "reasonHarassment": "Harassment or bullying",
+    "reasonHateSpeech": "Hate speech",
+    "reasonNudity": "Nudity or sexual content",
+    "reasonSpam": "Spam",
+    "reasonScam": "Scam or fraud",
+    "reasonViolence": "Violence or threats",
+    "reasonOther": "Other",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "deleteChat": "Delete chat",
+    "emptyThreadsTitle": "No chats yet",
+    "emptyThreadsSubtitle": "When you start talking to someone, your chats will show up here.",
+    "noSearchResults": "No results found",
+    "milestonePhotoUnlocked": "Unlocked at 70%",
+    "revealPeerWants": "{name} wants to reveal their profile"
   },
   "profile": {
     "eyebrow": "Profile",
@@ -103,6 +134,9 @@
     "notifications": "Notifications",
     "password": "Password",
     "deleteConversation": "Delete Conversation",
+    "deleteAllTitle": "Are you sure you want to delete all conversations?",
+    "deleteAllBody": "If you confirm, all messages will be deleted",
+    "deleteAllAction": "Delete",
     "faqHelp": "F.A.Q & Help",
     "restorePurchases": "Restore Purchases",
     "termsOfService": "Terms Of Service",
@@ -136,6 +170,16 @@
     "educationPhd": "PhD / Doctorate",
     "voiceRecord": "Voice Record",
     "addVoice": "Add Voice",
+    "voiceShared": "Shared on your profile",
+    "voiceHint": "Record a short intro, up to {seconds} seconds",
+    "voiceRecording": "Recording {seconds} s",
+    "voiceReady": "Your voice is ready",
+    "voicePlay": "Play",
+    "voicePause": "Pause",
+    "voiceShare": "Share on profile",
+    "voiceSaving": "Saving…",
+    "voiceRemove": "Remove from profile",
+    "voiceLabel": "Voice",
     "lifestyle": "Lifestyle",
     "pets": "Pets",
     "petsValue": "I have a cat",
@@ -182,6 +226,7 @@
     "borderCrimsonRoyal": "Crimson Royal",
     "borderSapphireHalo": "Sapphire Halo",
     "follow": "Follow",
+    "message": "Message",
     "following": "Following",
     "followPageTitle": "Follow",
     "followTabFollowing": "Following",
@@ -217,7 +262,38 @@
     "reportSent": "Thanks, we received your report.",
     "emailVerificationSent": "We sent a confirmation link to {email}. Your email changes after you confirm.",
     "passwordChanged": "Your password has been updated.",
-    "passwordMismatch": "Passwords don’t match."
+    "passwordMismatch": "Passwords don’t match.",
+    "shareSend": "Send",
+    "shareMessage": "{name} — Veylo profile: {url}",
+    "currentPassword": "Current Password",
+    "currentPasswordWrong": "Your current password is incorrect.",
+    "reportReasonLabel": "Reason",
+    "reportReasonHarassment": "Harassment or bullying",
+    "reportReasonHateSpeech": "Hate speech",
+    "reportReasonNudity": "Nudity or sexual content",
+    "reportReasonUnderage": "Under 18",
+    "reportReasonSpam": "Spam",
+    "reportReasonScam": "Scam or fraud",
+    "reportReasonViolence": "Violence or threats",
+    "reportReasonImpersonation": "Pretending to be someone else",
+    "reportReasonOther": "Other",
+    "blockedDone": "{username} has been blocked.",
+    "restrictedDone": "{username} has been restricted.",
+    "emptyPosts": "No posts yet",
+    "emptyVideos": "No videos yet",
+    "emptySaved": "No saved posts yet",
+    "clearSelection": "Clear selection",
+    "genderNonBinary": "Non-binary",
+    "voiceAdded": "Voice added",
+    "discardTitle": "Unsaved changes",
+    "discardBody": "If you leave now, your changes will be lost.",
+    "discardConfirm": "Discard changes",
+    "keepEditing": "Keep editing",
+    "borderNone": "No border",
+    "borderOwned": "Owned",
+    "borderEquipCta": "Use Border",
+    "borderRemoveCta": "Remove Border",
+    "followEmpty": "No one here yet"
   },
   "nav": {
     "discover": "Discover",
@@ -258,7 +334,8 @@
     "switchToVideo": "Would you like to switch to a video call?",
     "noMatchTitle": "No one is available right now",
     "noMatchBody": "We couldn't find anyone to talk to at the moment. Please try again a little later.",
-    "noMatchOk": "OK"
+    "noMatchOk": "OK",
+    "cameraDenied": "Camera access is needed for video calls. You can enable it in Settings."
   },
   "vibes": {
     "search": "Search",
@@ -271,7 +348,13 @@
     "empty": "No vibes in the last 24 hours. Share the first one!",
     "deleteTitle": "Delete this vibe?",
     "delete": "Delete",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "post": "Post",
+    "replyHint": "Write your reply",
+    "sortNewest": "Newest first",
+    "sortPopular": "Most popular",
+    "loadFailed": "Couldn't load vibes.",
+    "noResults": "No results found"
   },
   "discover": {
     "title": "Discover",
@@ -297,8 +380,8 @@
       "statMatchRate": "Match rate",
       "statAvgTime": "Avg time",
       "statActiveValue": "843",
-      "statMatchValue": "87%",
-      "statAvgValue": "8s",
+      "statMatchValue": "{value}%",
+      "statAvgValue": "{value}s",
       "startSmartMatch": "Start Smart Match",
       "findingTitle": "Finding your match",
       "findingSubtitle": "Matching your mood and interests with the right person",
@@ -316,7 +399,9 @@
       "swipePrevious": "Previous",
       "swipeNext": "Next",
       "swipeFinger": "Swipe Finger",
-      "noMatch": "No one matches right now. Try again in a little while."
+      "noMatch": "No one matches right now. Try again in a little while.",
+      "likeSent": "You followed {name}",
+      "lastMatch": "You’ve seen all your matches. Search again for more."
     },
     "searchHint": "Search",
     "allRooms": "All Rooms",
@@ -389,7 +474,10 @@
       "muteMic": "Turn off microphone",
       "unmuteMic": "Turn microphone on",
       "wantsToSeeYou": "{name} in {room} wants to see you.",
-      "wantsMic": "{name} wants you to turn their microphone on."
+      "wantsMic": "{name} wants you to turn their microphone on.",
+      "reject": "Reject",
+      "pendingRequests": "Join requests",
+      "noRequests": "No pending requests."
     },
     "groupChat": {
       "usersCount": "{count} Users",
@@ -419,7 +507,9 @@
       "remove": "Remove from group",
       "leaveConfirm": "Leave this group?",
       "leave": "Leave",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "galleryEmpty": "No photos shared yet.",
+      "adminOnly": "Only admins can change this."
     },
     "filters": {
       "title": "Filters",
@@ -459,8 +549,10 @@
       "musicTitle": "Music",
       "musicEmpty": "No music found.",
       "musicError": "Could not load music.",
+      "unknownTrack": "Unknown",
       "downloaded": "Saved to gallery",
-      "downloadFailed": "Could not save"
+      "downloadFailed": "Could not save",
+      "savedToDraft": "Saved to drafts"
     },
     "highlight": {
       "title": "Highlight",
@@ -479,7 +571,8 @@
       "boostCta": "Boost for 1 day - 100 tokens",
       "boosted": "Boosted! Your post is at the top for 24 hours."
     },
-    "hostedBy": "Hosted by {name}"
+    "hostedBy": "Hosted by {name}",
+    "requestPending": "Your request was sent and is awaiting approval."
   },
   "common": {
     "loading": "Loading…",
@@ -704,6 +797,7 @@
     "uppercase": "Uppercase",
     "underline": "Underline",
     "cancel": "Cancel",
+    "done": "Done",
     "galleryError": "Could not open the gallery"
   },
   "tokens": {

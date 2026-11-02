@@ -124,18 +124,27 @@ class PostComment {
   }
 }
 
-/// Discover filtreleri (Filters sheet). Yaş ve mesafe şimdilik sunucuda uygulanmaz.
+/// Discover filtreleri (Filters sheet).
+///
+/// Yaş ve mesafe: kullanıcıda doğum tarihi / konum verisi tutulmadığı için sunucuya
+/// gönderilmez; seçim yalnızca sheet yeniden açıldığında korunur.
 class DiscoverFilters {
   const DiscoverFilters({
     this.gender = 'everyone',
     this.interests = const {},
     this.onlineOnly = false,
+    this.ageMin = 18,
+    this.ageMax = 35,
+    this.distanceKm = 25,
   });
 
   /// everyone | women | men
   final String gender;
   final Set<String> interests;
   final bool onlineOnly;
+  final double ageMin;
+  final double ageMax;
+  final double distanceKm;
 
   Map<String, String> toQuery() => {
     if (gender != 'everyone') 'gender': gender,

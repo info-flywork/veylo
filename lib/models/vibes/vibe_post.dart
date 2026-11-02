@@ -1,4 +1,5 @@
 import 'package:veylo/core/assets/app_assets.dart';
+import 'package:veylo/i18n/strings.g.dart';
 
 /// Vibes akışındaki tek kart (`GET /vibes`).
 class VibePost {
@@ -41,14 +42,25 @@ class VibePost {
       ? AppAssets.strangerAvatar
       : avatarUrl!;
 
-  /// Kartta gösterilen tarih (ör. "18 Feb 2026").
+  /// Kartta gösterilen tarih, seçilen dile göre.
   String get dateLabel {
-    const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', //
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-    ];
+    const months = {
+      'tr': ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz', 'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'],
+      'de': ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'],
+      'it': ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'],
+      'fr': ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'],
+      'es': ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sept', 'oct', 'nov', 'dic'],
+      'pt': ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
+      'ru': ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'],
+      'hi': ['जन', 'फर', 'मार', 'अप्रै', 'मई', 'जून', 'जुल', 'अग', 'सित', 'अक्टू', 'नव', 'दिस'],
+      'en': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    };
     final d = createdAt;
-    return '${d.day} ${months[d.month - 1]} ${d.year}';
+    final code = LocaleSettings.currentLocale.languageCode;
+    if (code == 'ja' || code == 'zh') return '${d.year}年${d.month}月${d.day}日';
+    if (code == 'ko') return '${d.year}년 ${d.month}월 ${d.day}일';
+    final names = months[code] ?? months['en']!;
+    return '${d.day} ${names[d.month - 1]} ${d.year}';
   }
 
   factory VibePost.fromJson(Map<String, dynamic> j) {

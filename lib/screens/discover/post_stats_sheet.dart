@@ -67,10 +67,8 @@ class _PostStatsSheetState extends State<_PostStatsSheet> {
       ({int views, int likes, int comments, DateTime? boostedUntil}) s,
     )
     pick,
-    String sample,
   ) {
     final s = _stats;
-    if (widget.postId == null) return sample;
     return s == null ? '–' : _count(pick(s));
   }
 
@@ -151,7 +149,7 @@ class _PostStatsSheetState extends State<_PostStatsSheet> {
                 const SizedBox(height: 20),
                 _StatRow(
                   label: t.viewers,
-                  value: _value((s) => s.views, '1.8k'),
+                  value: _value((s) => s.views),
                   icon: SvgPicture.asset(
                     AppAssets.iconStatsEye,
                     width: 24,
@@ -161,7 +159,7 @@ class _PostStatsSheetState extends State<_PostStatsSheet> {
                 const SizedBox(height: 10),
                 _StatRow(
                   label: t.comments,
-                  value: _value((s) => s.comments, '140'),
+                  value: _value((s) => s.comments),
                   icon: Image.asset(
                     AppAssets.iconAiCommentary,
                     width: 24,
@@ -171,7 +169,7 @@ class _PostStatsSheetState extends State<_PostStatsSheet> {
                 const SizedBox(height: 10),
                 _StatRow(
                   label: t.likes,
-                  value: _value((s) => s.likes, '550'),
+                  value: _value((s) => s.likes),
                   icon: SvgPicture.asset(
                     AppAssets.iconStatsLike,
                     width: 24,
@@ -214,8 +212,7 @@ class _PostStatsSheetState extends State<_PostStatsSheet> {
               child: Image.file(
                 File(imagePath),
                 fit: BoxFit.cover,
-                errorBuilder: (_, _, _) =>
-                    Image.asset(AppAssets.fakePerson01, fit: BoxFit.cover),
+                errorBuilder: (_, _, _) => const SizedBox.expand(),
               ),
             ),
           ),

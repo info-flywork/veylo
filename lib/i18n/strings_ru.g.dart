@@ -150,6 +150,37 @@ class _Translations$chats$ru extends Translations$chats$tr {
 	@override String get unlockFullPendingTheirs => 'Этот человек хочет увидеть твой полный профиль.';
 	@override String unlockSent({required Object title}) => 'Ты отправил запрос: ${title}';
 	@override String unlockReceived({required Object title}) => 'Собеседник отправил запрос о ${title}.';
+	@override String get requestAction => 'Запрос';
+	@override String get requestSent => 'Отправлено';
+	@override String get previewUnlock => 'Запрос на открытие';
+	@override String get previewNameShared => 'Имя открыто';
+	@override String get previewNameDeclined => 'Запрос имени отклонён';
+	@override String get previewPhotoShared => 'Фото открыто';
+	@override String get previewPhotoDeclined => 'Запрос фото отклонён';
+	@override String get previewProfileShared => 'Профиль открыт';
+	@override String get previewProfileDeclined => 'Запрос профиля отклонён';
+	@override String get previewPhoto => 'Фото';
+	@override String get previewVoice => 'Голосовое сообщение';
+	@override String get micNeeded => 'Нужен доступ к микрофону';
+	@override String get previewSticker => 'Стикер';
+	@override String get stickerEmpty => 'Нет недавних стикеров';
+	@override String get messageCopied => 'Сообщение скопировано';
+	@override String get reportReasonSubtitle => 'Почему вы жалуетесь на это сообщение?';
+	@override String get reasonHarassment => 'Оскорбления или травля';
+	@override String get reasonHateSpeech => 'Язык вражды';
+	@override String get reasonNudity => 'Нагота или сексуальный контент';
+	@override String get reasonSpam => 'Спам';
+	@override String get reasonScam => 'Мошенничество';
+	@override String get reasonViolence => 'Насилие или угрозы';
+	@override String get reasonOther => 'Другое';
+	@override String get mute => 'Без звука';
+	@override String get unmute => 'Включить звук';
+	@override String get deleteChat => 'Удалить чат';
+	@override String get emptyThreadsTitle => 'Пока нет чатов';
+	@override String get emptyThreadsSubtitle => 'Когда вы начнёте с кем-то общаться, чаты появятся здесь.';
+	@override String get noSearchResults => 'Ничего не найдено';
+	@override String get milestonePhotoUnlocked => 'Открыто на 70%';
+	@override String revealPeerWants({required Object name}) => '${name} хочет открыть свой профиль';
 }
 
 // Path: profile
@@ -192,6 +223,9 @@ class _Translations$profile$ru extends Translations$profile$tr {
 	@override String get notifications => 'Уведомления';
 	@override String get password => 'Пароль';
 	@override String get deleteConversation => 'Удалить чаты';
+	@override String get deleteAllTitle => 'Точно удалить все чаты?';
+	@override String get deleteAllBody => 'Если подтвердишь, все сообщения удалятся';
+	@override String get deleteAllAction => 'Удалить';
 	@override String get faqHelp => 'FAQ и помощь';
 	@override String get restorePurchases => 'Восстановить покупки';
 	@override String get termsOfService => 'Условия использования';
@@ -225,6 +259,16 @@ class _Translations$profile$ru extends Translations$profile$tr {
 	@override String get educationPhd => 'Кандидат / доктор наук';
 	@override String get voiceRecord => 'Голосовая запись';
 	@override String get addVoice => 'Добавить голос';
+	@override String get voiceShared => 'Опубликовано в профиле';
+	@override String voiceHint({required Object seconds}) => 'Запиши короткое представление, до ${seconds} секунд';
+	@override String voiceRecording({required Object seconds}) => 'Запись ${seconds} с';
+	@override String get voiceReady => 'Голос готов';
+	@override String get voicePlay => 'Слушать';
+	@override String get voicePause => 'Пауза';
+	@override String get voiceShare => 'Поделиться в профиле';
+	@override String get voiceSaving => 'Сохранение…';
+	@override String get voiceRemove => 'Убрать из профиля';
+	@override String get voiceLabel => 'Голос';
 	@override String get lifestyle => 'Образ жизни';
 	@override String get pets => 'Питомцы';
 	@override String get petsValue => 'Есть кошка';
@@ -262,15 +306,16 @@ class _Translations$profile$ru extends Translations$profile$tr {
 	@override String get borderBuySection => 'Купить рамку';
 	@override String get borderBuyCta => 'Купить рамку';
 	@override String borderToken({required Object count}) => 'Токены: ${count}';
-	@override String get borderAmethystWings => 'Amethyst Wings';
-	@override String get borderGoldenPhoenix => 'Golden Phoenix';
-	@override String get borderFrostCrown => 'Frost Crown';
-	@override String get borderEmeraldWhisper => 'Emerald Whisper';
-	@override String get borderRoseQuartz => 'Rose Quartz';
-	@override String get borderStarlitComet => 'Starlit Comet';
-	@override String get borderCrimsonRoyal => 'Crimson Royal';
-	@override String get borderSapphireHalo => 'Sapphire Halo';
+	@override String get borderAmethystWings => 'Аметистовые крылья';
+	@override String get borderGoldenPhoenix => 'Золотой феникс';
+	@override String get borderFrostCrown => 'Ледяная корона';
+	@override String get borderEmeraldWhisper => 'Изумрудный шёпот';
+	@override String get borderRoseQuartz => 'Розовый кварц';
+	@override String get borderStarlitComet => 'Звёздная комета';
+	@override String get borderCrimsonRoyal => 'Багровый король';
+	@override String get borderSapphireHalo => 'Сапфировый ореол';
 	@override String get follow => 'Подписаться';
+	@override String get message => 'Сообщение';
 	@override String get following => 'Подписки';
 	@override String get followPageTitle => 'Подписки';
 	@override String get followTabFollowing => 'Подписки';
@@ -307,6 +352,37 @@ class _Translations$profile$ru extends Translations$profile$tr {
 	@override String emailVerificationSent({required Object email}) => 'Мы отправили ссылку для подтверждения на ${email}. Почта изменится после подтверждения.';
 	@override String get passwordChanged => 'Пароль обновлён.';
 	@override String get passwordMismatch => 'Пароли не совпадают.';
+	@override String get shareSend => 'Отправить';
+	@override String shareMessage({required Object name, required Object url}) => '${name} — профиль Veylo: ${url}';
+	@override String get currentPassword => 'Текущий пароль';
+	@override String get currentPasswordWrong => 'Текущий пароль неверный.';
+	@override String get reportReasonLabel => 'Причина';
+	@override String get reportReasonHarassment => 'Оскорбления или травля';
+	@override String get reportReasonHateSpeech => 'Язык вражды';
+	@override String get reportReasonNudity => 'Обнажённость или сексуальный контент';
+	@override String get reportReasonUnderage => 'Младше 18 лет';
+	@override String get reportReasonSpam => 'Спам';
+	@override String get reportReasonScam => 'Мошенничество';
+	@override String get reportReasonViolence => 'Насилие или угрозы';
+	@override String get reportReasonImpersonation => 'Выдаёт себя за другого';
+	@override String get reportReasonOther => 'Другое';
+	@override String blockedDone({required Object username}) => '${username} заблокирован(а).';
+	@override String restrictedDone({required Object username}) => '${username} ограничен(а).';
+	@override String get emptyPosts => 'Пока нет публикаций';
+	@override String get emptyVideos => 'Пока нет видео';
+	@override String get emptySaved => 'Пока нет сохранённых публикаций';
+	@override String get clearSelection => 'Сбросить выбор';
+	@override String get genderNonBinary => 'Небинарный';
+	@override String get voiceAdded => 'Голос добавлен';
+	@override String get discardTitle => 'Несохранённые изменения';
+	@override String get discardBody => 'Если выйти сейчас, изменения будут потеряны.';
+	@override String get discardConfirm => 'Отменить изменения';
+	@override String get keepEditing => 'Продолжить редактирование';
+	@override String get borderNone => 'Без рамки';
+	@override String get borderOwned => 'Куплено';
+	@override String get borderEquipCta => 'Надеть рамку';
+	@override String get borderRemoveCta => 'Снять рамку';
+	@override String get followEmpty => 'Здесь пока никого нет';
 }
 
 // Path: nav
@@ -319,7 +395,7 @@ class _Translations$nav$ru extends Translations$nav$tr {
 	@override String get discover => 'Обзор';
 	@override String get chat => 'Чат';
 	@override String get call => 'Звонок';
-	@override String get vibes => 'Vibes';
+	@override String get vibes => 'Вайб';
 	@override String get profile => 'Профиль';
 }
 
@@ -362,6 +438,7 @@ class _Translations$call$ru extends Translations$call$tr {
 	@override String get noMatchTitle => 'Сейчас никого нет';
 	@override String get noMatchBody => 'Сейчас не удалось найти собеседника. Попробуй ещё раз чуть позже.';
 	@override String get noMatchOk => 'ОК';
+	@override String get cameraDenied => 'Для видеозвонков нужен доступ к камере. Включи его в настройках.';
 }
 
 // Path: vibes
@@ -382,6 +459,12 @@ class _Translations$vibes$ru extends Translations$vibes$tr {
 	@override String get deleteTitle => 'Удалить этот Vibe?';
 	@override String get delete => 'Удалить';
 	@override String get cancel => 'Отмена';
+	@override String get post => 'Опубликовать';
+	@override String get replyHint => 'Напишите ответ';
+	@override String get sortNewest => 'Сначала новые';
+	@override String get sortPopular => 'Самые популярные';
+	@override String get loadFailed => 'Не удалось загрузить вайбы.';
+	@override String get noResults => 'Ничего не найдено';
 }
 
 // Path: discover
@@ -394,7 +477,7 @@ class _Translations$discover$ru extends Translations$discover$tr {
 	@override String get title => 'Обзор';
 	@override String get tabRooms => 'Комнаты';
 	@override String get tabDiscover => 'Обзор';
-	@override String get tabAiMatch => 'AI Match';
+	@override String get tabAiMatch => 'ИИ-матч';
 	@override late final _Translations$discover$aiMatch$ru aiMatch = _Translations$discover$aiMatch$ru._(_root);
 	@override String get searchHint => 'Поиск';
 	@override String get allRooms => 'Все комнаты';
@@ -422,6 +505,7 @@ class _Translations$discover$ru extends Translations$discover$tr {
 	@override late final _Translations$discover$highlight$ru highlight = _Translations$discover$highlight$ru._(_root);
 	@override late final _Translations$discover$stats$ru stats = _Translations$discover$stats$ru._(_root);
 	@override String hostedBy({required Object name}) => 'Ведущий: ${name}';
+	@override String get requestPending => 'Заявка отправлена и ждёт одобрения.';
 }
 
 // Path: common
@@ -700,6 +784,7 @@ class _Translations$storyText$ru extends Translations$storyText$tr {
 	@override String get uppercase => 'Заглавные';
 	@override String get underline => 'Подчёркнутый';
 	@override String get cancel => 'Отмена';
+	@override String get done => 'Готово';
 	@override String get galleryError => 'Не удалось открыть галерею';
 }
 
@@ -710,7 +795,7 @@ class _Translations$tokens$ru extends Translations$tokens$tr {
 	final TranslationsRu _root; // ignore: unused_field
 
 	// Translations
-	@override String get boostTitle => 'Boost';
+	@override String get boostTitle => 'Продвижение';
 	@override String get history => 'История';
 	@override String get yourBalance => 'Твой баланс';
 	@override String balanceTokens({required Object count}) => 'Токены: ${count}';
@@ -724,7 +809,7 @@ class _Translations$tokens$ru extends Translations$tokens$tr {
 	@override String get duration1h => '1 час';
 	@override String get duration2h => '2 часа';
 	@override String visibility({required Object n}) => 'Видимость x${n}';
-	@override String boostFor({required Object count}) => 'Boost за ${count} ток.';
+	@override String boostFor({required Object count}) => 'Продвижение за ${count} ток.';
 	@override String boostActive({required Object time}) => 'Boost до ${time}';
 	@override String get boostDone => 'Твой профиль продвигается!';
 	@override String get historyEmpty => 'Пока нет операций с токенами';
@@ -773,8 +858,8 @@ class _Translations$discover$aiMatch$ru extends Translations$discover$aiMatch$tr
 	@override String get statMatchRate => 'Совпадения';
 	@override String get statAvgTime => 'Ср. время';
 	@override String get statActiveValue => '843';
-	@override String get statMatchValue => '87%';
-	@override String get statAvgValue => '8 с';
+	@override String statMatchValue({required Object value}) => '${value}%';
+	@override String statAvgValue({required Object value}) => '${value} с';
 	@override String get startSmartMatch => 'Начать подбор';
 	@override String get findingTitle => 'Ищем тебе пару';
 	@override String get findingSubtitle => 'Подбираем человека под твоё настроение и интересы';
@@ -793,6 +878,8 @@ class _Translations$discover$aiMatch$ru extends Translations$discover$aiMatch$tr
 	@override String get swipeNext => 'Далее';
 	@override String get swipeFinger => 'Проведи пальцем';
 	@override String get noMatch => 'Сейчас никто не подходит. Попробуй чуть позже.';
+	@override String likeSent({required Object name}) => 'Ты подписался на ${name}';
+	@override String get lastMatch => 'Ты посмотрел все совпадения. Запусти поиск ещё раз.';
 }
 
 // Path: discover.privateRoom
@@ -889,6 +976,14 @@ class _Translations$discover$liveRoom$ru extends Translations$discover$liveRoom$
 	@override String get roomEnded => 'Комната завершена.';
 	@override String wantsToJoin({required Object name}) => '${name} хочет войти';
 	@override String get approve => 'Принять';
+	@override String get reject => 'Отклонить';
+	@override String get pendingRequests => 'Заявки на вход';
+	@override String get noRequests => 'Нет ожидающих заявок.';
+	@override String get muteMic => 'Выключить микрофон';
+	@override String get unmuteMic => 'Включить микрофон';
+	@override String get remove => 'Удалить из комнаты';
+	@override String get removed => 'Вас удалили из комнаты.';
+	@override String get seeProfile => 'Запросить просмотр профиля';
 }
 
 // Path: discover.groupChat
@@ -933,6 +1028,8 @@ class _Translations$discover$groupInfo$ru extends Translations$discover$groupInf
 	@override String get leaveConfirm => 'Покинуть группу?';
 	@override String get leave => 'Покинуть';
 	@override String get cancel => 'Отмена';
+	@override String get galleryEmpty => 'Пока нет общих фото.';
+	@override String get adminOnly => 'Изменить это могут только админы.';
 }
 
 // Path: discover.filters
@@ -993,8 +1090,10 @@ class _Translations$discover$story$ru extends Translations$discover$story$tr {
 	@override String get musicTitle => 'Музыка';
 	@override String get musicEmpty => 'Музыка не найдена.';
 	@override String get musicError => 'Не удалось загрузить музыку.';
+	@override String get unknownTrack => 'Неизвестно';
 	@override String get downloaded => 'Сохранено в галерею';
 	@override String get downloadFailed => 'Не удалось сохранить';
+	@override String get savedToDraft => 'Сохранено в черновики';
 }
 
 // Path: discover.highlight
@@ -1131,6 +1230,37 @@ extension on TranslationsRu {
 			'chats.unlockFullPendingTheirs' => 'Этот человек хочет увидеть твой полный профиль.',
 			'chats.unlockSent' => ({required Object title}) => 'Ты отправил запрос: ${title}',
 			'chats.unlockReceived' => ({required Object title}) => 'Собеседник отправил запрос о ${title}.',
+			'chats.requestAction' => 'Запрос',
+			'chats.requestSent' => 'Отправлено',
+			'chats.previewUnlock' => 'Запрос на открытие',
+			'chats.previewNameShared' => 'Имя открыто',
+			'chats.previewNameDeclined' => 'Запрос имени отклонён',
+			'chats.previewPhotoShared' => 'Фото открыто',
+			'chats.previewPhotoDeclined' => 'Запрос фото отклонён',
+			'chats.previewProfileShared' => 'Профиль открыт',
+			'chats.previewProfileDeclined' => 'Запрос профиля отклонён',
+			'chats.previewPhoto' => 'Фото',
+			'chats.previewVoice' => 'Голосовое сообщение',
+			'chats.micNeeded' => 'Нужен доступ к микрофону',
+			'chats.previewSticker' => 'Стикер',
+			'chats.stickerEmpty' => 'Нет недавних стикеров',
+			'chats.messageCopied' => 'Сообщение скопировано',
+			'chats.reportReasonSubtitle' => 'Почему вы жалуетесь на это сообщение?',
+			'chats.reasonHarassment' => 'Оскорбления или травля',
+			'chats.reasonHateSpeech' => 'Язык вражды',
+			'chats.reasonNudity' => 'Нагота или сексуальный контент',
+			'chats.reasonSpam' => 'Спам',
+			'chats.reasonScam' => 'Мошенничество',
+			'chats.reasonViolence' => 'Насилие или угрозы',
+			'chats.reasonOther' => 'Другое',
+			'chats.mute' => 'Без звука',
+			'chats.unmute' => 'Включить звук',
+			'chats.deleteChat' => 'Удалить чат',
+			'chats.emptyThreadsTitle' => 'Пока нет чатов',
+			'chats.emptyThreadsSubtitle' => 'Когда вы начнёте с кем-то общаться, чаты появятся здесь.',
+			'chats.noSearchResults' => 'Ничего не найдено',
+			'chats.milestonePhotoUnlocked' => 'Открыто на 70%',
+			'chats.revealPeerWants' => ({required Object name}) => '${name} хочет открыть свой профиль',
 			'profile.eyebrow' => 'Профиль',
 			'profile.title' => 'Настройки',
 			'profile.editProfile' => 'Изменить профиль',
@@ -1164,6 +1294,9 @@ extension on TranslationsRu {
 			'profile.notifications' => 'Уведомления',
 			'profile.password' => 'Пароль',
 			'profile.deleteConversation' => 'Удалить чаты',
+			'profile.deleteAllTitle' => 'Точно удалить все чаты?',
+			'profile.deleteAllBody' => 'Если подтвердишь, все сообщения удалятся',
+			'profile.deleteAllAction' => 'Удалить',
 			'profile.faqHelp' => 'FAQ и помощь',
 			'profile.restorePurchases' => 'Восстановить покупки',
 			'profile.termsOfService' => 'Условия использования',
@@ -1197,6 +1330,16 @@ extension on TranslationsRu {
 			'profile.educationPhd' => 'Кандидат / доктор наук',
 			'profile.voiceRecord' => 'Голосовая запись',
 			'profile.addVoice' => 'Добавить голос',
+			'profile.voiceShared' => 'Опубликовано в профиле',
+			'profile.voiceHint' => ({required Object seconds}) => 'Запиши короткое представление, до ${seconds} секунд',
+			'profile.voiceRecording' => ({required Object seconds}) => 'Запись ${seconds} с',
+			'profile.voiceReady' => 'Голос готов',
+			'profile.voicePlay' => 'Слушать',
+			'profile.voicePause' => 'Пауза',
+			'profile.voiceShare' => 'Поделиться в профиле',
+			'profile.voiceSaving' => 'Сохранение…',
+			'profile.voiceRemove' => 'Убрать из профиля',
+			'profile.voiceLabel' => 'Голос',
 			'profile.lifestyle' => 'Образ жизни',
 			'profile.pets' => 'Питомцы',
 			'profile.petsValue' => 'Есть кошка',
@@ -1234,15 +1377,16 @@ extension on TranslationsRu {
 			'profile.borderBuySection' => 'Купить рамку',
 			'profile.borderBuyCta' => 'Купить рамку',
 			'profile.borderToken' => ({required Object count}) => 'Токены: ${count}',
-			'profile.borderAmethystWings' => 'Amethyst Wings',
-			'profile.borderGoldenPhoenix' => 'Golden Phoenix',
-			'profile.borderFrostCrown' => 'Frost Crown',
-			'profile.borderEmeraldWhisper' => 'Emerald Whisper',
-			'profile.borderRoseQuartz' => 'Rose Quartz',
-			'profile.borderStarlitComet' => 'Starlit Comet',
-			'profile.borderCrimsonRoyal' => 'Crimson Royal',
-			'profile.borderSapphireHalo' => 'Sapphire Halo',
+			'profile.borderAmethystWings' => 'Аметистовые крылья',
+			'profile.borderGoldenPhoenix' => 'Золотой феникс',
+			'profile.borderFrostCrown' => 'Ледяная корона',
+			'profile.borderEmeraldWhisper' => 'Изумрудный шёпот',
+			'profile.borderRoseQuartz' => 'Розовый кварц',
+			'profile.borderStarlitComet' => 'Звёздная комета',
+			'profile.borderCrimsonRoyal' => 'Багровый король',
+			'profile.borderSapphireHalo' => 'Сапфировый ореол',
 			'profile.follow' => 'Подписаться',
+			'profile.message' => 'Сообщение',
 			'profile.following' => 'Подписки',
 			'profile.followPageTitle' => 'Подписки',
 			'profile.followTabFollowing' => 'Подписки',
@@ -1279,10 +1423,41 @@ extension on TranslationsRu {
 			'profile.emailVerificationSent' => ({required Object email}) => 'Мы отправили ссылку для подтверждения на ${email}. Почта изменится после подтверждения.',
 			'profile.passwordChanged' => 'Пароль обновлён.',
 			'profile.passwordMismatch' => 'Пароли не совпадают.',
+			'profile.shareSend' => 'Отправить',
+			'profile.shareMessage' => ({required Object name, required Object url}) => '${name} — профиль Veylo: ${url}',
+			'profile.currentPassword' => 'Текущий пароль',
+			'profile.currentPasswordWrong' => 'Текущий пароль неверный.',
+			'profile.reportReasonLabel' => 'Причина',
+			'profile.reportReasonHarassment' => 'Оскорбления или травля',
+			'profile.reportReasonHateSpeech' => 'Язык вражды',
+			'profile.reportReasonNudity' => 'Обнажённость или сексуальный контент',
+			'profile.reportReasonUnderage' => 'Младше 18 лет',
+			'profile.reportReasonSpam' => 'Спам',
+			'profile.reportReasonScam' => 'Мошенничество',
+			'profile.reportReasonViolence' => 'Насилие или угрозы',
+			'profile.reportReasonImpersonation' => 'Выдаёт себя за другого',
+			'profile.reportReasonOther' => 'Другое',
+			'profile.blockedDone' => ({required Object username}) => '${username} заблокирован(а).',
+			'profile.restrictedDone' => ({required Object username}) => '${username} ограничен(а).',
+			'profile.emptyPosts' => 'Пока нет публикаций',
+			'profile.emptyVideos' => 'Пока нет видео',
+			'profile.emptySaved' => 'Пока нет сохранённых публикаций',
+			'profile.clearSelection' => 'Сбросить выбор',
+			'profile.genderNonBinary' => 'Небинарный',
+			'profile.voiceAdded' => 'Голос добавлен',
+			'profile.discardTitle' => 'Несохранённые изменения',
+			'profile.discardBody' => 'Если выйти сейчас, изменения будут потеряны.',
+			'profile.discardConfirm' => 'Отменить изменения',
+			'profile.keepEditing' => 'Продолжить редактирование',
+			'profile.borderNone' => 'Без рамки',
+			'profile.borderOwned' => 'Куплено',
+			'profile.borderEquipCta' => 'Надеть рамку',
+			'profile.borderRemoveCta' => 'Снять рамку',
+			'profile.followEmpty' => 'Здесь пока никого нет',
 			'nav.discover' => 'Обзор',
 			'nav.chat' => 'Чат',
 			'nav.call' => 'Звонок',
-			'nav.vibes' => 'Vibes',
+			'nav.vibes' => 'Вайб',
 			'nav.profile' => 'Профиль',
 			'call.title' => 'Незнакомец на 60 секунд',
 			'call.subtitle' => 'Поговори 60 секунд со случайным незнакомцем — полностью анонимно. Без профиля, фото и имени. Только голос и момент.',
@@ -1316,6 +1491,7 @@ extension on TranslationsRu {
 			'call.noMatchTitle' => 'Сейчас никого нет',
 			'call.noMatchBody' => 'Сейчас не удалось найти собеседника. Попробуй ещё раз чуть позже.',
 			'call.noMatchOk' => 'ОК',
+			'call.cameraDenied' => 'Для видеозвонков нужен доступ к камере. Включи его в настройках.',
 			'vibes.search' => 'Поиск',
 			'vibes.sendMessage' => 'Написать',
 			'vibes.wantsToTalk' => 'Хочет обсудить это прямо сейчас',
@@ -1327,10 +1503,16 @@ extension on TranslationsRu {
 			'vibes.deleteTitle' => 'Удалить этот Vibe?',
 			'vibes.delete' => 'Удалить',
 			'vibes.cancel' => 'Отмена',
+			'vibes.post' => 'Опубликовать',
+			'vibes.replyHint' => 'Напишите ответ',
+			'vibes.sortNewest' => 'Сначала новые',
+			'vibes.sortPopular' => 'Самые популярные',
+			'vibes.loadFailed' => 'Не удалось загрузить вайбы.',
+			'vibes.noResults' => 'Ничего не найдено',
 			'discover.title' => 'Обзор',
 			'discover.tabRooms' => 'Комнаты',
 			'discover.tabDiscover' => 'Обзор',
-			'discover.tabAiMatch' => 'AI Match',
+			'discover.tabAiMatch' => 'ИИ-матч',
 			'discover.aiMatch.feelingTitle' => 'Как ты сегодня?',
 			'discover.aiMatch.feelingSubtitle' => 'ИИ подберёт лучшую пару по твоему выбору',
 			'discover.aiMatch.lookingTitle' => 'Что ищешь?',
@@ -1349,8 +1531,8 @@ extension on TranslationsRu {
 			'discover.aiMatch.statMatchRate' => 'Совпадения',
 			'discover.aiMatch.statAvgTime' => 'Ср. время',
 			'discover.aiMatch.statActiveValue' => '843',
-			'discover.aiMatch.statMatchValue' => '87%',
-			'discover.aiMatch.statAvgValue' => '8 с',
+			'discover.aiMatch.statMatchValue' => ({required Object value}) => '${value}%',
+			'discover.aiMatch.statAvgValue' => ({required Object value}) => '${value} с',
 			'discover.aiMatch.startSmartMatch' => 'Начать подбор',
 			'discover.aiMatch.findingTitle' => 'Ищем тебе пару',
 			'discover.aiMatch.findingSubtitle' => 'Подбираем человека под твоё настроение и интересы',
@@ -1369,6 +1551,8 @@ extension on TranslationsRu {
 			'discover.aiMatch.swipeNext' => 'Далее',
 			'discover.aiMatch.swipeFinger' => 'Проведи пальцем',
 			'discover.aiMatch.noMatch' => 'Сейчас никто не подходит. Попробуй чуть позже.',
+			'discover.aiMatch.likeSent' => ({required Object name}) => 'Ты подписался на ${name}',
+			'discover.aiMatch.lastMatch' => 'Ты посмотрел все совпадения. Запусти поиск ещё раз.',
 			'discover.searchHint' => 'Поиск',
 			'discover.allRooms' => 'Все комнаты',
 			'discover.allGroups' => 'Все группы',
@@ -1423,6 +1607,14 @@ extension on TranslationsRu {
 			'discover.liveRoom.roomEnded' => 'Комната завершена.',
 			'discover.liveRoom.wantsToJoin' => ({required Object name}) => '${name} хочет войти',
 			'discover.liveRoom.approve' => 'Принять',
+			'discover.liveRoom.reject' => 'Отклонить',
+			'discover.liveRoom.pendingRequests' => 'Заявки на вход',
+			'discover.liveRoom.noRequests' => 'Нет ожидающих заявок.',
+			'discover.liveRoom.muteMic' => 'Выключить микрофон',
+			'discover.liveRoom.unmuteMic' => 'Включить микрофон',
+			'discover.liveRoom.remove' => 'Удалить из комнаты',
+			'discover.liveRoom.removed' => 'Вас удалили из комнаты.',
+			'discover.liveRoom.seeProfile' => 'Запросить просмотр профиля',
 			'discover.groupChat.usersCount' => ({required Object count}) => 'Участники: ${count}',
 			'discover.groupChat.sampleVictoria' => 'Мне ужасно скучно. Может, чем-нибудь займёмся?',
 			'discover.groupChat.sampleSona' => 'Чем займёмся? Есть идеи?',
@@ -1449,6 +1641,8 @@ extension on TranslationsRu {
 			'discover.groupInfo.leaveConfirm' => 'Покинуть группу?',
 			'discover.groupInfo.leave' => 'Покинуть',
 			'discover.groupInfo.cancel' => 'Отмена',
+			'discover.groupInfo.galleryEmpty' => 'Пока нет общих фото.',
+			'discover.groupInfo.adminOnly' => 'Изменить это могут только админы.',
 			'discover.filters.title' => 'Фильтры',
 			'discover.filters.ageRange' => 'Возраст',
 			'discover.filters.ageRangeValue' => ({required Object min, required Object max}) => '${min}-${max}',
@@ -1482,8 +1676,12 @@ extension on TranslationsRu {
 			'discover.story.musicTitle' => 'Музыка',
 			'discover.story.musicEmpty' => 'Музыка не найдена.',
 			'discover.story.musicError' => 'Не удалось загрузить музыку.',
+			'discover.story.unknownTrack' => 'Неизвестно',
 			'discover.story.downloaded' => 'Сохранено в галерею',
+			_ => null,
+		} ?? switch (path) {
 			'discover.story.downloadFailed' => 'Не удалось сохранить',
+			'discover.story.savedToDraft' => 'Сохранено в черновики',
 			'discover.highlight.title' => 'Актуальное',
 			'discover.highlight.view' => 'Смотреть',
 			'discover.highlight.aiComments' => 'Комментарии ИИ',
@@ -1498,6 +1696,7 @@ extension on TranslationsRu {
 			'discover.stats.boostCta' => 'Продвинуть на 1 день — 100 токенов',
 			'discover.stats.boosted' => 'Готово! Пост в топе на 24 часа.',
 			'discover.hostedBy' => ({required Object name}) => 'Ведущий: ${name}',
+			'discover.requestPending' => 'Заявка отправлена и ждёт одобрения.',
 			'common.loading' => 'Загрузка…',
 			'common.retry' => 'Повторить',
 			'common.cancel' => 'Отмена',
@@ -1579,8 +1778,6 @@ extension on TranslationsRu {
 			'createProfile.interestsSubtitle' => 'Выбери хотя бы 5 — так мы найдём людей, которые тебя поймут.',
 			'createProfile.interests.music' => 'Музыка',
 			'createProfile.interests.movies' => 'Кино',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.interests.tvShows' => 'Сериалы',
 			'createProfile.interests.reading' => 'Чтение',
 			'createProfile.interests.painting' => 'Живопись',
@@ -1700,8 +1897,9 @@ extension on TranslationsRu {
 			'storyText.uppercase' => 'Заглавные',
 			'storyText.underline' => 'Подчёркнутый',
 			'storyText.cancel' => 'Отмена',
+			'storyText.done' => 'Готово',
 			'storyText.galleryError' => 'Не удалось открыть галерею',
-			'tokens.boostTitle' => 'Boost',
+			'tokens.boostTitle' => 'Продвижение',
 			'tokens.history' => 'История',
 			'tokens.yourBalance' => 'Твой баланс',
 			'tokens.balanceTokens' => ({required Object count}) => 'Токены: ${count}',
@@ -1715,7 +1913,7 @@ extension on TranslationsRu {
 			'tokens.duration1h' => '1 час',
 			'tokens.duration2h' => '2 часа',
 			'tokens.visibility' => ({required Object n}) => 'Видимость x${n}',
-			'tokens.boostFor' => ({required Object count}) => 'Boost за ${count} ток.',
+			'tokens.boostFor' => ({required Object count}) => 'Продвижение за ${count} ток.',
 			'tokens.boostActive' => ({required Object time}) => 'Boost до ${time}',
 			'tokens.boostDone' => 'Твой профиль продвигается!',
 			'tokens.historyEmpty' => 'Пока нет операций с токенами',

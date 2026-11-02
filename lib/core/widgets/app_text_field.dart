@@ -14,6 +14,7 @@ class AppTextField extends StatelessWidget {
     this.textInputAction,
     this.autofillHints,
     this.onChanged,
+    this.onSubmitted,
     this.prefixText,
     this.hasError = false,
     this.suffix,
@@ -29,6 +30,7 @@ class AppTextField extends StatelessWidget {
   final TextInputAction? textInputAction;
   final Iterable<String>? autofillHints;
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
   final String? prefixText;
   final bool hasError;
   final Widget? suffix;
@@ -62,6 +64,7 @@ class AppTextField extends StatelessWidget {
             textInputAction: textInputAction,
             autofillHints: autofillHints,
             onChanged: onChanged,
+            onSubmitted: onSubmitted,
             style: AppTextStyles.fieldInput,
             cursorColor: AppColors.brandPurple,
             decoration: InputDecoration(

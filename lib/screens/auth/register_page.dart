@@ -9,6 +9,7 @@ import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/widgets/app_text_field.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/screens/profile/legal_doc_sheet.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -122,6 +123,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         setState(() => _obscurePassword = !_obscurePassword);
                       },
                       textInputAction: TextInputAction.done,
+                      onSubmitted: (_) {
+                        if (!_busy) _signUp();
+                      },
                       autofillHints: const [AutofillHints.newPassword],
                     ),
                     const SizedBox(height: AppSpacing.sectionGap),
@@ -134,14 +138,17 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
                 AppSpacing.screenHorizontal,
                 0,
                 AppSpacing.screenHorizontal,
                 AppSpacing.lg,
               ),
-              child: AppLegalFooter(),
+              child: AppLegalFooter(
+                onTermsTap: () => showTermsOfServiceSheet(context),
+                onPrivacyTap: () => showPrivacyPolicySheet(context),
+              ),
             ),
           ],
         ),

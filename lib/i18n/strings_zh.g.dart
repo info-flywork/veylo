@@ -150,6 +150,37 @@ class _Translations$chats$zh extends Translations$chats$tr {
 	@override String get unlockFullPendingTheirs => '对方请求查看你的完整资料。';
 	@override String unlockSent({required Object title}) => '你发送了请求：${title}';
 	@override String unlockReceived({required Object title}) => '聊天对象发送了关于${title}的请求。';
+	@override String get requestAction => '请求';
+	@override String get requestSent => '已发送';
+	@override String get previewUnlock => '解锁请求';
+	@override String get previewNameShared => '已共享姓名';
+	@override String get previewNameDeclined => '姓名请求已拒绝';
+	@override String get previewPhotoShared => '已共享照片';
+	@override String get previewPhotoDeclined => '照片请求已拒绝';
+	@override String get previewProfileShared => '已共享资料';
+	@override String get previewProfileDeclined => '资料请求已拒绝';
+	@override String get previewPhoto => '照片';
+	@override String get previewVoice => '语音消息';
+	@override String get micNeeded => '需要麦克风权限';
+	@override String get previewSticker => '贴纸';
+	@override String get stickerEmpty => '没有最近使用的贴纸';
+	@override String get messageCopied => '消息已复制';
+	@override String get reportReasonSubtitle => '你为什么要举报这条消息？';
+	@override String get reasonHarassment => '骚扰或欺凌';
+	@override String get reasonHateSpeech => '仇恨言论';
+	@override String get reasonNudity => '裸露或色情内容';
+	@override String get reasonSpam => '垃圾信息';
+	@override String get reasonScam => '诈骗';
+	@override String get reasonViolence => '暴力或威胁';
+	@override String get reasonOther => '其他';
+	@override String get mute => '静音';
+	@override String get unmute => '取消静音';
+	@override String get deleteChat => '删除聊天';
+	@override String get emptyThreadsTitle => '还没有聊天';
+	@override String get emptyThreadsSubtitle => '当你开始和别人聊天时，聊天会显示在这里。';
+	@override String get noSearchResults => '未找到结果';
+	@override String get milestonePhotoUnlocked => '已在 70% 解锁';
+	@override String revealPeerWants({required Object name}) => '${name} 想公开个人资料';
 }
 
 // Path: profile
@@ -192,6 +223,9 @@ class _Translations$profile$zh extends Translations$profile$tr {
 	@override String get notifications => '通知';
 	@override String get password => '密码';
 	@override String get deleteConversation => '删除对话';
+	@override String get deleteAllTitle => '确定要删除所有对话吗？';
+	@override String get deleteAllBody => '确认后，所有消息都会被删除';
+	@override String get deleteAllAction => '删除';
 	@override String get faqHelp => '常见问题与帮助';
 	@override String get restorePurchases => '恢复购买';
 	@override String get termsOfService => '服务条款';
@@ -225,6 +259,16 @@ class _Translations$profile$zh extends Translations$profile$tr {
 	@override String get educationPhd => '博士';
 	@override String get voiceRecord => '语音介绍';
 	@override String get addVoice => '添加语音';
+	@override String get voiceShared => '已分享到你的主页';
+	@override String voiceHint({required Object seconds}) => '录一段最多 ${seconds} 秒的简介';
+	@override String voiceRecording({required Object seconds}) => '正在录制 ${seconds} 秒';
+	@override String get voiceReady => '语音已准备好';
+	@override String get voicePlay => '播放';
+	@override String get voicePause => '暂停';
+	@override String get voiceShare => '分享到主页';
+	@override String get voiceSaving => '正在保存…';
+	@override String get voiceRemove => '从主页移除';
+	@override String get voiceLabel => '语音';
 	@override String get lifestyle => '生活方式';
 	@override String get pets => '宠物';
 	@override String get petsValue => '我养了猫';
@@ -262,15 +306,16 @@ class _Translations$profile$zh extends Translations$profile$tr {
 	@override String get borderBuySection => '购买头像框';
 	@override String get borderBuyCta => '购买头像框';
 	@override String borderToken({required Object count}) => '${count} 代币';
-	@override String get borderAmethystWings => 'Amethyst Wings';
-	@override String get borderGoldenPhoenix => 'Golden Phoenix';
-	@override String get borderFrostCrown => 'Frost Crown';
-	@override String get borderEmeraldWhisper => 'Emerald Whisper';
-	@override String get borderRoseQuartz => 'Rose Quartz';
-	@override String get borderStarlitComet => 'Starlit Comet';
-	@override String get borderCrimsonRoyal => 'Crimson Royal';
-	@override String get borderSapphireHalo => 'Sapphire Halo';
+	@override String get borderAmethystWings => '紫晶之翼';
+	@override String get borderGoldenPhoenix => '金色凤凰';
+	@override String get borderFrostCrown => '霜冠';
+	@override String get borderEmeraldWhisper => '翡翠低语';
+	@override String get borderRoseQuartz => '玫瑰石英';
+	@override String get borderStarlitComet => '星辉彗星';
+	@override String get borderCrimsonRoyal => '绯红王者';
+	@override String get borderSapphireHalo => '蓝宝石光环';
 	@override String get follow => '关注';
+	@override String get message => '发消息';
 	@override String get following => '已关注';
 	@override String get followPageTitle => '关注';
 	@override String get followTabFollowing => '关注';
@@ -307,6 +352,37 @@ class _Translations$profile$zh extends Translations$profile$tr {
 	@override String emailVerificationSent({required Object email}) => '我们已向 ${email} 发送确认链接。确认后邮箱才会更改。';
 	@override String get passwordChanged => '密码已更新。';
 	@override String get passwordMismatch => '两次输入的密码不一致。';
+	@override String get shareSend => '发送';
+	@override String shareMessage({required Object name, required Object url}) => '${name}的 Veylo 主页：${url}';
+	@override String get currentPassword => '当前密码';
+	@override String get currentPasswordWrong => '当前密码不正确。';
+	@override String get reportReasonLabel => '原因';
+	@override String get reportReasonHarassment => '骚扰或欺凌';
+	@override String get reportReasonHateSpeech => '仇恨言论';
+	@override String get reportReasonNudity => '裸露或色情内容';
+	@override String get reportReasonUnderage => '未满 18 岁';
+	@override String get reportReasonSpam => '垃圾信息';
+	@override String get reportReasonScam => '诈骗';
+	@override String get reportReasonViolence => '暴力或威胁';
+	@override String get reportReasonImpersonation => '冒充他人';
+	@override String get reportReasonOther => '其他';
+	@override String blockedDone({required Object username}) => '已屏蔽 ${username}。';
+	@override String restrictedDone({required Object username}) => '已限制 ${username}。';
+	@override String get emptyPosts => '还没有帖子';
+	@override String get emptyVideos => '还没有视频';
+	@override String get emptySaved => '还没有收藏的帖子';
+	@override String get clearSelection => '清除选择';
+	@override String get genderNonBinary => '非二元';
+	@override String get voiceAdded => '已添加语音';
+	@override String get discardTitle => '有未保存的更改';
+	@override String get discardBody => '现在离开将丢失你的更改。';
+	@override String get discardConfirm => '放弃更改';
+	@override String get keepEditing => '继续编辑';
+	@override String get borderNone => '无边框';
+	@override String get borderOwned => '已拥有';
+	@override String get borderEquipCta => '使用边框';
+	@override String get borderRemoveCta => '移除边框';
+	@override String get followEmpty => '这里还没有人';
 }
 
 // Path: nav
@@ -319,7 +395,7 @@ class _Translations$nav$zh extends Translations$nav$tr {
 	@override String get discover => '发现';
 	@override String get chat => '聊天';
 	@override String get call => '通话';
-	@override String get vibes => 'Vibes';
+	@override String get vibes => '氛围';
 	@override String get profile => '我的';
 }
 
@@ -362,6 +438,7 @@ class _Translations$call$zh extends Translations$call$tr {
 	@override String get noMatchTitle => '暂时没有可匹配的人';
 	@override String get noMatchBody => '目前没有找到可以聊天的人，请稍后再试。';
 	@override String get noMatchOk => '好的';
+	@override String get cameraDenied => '视频通话需要相机权限，可在系统设置中开启。';
 }
 
 // Path: vibes
@@ -382,6 +459,12 @@ class _Translations$vibes$zh extends Translations$vibes$tr {
 	@override String get deleteTitle => '删除这条 Vibe？';
 	@override String get delete => '删除';
 	@override String get cancel => '取消';
+	@override String get post => '发布';
+	@override String get replyHint => '写下你的回复';
+	@override String get sortNewest => '最新';
+	@override String get sortPopular => '最热门';
+	@override String get loadFailed => '无法加载 Vibe。';
+	@override String get noResults => '未找到结果';
 }
 
 // Path: discover
@@ -394,7 +477,7 @@ class _Translations$discover$zh extends Translations$discover$tr {
 	@override String get title => '发现';
 	@override String get tabRooms => '房间';
 	@override String get tabDiscover => '发现';
-	@override String get tabAiMatch => 'AI Match';
+	@override String get tabAiMatch => 'AI 匹配';
 	@override late final _Translations$discover$aiMatch$zh aiMatch = _Translations$discover$aiMatch$zh._(_root);
 	@override String get searchHint => '搜索';
 	@override String get allRooms => '全部房间';
@@ -422,6 +505,7 @@ class _Translations$discover$zh extends Translations$discover$tr {
 	@override late final _Translations$discover$highlight$zh highlight = _Translations$discover$highlight$zh._(_root);
 	@override late final _Translations$discover$stats$zh stats = _Translations$discover$stats$zh._(_root);
 	@override String hostedBy({required Object name}) => '主持人：${name}';
+	@override String get requestPending => '申请已发送，等待批准。';
 }
 
 // Path: common
@@ -700,6 +784,7 @@ class _Translations$storyText$zh extends Translations$storyText$tr {
 	@override String get uppercase => '大写';
 	@override String get underline => '下划线';
 	@override String get cancel => '取消';
+	@override String get done => '完成';
 	@override String get galleryError => '无法打开相册';
 }
 
@@ -710,7 +795,7 @@ class _Translations$tokens$zh extends Translations$tokens$tr {
 	final TranslationsZh _root; // ignore: unused_field
 
 	// Translations
-	@override String get boostTitle => 'Boost';
+	@override String get boostTitle => '推广';
 	@override String get history => '记录';
 	@override String get yourBalance => '你的余额';
 	@override String balanceTokens({required Object count}) => '${count} 代币';
@@ -724,7 +809,7 @@ class _Translations$tokens$zh extends Translations$tokens$tr {
 	@override String get duration1h => '1 小时';
 	@override String get duration2h => '2 小时';
 	@override String visibility({required Object n}) => '${n} 倍曝光';
-	@override String boostFor({required Object count}) => '花 ${count} 代币 Boost';
+	@override String boostFor({required Object count}) => '用 ${count} 代币推广';
 	@override String boostActive({required Object time}) => 'Boost 至 ${time}';
 	@override String get boostDone => '你的资料已 Boost！';
 	@override String get historyEmpty => '暂无代币记录';
@@ -773,8 +858,8 @@ class _Translations$discover$aiMatch$zh extends Translations$discover$aiMatch$tr
 	@override String get statMatchRate => '匹配率';
 	@override String get statAvgTime => '平均用时';
 	@override String get statActiveValue => '843';
-	@override String get statMatchValue => '87%';
-	@override String get statAvgValue => '8秒';
+	@override String statMatchValue({required Object value}) => '${value}%';
+	@override String statAvgValue({required Object value}) => '${value}秒';
 	@override String get startSmartMatch => '开始智能匹配';
 	@override String get findingTitle => '正在寻找你的匹配';
 	@override String get findingSubtitle => '根据你的心情和兴趣匹配合适的人';
@@ -793,6 +878,8 @@ class _Translations$discover$aiMatch$zh extends Translations$discover$aiMatch$tr
 	@override String get swipeNext => '下一个';
 	@override String get swipeFinger => '滑动手指';
 	@override String get noMatch => '暂时没有匹配的人，稍后再试吧。';
+	@override String likeSent({required Object name}) => '已关注 ${name}';
+	@override String get lastMatch => '你已看完所有匹配，再搜索一次看看更多。';
 }
 
 // Path: discover.privateRoom
@@ -889,6 +976,14 @@ class _Translations$discover$liveRoom$zh extends Translations$discover$liveRoom$
 	@override String get roomEnded => '房间已结束。';
 	@override String wantsToJoin({required Object name}) => '${name} 想要加入';
 	@override String get approve => '同意';
+	@override String get reject => '拒绝';
+	@override String get pendingRequests => '加入申请';
+	@override String get noRequests => '没有待处理的申请。';
+	@override String get muteMic => '关闭麦克风';
+	@override String get unmuteMic => '打开麦克风';
+	@override String get remove => '移出房间';
+	@override String get removed => '你已被移出房间。';
+	@override String get seeProfile => '请求查看资料';
 }
 
 // Path: discover.groupChat
@@ -933,6 +1028,8 @@ class _Translations$discover$groupInfo$zh extends Translations$discover$groupInf
 	@override String get leaveConfirm => '确定退出该群组？';
 	@override String get leave => '退出';
 	@override String get cancel => '取消';
+	@override String get galleryEmpty => '还没有分享的照片。';
+	@override String get adminOnly => '只有管理员可以更改此项。';
 }
 
 // Path: discover.filters
@@ -993,8 +1090,10 @@ class _Translations$discover$story$zh extends Translations$discover$story$tr {
 	@override String get musicTitle => '音乐';
 	@override String get musicEmpty => '未找到音乐。';
 	@override String get musicError => '无法加载音乐。';
+	@override String get unknownTrack => '未知';
 	@override String get downloaded => '已保存到相册';
 	@override String get downloadFailed => '保存失败';
+	@override String get savedToDraft => '已保存到草稿';
 }
 
 // Path: discover.highlight
@@ -1131,6 +1230,37 @@ extension on TranslationsZh {
 			'chats.unlockFullPendingTheirs' => '对方请求查看你的完整资料。',
 			'chats.unlockSent' => ({required Object title}) => '你发送了请求：${title}',
 			'chats.unlockReceived' => ({required Object title}) => '聊天对象发送了关于${title}的请求。',
+			'chats.requestAction' => '请求',
+			'chats.requestSent' => '已发送',
+			'chats.previewUnlock' => '解锁请求',
+			'chats.previewNameShared' => '已共享姓名',
+			'chats.previewNameDeclined' => '姓名请求已拒绝',
+			'chats.previewPhotoShared' => '已共享照片',
+			'chats.previewPhotoDeclined' => '照片请求已拒绝',
+			'chats.previewProfileShared' => '已共享资料',
+			'chats.previewProfileDeclined' => '资料请求已拒绝',
+			'chats.previewPhoto' => '照片',
+			'chats.previewVoice' => '语音消息',
+			'chats.micNeeded' => '需要麦克风权限',
+			'chats.previewSticker' => '贴纸',
+			'chats.stickerEmpty' => '没有最近使用的贴纸',
+			'chats.messageCopied' => '消息已复制',
+			'chats.reportReasonSubtitle' => '你为什么要举报这条消息？',
+			'chats.reasonHarassment' => '骚扰或欺凌',
+			'chats.reasonHateSpeech' => '仇恨言论',
+			'chats.reasonNudity' => '裸露或色情内容',
+			'chats.reasonSpam' => '垃圾信息',
+			'chats.reasonScam' => '诈骗',
+			'chats.reasonViolence' => '暴力或威胁',
+			'chats.reasonOther' => '其他',
+			'chats.mute' => '静音',
+			'chats.unmute' => '取消静音',
+			'chats.deleteChat' => '删除聊天',
+			'chats.emptyThreadsTitle' => '还没有聊天',
+			'chats.emptyThreadsSubtitle' => '当你开始和别人聊天时，聊天会显示在这里。',
+			'chats.noSearchResults' => '未找到结果',
+			'chats.milestonePhotoUnlocked' => '已在 70% 解锁',
+			'chats.revealPeerWants' => ({required Object name}) => '${name} 想公开个人资料',
 			'profile.eyebrow' => '个人资料',
 			'profile.title' => '设置',
 			'profile.editProfile' => '编辑资料',
@@ -1164,6 +1294,9 @@ extension on TranslationsZh {
 			'profile.notifications' => '通知',
 			'profile.password' => '密码',
 			'profile.deleteConversation' => '删除对话',
+			'profile.deleteAllTitle' => '确定要删除所有对话吗？',
+			'profile.deleteAllBody' => '确认后，所有消息都会被删除',
+			'profile.deleteAllAction' => '删除',
 			'profile.faqHelp' => '常见问题与帮助',
 			'profile.restorePurchases' => '恢复购买',
 			'profile.termsOfService' => '服务条款',
@@ -1197,6 +1330,16 @@ extension on TranslationsZh {
 			'profile.educationPhd' => '博士',
 			'profile.voiceRecord' => '语音介绍',
 			'profile.addVoice' => '添加语音',
+			'profile.voiceShared' => '已分享到你的主页',
+			'profile.voiceHint' => ({required Object seconds}) => '录一段最多 ${seconds} 秒的简介',
+			'profile.voiceRecording' => ({required Object seconds}) => '正在录制 ${seconds} 秒',
+			'profile.voiceReady' => '语音已准备好',
+			'profile.voicePlay' => '播放',
+			'profile.voicePause' => '暂停',
+			'profile.voiceShare' => '分享到主页',
+			'profile.voiceSaving' => '正在保存…',
+			'profile.voiceRemove' => '从主页移除',
+			'profile.voiceLabel' => '语音',
 			'profile.lifestyle' => '生活方式',
 			'profile.pets' => '宠物',
 			'profile.petsValue' => '我养了猫',
@@ -1234,15 +1377,16 @@ extension on TranslationsZh {
 			'profile.borderBuySection' => '购买头像框',
 			'profile.borderBuyCta' => '购买头像框',
 			'profile.borderToken' => ({required Object count}) => '${count} 代币',
-			'profile.borderAmethystWings' => 'Amethyst Wings',
-			'profile.borderGoldenPhoenix' => 'Golden Phoenix',
-			'profile.borderFrostCrown' => 'Frost Crown',
-			'profile.borderEmeraldWhisper' => 'Emerald Whisper',
-			'profile.borderRoseQuartz' => 'Rose Quartz',
-			'profile.borderStarlitComet' => 'Starlit Comet',
-			'profile.borderCrimsonRoyal' => 'Crimson Royal',
-			'profile.borderSapphireHalo' => 'Sapphire Halo',
+			'profile.borderAmethystWings' => '紫晶之翼',
+			'profile.borderGoldenPhoenix' => '金色凤凰',
+			'profile.borderFrostCrown' => '霜冠',
+			'profile.borderEmeraldWhisper' => '翡翠低语',
+			'profile.borderRoseQuartz' => '玫瑰石英',
+			'profile.borderStarlitComet' => '星辉彗星',
+			'profile.borderCrimsonRoyal' => '绯红王者',
+			'profile.borderSapphireHalo' => '蓝宝石光环',
 			'profile.follow' => '关注',
+			'profile.message' => '发消息',
 			'profile.following' => '已关注',
 			'profile.followPageTitle' => '关注',
 			'profile.followTabFollowing' => '关注',
@@ -1279,10 +1423,41 @@ extension on TranslationsZh {
 			'profile.emailVerificationSent' => ({required Object email}) => '我们已向 ${email} 发送确认链接。确认后邮箱才会更改。',
 			'profile.passwordChanged' => '密码已更新。',
 			'profile.passwordMismatch' => '两次输入的密码不一致。',
+			'profile.shareSend' => '发送',
+			'profile.shareMessage' => ({required Object name, required Object url}) => '${name}的 Veylo 主页：${url}',
+			'profile.currentPassword' => '当前密码',
+			'profile.currentPasswordWrong' => '当前密码不正确。',
+			'profile.reportReasonLabel' => '原因',
+			'profile.reportReasonHarassment' => '骚扰或欺凌',
+			'profile.reportReasonHateSpeech' => '仇恨言论',
+			'profile.reportReasonNudity' => '裸露或色情内容',
+			'profile.reportReasonUnderage' => '未满 18 岁',
+			'profile.reportReasonSpam' => '垃圾信息',
+			'profile.reportReasonScam' => '诈骗',
+			'profile.reportReasonViolence' => '暴力或威胁',
+			'profile.reportReasonImpersonation' => '冒充他人',
+			'profile.reportReasonOther' => '其他',
+			'profile.blockedDone' => ({required Object username}) => '已屏蔽 ${username}。',
+			'profile.restrictedDone' => ({required Object username}) => '已限制 ${username}。',
+			'profile.emptyPosts' => '还没有帖子',
+			'profile.emptyVideos' => '还没有视频',
+			'profile.emptySaved' => '还没有收藏的帖子',
+			'profile.clearSelection' => '清除选择',
+			'profile.genderNonBinary' => '非二元',
+			'profile.voiceAdded' => '已添加语音',
+			'profile.discardTitle' => '有未保存的更改',
+			'profile.discardBody' => '现在离开将丢失你的更改。',
+			'profile.discardConfirm' => '放弃更改',
+			'profile.keepEditing' => '继续编辑',
+			'profile.borderNone' => '无边框',
+			'profile.borderOwned' => '已拥有',
+			'profile.borderEquipCta' => '使用边框',
+			'profile.borderRemoveCta' => '移除边框',
+			'profile.followEmpty' => '这里还没有人',
 			'nav.discover' => '发现',
 			'nav.chat' => '聊天',
 			'nav.call' => '通话',
-			'nav.vibes' => 'Vibes',
+			'nav.vibes' => '氛围',
 			'nav.profile' => '我的',
 			'call.title' => '60秒陌生人',
 			'call.subtitle' => '和随机陌生人聊 60 秒——完全匿名。没有资料，没有照片，没有名字。只有声音和这一刻。',
@@ -1316,6 +1491,7 @@ extension on TranslationsZh {
 			'call.noMatchTitle' => '暂时没有可匹配的人',
 			'call.noMatchBody' => '目前没有找到可以聊天的人，请稍后再试。',
 			'call.noMatchOk' => '好的',
+			'call.cameraDenied' => '视频通话需要相机权限，可在系统设置中开启。',
 			'vibes.search' => '搜索',
 			'vibes.sendMessage' => '发消息',
 			'vibes.wantsToTalk' => '现在就想聊这个',
@@ -1327,10 +1503,16 @@ extension on TranslationsZh {
 			'vibes.deleteTitle' => '删除这条 Vibe？',
 			'vibes.delete' => '删除',
 			'vibes.cancel' => '取消',
+			'vibes.post' => '发布',
+			'vibes.replyHint' => '写下你的回复',
+			'vibes.sortNewest' => '最新',
+			'vibes.sortPopular' => '最热门',
+			'vibes.loadFailed' => '无法加载 Vibe。',
+			'vibes.noResults' => '未找到结果',
 			'discover.title' => '发现',
 			'discover.tabRooms' => '房间',
 			'discover.tabDiscover' => '发现',
-			'discover.tabAiMatch' => 'AI Match',
+			'discover.tabAiMatch' => 'AI 匹配',
 			'discover.aiMatch.feelingTitle' => '你今天心情如何',
 			'discover.aiMatch.feelingSubtitle' => 'AI 会根据你的选择找到最佳匹配',
 			'discover.aiMatch.lookingTitle' => '你想找什么？',
@@ -1349,8 +1531,8 @@ extension on TranslationsZh {
 			'discover.aiMatch.statMatchRate' => '匹配率',
 			'discover.aiMatch.statAvgTime' => '平均用时',
 			'discover.aiMatch.statActiveValue' => '843',
-			'discover.aiMatch.statMatchValue' => '87%',
-			'discover.aiMatch.statAvgValue' => '8秒',
+			'discover.aiMatch.statMatchValue' => ({required Object value}) => '${value}%',
+			'discover.aiMatch.statAvgValue' => ({required Object value}) => '${value}秒',
 			'discover.aiMatch.startSmartMatch' => '开始智能匹配',
 			'discover.aiMatch.findingTitle' => '正在寻找你的匹配',
 			'discover.aiMatch.findingSubtitle' => '根据你的心情和兴趣匹配合适的人',
@@ -1369,6 +1551,8 @@ extension on TranslationsZh {
 			'discover.aiMatch.swipeNext' => '下一个',
 			'discover.aiMatch.swipeFinger' => '滑动手指',
 			'discover.aiMatch.noMatch' => '暂时没有匹配的人，稍后再试吧。',
+			'discover.aiMatch.likeSent' => ({required Object name}) => '已关注 ${name}',
+			'discover.aiMatch.lastMatch' => '你已看完所有匹配，再搜索一次看看更多。',
 			'discover.searchHint' => '搜索',
 			'discover.allRooms' => '全部房间',
 			'discover.allGroups' => '全部群组',
@@ -1423,6 +1607,14 @@ extension on TranslationsZh {
 			'discover.liveRoom.roomEnded' => '房间已结束。',
 			'discover.liveRoom.wantsToJoin' => ({required Object name}) => '${name} 想要加入',
 			'discover.liveRoom.approve' => '同意',
+			'discover.liveRoom.reject' => '拒绝',
+			'discover.liveRoom.pendingRequests' => '加入申请',
+			'discover.liveRoom.noRequests' => '没有待处理的申请。',
+			'discover.liveRoom.muteMic' => '关闭麦克风',
+			'discover.liveRoom.unmuteMic' => '打开麦克风',
+			'discover.liveRoom.remove' => '移出房间',
+			'discover.liveRoom.removed' => '你已被移出房间。',
+			'discover.liveRoom.seeProfile' => '请求查看资料',
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} 位用户',
 			'discover.groupChat.sampleVictoria' => '好无聊啊，大家要不要一起做点什么？',
 			'discover.groupChat.sampleSona' => '我们能做点什么？你有什么想法？',
@@ -1449,6 +1641,8 @@ extension on TranslationsZh {
 			'discover.groupInfo.leaveConfirm' => '确定退出该群组？',
 			'discover.groupInfo.leave' => '退出',
 			'discover.groupInfo.cancel' => '取消',
+			'discover.groupInfo.galleryEmpty' => '还没有分享的照片。',
+			'discover.groupInfo.adminOnly' => '只有管理员可以更改此项。',
 			'discover.filters.title' => '筛选',
 			'discover.filters.ageRange' => '年龄范围',
 			'discover.filters.ageRangeValue' => ({required Object min, required Object max}) => '${min}-${max}',
@@ -1482,8 +1676,12 @@ extension on TranslationsZh {
 			'discover.story.musicTitle' => '音乐',
 			'discover.story.musicEmpty' => '未找到音乐。',
 			'discover.story.musicError' => '无法加载音乐。',
+			'discover.story.unknownTrack' => '未知',
 			'discover.story.downloaded' => '已保存到相册',
+			_ => null,
+		} ?? switch (path) {
 			'discover.story.downloadFailed' => '保存失败',
+			'discover.story.savedToDraft' => '已保存到草稿',
 			'discover.highlight.title' => '精选',
 			'discover.highlight.view' => '查看',
 			'discover.highlight.aiComments' => 'AI 评论',
@@ -1498,6 +1696,7 @@ extension on TranslationsZh {
 			'discover.stats.boostCta' => '推广 1 天 - 100 代币',
 			'discover.stats.boosted' => '推广成功！你的帖子将置顶 24 小时。',
 			'discover.hostedBy' => ({required Object name}) => '主持人：${name}',
+			'discover.requestPending' => '申请已发送，等待批准。',
 			'common.loading' => '加载中…',
 			'common.retry' => '重试',
 			'common.cancel' => '取消',
@@ -1579,8 +1778,6 @@ extension on TranslationsZh {
 			'createProfile.interestsSubtitle' => '至少选 5 个——帮你匹配真正懂你的人。',
 			'createProfile.interests.music' => '音乐',
 			'createProfile.interests.movies' => '电影',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.interests.tvShows' => '电视剧',
 			'createProfile.interests.reading' => '阅读',
 			'createProfile.interests.painting' => '绘画',
@@ -1700,8 +1897,9 @@ extension on TranslationsZh {
 			'storyText.uppercase' => '大写',
 			'storyText.underline' => '下划线',
 			'storyText.cancel' => '取消',
+			'storyText.done' => '完成',
 			'storyText.galleryError' => '无法打开相册',
-			'tokens.boostTitle' => 'Boost',
+			'tokens.boostTitle' => '推广',
 			'tokens.history' => '记录',
 			'tokens.yourBalance' => '你的余额',
 			'tokens.balanceTokens' => ({required Object count}) => '${count} 代币',
@@ -1715,7 +1913,7 @@ extension on TranslationsZh {
 			'tokens.duration1h' => '1 小时',
 			'tokens.duration2h' => '2 小时',
 			'tokens.visibility' => ({required Object n}) => '${n} 倍曝光',
-			'tokens.boostFor' => ({required Object count}) => '花 ${count} 代币 Boost',
+			'tokens.boostFor' => ({required Object count}) => '用 ${count} 代币推广',
 			'tokens.boostActive' => ({required Object time}) => 'Boost 至 ${time}',
 			'tokens.boostDone' => '你的资料已 Boost！',
 			'tokens.historyEmpty' => '暂无代币记录',

@@ -11,9 +11,9 @@ import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/data/remote/chat_repository.dart';
 import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/data/remote/match_repository.dart';
+import 'package:veylo/data/remote/user_repository.dart';
 import 'package:veylo/screens/chat/anonymous_chat_page.dart';
 import 'package:veylo/i18n/strings.g.dart';
-import 'package:veylo/screens/discover/rooms/group_chat_page.dart';
 
 const _kContentWidth = 398.0;
 const _kCardRadius = 20.0;
@@ -26,8 +26,8 @@ class _MatchProfile {
     required this.name,
     required this.age,
     required this.vibePercent,
+    required this.userId,
     this.bio,
-    this.userId,
   });
 
   final String imageAsset;
@@ -37,42 +37,15 @@ class _MatchProfile {
   final int age;
   final int vibePercent;
   final String? bio;
-  final String? userId;
+  final String userId;
 }
-
-const _kMatches = [
-  _MatchProfile(
-    imageAsset: AppAssets.fakePerson03,
-    name: 'Victoria',
-    age: 22,
-    vibePercent: 92,
-  ),
-  _MatchProfile(
-    imageAsset: AppAssets.fakePerson01,
-    name: 'Emma',
-    age: 24,
-    vibePercent: 88,
-  ),
-  _MatchProfile(
-    imageAsset: AppAssets.fakePerson05,
-    name: 'Sophia',
-    age: 21,
-    vibePercent: 85,
-  ),
-  _MatchProfile(
-    imageAsset: AppAssets.fakePerson07,
-    name: 'Luna',
-    age: 23,
-    vibePercent: 90,
-  ),
-];
 
 /// AI Match sonucu — Your Match ekranı.
 class YourMatchPage extends StatefulWidget {
-  const YourMatchPage({super.key, this.matches});
+  const YourMatchPage({super.key, required this.matches});
 
-  /// Sunucudan gelen eşleşmeler (null: örnek kartlar).
-  final List<MatchCandidate>? matches;
+  /// Sunucudan gelen eşleşmeler.
+  final List<MatchCandidate> matches;
 
   @override
   State<YourMatchPage> createState() => _YourMatchPageState();
@@ -84,23 +57,24 @@ class _YourMatchPageState extends State<YourMatchPage> {
   Timer? _hintTimer;
   late bool _showSwipeHint = _cards.isNotEmpty;
   bool _opening = false;
+  bool _liking = false;
 
-  /// Gösterilen kartlar: gerçek eşleşmeler ya da (önizlemede) örnekler.
-  late final List<_MatchProfile> _cards = widget.matches == null
-      ? _kMatches
-      : [
-          for (final m in widget.matches!)
-            _MatchProfile(
-              imageAsset: (m.avatarUrl?.isNotEmpty ?? false)
-                  ? m.avatarUrl!
-                  : AppAssets.strangerAvatar,
-              name: m.displayName,
-              age: 0,
-              vibePercent: m.vibePercent,
-              bio: m.bio,
-              userId: m.userId,
-            ),
-        ];
+  /// Kalp ile takip edilen eşleşmeler (aynı karta tekrar istek atılmaz).
+  final _liked = <String>{};
+
+  late final List<_MatchProfile> _cards = [
+    for (final m in widget.matches)
+      _MatchProfile(
+        imageAsset: (m.avatarUrl?.isNotEmpty ?? false)
+            ? m.avatarUrl!
+            : AppAssets.strangerAvatar,
+        name: m.displayName,
+        age: m.age ?? 0,
+        vibePercent: m.vibePercent,
+        bio: m.bio,
+        userId: m.userId,
+      ),
+  ];
 
   @override
   void initState() {
@@ -122,33 +96,53 @@ class _YourMatchPageState extends State<YourMatchPage> {
     if (mounted && _showSwipeHint) setState(() => _showSwipeHint = false);
   }
 
-  void _goToNextMatch() {
-    final page = _pageController.page?.round() ?? 0;
+  int get _currentPage => _pageController.hasClients
+      ? (_pageController.page?.round() ?? 0).clamp(0, _cards.length - 1)
+      : 0;
+
+  void _snack(String text) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(content: Text(text), behavior: SnackBarBehavior.floating),
+      );
+  }
+
+  /// Kalp: eşleşmeyi takip eder (ilgi bildirir), sonra sıradaki karta geçer.
+  Future<void> _likeCurrent() async {
+    if (_cards.isEmpty || _liking) return;
+    final t = Translations.of(context).discover.aiMatch;
+    final page = _currentPage;
+    final match = _cards[page];
+    if (!_liked.contains(match.userId)) {
+      setState(() => _liking = true);
+      try {
+        await UserRepository.instance.follow(match.userId);
+        _liked.add(match.userId);
+        if (!mounted) return;
+        _snack(t.likeSent(name: match.name));
+      } catch (e) {
+        if (mounted) showErrorSnackBar(context, e);
+        return;
+      } finally {
+        if (mounted) setState(() => _liking = false);
+      }
+    }
+    if (!mounted) return;
     if (page < _cards.length - 1) {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 320),
         curve: Curves.easeOutCubic,
       );
+    } else {
+      _snack(t.lastMatch);
     }
   }
 
   Future<void> _startChatting() async {
     if (_cards.isEmpty) return;
-    final page = _pageController.hasClients
-        ? (_pageController.page?.round() ?? 0)
-        : 0;
-    final match = _cards[page.clamp(0, _cards.length - 1)];
-    final userId = match.userId;
-    if (userId == null) {
-      GroupChatPage.open(
-        context,
-        title: match.name,
-        memberCount: 1,
-        avatars: [match.imageAsset],
-      );
-      return;
-    }
-    // Gerçek eşleşme: anonim sohbet isteği.
+    final userId = _cards[_currentPage].userId;
+    // Anonim sohbet isteği.
     if (_opening) return;
     setState(() => _opening = true);
     try {
@@ -214,9 +208,7 @@ class _YourMatchPageState extends State<YourMatchPage> {
                                         age: match.age,
                                       )
                                     : match.name,
-                                bio: match.userId == null
-                                    ? t.matchBio
-                                    : (match.bio ?? ''),
+                                bio: match.bio ?? '',
                               );
                             },
                           ),
@@ -250,7 +242,7 @@ class _YourMatchPageState extends State<YourMatchPage> {
                       const SizedBox(width: 12),
                       _CircleAction(
                         background: const Color(0x1AEC1C24),
-                        onTap: _goToNextMatch,
+                        onTap: _likeCurrent,
                         child: SvgPicture.asset(
                           AppAssets.iconYourMatchHeart,
                           width: 32,

@@ -3,6 +3,7 @@ import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_edit_sheet.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/screens/profile/widgets/picker_clear_action.dart';
 
 enum DrinkingPreference {
   never,
@@ -18,20 +19,23 @@ const _kItemExtent = 36.0;
 const _kVisibleItems = 6;
 
 /// Drinking — Pets ile aynı düz liste; varsayılan Frequently.
-Future<DrinkingPreference?> showDrinkingSheet(
+/// Sonuç: [PickedValue.value] null ise kullanıcı değeri temizledi.
+Future<PickedValue<DrinkingPreference>?> showDrinkingSheet(
   BuildContext context, {
   DrinkingPreference initial = DrinkingPreference.frequently,
+  bool canClear = false,
 }) {
-  return showAppEditSheet<DrinkingPreference>(
+  return showAppEditSheet<PickedValue<DrinkingPreference>>(
     context: context,
-    builder: (_) => _DrinkingSheet(initial: initial),
+    builder: (_) => _DrinkingSheet(initial: initial, canClear: canClear),
   );
 }
 
 class _DrinkingSheet extends StatefulWidget {
-  const _DrinkingSheet({required this.initial});
+  const _DrinkingSheet({required this.initial, this.canClear = false});
 
   final DrinkingPreference initial;
+  final bool canClear;
 
   @override
   State<_DrinkingSheet> createState() => _DrinkingSheetState();
@@ -88,61 +92,72 @@ class _DrinkingSheetState extends State<_DrinkingSheet> {
     return AppEditSheet(
       title: t.profile.drinking,
       saveLabel: t.profile.save,
-      onSave: () => Navigator.of(context).pop(_selected),
+      onSave: () => Navigator.of(context).pop(PickedValue(_selected)),
       afterChildGap: 15,
-      child: SizedBox(
-        height: _kItemExtent * _kVisibleItems,
-        child: ListWheelScrollView.useDelegate(
-          controller: _controller,
-          itemExtent: _kItemExtent,
-          diameterRatio: 100,
-          perspective: 0.0001,
-          useMagnifier: false,
-          // Never üstte biraz taşabilir; altta Prefer not to say–buton boşluğu şişmesin.
-          clipBehavior: Clip.none,
-          physics: const FixedExtentScrollPhysics(),
-          onSelectedItemChanged: (index) {
-            setState(() => _selected = DrinkingPreference.values[index]);
-          },
-          childDelegate: ListWheelChildBuilderDelegate(
-            childCount: DrinkingPreference.values.length,
-            builder: (context, index) {
-              final option = DrinkingPreference.values[index];
-              final selected = option == _selected;
-              final distance = (index - selectedIndex).abs();
-              return GestureDetector(
-                onTap: () {
-                  _controller.animateToItem(
-                    index,
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.easeOut,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            height: _kItemExtent * _kVisibleItems,
+            child: ListWheelScrollView.useDelegate(
+              controller: _controller,
+              itemExtent: _kItemExtent,
+              diameterRatio: 100,
+              perspective: 0.0001,
+              useMagnifier: false,
+              // Never üstte biraz taşabilir; altta Prefer not to say–buton boşluğu şişmesin.
+              clipBehavior: Clip.none,
+              physics: const FixedExtentScrollPhysics(),
+              onSelectedItemChanged: (index) {
+                setState(() => _selected = DrinkingPreference.values[index]);
+              },
+              childDelegate: ListWheelChildBuilderDelegate(
+                childCount: DrinkingPreference.values.length,
+                builder: (context, index) {
+                  final option = DrinkingPreference.values[index];
+                  final selected = option == _selected;
+                  final distance = (index - selectedIndex).abs();
+                  return GestureDetector(
+                    onTap: () {
+                      _controller.animateToItem(
+                        index,
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.easeOut,
+                      );
+                    },
+                    behavior: HitTestBehavior.opaque,
+                    child: Center(
+                      child: AppText(
+                        _label(t, option),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontFamily: AppFonts.poppins,
+                          fontWeight: FontWeight.w500,
+                          fontSize: _fontSize(
+                            selected: selected,
+                            distance: distance,
+                          ),
+                          height: 1,
+                          color: selected
+                              ? AppColors.black
+                              : const Color(0x40000000),
+                        ),
+                      ),
+                    ),
                   );
                 },
-                behavior: HitTestBehavior.opaque,
-                child: Center(
-                  child: AppText(
-                    _label(t, option),
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontFamily: AppFonts.poppins,
-                      fontWeight: FontWeight.w500,
-                      fontSize: _fontSize(
-                        selected: selected,
-                        distance: distance,
-                      ),
-                      height: 1,
-                      color: selected
-                          ? AppColors.black
-                          : const Color(0x40000000),
-                    ),
-                  ),
-                ),
-              );
-            },
+              ),
+            ),
           ),
-        ),
+          if (widget.canClear)
+            PickerClearAction(
+              onTap: () =>
+                  Navigator.of(context).pop(PickedValue<DrinkingPreference>(null)),
+            ),
+        ],
       ),
     );
   }

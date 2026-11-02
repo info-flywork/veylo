@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/errors/error_messages.dart';
-import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/data/remote/chat_repository.dart';
 import 'package:veylo/data/remote/safety_repository.dart';
 import 'package:veylo/data/remote/user_repository.dart';
@@ -75,7 +74,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  _ProfileMediaTab _tab = _ProfileMediaTab.video;
+  _ProfileMediaTab _tab = _ProfileMediaTab.posts;
   bool _following = false;
 
   /// Başka kullanıcının sunucudan yüklenen profili.
@@ -87,6 +86,8 @@ class _ProfilePageState extends State<ProfilePage> {
   List<Post>? _posts;
   List<Post>? _saved;
   int _savedEpoch = 0;
+  bool _mediaLoading = false;
+  Object? _mediaError;
 
   /// Profil sahibinin backend id'si (mock profilde null).
   String? get _ownerId {
@@ -107,6 +108,8 @@ class _ProfilePageState extends State<ProfilePage> {
       // Yeni paylaşım yapınca gönderilerim yenilensin.
       DiscoverHighlight.instance.imagePath.addListener(_loadMedia);
       DiscoverStore.instance.addListener(_onSavedChanged);
+      // Oturum henüz yüklenmediyse gelince gönderiler yüklensin.
+      SessionStore.instance.addListener(_onSessionChanged);
     } else if (SafetyRepository.isRealUser(user.id)) {
       _loadRemote(user.id);
     }
@@ -117,7 +120,12 @@ class _ProfilePageState extends State<ProfilePage> {
   void dispose() {
     DiscoverHighlight.instance.imagePath.removeListener(_loadMedia);
     DiscoverStore.instance.removeListener(_onSavedChanged);
+    SessionStore.instance.removeListener(_onSessionChanged);
     super.dispose();
+  }
+
+  void _onSessionChanged() {
+    if (_posts == null && !_mediaLoading && _ownerId != null) _loadMedia();
   }
 
   /// Gönderi kaydedilince Saved sekmesi uygulama açılışındaki listeye takılı kalmasın.
@@ -130,8 +138,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> _loadMedia() async {
     final id = _ownerId;
-    if (id == null) return;
+    if (id == null || _mediaLoading) return;
     final repo = PostRepository.instance;
+    setState(() {
+      _mediaLoading = true;
+      _mediaError = null;
+    });
     try {
       final posts = await repo.byUser(id);
       final saved = _isSelfProfile ? await repo.saved() : null;
@@ -140,10 +152,15 @@ class _ProfilePageState extends State<ProfilePage> {
         _posts = posts.items;
         _saved = saved?.items ?? const [];
       });
-    } catch (_) {}
+    } catch (e) {
+      if (mounted) setState(() => _mediaError = e);
+    } finally {
+      if (mounted) setState(() => _mediaLoading = false);
+    }
   }
 
-  /// Seçili sekmenin gerçek gönderileri (video şimdilik yok).
+  /// Seçili sekmenin gerçek gönderileri. Gönderiler yalnızca görsel olduğundan
+  /// Video sekmesi boş durum gösterir.
   List<Post>? get _tabPosts {
     final posts = _posts;
     if (posts == null) return null;
@@ -152,6 +169,45 @@ class _ProfilePageState extends State<ProfilePage> {
       _ProfileMediaTab.video => const [],
       _ProfileMediaTab.saved => _isSelfProfile ? (_saved ?? const []) : const [],
     };
+  }
+
+  String _emptyLabel(Translations root) => switch (_tab) {
+    _ProfileMediaTab.posts => root.profile.emptyPosts,
+    _ProfileMediaTab.video => root.profile.emptyVideos,
+    _ProfileMediaTab.saved => root.profile.emptySaved,
+  };
+
+  /// Sekme içeriği: yükleniyor / hata + tekrar dene / boş / ızgara.
+  /// Örnek (backend'de olmayan) profillerde örnek görseller kalır.
+  Widget _mediaSection(BuildContext context) {
+    final root = Translations.of(context);
+    if (_ownerId == null) {
+      if (_isSelfProfile) return const _ProfileMediaLoading();
+      return _ProfileMediaGrid(
+        assets: ProfileMockRepository.mediaFor(_tab.name),
+      );
+    }
+    final posts = _tabPosts;
+    if (posts == null) {
+      if (_mediaError != null && !_mediaLoading) {
+        return _ProfileMediaEmpty(
+          label: root.errors.generic,
+          retryLabel: root.common.retry,
+          onRetry: _loadMedia,
+        );
+      }
+      return const _ProfileMediaLoading();
+    }
+    if (posts.isEmpty) return _ProfileMediaEmpty(label: _emptyLabel(root));
+    return _ProfilePostGrid(
+      posts: posts,
+      onTap: (p) => DiscoverPostPage.openPost(
+        context,
+        p,
+        feed: posts,
+        index: posts.indexWhere((e) => e.id == p.id),
+      ),
+    );
   }
 
   Future<void> _loadRemote(String id) async {
@@ -228,7 +284,6 @@ class _ProfilePageState extends State<ProfilePage> {
     final t = Translations.of(context).profile;
     final screenW = MediaQuery.sizeOf(context).width;
     final hPad = ((screenW - _kContentWidth) / 2).clamp(16.0, 40.0);
-    final media = ProfileMockRepository.mediaFor(_tab.name);
 
     return ListenableBuilder(
       listenable: Listenable.merge([
@@ -236,12 +291,24 @@ class _ProfilePageState extends State<ProfilePage> {
         SessionStore.instance,
       ]),
       builder: (context, _) {
+        // Oturum yüklenmeden kendi profilimde örnek kullanıcı gösterilmez.
+        if (widget.user == null && SessionStore.instance.me == null) {
+          return const Material(
+            color: AppColors.white,
+            child: _ProfileMediaLoading(),
+          );
+        }
         final base =
             _remote ?? widget.user ?? ProfileMockRepository.currentUser();
         final profile = base.isSelf
             ? LocalProfileStore.instance.apply(base)
             : base;
         final isSelf = profile.isSelf;
+        // Örnek profillerde takip / mesaj / engelle gibi işlemler gösterilmez.
+        final isReal = SafetyRepository.isRealUser(profile.id);
+        final handle = (profile.username ?? '').trim();
+        final shareHandle =
+            handle.isNotEmpty ? handle : (isReal ? profile.id : null);
 
         final page = Material(
       color: AppColors.white,
@@ -258,15 +325,19 @@ class _ProfilePageState extends State<ProfilePage> {
                 title: isSelf ? t.title : t.eyebrow,
                 tokenBalance: isSelf ? profile.tokenBalance : null,
                 onTokensTap: isSelf ? widget.onTokensTap : null,
-                onShareTap: isSelf
-                    ? widget.onShareTap
-                    : () => showShareProfileSheet(
-                          context,
-                          username: profile.username ?? profile.displayName,
-                        ),
+                onShareTap: widget.onShareTap ??
+                    (shareHandle == null
+                        ? null
+                        : () => showShareProfileSheet(
+                              context,
+                              username: shareHandle,
+                              displayName: profile.displayName,
+                            )),
                 onSettingsTap: isSelf
                     ? widget.onSettingsTap
-                    : () => showProfileActionsSheet(context, user: profile),
+                    : (isReal
+                          ? () => showProfileActionsSheet(context, user: profile)
+                          : null),
               ),
               const SizedBox(height: 20),
               _ProfileSummary(
@@ -306,7 +377,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   onPressed: widget.onStandOutTap,
                 ),
                 const SizedBox(height: 18),
-              ] else ...[
+              ] else if (isReal) ...[
                 if (_following)
                   Row(
                     children: [
@@ -319,7 +390,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: AppPrimaryButton(
-                          label: _messageBusy ? '...' : 'Message',
+                          label: _messageBusy ? '...' : t.message,
                           onPressed: _messageBusy ? null : _message,
                         ),
                       ),
@@ -328,7 +399,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 else
                   AppPrimaryButton(
                     label: t.follow,
-                    onPressed: _toggleFollow,
+                    onPressed: _followBusy ? null : _toggleFollow,
                   ),
                 const SizedBox(height: 18),
               ],
@@ -336,6 +407,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 postsLabel: t.tabPosts,
                 videoLabel: t.tabVideo,
                 savedLabel: t.tabSaved,
+                // Kaydedilenler yalnızca kendi profilimde.
+                showSaved: isSelf,
                 selected: _tab,
                 onChanged: (tab) {
                   setState(() => _tab = tab);
@@ -346,18 +419,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 },
               ),
               const SizedBox(height: 6),
-              if (_tabPosts case final posts?)
-                _ProfilePostGrid(
-                  posts: posts,
-                  onTap: (p) => DiscoverPostPage.openPost(
-                    context,
-                    p,
-                    feed: posts,
-                    index: posts.indexWhere((e) => e.id == p.id),
-                  ),
-                )
-              else
-                _ProfileMediaGrid(assets: media),
+              _mediaSection(context),
             ],
           ),
         ),
@@ -554,7 +616,6 @@ class _ProfileSummary extends StatelessWidget {
                       style: AppTextStyles.profileName,
                     ),
                   ),
-                  if (profile.isAi) const AiBadge(),
                 ],
               ),
               if (showUsername && handle != null && handle.isNotEmpty) ...[
@@ -886,11 +947,13 @@ class _ProfileMediaTabs extends StatelessWidget {
     required this.savedLabel,
     required this.selected,
     required this.onChanged,
+    this.showSaved = true,
   });
 
   final String postsLabel;
   final String videoLabel;
   final String savedLabel;
+  final bool showSaved;
   final _ProfileMediaTab selected;
   final ValueChanged<_ProfileMediaTab> onChanged;
 
@@ -912,13 +975,14 @@ class _ProfileMediaTabs extends StatelessWidget {
             onTap: () => onChanged(_ProfileMediaTab.video),
           ),
         ),
-        Expanded(
-          child: _ProfileTab(
-            label: savedLabel,
-            selected: selected == _ProfileMediaTab.saved,
-            onTap: () => onChanged(_ProfileMediaTab.saved),
+        if (showSaved)
+          Expanded(
+            child: _ProfileTab(
+              label: savedLabel,
+              selected: selected == _ProfileMediaTab.saved,
+              onTap: () => onChanged(_ProfileMediaTab.saved),
+            ),
           ),
-        ),
       ],
     );
   }
@@ -960,6 +1024,67 @@ class _ProfileTab extends StatelessWidget {
                   ? AppColors.selectionBorder
                   : AppColors.borderLight,
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfileMediaLoading extends StatelessWidget {
+  const _ProfileMediaLoading();
+
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox(
+      height: _kPostHeight,
+      child: Center(
+        child: CircularProgressIndicator(color: AppColors.selectionBorder),
+      ),
+    );
+  }
+}
+
+/// Boş sekme / hata — Follow listesindeki boş durum metniyle aynı stil.
+class _ProfileMediaEmpty extends StatelessWidget {
+  const _ProfileMediaEmpty({
+    required this.label,
+    this.retryLabel,
+    this.onRetry,
+  });
+
+  final String label;
+  final String? retryLabel;
+  final VoidCallback? onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: _kPostHeight,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AppText(
+              label,
+              style: AppTextStyles.followListName.copyWith(
+                color: const Color(0xA6000000),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            if (onRetry != null && retryLabel != null) ...[
+              const SizedBox(height: 12),
+              GestureDetector(
+                onTap: onRetry,
+                behavior: HitTestBehavior.opaque,
+                child: AppText(
+                  retryLabel!,
+                  style: AppTextStyles.followListName.copyWith(
+                    color: AppColors.selectionBorder,
+                  ),
+                ),
+              ),
+            ],
           ],
         ),
       ),

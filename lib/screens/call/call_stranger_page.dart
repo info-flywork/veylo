@@ -17,6 +17,7 @@ import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/data/remote/socket_service.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/screens/tokens/boost_page.dart';
 import 'package:veylo/screens/tokens/token_packs_sheet.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 
@@ -406,7 +407,7 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
     final accepted = await showVideoCallSheet(context);
     if (accepted != true || !mounted) return;
     if (!await _agora.requestCamera()) {
-      if (mounted) _toast(Translations.of(context).call.micDenied);
+      if (mounted) _toast(Translations.of(context).call.cameraDenied);
       return;
     }
     try {
@@ -593,7 +594,15 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
                       onGender: (g) => setState(() => _gender = g),
                       onPrimary: _phase == _CallPhase.finding
                           ? _cancelFinding
-                          : _startFinding,
+                          : (_target == 'any'
+                              ? _startFinding
+                              : () async {
+                                  final start = await BoostPage.open(
+                                    context,
+                                    startCallAfter: true,
+                                  );
+                                  if (start && mounted) await _startFinding();
+                                }),
                       t: t,
                     ),
                   ),

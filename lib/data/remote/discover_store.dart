@@ -26,6 +26,9 @@ class DiscoverStore extends ChangeNotifier {
   bool get loaded => _loaded;
   DiscoverFilters get filters => _filters;
 
+  /// Arama kutusu sekme değişiminde yeniden kurulunca bununla dolar.
+  String get query => _query;
+
   /// Kaydet / kaydı kaldır. Profildeki Saved sekmesi bunu dinler.
   int get savedEpoch => _savedEpoch;
 

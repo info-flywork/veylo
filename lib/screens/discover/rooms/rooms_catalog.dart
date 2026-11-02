@@ -69,7 +69,6 @@ class _RoomsCatalogState extends State<RoomsCatalog> {
           onSeeAll: () => RoomListPage.open(
             context,
             title: t.allGroups,
-            items: groups,
             isGroup: true,
           ),
         ),
@@ -80,8 +79,7 @@ class _RoomsCatalogState extends State<RoomsCatalog> {
           seeAllLabel: t.seeAll,
           items: rooms.take(previewCount).toList(),
           isGroup: false,
-          onSeeAll: () =>
-              RoomListPage.open(context, title: t.allRooms, items: rooms),
+          onSeeAll: () => RoomListPage.open(context, title: t.allRooms),
         ),
         ],
       ],

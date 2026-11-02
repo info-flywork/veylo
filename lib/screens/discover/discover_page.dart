@@ -27,6 +27,7 @@ class DiscoverPage extends StatefulWidget {
 class _DiscoverPageState extends State<DiscoverPage> {
   final _store = DiscoverStore.instance;
   final _scroll = ScrollController();
+  late final _search = TextEditingController(text: _store.query);
 
   @override
   void initState() {
@@ -41,6 +42,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
     _store.removeListener(_onStore);
     _scroll.removeListener(_onScroll);
     _scroll.dispose();
+    _search.dispose();
     super.dispose();
   }
 
@@ -152,6 +154,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                           const SizedBox(width: 8),
                           Expanded(
                             child: TextField(
+                              controller: _search,
                               onChanged: _store.search,
                               style: AppTextStyles.discoverSearchHint.copyWith(
                                 color: AppColors.textOnLight,

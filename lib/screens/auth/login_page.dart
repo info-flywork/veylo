@@ -15,6 +15,7 @@ import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/widgets/app_text_field.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/screens/profile/legal_doc_sheet.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -56,7 +57,15 @@ class _LoginPageState extends State<LoginPage> {
   void _logInWithPassword() {
     final identifier = _emailOrUsernameController.text.trim();
     final password = _passwordController.text;
-    if (identifier.isEmpty || password.isEmpty) return;
+    if (identifier.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(Translations.of(context).errors.fillAllFields),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
     _signIn(
       () => SessionStore.instance.signInWithPassword(identifier, password),
     );
@@ -164,6 +173,9 @@ class _LoginPageState extends State<LoginPage> {
                         setState(() => _obscurePassword = !_obscurePassword);
                       },
                       textInputAction: TextInputAction.done,
+                      onSubmitted: (_) {
+                        if (!_busy) _logInWithPassword();
+                      },
                       autofillHints: const [AutofillHints.password],
                     ),
                     const SizedBox(height: AppSpacing.md),
@@ -205,14 +217,17 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
                 AppSpacing.screenHorizontal,
                 0,
                 AppSpacing.screenHorizontal,
                 AppSpacing.lg,
               ),
-              child: AppLegalFooter(),
+              child: AppLegalFooter(
+                onTermsTap: () => showTermsOfServiceSheet(context),
+                onPrivacyTap: () => showPrivacyPolicySheet(context),
+              ),
             ),
           ],
         ),

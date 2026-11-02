@@ -12,6 +12,7 @@ class ChatMessage {
     this.type = 'TEXT',
     this.body,
     this.mediaUrl,
+    this.mediaId,
     this.status = ChatMessageStatus.sent,
     this.senderId,
     this.senderName,
@@ -30,6 +31,9 @@ class ChatMessage {
   final String type;
   final String? body;
   final String? mediaUrl;
+
+  /// Yükleme bitince sunucunun verdiği id. Gönderim yarım kalırsa tekrar yüklenmez.
+  final String? mediaId;
   final DateTime createdAt;
   final ChatMessageStatus status;
 
@@ -50,6 +54,7 @@ class ChatMessage {
       type: j['type'] as String? ?? 'TEXT',
       body: j['body'] as String?,
       mediaUrl: j['mediaUrl'] as String?,
+      mediaId: j['mediaId'] as String?,
       createdAt:
           DateTime.tryParse(j['createdAt'] as String? ?? '')?.toLocal() ??
           DateTime.now(),
@@ -61,14 +66,19 @@ class ChatMessage {
     );
   }
 
-  ChatMessage copyWith({ChatMessageStatus? status}) => ChatMessage(
+  ChatMessage copyWith({
+    ChatMessageStatus? status,
+    String? mediaUrl,
+    String? mediaId,
+  }) => ChatMessage(
     id: id,
     seq: seq,
     clientMsgId: clientMsgId,
     isMine: isMine,
     type: type,
     body: body,
-    mediaUrl: mediaUrl,
+    mediaUrl: mediaUrl ?? this.mediaUrl,
+    mediaId: mediaId ?? this.mediaId,
     createdAt: createdAt,
     status: status ?? this.status,
     senderId: senderId,

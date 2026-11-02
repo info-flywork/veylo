@@ -6,18 +6,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
-import 'package:veylo/data/remote/vibe_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/data/remote/vibe_store.dart';
 import 'package:veylo/models/vibes/vibe_post.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 import 'package:veylo/screens/vibes/vibe_talk_sheet.dart';
 
+/// Balon boyutu; görsel ve bulanıklık vibe'ın kendisinden gelir.
 class _BubbleSpec {
-  const _BubbleSpec(this.size, this.asset, this.blurred);
+  const _BubbleSpec(this.size);
 
   final double size;
-  final String asset;
-  final bool blurred;
 }
 
 class _PlacedBubble {
@@ -31,46 +30,46 @@ class _PlacedBubble {
 
 /// Büyükten küçüğe — yerleşince boşluk kalır, üst üste binmez.
 const _specs = <_BubbleSpec>[
-  _BubbleSpec(96, AppAssets.fakePerson01, false),
-  _BubbleSpec(88, AppAssets.fakePerson05, false),
-  _BubbleSpec(84, AppAssets.fakePerson07, false),
-  _BubbleSpec(80, AppAssets.fakePerson03, false),
-  _BubbleSpec(76, AppAssets.fakePerson02, true),
-  _BubbleSpec(72, AppAssets.fakePerson01, false),
-  _BubbleSpec(70, AppAssets.fakePerson06, true),
-  _BubbleSpec(66, AppAssets.fakePerson08, true),
-  _BubbleSpec(64, AppAssets.fakePerson04, false),
-  _BubbleSpec(62, AppAssets.fakePerson05, false),
-  _BubbleSpec(58, AppAssets.fakePerson07, true),
-  _BubbleSpec(56, AppAssets.fakePerson01, false),
-  _BubbleSpec(54, AppAssets.fakePerson02, true),
-  _BubbleSpec(52, AppAssets.fakePerson06, true),
-  _BubbleSpec(50, AppAssets.fakePerson08, true),
-  _BubbleSpec(48, AppAssets.fakePerson04, true),
-  _BubbleSpec(74, AppAssets.fakePerson03, false),
-  _BubbleSpec(68, AppAssets.fakePerson05, true),
-  _BubbleSpec(60, AppAssets.fakePerson01, false),
-  _BubbleSpec(46, AppAssets.fakePerson07, true),
-  _BubbleSpec(90, AppAssets.fakePerson02, false),
-  _BubbleSpec(82, AppAssets.fakePerson04, true),
-  _BubbleSpec(78, AppAssets.fakePerson06, false),
-  _BubbleSpec(74, AppAssets.fakePerson08, true),
-  _BubbleSpec(72, AppAssets.fakePerson03, false),
-  _BubbleSpec(70, AppAssets.fakePerson01, true),
-  _BubbleSpec(68, AppAssets.fakePerson07, false),
-  _BubbleSpec(66, AppAssets.fakePerson05, true),
-  _BubbleSpec(64, AppAssets.fakePerson02, true),
-  _BubbleSpec(62, AppAssets.fakePerson08, false),
-  _BubbleSpec(60, AppAssets.fakePerson04, true),
-  _BubbleSpec(58, AppAssets.fakePerson06, true),
-  _BubbleSpec(56, AppAssets.fakePerson03, false),
-  _BubbleSpec(54, AppAssets.fakePerson01, true),
-  _BubbleSpec(52, AppAssets.fakePerson07, true),
-  _BubbleSpec(50, AppAssets.fakePerson05, true),
-  _BubbleSpec(50, AppAssets.fakePerson02, true),
-  _BubbleSpec(48, AppAssets.fakePerson08, true),
-  _BubbleSpec(46, AppAssets.fakePerson04, true),
-  _BubbleSpec(44, AppAssets.fakePerson06, true),
+  _BubbleSpec(96),
+  _BubbleSpec(88),
+  _BubbleSpec(84),
+  _BubbleSpec(80),
+  _BubbleSpec(76),
+  _BubbleSpec(72),
+  _BubbleSpec(70),
+  _BubbleSpec(66),
+  _BubbleSpec(64),
+  _BubbleSpec(62),
+  _BubbleSpec(58),
+  _BubbleSpec(56),
+  _BubbleSpec(54),
+  _BubbleSpec(52),
+  _BubbleSpec(50),
+  _BubbleSpec(48),
+  _BubbleSpec(74),
+  _BubbleSpec(68),
+  _BubbleSpec(60),
+  _BubbleSpec(46),
+  _BubbleSpec(90),
+  _BubbleSpec(82),
+  _BubbleSpec(78),
+  _BubbleSpec(74),
+  _BubbleSpec(72),
+  _BubbleSpec(70),
+  _BubbleSpec(68),
+  _BubbleSpec(66),
+  _BubbleSpec(64),
+  _BubbleSpec(62),
+  _BubbleSpec(60),
+  _BubbleSpec(58),
+  _BubbleSpec(56),
+  _BubbleSpec(54),
+  _BubbleSpec(52),
+  _BubbleSpec(50),
+  _BubbleSpec(50),
+  _BubbleSpec(48),
+  _BubbleSpec(46),
+  _BubbleSpec(44),
 ];
 
 const _kGap = 4.0;
@@ -78,18 +77,18 @@ const _kMapShift = 48.0;
 
 /// Orta halkayı dolduran ekstra balonlar (kenar + rastgele paket yetmeyince).
 const _centerSpecs = <_BubbleSpec>[
-  _BubbleSpec(70, AppAssets.fakePerson05, false),
-  _BubbleSpec(64, AppAssets.fakePerson01, false),
-  _BubbleSpec(58, AppAssets.fakePerson07, true),
-  _BubbleSpec(62, AppAssets.fakePerson03, false),
-  _BubbleSpec(54, AppAssets.fakePerson02, true),
-  _BubbleSpec(60, AppAssets.fakePerson08, false),
-  _BubbleSpec(52, AppAssets.fakePerson04, true),
-  _BubbleSpec(56, AppAssets.fakePerson06, true),
-  _BubbleSpec(48, AppAssets.fakePerson01, true),
-  _BubbleSpec(50, AppAssets.fakePerson05, false),
-  _BubbleSpec(46, AppAssets.fakePerson07, true),
-  _BubbleSpec(54, AppAssets.fakePerson03, true),
+  _BubbleSpec(70),
+  _BubbleSpec(64),
+  _BubbleSpec(58),
+  _BubbleSpec(62),
+  _BubbleSpec(54),
+  _BubbleSpec(60),
+  _BubbleSpec(52),
+  _BubbleSpec(56),
+  _BubbleSpec(48),
+  _BubbleSpec(50),
+  _BubbleSpec(46),
+  _BubbleSpec(54),
 ];
 
 List<_PlacedBubble> _pack(double width, double height) {
@@ -122,10 +121,10 @@ List<_PlacedBubble> _pack(double width, double height) {
 
   // Ekranın kenarlarından taşan, yarısı kesik balonlar (figma gibi).
   const edgeSpecs = <_BubbleSpec>[
-    _BubbleSpec(84, AppAssets.fakePerson06, true),
-    _BubbleSpec(74, AppAssets.fakePerson03, false),
-    _BubbleSpec(90, AppAssets.fakePerson04, true),
-    _BubbleSpec(92, AppAssets.fakePerson02, true),
+    _BubbleSpec(84),
+    _BubbleSpec(74),
+    _BubbleSpec(90),
+    _BubbleSpec(92),
   ];
   if (width > 140 && height > 160) {
     tryPlace(
@@ -237,36 +236,33 @@ const _kMapColor = ColorFilter.matrix(<double>[
 
 /// Vibes haritası — balona basınca önizleme kartı açılır.
 class VibesMapView extends StatefulWidget {
-  const VibesMapView({super.key});
+  const VibesMapView({
+    super.key,
+    required this.posts,
+    this.onLongPress,
+    this.onDelete,
+  });
+
+  /// Listede görünenlerle aynı (arama ve sıralama uygulanmış).
+  final List<VibePost> posts;
+
+  /// Önizleme kartına uzun basma (kendi vibe'ım: sil, başkasının: şikayet).
+  final ValueChanged<VibePost>? onLongPress;
+
+  /// Kendi vibe'ımın önizlemesindeki silme butonu.
+  final ValueChanged<VibePost>? onDelete;
 
   @override
   State<VibesMapView> createState() => _VibesMapViewState();
 }
 
 class _VibesMapViewState extends State<VibesMapView> {
-  final _store = VibeStore.instance;
   String? _selected;
-
-  @override
-  void initState() {
-    super.initState();
-    _store.addListener(_onStore);
-  }
-
-  @override
-  void dispose() {
-    _store.removeListener(_onStore);
-    super.dispose();
-  }
-
-  void _onStore() {
-    if (mounted) setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
     final safeBottom = MediaQuery.paddingOf(context).bottom;
-    final posts = _store.posts;
+    final posts = widget.posts;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -347,14 +343,22 @@ class _VibesMapViewState extends State<VibesMapView> {
                 child: Builder(
                   builder: (_) {
                     final post = selected.post;
-                    return _VibePreviewCard(
-                      post: post,
-                      liked: post.likedByMe,
-                      sendLabel: Translations.of(context).vibes.sendMessage,
-                      onLike: () => _store.toggleLike(post),
-                      onSend: post.isMine
-                          ? () {}
-                          : () => showVibeTalkSheet(context, post),
+                    return GestureDetector(
+                      onLongPress: widget.onLongPress == null
+                          ? null
+                          : () => widget.onLongPress!(post),
+                      child: _VibePreviewCard(
+                        post: post,
+                        liked: post.likedByMe,
+                        sendLabel: Translations.of(context).vibes.sendMessage,
+                        onLike: () => VibeStore.instance.toggleLike(post),
+                        onSend: post.isMine
+                            ? () {}
+                            : () => showVibeTalkSheet(context, post),
+                        onDelete: post.isMine && widget.onDelete != null
+                            ? () => widget.onDelete!(post)
+                            : null,
+                      ),
                     );
                   },
                 ),
@@ -392,6 +396,7 @@ class _VibePreviewCard extends StatelessWidget {
     required this.sendLabel,
     required this.onLike,
     required this.onSend,
+    this.onDelete,
   });
 
   final VibePost post;
@@ -399,6 +404,7 @@ class _VibePreviewCard extends StatelessWidget {
   final String sendLabel;
   final VoidCallback onLike;
   final VoidCallback onSend;
+  final VoidCallback? onDelete;
 
   static const _likedGreen = Color(0xFF33C658);
 
@@ -502,6 +508,22 @@ class _VibePreviewCard extends StatelessWidget {
                           const SizedBox(width: 4),
                           AppText(sendLabel, style: AppTextStyles.vibesMeta),
                         ],
+                      ),
+                    ),
+                  ],
+                  if (onDelete != null) ...[
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: onDelete,
+                      behavior: HitTestBehavior.opaque,
+                      child: SvgPicture.asset(
+                        AppAssets.iconTrash,
+                        width: 24,
+                        height: 24,
+                        colorFilter: const ColorFilter.mode(
+                          Color(0xA6000000),
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
                   ],

@@ -8,6 +8,7 @@ class MatchCandidate {
     required this.vibePercent,
     this.avatarUrl,
     this.bio,
+    this.age,
   });
 
   final String userId;
@@ -16,13 +17,30 @@ class MatchCandidate {
   final String? bio;
   final int vibePercent;
 
+  /// Sunucu doğum tarihi tutmadığı için şimdilik hep null.
+  final int? age;
+
   factory MatchCandidate.fromJson(Map<String, dynamic> j) => MatchCandidate(
     userId: j['userId'] as String,
     displayName: (j['displayName'] ?? j['username'] ?? '') as String,
     avatarUrl: j['avatarUrl'] as String?,
     bio: j['bio'] as String?,
     vibePercent: (j['vibePercent'] as num?)?.toInt() ?? 0,
+    age: (j['age'] as num?)?.toInt(),
   );
+}
+
+/// `/match/stats`: oran ve süre, henüz arama yapılmadıysa null.
+class MatchStats {
+  const MatchStats({
+    required this.onlineCount,
+    this.matchRatePercent,
+    this.avgResponseMs,
+  });
+
+  final int onlineCount;
+  final int? matchRatePercent;
+  final int? avgResponseMs;
 }
 
 class MatchRepository {
@@ -48,9 +66,13 @@ class MatchRepository {
     ];
   }
 
-  /// Şu an çevrimiçi kullanıcı sayısı.
-  Future<int> onlineCount() async {
+  /// AI Match istatistikleri: çevrimiçi sayısı, eşleşme oranı, ortalama süre.
+  Future<MatchStats> stats() async {
     final res = await _api.get('/match/stats') as Map;
-    return (res['onlineCount'] as num?)?.toInt() ?? 0;
+    return MatchStats(
+      onlineCount: (res['onlineCount'] as num?)?.toInt() ?? 0,
+      matchRatePercent: (res['matchRatePercent'] as num?)?.toInt(),
+      avgResponseMs: (res['avgResponseMs'] as num?)?.toInt(),
+    );
   }
 }

@@ -150,6 +150,37 @@ class _Translations$chats$ko extends Translations$chats$tr {
 	@override String get unlockFullPendingTheirs => '이 사람이 내 전체 프로필을 보고 싶다고 요청했어요.';
 	@override String unlockSent({required Object title}) => '요청을 보냈어요: ${title}';
 	@override String unlockReceived({required Object title}) => '대화 상대가 ${title}에 대해 요청을 보냈어요.';
+	@override String get requestAction => '요청';
+	@override String get requestSent => '보냄';
+	@override String get previewUnlock => '잠금 해제 요청';
+	@override String get previewNameShared => '이름 공개';
+	@override String get previewNameDeclined => '이름 요청 거절';
+	@override String get previewPhotoShared => '사진 공개';
+	@override String get previewPhotoDeclined => '사진 요청 거절';
+	@override String get previewProfileShared => '프로필 공개';
+	@override String get previewProfileDeclined => '프로필 요청 거절';
+	@override String get previewPhoto => '사진';
+	@override String get previewVoice => '음성 메시지';
+	@override String get micNeeded => '마이크 권한이 필요해요';
+	@override String get previewSticker => '스티커';
+	@override String get stickerEmpty => '최근 스티커 없음';
+	@override String get messageCopied => '메시지를 복사했어요';
+	@override String get reportReasonSubtitle => '이 메시지를 신고하는 이유가 무엇인가요?';
+	@override String get reasonHarassment => '괴롭힘 또는 따돌림';
+	@override String get reasonHateSpeech => '혐오 발언';
+	@override String get reasonNudity => '나체 또는 성적인 콘텐츠';
+	@override String get reasonSpam => '스팸';
+	@override String get reasonScam => '사기';
+	@override String get reasonViolence => '폭력 또는 위협';
+	@override String get reasonOther => '기타';
+	@override String get mute => '알림 끄기';
+	@override String get unmute => '알림 켜기';
+	@override String get deleteChat => '채팅 삭제';
+	@override String get emptyThreadsTitle => '아직 채팅이 없어요';
+	@override String get emptyThreadsSubtitle => '누군가와 대화를 시작하면 여기에 채팅이 표시돼요.';
+	@override String get noSearchResults => '검색 결과가 없어요';
+	@override String get milestonePhotoUnlocked => '70%에서 해제됨';
+	@override String revealPeerWants({required Object name}) => '${name}님이 프로필 공개를 원해요';
 }
 
 // Path: profile
@@ -192,6 +223,9 @@ class _Translations$profile$ko extends Translations$profile$tr {
 	@override String get notifications => '알림';
 	@override String get password => '비밀번호';
 	@override String get deleteConversation => '대화 삭제';
+	@override String get deleteAllTitle => '모든 대화를 삭제할까요?';
+	@override String get deleteAllBody => '확인하면 모든 메시지가 삭제돼요';
+	@override String get deleteAllAction => '삭제';
 	@override String get faqHelp => 'FAQ 및 도움말';
 	@override String get restorePurchases => '구매 복원';
 	@override String get termsOfService => '서비스 약관';
@@ -225,6 +259,16 @@ class _Translations$profile$ko extends Translations$profile$tr {
 	@override String get educationPhd => '박사';
 	@override String get voiceRecord => '음성 녹음';
 	@override String get addVoice => '음성 추가';
+	@override String get voiceShared => '프로필에 공유됨';
+	@override String voiceHint({required Object seconds}) => '최대 ${seconds}초짜리 짧은 소개를 녹음하세요';
+	@override String voiceRecording({required Object seconds}) => '녹음 중 ${seconds}초';
+	@override String get voiceReady => '음성이 준비됐어요';
+	@override String get voicePlay => '재생';
+	@override String get voicePause => '일시정지';
+	@override String get voiceShare => '프로필에 공유';
+	@override String get voiceSaving => '저장 중…';
+	@override String get voiceRemove => '프로필에서 삭제';
+	@override String get voiceLabel => '음성';
 	@override String get lifestyle => '라이프스타일';
 	@override String get pets => '반려동물';
 	@override String get petsValue => '고양이를 키워요';
@@ -262,15 +306,16 @@ class _Translations$profile$ko extends Translations$profile$tr {
 	@override String get borderBuySection => '테두리 구매';
 	@override String get borderBuyCta => '테두리 구매';
 	@override String borderToken({required Object count}) => '${count} 토큰';
-	@override String get borderAmethystWings => 'Amethyst Wings';
-	@override String get borderGoldenPhoenix => 'Golden Phoenix';
-	@override String get borderFrostCrown => 'Frost Crown';
-	@override String get borderEmeraldWhisper => 'Emerald Whisper';
-	@override String get borderRoseQuartz => 'Rose Quartz';
-	@override String get borderStarlitComet => 'Starlit Comet';
-	@override String get borderCrimsonRoyal => 'Crimson Royal';
-	@override String get borderSapphireHalo => 'Sapphire Halo';
+	@override String get borderAmethystWings => '자수정 날개';
+	@override String get borderGoldenPhoenix => '황금 불사조';
+	@override String get borderFrostCrown => '서리 왕관';
+	@override String get borderEmeraldWhisper => '에메랄드 속삭임';
+	@override String get borderRoseQuartz => '로즈쿼츠';
+	@override String get borderStarlitComet => '별빛 혜성';
+	@override String get borderCrimsonRoyal => '크림슨 로열';
+	@override String get borderSapphireHalo => '사파이어 헤일로';
 	@override String get follow => '팔로우';
+	@override String get message => '메시지';
 	@override String get following => '팔로잉';
 	@override String get followPageTitle => '팔로우';
 	@override String get followTabFollowing => '팔로잉';
@@ -307,6 +352,37 @@ class _Translations$profile$ko extends Translations$profile$tr {
 	@override String emailVerificationSent({required Object email}) => '${email}(으)로 확인 링크를 보냈어요. 확인 후 이메일이 변경돼요.';
 	@override String get passwordChanged => '비밀번호가 변경됐어요.';
 	@override String get passwordMismatch => '비밀번호가 일치하지 않아요.';
+	@override String get shareSend => '보내기';
+	@override String shareMessage({required Object name, required Object url}) => '${name}의 Veylo 프로필: ${url}';
+	@override String get currentPassword => '현재 비밀번호';
+	@override String get currentPasswordWrong => '현재 비밀번호가 올바르지 않아요.';
+	@override String get reportReasonLabel => '사유';
+	@override String get reportReasonHarassment => '괴롭힘 또는 따돌림';
+	@override String get reportReasonHateSpeech => '혐오 발언';
+	@override String get reportReasonNudity => '노출 또는 성적인 콘텐츠';
+	@override String get reportReasonUnderage => '18세 미만';
+	@override String get reportReasonSpam => '스팸';
+	@override String get reportReasonScam => '사기';
+	@override String get reportReasonViolence => '폭력 또는 위협';
+	@override String get reportReasonImpersonation => '다른 사람 사칭';
+	@override String get reportReasonOther => '기타';
+	@override String blockedDone({required Object username}) => '${username}님을 차단했어요.';
+	@override String restrictedDone({required Object username}) => '${username}님을 제한했어요.';
+	@override String get emptyPosts => '아직 게시물이 없어요';
+	@override String get emptyVideos => '아직 동영상이 없어요';
+	@override String get emptySaved => '아직 저장한 게시물이 없어요';
+	@override String get clearSelection => '선택 해제';
+	@override String get genderNonBinary => '논바이너리';
+	@override String get voiceAdded => '음성 추가됨';
+	@override String get discardTitle => '저장되지 않은 변경 사항';
+	@override String get discardBody => '지금 나가면 변경 사항이 사라져요.';
+	@override String get discardConfirm => '변경 사항 삭제';
+	@override String get keepEditing => '계속 편집';
+	@override String get borderNone => '테두리 없음';
+	@override String get borderOwned => '보유 중';
+	@override String get borderEquipCta => '테두리 사용';
+	@override String get borderRemoveCta => '테두리 제거';
+	@override String get followEmpty => '아직 아무도 없어요';
 }
 
 // Path: nav
@@ -319,7 +395,7 @@ class _Translations$nav$ko extends Translations$nav$tr {
 	@override String get discover => '탐색';
 	@override String get chat => '채팅';
 	@override String get call => '통화';
-	@override String get vibes => 'Vibes';
+	@override String get vibes => '바이브';
 	@override String get profile => '프로필';
 }
 
@@ -362,6 +438,7 @@ class _Translations$call$ko extends Translations$call$tr {
 	@override String get noMatchTitle => '지금은 대화할 수 있는 사람이 없어요';
 	@override String get noMatchBody => '지금은 대화 상대를 찾지 못했어요. 잠시 후에 다시 시도해 주세요.';
 	@override String get noMatchOk => '확인';
+	@override String get cameraDenied => '영상 통화하려면 카메라 권한이 필요해요. 설정에서 켤 수 있어요.';
 }
 
 // Path: vibes
@@ -382,6 +459,12 @@ class _Translations$vibes$ko extends Translations$vibes$tr {
 	@override String get deleteTitle => '이 Vibe를 삭제할까요?';
 	@override String get delete => '삭제';
 	@override String get cancel => '취소';
+	@override String get post => '게시';
+	@override String get replyHint => '답장을 입력하세요';
+	@override String get sortNewest => '최신순';
+	@override String get sortPopular => '인기순';
+	@override String get loadFailed => '바이브를 불러오지 못했어요.';
+	@override String get noResults => '검색 결과가 없어요';
 }
 
 // Path: discover
@@ -394,7 +477,7 @@ class _Translations$discover$ko extends Translations$discover$tr {
 	@override String get title => '탐색';
 	@override String get tabRooms => '룸';
 	@override String get tabDiscover => '탐색';
-	@override String get tabAiMatch => 'AI Match';
+	@override String get tabAiMatch => 'AI 매치';
 	@override late final _Translations$discover$aiMatch$ko aiMatch = _Translations$discover$aiMatch$ko._(_root);
 	@override String get searchHint => '검색';
 	@override String get allRooms => '전체 룸';
@@ -422,6 +505,7 @@ class _Translations$discover$ko extends Translations$discover$tr {
 	@override late final _Translations$discover$highlight$ko highlight = _Translations$discover$highlight$ko._(_root);
 	@override late final _Translations$discover$stats$ko stats = _Translations$discover$stats$ko._(_root);
 	@override String hostedBy({required Object name}) => '호스트: ${name}';
+	@override String get requestPending => '요청을 보냈어요. 승인을 기다리는 중이에요.';
 }
 
 // Path: common
@@ -700,6 +784,7 @@ class _Translations$storyText$ko extends Translations$storyText$tr {
 	@override String get uppercase => '대문자';
 	@override String get underline => '밑줄';
 	@override String get cancel => '취소';
+	@override String get done => '완료';
 	@override String get galleryError => '갤러리를 열 수 없어요';
 }
 
@@ -710,7 +795,7 @@ class _Translations$tokens$ko extends Translations$tokens$tr {
 	final TranslationsKo _root; // ignore: unused_field
 
 	// Translations
-	@override String get boostTitle => 'Boost';
+	@override String get boostTitle => '부스트';
 	@override String get history => '내역';
 	@override String get yourBalance => '내 잔액';
 	@override String balanceTokens({required Object count}) => '${count} 토큰';
@@ -724,7 +809,7 @@ class _Translations$tokens$ko extends Translations$tokens$tr {
 	@override String get duration1h => '1시간';
 	@override String get duration2h => '2시간';
 	@override String visibility({required Object n}) => '노출 ${n}배';
-	@override String boostFor({required Object count}) => '${count} 토큰으로 Boost';
+	@override String boostFor({required Object count}) => '${count} 토큰으로 부스트';
 	@override String boostActive({required Object time}) => '${time}까지 Boost 중';
 	@override String get boostDone => '프로필이 Boost됐어요!';
 	@override String get historyEmpty => '아직 토큰 내역이 없어요';
@@ -773,8 +858,8 @@ class _Translations$discover$aiMatch$ko extends Translations$discover$aiMatch$tr
 	@override String get statMatchRate => '매칭률';
 	@override String get statAvgTime => '평균 시간';
 	@override String get statActiveValue => '843';
-	@override String get statMatchValue => '87%';
-	@override String get statAvgValue => '8초';
+	@override String statMatchValue({required Object value}) => '${value}%';
+	@override String statAvgValue({required Object value}) => '${value}초';
 	@override String get startSmartMatch => '스마트 매칭 시작';
 	@override String get findingTitle => '상대를 찾는 중';
 	@override String get findingSubtitle => '기분과 관심사에 맞는 사람을 찾고 있어요';
@@ -793,6 +878,8 @@ class _Translations$discover$aiMatch$ko extends Translations$discover$aiMatch$tr
 	@override String get swipeNext => '다음';
 	@override String get swipeFinger => '손가락으로 스와이프';
 	@override String get noMatch => '지금은 맞는 상대가 없어요. 잠시 후 다시 시도해 주세요.';
+	@override String likeSent({required Object name}) => '${name}님을 팔로우했어요';
+	@override String get lastMatch => '모든 매칭을 확인했어요. 더 보려면 다시 검색하세요.';
 }
 
 // Path: discover.privateRoom
@@ -889,6 +976,14 @@ class _Translations$discover$liveRoom$ko extends Translations$discover$liveRoom$
 	@override String get roomEnded => '룸이 종료됐어요.';
 	@override String wantsToJoin({required Object name}) => '${name}님이 참여를 원해요';
 	@override String get approve => '수락';
+	@override String get reject => '거절';
+	@override String get pendingRequests => '참여 요청';
+	@override String get noRequests => '대기 중인 요청이 없어요.';
+	@override String get muteMic => '마이크 끄기';
+	@override String get unmuteMic => '마이크 켜기';
+	@override String get remove => '방에서 내보내기';
+	@override String get removed => '방에서 내보내졌습니다.';
+	@override String get seeProfile => '프로필 보기 요청';
 }
 
 // Path: discover.groupChat
@@ -933,6 +1028,8 @@ class _Translations$discover$groupInfo$ko extends Translations$discover$groupInf
 	@override String get leaveConfirm => '이 그룹에서 나갈까요?';
 	@override String get leave => '나가기';
 	@override String get cancel => '취소';
+	@override String get galleryEmpty => '아직 공유된 사진이 없어요.';
+	@override String get adminOnly => '관리자만 변경할 수 있어요.';
 }
 
 // Path: discover.filters
@@ -993,8 +1090,10 @@ class _Translations$discover$story$ko extends Translations$discover$story$tr {
 	@override String get musicTitle => '음악';
 	@override String get musicEmpty => '음악을 찾을 수 없어요.';
 	@override String get musicError => '음악을 불러올 수 없어요.';
+	@override String get unknownTrack => '알 수 없음';
 	@override String get downloaded => '갤러리에 저장됐어요';
 	@override String get downloadFailed => '저장할 수 없어요';
+	@override String get savedToDraft => '임시 저장했어요';
 }
 
 // Path: discover.highlight
@@ -1131,6 +1230,37 @@ extension on TranslationsKo {
 			'chats.unlockFullPendingTheirs' => '이 사람이 내 전체 프로필을 보고 싶다고 요청했어요.',
 			'chats.unlockSent' => ({required Object title}) => '요청을 보냈어요: ${title}',
 			'chats.unlockReceived' => ({required Object title}) => '대화 상대가 ${title}에 대해 요청을 보냈어요.',
+			'chats.requestAction' => '요청',
+			'chats.requestSent' => '보냄',
+			'chats.previewUnlock' => '잠금 해제 요청',
+			'chats.previewNameShared' => '이름 공개',
+			'chats.previewNameDeclined' => '이름 요청 거절',
+			'chats.previewPhotoShared' => '사진 공개',
+			'chats.previewPhotoDeclined' => '사진 요청 거절',
+			'chats.previewProfileShared' => '프로필 공개',
+			'chats.previewProfileDeclined' => '프로필 요청 거절',
+			'chats.previewPhoto' => '사진',
+			'chats.previewVoice' => '음성 메시지',
+			'chats.micNeeded' => '마이크 권한이 필요해요',
+			'chats.previewSticker' => '스티커',
+			'chats.stickerEmpty' => '최근 스티커 없음',
+			'chats.messageCopied' => '메시지를 복사했어요',
+			'chats.reportReasonSubtitle' => '이 메시지를 신고하는 이유가 무엇인가요?',
+			'chats.reasonHarassment' => '괴롭힘 또는 따돌림',
+			'chats.reasonHateSpeech' => '혐오 발언',
+			'chats.reasonNudity' => '나체 또는 성적인 콘텐츠',
+			'chats.reasonSpam' => '스팸',
+			'chats.reasonScam' => '사기',
+			'chats.reasonViolence' => '폭력 또는 위협',
+			'chats.reasonOther' => '기타',
+			'chats.mute' => '알림 끄기',
+			'chats.unmute' => '알림 켜기',
+			'chats.deleteChat' => '채팅 삭제',
+			'chats.emptyThreadsTitle' => '아직 채팅이 없어요',
+			'chats.emptyThreadsSubtitle' => '누군가와 대화를 시작하면 여기에 채팅이 표시돼요.',
+			'chats.noSearchResults' => '검색 결과가 없어요',
+			'chats.milestonePhotoUnlocked' => '70%에서 해제됨',
+			'chats.revealPeerWants' => ({required Object name}) => '${name}님이 프로필 공개를 원해요',
 			'profile.eyebrow' => '프로필',
 			'profile.title' => '설정',
 			'profile.editProfile' => '프로필 편집',
@@ -1164,6 +1294,9 @@ extension on TranslationsKo {
 			'profile.notifications' => '알림',
 			'profile.password' => '비밀번호',
 			'profile.deleteConversation' => '대화 삭제',
+			'profile.deleteAllTitle' => '모든 대화를 삭제할까요?',
+			'profile.deleteAllBody' => '확인하면 모든 메시지가 삭제돼요',
+			'profile.deleteAllAction' => '삭제',
 			'profile.faqHelp' => 'FAQ 및 도움말',
 			'profile.restorePurchases' => '구매 복원',
 			'profile.termsOfService' => '서비스 약관',
@@ -1197,6 +1330,16 @@ extension on TranslationsKo {
 			'profile.educationPhd' => '박사',
 			'profile.voiceRecord' => '음성 녹음',
 			'profile.addVoice' => '음성 추가',
+			'profile.voiceShared' => '프로필에 공유됨',
+			'profile.voiceHint' => ({required Object seconds}) => '최대 ${seconds}초짜리 짧은 소개를 녹음하세요',
+			'profile.voiceRecording' => ({required Object seconds}) => '녹음 중 ${seconds}초',
+			'profile.voiceReady' => '음성이 준비됐어요',
+			'profile.voicePlay' => '재생',
+			'profile.voicePause' => '일시정지',
+			'profile.voiceShare' => '프로필에 공유',
+			'profile.voiceSaving' => '저장 중…',
+			'profile.voiceRemove' => '프로필에서 삭제',
+			'profile.voiceLabel' => '음성',
 			'profile.lifestyle' => '라이프스타일',
 			'profile.pets' => '반려동물',
 			'profile.petsValue' => '고양이를 키워요',
@@ -1234,15 +1377,16 @@ extension on TranslationsKo {
 			'profile.borderBuySection' => '테두리 구매',
 			'profile.borderBuyCta' => '테두리 구매',
 			'profile.borderToken' => ({required Object count}) => '${count} 토큰',
-			'profile.borderAmethystWings' => 'Amethyst Wings',
-			'profile.borderGoldenPhoenix' => 'Golden Phoenix',
-			'profile.borderFrostCrown' => 'Frost Crown',
-			'profile.borderEmeraldWhisper' => 'Emerald Whisper',
-			'profile.borderRoseQuartz' => 'Rose Quartz',
-			'profile.borderStarlitComet' => 'Starlit Comet',
-			'profile.borderCrimsonRoyal' => 'Crimson Royal',
-			'profile.borderSapphireHalo' => 'Sapphire Halo',
+			'profile.borderAmethystWings' => '자수정 날개',
+			'profile.borderGoldenPhoenix' => '황금 불사조',
+			'profile.borderFrostCrown' => '서리 왕관',
+			'profile.borderEmeraldWhisper' => '에메랄드 속삭임',
+			'profile.borderRoseQuartz' => '로즈쿼츠',
+			'profile.borderStarlitComet' => '별빛 혜성',
+			'profile.borderCrimsonRoyal' => '크림슨 로열',
+			'profile.borderSapphireHalo' => '사파이어 헤일로',
 			'profile.follow' => '팔로우',
+			'profile.message' => '메시지',
 			'profile.following' => '팔로잉',
 			'profile.followPageTitle' => '팔로우',
 			'profile.followTabFollowing' => '팔로잉',
@@ -1279,10 +1423,41 @@ extension on TranslationsKo {
 			'profile.emailVerificationSent' => ({required Object email}) => '${email}(으)로 확인 링크를 보냈어요. 확인 후 이메일이 변경돼요.',
 			'profile.passwordChanged' => '비밀번호가 변경됐어요.',
 			'profile.passwordMismatch' => '비밀번호가 일치하지 않아요.',
+			'profile.shareSend' => '보내기',
+			'profile.shareMessage' => ({required Object name, required Object url}) => '${name}의 Veylo 프로필: ${url}',
+			'profile.currentPassword' => '현재 비밀번호',
+			'profile.currentPasswordWrong' => '현재 비밀번호가 올바르지 않아요.',
+			'profile.reportReasonLabel' => '사유',
+			'profile.reportReasonHarassment' => '괴롭힘 또는 따돌림',
+			'profile.reportReasonHateSpeech' => '혐오 발언',
+			'profile.reportReasonNudity' => '노출 또는 성적인 콘텐츠',
+			'profile.reportReasonUnderage' => '18세 미만',
+			'profile.reportReasonSpam' => '스팸',
+			'profile.reportReasonScam' => '사기',
+			'profile.reportReasonViolence' => '폭력 또는 위협',
+			'profile.reportReasonImpersonation' => '다른 사람 사칭',
+			'profile.reportReasonOther' => '기타',
+			'profile.blockedDone' => ({required Object username}) => '${username}님을 차단했어요.',
+			'profile.restrictedDone' => ({required Object username}) => '${username}님을 제한했어요.',
+			'profile.emptyPosts' => '아직 게시물이 없어요',
+			'profile.emptyVideos' => '아직 동영상이 없어요',
+			'profile.emptySaved' => '아직 저장한 게시물이 없어요',
+			'profile.clearSelection' => '선택 해제',
+			'profile.genderNonBinary' => '논바이너리',
+			'profile.voiceAdded' => '음성 추가됨',
+			'profile.discardTitle' => '저장되지 않은 변경 사항',
+			'profile.discardBody' => '지금 나가면 변경 사항이 사라져요.',
+			'profile.discardConfirm' => '변경 사항 삭제',
+			'profile.keepEditing' => '계속 편집',
+			'profile.borderNone' => '테두리 없음',
+			'profile.borderOwned' => '보유 중',
+			'profile.borderEquipCta' => '테두리 사용',
+			'profile.borderRemoveCta' => '테두리 제거',
+			'profile.followEmpty' => '아직 아무도 없어요',
 			'nav.discover' => '탐색',
 			'nav.chat' => '채팅',
 			'nav.call' => '통화',
-			'nav.vibes' => 'Vibes',
+			'nav.vibes' => '바이브',
 			'nav.profile' => '프로필',
 			'call.title' => '60초 낯선 사람',
 			'call.subtitle' => '무작위 낯선 사람과 60초 동안 대화해요 — 완전히 익명으로. 프로필도, 사진도, 이름도 없어요. 오직 목소리와 한순간뿐.',
@@ -1316,6 +1491,7 @@ extension on TranslationsKo {
 			'call.noMatchTitle' => '지금은 대화할 수 있는 사람이 없어요',
 			'call.noMatchBody' => '지금은 대화 상대를 찾지 못했어요. 잠시 후에 다시 시도해 주세요.',
 			'call.noMatchOk' => '확인',
+			'call.cameraDenied' => '영상 통화하려면 카메라 권한이 필요해요. 설정에서 켤 수 있어요.',
 			'vibes.search' => '검색',
 			'vibes.sendMessage' => '메시지 보내기',
 			'vibes.wantsToTalk' => '지금 바로 이 얘기를 하고 싶어해요',
@@ -1327,10 +1503,16 @@ extension on TranslationsKo {
 			'vibes.deleteTitle' => '이 Vibe를 삭제할까요?',
 			'vibes.delete' => '삭제',
 			'vibes.cancel' => '취소',
+			'vibes.post' => '게시',
+			'vibes.replyHint' => '답장을 입력하세요',
+			'vibes.sortNewest' => '최신순',
+			'vibes.sortPopular' => '인기순',
+			'vibes.loadFailed' => '바이브를 불러오지 못했어요.',
+			'vibes.noResults' => '검색 결과가 없어요',
 			'discover.title' => '탐색',
 			'discover.tabRooms' => '룸',
 			'discover.tabDiscover' => '탐색',
-			'discover.tabAiMatch' => 'AI Match',
+			'discover.tabAiMatch' => 'AI 매치',
 			'discover.aiMatch.feelingTitle' => '오늘 기분이 어때요?',
 			'discover.aiMatch.feelingSubtitle' => '선택에 따라 AI가 최고의 상대를 찾아줘요',
 			'discover.aiMatch.lookingTitle' => '무엇을 찾고 있나요?',
@@ -1349,8 +1531,8 @@ extension on TranslationsKo {
 			'discover.aiMatch.statMatchRate' => '매칭률',
 			'discover.aiMatch.statAvgTime' => '평균 시간',
 			'discover.aiMatch.statActiveValue' => '843',
-			'discover.aiMatch.statMatchValue' => '87%',
-			'discover.aiMatch.statAvgValue' => '8초',
+			'discover.aiMatch.statMatchValue' => ({required Object value}) => '${value}%',
+			'discover.aiMatch.statAvgValue' => ({required Object value}) => '${value}초',
 			'discover.aiMatch.startSmartMatch' => '스마트 매칭 시작',
 			'discover.aiMatch.findingTitle' => '상대를 찾는 중',
 			'discover.aiMatch.findingSubtitle' => '기분과 관심사에 맞는 사람을 찾고 있어요',
@@ -1369,6 +1551,8 @@ extension on TranslationsKo {
 			'discover.aiMatch.swipeNext' => '다음',
 			'discover.aiMatch.swipeFinger' => '손가락으로 스와이프',
 			'discover.aiMatch.noMatch' => '지금은 맞는 상대가 없어요. 잠시 후 다시 시도해 주세요.',
+			'discover.aiMatch.likeSent' => ({required Object name}) => '${name}님을 팔로우했어요',
+			'discover.aiMatch.lastMatch' => '모든 매칭을 확인했어요. 더 보려면 다시 검색하세요.',
 			'discover.searchHint' => '검색',
 			'discover.allRooms' => '전체 룸',
 			'discover.allGroups' => '전체 그룹',
@@ -1423,6 +1607,14 @@ extension on TranslationsKo {
 			'discover.liveRoom.roomEnded' => '룸이 종료됐어요.',
 			'discover.liveRoom.wantsToJoin' => ({required Object name}) => '${name}님이 참여를 원해요',
 			'discover.liveRoom.approve' => '수락',
+			'discover.liveRoom.reject' => '거절',
+			'discover.liveRoom.pendingRequests' => '참여 요청',
+			'discover.liveRoom.noRequests' => '대기 중인 요청이 없어요.',
+			'discover.liveRoom.muteMic' => '마이크 끄기',
+			'discover.liveRoom.unmuteMic' => '마이크 켜기',
+			'discover.liveRoom.remove' => '방에서 내보내기',
+			'discover.liveRoom.removed' => '방에서 내보내졌습니다.',
+			'discover.liveRoom.seeProfile' => '프로필 보기 요청',
 			'discover.groupChat.usersCount' => ({required Object count}) => '사용자 ${count}명',
 			'discover.groupChat.sampleVictoria' => '너무 심심해요. 우리 뭐라도 할까요?',
 			'discover.groupChat.sampleSona' => '뭐 할까요? 생각해 둔 거 있어요?',
@@ -1449,6 +1641,8 @@ extension on TranslationsKo {
 			'discover.groupInfo.leaveConfirm' => '이 그룹에서 나갈까요?',
 			'discover.groupInfo.leave' => '나가기',
 			'discover.groupInfo.cancel' => '취소',
+			'discover.groupInfo.galleryEmpty' => '아직 공유된 사진이 없어요.',
+			'discover.groupInfo.adminOnly' => '관리자만 변경할 수 있어요.',
 			'discover.filters.title' => '필터',
 			'discover.filters.ageRange' => '나이 범위',
 			'discover.filters.ageRangeValue' => ({required Object min, required Object max}) => '${min}-${max}',
@@ -1482,8 +1676,12 @@ extension on TranslationsKo {
 			'discover.story.musicTitle' => '음악',
 			'discover.story.musicEmpty' => '음악을 찾을 수 없어요.',
 			'discover.story.musicError' => '음악을 불러올 수 없어요.',
+			'discover.story.unknownTrack' => '알 수 없음',
 			'discover.story.downloaded' => '갤러리에 저장됐어요',
+			_ => null,
+		} ?? switch (path) {
 			'discover.story.downloadFailed' => '저장할 수 없어요',
+			'discover.story.savedToDraft' => '임시 저장했어요',
 			'discover.highlight.title' => '하이라이트',
 			'discover.highlight.view' => '보기',
 			'discover.highlight.aiComments' => 'AI 댓글',
@@ -1498,6 +1696,7 @@ extension on TranslationsKo {
 			'discover.stats.boostCta' => '1일 부스트 - 100 토큰',
 			'discover.stats.boosted' => '부스트 완료! 24시간 동안 게시물이 상단에 노출돼요.',
 			'discover.hostedBy' => ({required Object name}) => '호스트: ${name}',
+			'discover.requestPending' => '요청을 보냈어요. 승인을 기다리는 중이에요.',
 			'common.loading' => '불러오는 중…',
 			'common.retry' => '다시 시도',
 			'common.cancel' => '취소',
@@ -1579,8 +1778,6 @@ extension on TranslationsKo {
 			'createProfile.interestsSubtitle' => '5개 이상 골라주세요 — 나를 잘 이해하는 사람과 매칭하는 데 도움이 돼요.',
 			'createProfile.interests.music' => '음악',
 			'createProfile.interests.movies' => '영화',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.interests.tvShows' => 'TV 프로그램',
 			'createProfile.interests.reading' => '독서',
 			'createProfile.interests.painting' => '그림',
@@ -1700,8 +1897,9 @@ extension on TranslationsKo {
 			'storyText.uppercase' => '대문자',
 			'storyText.underline' => '밑줄',
 			'storyText.cancel' => '취소',
+			'storyText.done' => '완료',
 			'storyText.galleryError' => '갤러리를 열 수 없어요',
-			'tokens.boostTitle' => 'Boost',
+			'tokens.boostTitle' => '부스트',
 			'tokens.history' => '내역',
 			'tokens.yourBalance' => '내 잔액',
 			'tokens.balanceTokens' => ({required Object count}) => '${count} 토큰',
@@ -1715,7 +1913,7 @@ extension on TranslationsKo {
 			'tokens.duration1h' => '1시간',
 			'tokens.duration2h' => '2시간',
 			'tokens.visibility' => ({required Object n}) => '노출 ${n}배',
-			'tokens.boostFor' => ({required Object count}) => '${count} 토큰으로 Boost',
+			'tokens.boostFor' => ({required Object count}) => '${count} 토큰으로 부스트',
 			'tokens.boostActive' => ({required Object time}) => '${time}까지 Boost 중',
 			'tokens.boostDone' => '프로필이 Boost됐어요!',
 			'tokens.historyEmpty' => '아직 토큰 내역이 없어요',

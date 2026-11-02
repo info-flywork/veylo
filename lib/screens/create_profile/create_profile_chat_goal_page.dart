@@ -50,8 +50,10 @@ class _CreateProfileChatGoalPageState extends State<CreateProfileChatGoalPage> {
       );
       draft.reset();
       if (!mounted) return;
-      await Navigator.of(context).push(
+      // Profil kaydedildi: geri tuşu forma dönmesin.
+      Navigator.of(context).pushAndRemoveUntil(
         createProfileRoute(const PreparingProfilesPage()),
+        (_) => false,
       );
     } on ApiException catch (e) {
       if (!mounted) return;

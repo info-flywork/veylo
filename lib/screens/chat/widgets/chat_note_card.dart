@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:veylo/core/theme/theme.dart';
-import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/models/chat/chat_note.dart';
 
@@ -81,7 +80,6 @@ class ChatNoteCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      if (note.isAi) const AiBadge(compact: true),
                     ],
                   ),
                   const SizedBox(height: 6),

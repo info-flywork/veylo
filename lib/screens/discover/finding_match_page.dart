@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
@@ -83,7 +84,6 @@ class _FindingMatchPageState extends State<FindingMatchPage>
       AppAssets.preparingThird,
       AppAssets.preparingFour,
       AppAssets.preparingSix,
-      AppAssets.fakePerson03,
     ]) {
       precacheImage(AssetImage(path), context);
     }
@@ -95,6 +95,13 @@ class _FindingMatchPageState extends State<FindingMatchPage>
     _floatController.dispose();
     _spinController.dispose();
     super.dispose();
+  }
+
+  /// Kapat: aramayı bırakıp AI Match sekmesine döner.
+  void _close() {
+    _navigated = true;
+    _progressController.stop();
+    Navigator.of(context).maybePop();
   }
 
   Future<void> _goToYourMatch() async {
@@ -151,90 +158,107 @@ class _FindingMatchPageState extends State<FindingMatchPage>
 
     return Scaffold(
       backgroundColor: AppColors.white,
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SizedBox(
-                    width: screenW,
-                    height: sceneH,
-                    child: PreparingMapScene(
-                      float: _floatController,
-                      avatarSize: _kAvatarSize,
-                      mapHeight: mapH,
-                    ),
+          Column(
+            children: [
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: screenW,
+                        height: sceneH,
+                        child: PreparingMapScene(
+                          float: _floatController,
+                          avatarSize: _kAvatarSize,
+                          mapHeight: mapH,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: hPad),
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 28),
+                            AppText(
+                              t.findingTitle,
+                              style: AppTextStyles.preparingTitle,
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 8),
+                            AppText(
+                              t.findingSubtitle,
+                              style: AppTextStyles.preparingSubtitle,
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 20),
+                            AnimatedBuilder(
+                              animation: _progressController,
+                              builder: (context, _) {
+                                final value = Curves.easeInOut.transform(
+                                  _progressController.value,
+                                );
+                                return _FindingProgressBar(progress: value);
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            AnimatedBuilder(
+                              animation: Listenable.merge([
+                                _progressController,
+                                _spinController,
+                              ]),
+                              builder: (context, _) {
+                                final value = Curves.easeInOut.transform(
+                                  _progressController.value,
+                                );
+                                return Padding(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Column(
+                                    children: [
+                                      for (var i = 0; i < steps.length; i++) ...[
+                                        if (i > 0) const SizedBox(height: 10),
+                                        Center(
+                                          child: _FindingStepRow(
+                                            label: steps[i],
+                                            status: _statusFor(i, value),
+                                            spin: _spinController,
+                                          ),
+                                        ),
+                                      ],
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: hPad),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: 28),
-                        AppText(
-                          t.findingTitle,
-                          style: AppTextStyles.preparingTitle,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 8),
-                        AppText(
-                          t.findingSubtitle,
-                          style: AppTextStyles.preparingSubtitle,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 20),
-                        AnimatedBuilder(
-                          animation: _progressController,
-                          builder: (context, _) {
-                            final value = Curves.easeInOut.transform(
-                              _progressController.value,
-                            );
-                            return _FindingProgressBar(progress: value);
-                          },
-                        ),
-                        const SizedBox(height: 20),
-                        AnimatedBuilder(
-                          animation: Listenable.merge([
-                            _progressController,
-                            _spinController,
-                          ]),
-                          builder: (context, _) {
-                            final value = Curves.easeInOut.transform(
-                              _progressController.value,
-                            );
-                            return Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Column(
-                                children: [
-                                  for (var i = 0; i < steps.length; i++) ...[
-                                    if (i > 0) const SizedBox(height: 10),
-                                    Center(
-                                      child: _FindingStepRow(
-                                        label: steps[i],
-                                        status: _statusFor(i, value),
-                                        spin: _spinController,
-                                      ),
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(hPad, 0, hPad, 24 + bottomInset),
+                child: AppText(
+                  t.findingOnline(count: '${widget.onlineCount ?? '–'}'),
+                  style: AppTextStyles.aiMatchFindingOnline,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
           ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(hPad, 0, hPad, 24 + bottomInset),
-            child: AppText(
-              t.findingOnline(count: '${widget.onlineCount ?? '–'}'),
-              style: AppTextStyles.aiMatchFindingOnline,
-              textAlign: TextAlign.center,
+          Positioned(
+            top: media.padding.top + 8,
+            right: 16,
+            child: GestureDetector(
+              onTap: _close,
+              behavior: HitTestBehavior.opaque,
+              child: SvgPicture.asset(
+                AppAssets.iconClose,
+                width: 32,
+                height: 32,
+              ),
             ),
           ),
         ],

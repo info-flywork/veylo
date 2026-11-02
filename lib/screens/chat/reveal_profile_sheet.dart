@@ -11,19 +11,36 @@ import 'package:veylo/i18n/strings.g.dart';
 Future<bool?> showRevealProfileSheet(
   BuildContext context, {
   required String peerUsername,
+  bool myConsent = false,
+  bool peerConsent = false,
 }) {
   return showModalBottomSheet<bool>(
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
-    builder: (_) => RevealProfileSheet(peerUsername: peerUsername),
+    builder: (_) => RevealProfileSheet(
+      peerUsername: peerUsername,
+      myConsent: myConsent,
+      peerConsent: peerConsent,
+    ),
   );
 }
 
 class RevealProfileSheet extends StatelessWidget {
-  const RevealProfileSheet({super.key, required this.peerUsername});
+  const RevealProfileSheet({
+    super.key,
+    required this.peerUsername,
+    this.myConsent = false,
+    this.peerConsent = false,
+  });
 
   final String peerUsername;
+
+  /// Ben onayladım, karşı taraf henüz değil → "onayı bekleniyor".
+  final bool myConsent;
+
+  /// Karşı taraf onayladı → profilini açmak istiyor.
+  final bool peerConsent;
 
   static const _iconSize = 100.0;
   static const _iconBg = Color(0xFFF6F6FB);
@@ -32,6 +49,11 @@ class RevealProfileSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = Translations.of(context).chats;
     final bottom = MediaQuery.viewPaddingOf(context).bottom;
+    final status = myConsent && !peerConsent
+        ? t.revealWaiting(name: peerUsername)
+        : peerConsent && !myConsent
+        ? t.revealPeerWants(name: peerUsername)
+        : null;
 
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
@@ -78,9 +100,10 @@ class RevealProfileSheet extends StatelessWidget {
                         ),
                         textAlign: TextAlign.center,
                       ),
+                      if (status != null) ...[
                       const SizedBox(height: 10),
                       AppText(
-                        t.revealWaiting(name: peerUsername),
+                        status,
                         style: const TextStyle(
                           fontFamily: AppFonts.poppins,
                           fontWeight: FontWeight.w500,
@@ -91,6 +114,7 @@ class RevealProfileSheet extends StatelessWidget {
                         ),
                         textAlign: TextAlign.center,
                       ),
+                      ],
                       const SizedBox(height: 10),
                       AppPrimaryButton(
                         label: t.revealCta,

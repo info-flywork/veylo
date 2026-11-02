@@ -8,6 +8,7 @@ import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/data/remote/user_repository.dart';
 
@@ -80,10 +81,10 @@ class _VoiceRecordSheetState extends State<_VoiceRecordSheet> {
       return;
     }
     final allowed = await _recorder.hasPermission();
-    if (!allowed) {
+      if (!allowed) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Allow the microphone to record.')),
+          SnackBar(content: Text(Translations.of(context).chats.micNeeded)),
         );
       }
       return;
@@ -171,15 +172,16 @@ class _VoiceRecordSheetState extends State<_VoiceRecordSheet> {
   @override
   Widget build(BuildContext context) {
     final bottom = MediaQuery.paddingOf(context).bottom;
+    final t = Translations.of(context).profile;
     final shared = _sharedUrl;
     final hasTake = _filePath != null;
     final status = _recording
-        ? 'Recording $_seconds s'
+        ? t.voiceRecording(seconds: '$_seconds')
         : hasTake
-        ? 'Your voice is ready'
+        ? t.voiceReady
         : shared != null
-        ? 'Shared on your profile'
-        : 'Record a short intro, up to $_maxSeconds seconds';
+        ? t.voiceShared
+        : t.voiceHint(seconds: '$_maxSeconds');
 
     return Padding(
       padding: EdgeInsets.fromLTRB(20, 16, 20, 16 + bottom),
@@ -198,7 +200,7 @@ class _VoiceRecordSheetState extends State<_VoiceRecordSheet> {
             ),
           ),
           const SizedBox(height: 16),
-          const AppText('Add Voice', style: AppTextStyles.filtersTitle),
+          AppText(t.addVoice, style: AppTextStyles.filtersTitle),
           const SizedBox(height: 8),
           AppText(status, style: AppTextStyles.profileBio),
           const SizedBox(height: 20),
@@ -227,13 +229,13 @@ class _VoiceRecordSheetState extends State<_VoiceRecordSheet> {
             OutlinedButton.icon(
               onPressed: _togglePlay,
               icon: Icon(_playing ? Icons.pause_rounded : Icons.play_arrow_rounded),
-              label: Text(_playing ? 'Pause' : 'Play'),
+              label: Text(_playing ? t.voicePause : t.voicePlay),
             ),
           ],
           if (hasTake) ...[
             const SizedBox(height: 12),
             AppPrimaryButton(
-              label: _busy ? 'Saving…' : 'Share on profile',
+              label: _busy ? t.voiceSaving : t.voiceShare,
               onPressed: _busy ? null : _share,
             ),
           ],
@@ -241,7 +243,7 @@ class _VoiceRecordSheetState extends State<_VoiceRecordSheet> {
             const SizedBox(height: 12),
             TextButton(
               onPressed: _busy ? null : _remove,
-              child: const Text('Remove from profile'),
+              child: Text(t.voiceRemove),
             ),
           ],
         ],
@@ -312,8 +314,11 @@ class _VoiceIntroBarState extends State<VoiceIntroBar> {
                 size: 28,
               ),
               const SizedBox(width: 10),
-              const Expanded(
-                child: AppText('Voice', style: AppTextStyles.profileBio),
+              Expanded(
+                child: AppText(
+                  Translations.of(context).profile.voiceLabel,
+                  style: AppTextStyles.profileBio,
+                ),
               ),
             ],
           ),

@@ -157,12 +157,20 @@ class SessionStore extends ChangeNotifier {
       ) ??
       false;
 
-  /// Firebase şifresini değiştirir. Oturum eskiyse `requires-recent-login` fırlatır.
-  Future<void> changePassword(String newPassword) async {
+  /// Firebase şifresini değiştirir: önce mevcut şifreyle yeniden doğrular
+  /// (yanlışsa `wrong-password` / `invalid-credential` fırlatır).
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null || !hasPasswordLogin) {
-      throw const ApiException(code: 'SOCIAL_ACCOUNT');
+    final email = user?.email;
+    if (user == null || email == null || !hasPasswordLogin) {
+      throw const ApiException(status: 400, code: 'SOCIAL_ACCOUNT');
     }
+    await user.reauthenticateWithCredential(
+      EmailAuthProvider.credential(email: email, password: currentPassword),
+    );
     await user.updatePassword(newPassword);
   }
 

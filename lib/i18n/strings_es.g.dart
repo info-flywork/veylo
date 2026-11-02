@@ -150,6 +150,37 @@ class _Translations$chats$es extends Translations$chats$tr {
 	@override String get unlockFullPendingTheirs => 'Esta persona quiere ver tu perfil completo.';
 	@override String unlockSent({required Object title}) => 'Enviaste una solicitud: ${title}';
 	@override String unlockReceived({required Object title}) => 'La persona con la que chateas envió una solicitud sobre ${title}.';
+	@override String get requestAction => 'Solicitar';
+	@override String get requestSent => 'Enviada';
+	@override String get previewUnlock => 'Solicitud de desbloqueo';
+	@override String get previewNameShared => 'Nombre compartido';
+	@override String get previewNameDeclined => 'Solicitud de nombre rechazada';
+	@override String get previewPhotoShared => 'Foto compartida';
+	@override String get previewPhotoDeclined => 'Solicitud de foto rechazada';
+	@override String get previewProfileShared => 'Perfil compartido';
+	@override String get previewProfileDeclined => 'Solicitud de perfil rechazada';
+	@override String get previewPhoto => 'Foto';
+	@override String get previewVoice => 'Mensaje de voz';
+	@override String get micNeeded => 'Se necesita permiso del micrófono';
+	@override String get previewSticker => 'Sticker';
+	@override String get stickerEmpty => 'No hay stickers recientes';
+	@override String get messageCopied => 'Mensaje copiado';
+	@override String get reportReasonSubtitle => '¿Por qué denuncias este mensaje?';
+	@override String get reasonHarassment => 'Acoso o intimidación';
+	@override String get reasonHateSpeech => 'Discurso de odio';
+	@override String get reasonNudity => 'Desnudos o contenido sexual';
+	@override String get reasonSpam => 'Spam';
+	@override String get reasonScam => 'Estafa o fraude';
+	@override String get reasonViolence => 'Violencia o amenazas';
+	@override String get reasonOther => 'Otro';
+	@override String get mute => 'Silenciar';
+	@override String get unmute => 'Activar sonido';
+	@override String get deleteChat => 'Eliminar chat';
+	@override String get emptyThreadsTitle => 'Aún no hay chats';
+	@override String get emptyThreadsSubtitle => 'Cuando empieces a hablar con alguien, tus chats aparecerán aquí.';
+	@override String get noSearchResults => 'No se encontraron resultados';
+	@override String get milestonePhotoUnlocked => 'Desbloqueado al 70%';
+	@override String revealPeerWants({required Object name}) => '${name} quiere revelar su perfil';
 }
 
 // Path: profile
@@ -192,6 +223,9 @@ class _Translations$profile$es extends Translations$profile$tr {
 	@override String get notifications => 'Notificaciones';
 	@override String get password => 'Contraseña';
 	@override String get deleteConversation => 'Eliminar conversaciones';
+	@override String get deleteAllTitle => '¿Seguro que quieres eliminar todas las conversaciones?';
+	@override String get deleteAllBody => 'Si confirmas, se eliminarán todos los mensajes';
+	@override String get deleteAllAction => 'Eliminar';
 	@override String get faqHelp => 'Preguntas frecuentes y ayuda';
 	@override String get restorePurchases => 'Restaurar compras';
 	@override String get termsOfService => 'Términos del servicio';
@@ -225,6 +259,16 @@ class _Translations$profile$es extends Translations$profile$tr {
 	@override String get educationPhd => 'Doctorado';
 	@override String get voiceRecord => 'Nota de voz';
 	@override String get addVoice => 'Añadir voz';
+	@override String get voiceShared => 'Compartido en tu perfil';
+	@override String voiceHint({required Object seconds}) => 'Graba una intro corta, hasta ${seconds} segundos';
+	@override String voiceRecording({required Object seconds}) => 'Grabando ${seconds} s';
+	@override String get voiceReady => 'Tu voz está lista';
+	@override String get voicePlay => 'Reproducir';
+	@override String get voicePause => 'Pausa';
+	@override String get voiceShare => 'Compartir en el perfil';
+	@override String get voiceSaving => 'Guardando…';
+	@override String get voiceRemove => 'Quitar del perfil';
+	@override String get voiceLabel => 'Voz';
 	@override String get lifestyle => 'Estilo de vida';
 	@override String get pets => 'Mascotas';
 	@override String get petsValue => 'Tengo un gato';
@@ -262,15 +306,16 @@ class _Translations$profile$es extends Translations$profile$tr {
 	@override String get borderBuySection => 'Compra un borde';
 	@override String get borderBuyCta => 'Comprar borde';
 	@override String borderToken({required Object count}) => '${count} tokens';
-	@override String get borderAmethystWings => 'Amethyst Wings';
-	@override String get borderGoldenPhoenix => 'Golden Phoenix';
-	@override String get borderFrostCrown => 'Frost Crown';
-	@override String get borderEmeraldWhisper => 'Emerald Whisper';
-	@override String get borderRoseQuartz => 'Rose Quartz';
-	@override String get borderStarlitComet => 'Starlit Comet';
-	@override String get borderCrimsonRoyal => 'Crimson Royal';
-	@override String get borderSapphireHalo => 'Sapphire Halo';
+	@override String get borderAmethystWings => 'Alas de amatista';
+	@override String get borderGoldenPhoenix => 'Fénix dorado';
+	@override String get borderFrostCrown => 'Corona de escarcha';
+	@override String get borderEmeraldWhisper => 'Susurro esmeralda';
+	@override String get borderRoseQuartz => 'Cuarzo rosa';
+	@override String get borderStarlitComet => 'Cometa estrellado';
+	@override String get borderCrimsonRoyal => 'Carmesí real';
+	@override String get borderSapphireHalo => 'Halo de zafiro';
 	@override String get follow => 'Seguir';
+	@override String get message => 'Mensaje';
 	@override String get following => 'Siguiendo';
 	@override String get followPageTitle => 'Seguir';
 	@override String get followTabFollowing => 'Siguiendo';
@@ -307,6 +352,37 @@ class _Translations$profile$es extends Translations$profile$tr {
 	@override String emailVerificationSent({required Object email}) => 'Enviamos un enlace de confirmación a ${email}. Tu correo cambiará cuando lo confirmes.';
 	@override String get passwordChanged => 'Tu contraseña se actualizó.';
 	@override String get passwordMismatch => 'Las contraseñas no coinciden.';
+	@override String get shareSend => 'Enviar';
+	@override String shareMessage({required Object name, required Object url}) => '${name} — perfil de Veylo: ${url}';
+	@override String get currentPassword => 'Contraseña actual';
+	@override String get currentPasswordWrong => 'Tu contraseña actual es incorrecta.';
+	@override String get reportReasonLabel => 'Motivo';
+	@override String get reportReasonHarassment => 'Acoso o intimidación';
+	@override String get reportReasonHateSpeech => 'Discurso de odio';
+	@override String get reportReasonNudity => 'Desnudos o contenido sexual';
+	@override String get reportReasonUnderage => 'Menor de 18 años';
+	@override String get reportReasonSpam => 'Spam';
+	@override String get reportReasonScam => 'Estafa o fraude';
+	@override String get reportReasonViolence => 'Violencia o amenazas';
+	@override String get reportReasonImpersonation => 'Se hace pasar por otra persona';
+	@override String get reportReasonOther => 'Otro';
+	@override String blockedDone({required Object username}) => '${username} ha sido bloqueado.';
+	@override String restrictedDone({required Object username}) => '${username} ha sido restringido.';
+	@override String get emptyPosts => 'Aún no hay publicaciones';
+	@override String get emptyVideos => 'Aún no hay videos';
+	@override String get emptySaved => 'Aún no hay publicaciones guardadas';
+	@override String get clearSelection => 'Borrar selección';
+	@override String get genderNonBinary => 'No binario';
+	@override String get voiceAdded => 'Voz añadida';
+	@override String get discardTitle => 'Cambios sin guardar';
+	@override String get discardBody => 'Si sales ahora, perderás tus cambios.';
+	@override String get discardConfirm => 'Descartar cambios';
+	@override String get keepEditing => 'Seguir editando';
+	@override String get borderNone => 'Sin marco';
+	@override String get borderOwned => 'Comprado';
+	@override String get borderEquipCta => 'Usar marco';
+	@override String get borderRemoveCta => 'Quitar marco';
+	@override String get followEmpty => 'Aún no hay nadie aquí';
 }
 
 // Path: nav
@@ -319,7 +395,7 @@ class _Translations$nav$es extends Translations$nav$tr {
 	@override String get discover => 'Descubrir';
 	@override String get chat => 'Chat';
 	@override String get call => 'Llamada';
-	@override String get vibes => 'Vibes';
+	@override String get vibes => 'Vibras';
 	@override String get profile => 'Perfil';
 }
 
@@ -362,6 +438,7 @@ class _Translations$call$es extends Translations$call$tr {
 	@override String get noMatchTitle => 'No hay nadie disponible ahora';
 	@override String get noMatchBody => 'No encontramos a nadie con quien hablar en este momento. Vuelve a intentarlo un poco más tarde.';
 	@override String get noMatchOk => 'OK';
+	@override String get cameraDenied => 'Se necesita acceso a la cámara para las videollamadas. Puedes activarlo en Ajustes.';
 }
 
 // Path: vibes
@@ -382,6 +459,12 @@ class _Translations$vibes$es extends Translations$vibes$tr {
 	@override String get deleteTitle => '¿Eliminar este vibe?';
 	@override String get delete => 'Eliminar';
 	@override String get cancel => 'Cancelar';
+	@override String get post => 'Publicar';
+	@override String get replyHint => 'Escribe tu respuesta';
+	@override String get sortNewest => 'Más recientes';
+	@override String get sortPopular => 'Más populares';
+	@override String get loadFailed => 'No se pudieron cargar los vibes.';
+	@override String get noResults => 'No se encontraron resultados';
 }
 
 // Path: discover
@@ -394,7 +477,7 @@ class _Translations$discover$es extends Translations$discover$tr {
 	@override String get title => 'Descubrir';
 	@override String get tabRooms => 'Salas';
 	@override String get tabDiscover => 'Descubrir';
-	@override String get tabAiMatch => 'AI Match';
+	@override String get tabAiMatch => 'Match de IA';
 	@override late final _Translations$discover$aiMatch$es aiMatch = _Translations$discover$aiMatch$es._(_root);
 	@override String get searchHint => 'Buscar';
 	@override String get allRooms => 'Todas las salas';
@@ -422,6 +505,7 @@ class _Translations$discover$es extends Translations$discover$tr {
 	@override late final _Translations$discover$highlight$es highlight = _Translations$discover$highlight$es._(_root);
 	@override late final _Translations$discover$stats$es stats = _Translations$discover$stats$es._(_root);
 	@override String hostedBy({required Object name}) => 'Organizada por ${name}';
+	@override String get requestPending => 'Tu solicitud se envió y está pendiente de aprobación.';
 }
 
 // Path: common
@@ -700,6 +784,7 @@ class _Translations$storyText$es extends Translations$storyText$tr {
 	@override String get uppercase => 'Mayúsculas';
 	@override String get underline => 'Subrayado';
 	@override String get cancel => 'Cancelar';
+	@override String get done => 'Listo';
 	@override String get galleryError => 'No se pudo abrir la galería';
 }
 
@@ -710,7 +795,7 @@ class _Translations$tokens$es extends Translations$tokens$tr {
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get boostTitle => 'Boost';
+	@override String get boostTitle => 'Destacar';
 	@override String get history => 'Historial';
 	@override String get yourBalance => 'Tu saldo';
 	@override String balanceTokens({required Object count}) => '${count} tokens';
@@ -724,7 +809,7 @@ class _Translations$tokens$es extends Translations$tokens$tr {
 	@override String get duration1h => '1 hora';
 	@override String get duration2h => '2 horas';
 	@override String visibility({required Object n}) => 'Visibilidad x${n}';
-	@override String boostFor({required Object count}) => 'Boost por ${count} tokens';
+	@override String boostFor({required Object count}) => 'Destacar por ${count} tokens';
 	@override String boostActive({required Object time}) => 'Boost activo hasta las ${time}';
 	@override String get boostDone => '¡Tu perfil tiene Boost!';
 	@override String get historyEmpty => 'Aún no hay actividad de tokens';
@@ -773,8 +858,8 @@ class _Translations$discover$aiMatch$es extends Translations$discover$aiMatch$tr
 	@override String get statMatchRate => 'Tasa de match';
 	@override String get statAvgTime => 'Tiempo medio';
 	@override String get statActiveValue => '843';
-	@override String get statMatchValue => '87%';
-	@override String get statAvgValue => '8s';
+	@override String statMatchValue({required Object value}) => '${value}%';
+	@override String statAvgValue({required Object value}) => '${value}s';
 	@override String get startSmartMatch => 'Iniciar Smart Match';
 	@override String get findingTitle => 'Buscando tu match';
 	@override String get findingSubtitle => 'Conectando tu estado de ánimo e intereses con la persona ideal';
@@ -793,6 +878,8 @@ class _Translations$discover$aiMatch$es extends Translations$discover$aiMatch$tr
 	@override String get swipeNext => 'Siguiente';
 	@override String get swipeFinger => 'Desliza el dedo';
 	@override String get noMatch => 'Ahora no hay nadie compatible. Inténtalo de nuevo en un rato.';
+	@override String likeSent({required Object name}) => 'Ahora sigues a ${name}';
+	@override String get lastMatch => 'Has visto todas tus coincidencias. Busca de nuevo para ver más.';
 }
 
 // Path: discover.privateRoom
@@ -889,6 +976,14 @@ class _Translations$discover$liveRoom$es extends Translations$discover$liveRoom$
 	@override String get roomEnded => 'La sala ha terminado.';
 	@override String wantsToJoin({required Object name}) => '${name} quiere unirse';
 	@override String get approve => 'Aprobar';
+	@override String get reject => 'Rechazar';
+	@override String get pendingRequests => 'Solicitudes para unirse';
+	@override String get noRequests => 'No hay solicitudes pendientes.';
+	@override String get muteMic => 'Desactivar micrófono';
+	@override String get unmuteMic => 'Activar micrófono';
+	@override String get remove => 'Eliminar de la sala';
+	@override String get removed => 'Te han eliminado de la sala.';
+	@override String get seeProfile => 'Pedir ver el perfil';
 }
 
 // Path: discover.groupChat
@@ -933,6 +1028,8 @@ class _Translations$discover$groupInfo$es extends Translations$discover$groupInf
 	@override String get leaveConfirm => '¿Salir de este grupo?';
 	@override String get leave => 'Salir';
 	@override String get cancel => 'Cancelar';
+	@override String get galleryEmpty => 'Aún no se han compartido fotos.';
+	@override String get adminOnly => 'Solo los administradores pueden cambiar esto.';
 }
 
 // Path: discover.filters
@@ -993,8 +1090,10 @@ class _Translations$discover$story$es extends Translations$discover$story$tr {
 	@override String get musicTitle => 'Música';
 	@override String get musicEmpty => 'No se encontró música.';
 	@override String get musicError => 'No se pudo cargar la música.';
+	@override String get unknownTrack => 'Desconocido';
 	@override String get downloaded => 'Guardado en la galería';
 	@override String get downloadFailed => 'No se pudo guardar';
+	@override String get savedToDraft => 'Guardado en borradores';
 }
 
 // Path: discover.highlight
@@ -1131,6 +1230,37 @@ extension on TranslationsEs {
 			'chats.unlockFullPendingTheirs' => 'Esta persona quiere ver tu perfil completo.',
 			'chats.unlockSent' => ({required Object title}) => 'Enviaste una solicitud: ${title}',
 			'chats.unlockReceived' => ({required Object title}) => 'La persona con la que chateas envió una solicitud sobre ${title}.',
+			'chats.requestAction' => 'Solicitar',
+			'chats.requestSent' => 'Enviada',
+			'chats.previewUnlock' => 'Solicitud de desbloqueo',
+			'chats.previewNameShared' => 'Nombre compartido',
+			'chats.previewNameDeclined' => 'Solicitud de nombre rechazada',
+			'chats.previewPhotoShared' => 'Foto compartida',
+			'chats.previewPhotoDeclined' => 'Solicitud de foto rechazada',
+			'chats.previewProfileShared' => 'Perfil compartido',
+			'chats.previewProfileDeclined' => 'Solicitud de perfil rechazada',
+			'chats.previewPhoto' => 'Foto',
+			'chats.previewVoice' => 'Mensaje de voz',
+			'chats.micNeeded' => 'Se necesita permiso del micrófono',
+			'chats.previewSticker' => 'Sticker',
+			'chats.stickerEmpty' => 'No hay stickers recientes',
+			'chats.messageCopied' => 'Mensaje copiado',
+			'chats.reportReasonSubtitle' => '¿Por qué denuncias este mensaje?',
+			'chats.reasonHarassment' => 'Acoso o intimidación',
+			'chats.reasonHateSpeech' => 'Discurso de odio',
+			'chats.reasonNudity' => 'Desnudos o contenido sexual',
+			'chats.reasonSpam' => 'Spam',
+			'chats.reasonScam' => 'Estafa o fraude',
+			'chats.reasonViolence' => 'Violencia o amenazas',
+			'chats.reasonOther' => 'Otro',
+			'chats.mute' => 'Silenciar',
+			'chats.unmute' => 'Activar sonido',
+			'chats.deleteChat' => 'Eliminar chat',
+			'chats.emptyThreadsTitle' => 'Aún no hay chats',
+			'chats.emptyThreadsSubtitle' => 'Cuando empieces a hablar con alguien, tus chats aparecerán aquí.',
+			'chats.noSearchResults' => 'No se encontraron resultados',
+			'chats.milestonePhotoUnlocked' => 'Desbloqueado al 70%',
+			'chats.revealPeerWants' => ({required Object name}) => '${name} quiere revelar su perfil',
 			'profile.eyebrow' => 'Perfil',
 			'profile.title' => 'Ajustes',
 			'profile.editProfile' => 'Editar perfil',
@@ -1164,6 +1294,9 @@ extension on TranslationsEs {
 			'profile.notifications' => 'Notificaciones',
 			'profile.password' => 'Contraseña',
 			'profile.deleteConversation' => 'Eliminar conversaciones',
+			'profile.deleteAllTitle' => '¿Seguro que quieres eliminar todas las conversaciones?',
+			'profile.deleteAllBody' => 'Si confirmas, se eliminarán todos los mensajes',
+			'profile.deleteAllAction' => 'Eliminar',
 			'profile.faqHelp' => 'Preguntas frecuentes y ayuda',
 			'profile.restorePurchases' => 'Restaurar compras',
 			'profile.termsOfService' => 'Términos del servicio',
@@ -1197,6 +1330,16 @@ extension on TranslationsEs {
 			'profile.educationPhd' => 'Doctorado',
 			'profile.voiceRecord' => 'Nota de voz',
 			'profile.addVoice' => 'Añadir voz',
+			'profile.voiceShared' => 'Compartido en tu perfil',
+			'profile.voiceHint' => ({required Object seconds}) => 'Graba una intro corta, hasta ${seconds} segundos',
+			'profile.voiceRecording' => ({required Object seconds}) => 'Grabando ${seconds} s',
+			'profile.voiceReady' => 'Tu voz está lista',
+			'profile.voicePlay' => 'Reproducir',
+			'profile.voicePause' => 'Pausa',
+			'profile.voiceShare' => 'Compartir en el perfil',
+			'profile.voiceSaving' => 'Guardando…',
+			'profile.voiceRemove' => 'Quitar del perfil',
+			'profile.voiceLabel' => 'Voz',
 			'profile.lifestyle' => 'Estilo de vida',
 			'profile.pets' => 'Mascotas',
 			'profile.petsValue' => 'Tengo un gato',
@@ -1234,15 +1377,16 @@ extension on TranslationsEs {
 			'profile.borderBuySection' => 'Compra un borde',
 			'profile.borderBuyCta' => 'Comprar borde',
 			'profile.borderToken' => ({required Object count}) => '${count} tokens',
-			'profile.borderAmethystWings' => 'Amethyst Wings',
-			'profile.borderGoldenPhoenix' => 'Golden Phoenix',
-			'profile.borderFrostCrown' => 'Frost Crown',
-			'profile.borderEmeraldWhisper' => 'Emerald Whisper',
-			'profile.borderRoseQuartz' => 'Rose Quartz',
-			'profile.borderStarlitComet' => 'Starlit Comet',
-			'profile.borderCrimsonRoyal' => 'Crimson Royal',
-			'profile.borderSapphireHalo' => 'Sapphire Halo',
+			'profile.borderAmethystWings' => 'Alas de amatista',
+			'profile.borderGoldenPhoenix' => 'Fénix dorado',
+			'profile.borderFrostCrown' => 'Corona de escarcha',
+			'profile.borderEmeraldWhisper' => 'Susurro esmeralda',
+			'profile.borderRoseQuartz' => 'Cuarzo rosa',
+			'profile.borderStarlitComet' => 'Cometa estrellado',
+			'profile.borderCrimsonRoyal' => 'Carmesí real',
+			'profile.borderSapphireHalo' => 'Halo de zafiro',
 			'profile.follow' => 'Seguir',
+			'profile.message' => 'Mensaje',
 			'profile.following' => 'Siguiendo',
 			'profile.followPageTitle' => 'Seguir',
 			'profile.followTabFollowing' => 'Siguiendo',
@@ -1279,10 +1423,41 @@ extension on TranslationsEs {
 			'profile.emailVerificationSent' => ({required Object email}) => 'Enviamos un enlace de confirmación a ${email}. Tu correo cambiará cuando lo confirmes.',
 			'profile.passwordChanged' => 'Tu contraseña se actualizó.',
 			'profile.passwordMismatch' => 'Las contraseñas no coinciden.',
+			'profile.shareSend' => 'Enviar',
+			'profile.shareMessage' => ({required Object name, required Object url}) => '${name} — perfil de Veylo: ${url}',
+			'profile.currentPassword' => 'Contraseña actual',
+			'profile.currentPasswordWrong' => 'Tu contraseña actual es incorrecta.',
+			'profile.reportReasonLabel' => 'Motivo',
+			'profile.reportReasonHarassment' => 'Acoso o intimidación',
+			'profile.reportReasonHateSpeech' => 'Discurso de odio',
+			'profile.reportReasonNudity' => 'Desnudos o contenido sexual',
+			'profile.reportReasonUnderage' => 'Menor de 18 años',
+			'profile.reportReasonSpam' => 'Spam',
+			'profile.reportReasonScam' => 'Estafa o fraude',
+			'profile.reportReasonViolence' => 'Violencia o amenazas',
+			'profile.reportReasonImpersonation' => 'Se hace pasar por otra persona',
+			'profile.reportReasonOther' => 'Otro',
+			'profile.blockedDone' => ({required Object username}) => '${username} ha sido bloqueado.',
+			'profile.restrictedDone' => ({required Object username}) => '${username} ha sido restringido.',
+			'profile.emptyPosts' => 'Aún no hay publicaciones',
+			'profile.emptyVideos' => 'Aún no hay videos',
+			'profile.emptySaved' => 'Aún no hay publicaciones guardadas',
+			'profile.clearSelection' => 'Borrar selección',
+			'profile.genderNonBinary' => 'No binario',
+			'profile.voiceAdded' => 'Voz añadida',
+			'profile.discardTitle' => 'Cambios sin guardar',
+			'profile.discardBody' => 'Si sales ahora, perderás tus cambios.',
+			'profile.discardConfirm' => 'Descartar cambios',
+			'profile.keepEditing' => 'Seguir editando',
+			'profile.borderNone' => 'Sin marco',
+			'profile.borderOwned' => 'Comprado',
+			'profile.borderEquipCta' => 'Usar marco',
+			'profile.borderRemoveCta' => 'Quitar marco',
+			'profile.followEmpty' => 'Aún no hay nadie aquí',
 			'nav.discover' => 'Descubrir',
 			'nav.chat' => 'Chat',
 			'nav.call' => 'Llamada',
-			'nav.vibes' => 'Vibes',
+			'nav.vibes' => 'Vibras',
 			'nav.profile' => 'Perfil',
 			'call.title' => '60 segundos con un extraño',
 			'call.subtitle' => 'Habla con un extraño al azar durante 60 segundos, de forma totalmente anónima. Sin perfil, sin foto, sin nombre. Solo una voz y un momento.',
@@ -1316,6 +1491,7 @@ extension on TranslationsEs {
 			'call.noMatchTitle' => 'No hay nadie disponible ahora',
 			'call.noMatchBody' => 'No encontramos a nadie con quien hablar en este momento. Vuelve a intentarlo un poco más tarde.',
 			'call.noMatchOk' => 'OK',
+			'call.cameraDenied' => 'Se necesita acceso a la cámara para las videollamadas. Puedes activarlo en Ajustes.',
 			'vibes.search' => 'Buscar',
 			'vibes.sendMessage' => 'Enviar mensaje',
 			'vibes.wantsToTalk' => 'Quiere hablar de esto ahora mismo',
@@ -1327,10 +1503,16 @@ extension on TranslationsEs {
 			'vibes.deleteTitle' => '¿Eliminar este vibe?',
 			'vibes.delete' => 'Eliminar',
 			'vibes.cancel' => 'Cancelar',
+			'vibes.post' => 'Publicar',
+			'vibes.replyHint' => 'Escribe tu respuesta',
+			'vibes.sortNewest' => 'Más recientes',
+			'vibes.sortPopular' => 'Más populares',
+			'vibes.loadFailed' => 'No se pudieron cargar los vibes.',
+			'vibes.noResults' => 'No se encontraron resultados',
 			'discover.title' => 'Descubrir',
 			'discover.tabRooms' => 'Salas',
 			'discover.tabDiscover' => 'Descubrir',
-			'discover.tabAiMatch' => 'AI Match',
+			'discover.tabAiMatch' => 'Match de IA',
 			'discover.aiMatch.feelingTitle' => '¿Cómo te sientes hoy?',
 			'discover.aiMatch.feelingSubtitle' => 'La IA encuentra tu mejor match según lo que elijas',
 			'discover.aiMatch.lookingTitle' => '¿Qué estás buscando?',
@@ -1349,8 +1531,8 @@ extension on TranslationsEs {
 			'discover.aiMatch.statMatchRate' => 'Tasa de match',
 			'discover.aiMatch.statAvgTime' => 'Tiempo medio',
 			'discover.aiMatch.statActiveValue' => '843',
-			'discover.aiMatch.statMatchValue' => '87%',
-			'discover.aiMatch.statAvgValue' => '8s',
+			'discover.aiMatch.statMatchValue' => ({required Object value}) => '${value}%',
+			'discover.aiMatch.statAvgValue' => ({required Object value}) => '${value}s',
 			'discover.aiMatch.startSmartMatch' => 'Iniciar Smart Match',
 			'discover.aiMatch.findingTitle' => 'Buscando tu match',
 			'discover.aiMatch.findingSubtitle' => 'Conectando tu estado de ánimo e intereses con la persona ideal',
@@ -1369,6 +1551,8 @@ extension on TranslationsEs {
 			'discover.aiMatch.swipeNext' => 'Siguiente',
 			'discover.aiMatch.swipeFinger' => 'Desliza el dedo',
 			'discover.aiMatch.noMatch' => 'Ahora no hay nadie compatible. Inténtalo de nuevo en un rato.',
+			'discover.aiMatch.likeSent' => ({required Object name}) => 'Ahora sigues a ${name}',
+			'discover.aiMatch.lastMatch' => 'Has visto todas tus coincidencias. Busca de nuevo para ver más.',
 			'discover.searchHint' => 'Buscar',
 			'discover.allRooms' => 'Todas las salas',
 			'discover.allGroups' => 'Todos los grupos',
@@ -1423,6 +1607,14 @@ extension on TranslationsEs {
 			'discover.liveRoom.roomEnded' => 'La sala ha terminado.',
 			'discover.liveRoom.wantsToJoin' => ({required Object name}) => '${name} quiere unirse',
 			'discover.liveRoom.approve' => 'Aprobar',
+			'discover.liveRoom.reject' => 'Rechazar',
+			'discover.liveRoom.pendingRequests' => 'Solicitudes para unirse',
+			'discover.liveRoom.noRequests' => 'No hay solicitudes pendientes.',
+			'discover.liveRoom.muteMic' => 'Desactivar micrófono',
+			'discover.liveRoom.unmuteMic' => 'Activar micrófono',
+			'discover.liveRoom.remove' => 'Eliminar de la sala',
+			'discover.liveRoom.removed' => 'Te han eliminado de la sala.',
+			'discover.liveRoom.seeProfile' => 'Pedir ver el perfil',
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} usuarios',
 			'discover.groupChat.sampleVictoria' => 'Estoy muy aburrida. ¿Hacemos algo, chicos?',
 			'discover.groupChat.sampleSona' => '¿Qué podemos hacer? ¿Qué tienes en mente?',
@@ -1449,6 +1641,8 @@ extension on TranslationsEs {
 			'discover.groupInfo.leaveConfirm' => '¿Salir de este grupo?',
 			'discover.groupInfo.leave' => 'Salir',
 			'discover.groupInfo.cancel' => 'Cancelar',
+			'discover.groupInfo.galleryEmpty' => 'Aún no se han compartido fotos.',
+			'discover.groupInfo.adminOnly' => 'Solo los administradores pueden cambiar esto.',
 			'discover.filters.title' => 'Filtros',
 			'discover.filters.ageRange' => 'Rango de edad',
 			'discover.filters.ageRangeValue' => ({required Object min, required Object max}) => '${min}-${max}',
@@ -1482,8 +1676,12 @@ extension on TranslationsEs {
 			'discover.story.musicTitle' => 'Música',
 			'discover.story.musicEmpty' => 'No se encontró música.',
 			'discover.story.musicError' => 'No se pudo cargar la música.',
+			'discover.story.unknownTrack' => 'Desconocido',
 			'discover.story.downloaded' => 'Guardado en la galería',
+			_ => null,
+		} ?? switch (path) {
 			'discover.story.downloadFailed' => 'No se pudo guardar',
+			'discover.story.savedToDraft' => 'Guardado en borradores',
 			'discover.highlight.title' => 'Destacado',
 			'discover.highlight.view' => 'Ver',
 			'discover.highlight.aiComments' => 'Comentarios de IA',
@@ -1498,6 +1696,7 @@ extension on TranslationsEs {
 			'discover.stats.boostCta' => 'Impulsar 1 día - 100 tokens',
 			'discover.stats.boosted' => '¡Impulsada! Tu publicación estará arriba durante 24 horas.',
 			'discover.hostedBy' => ({required Object name}) => 'Organizada por ${name}',
+			'discover.requestPending' => 'Tu solicitud se envió y está pendiente de aprobación.',
 			'common.loading' => 'Cargando…',
 			'common.retry' => 'Reintentar',
 			'common.cancel' => 'Cancelar',
@@ -1579,8 +1778,6 @@ extension on TranslationsEs {
 			'createProfile.interestsSubtitle' => 'Elige al menos 5: así te conectamos con personas que de verdad te entienden.',
 			'createProfile.interests.music' => 'Música',
 			'createProfile.interests.movies' => 'Películas',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.interests.tvShows' => 'Series',
 			'createProfile.interests.reading' => 'Lectura',
 			'createProfile.interests.painting' => 'Pintura',
@@ -1700,8 +1897,9 @@ extension on TranslationsEs {
 			'storyText.uppercase' => 'Mayúsculas',
 			'storyText.underline' => 'Subrayado',
 			'storyText.cancel' => 'Cancelar',
+			'storyText.done' => 'Listo',
 			'storyText.galleryError' => 'No se pudo abrir la galería',
-			'tokens.boostTitle' => 'Boost',
+			'tokens.boostTitle' => 'Destacar',
 			'tokens.history' => 'Historial',
 			'tokens.yourBalance' => 'Tu saldo',
 			'tokens.balanceTokens' => ({required Object count}) => '${count} tokens',
@@ -1715,7 +1913,7 @@ extension on TranslationsEs {
 			'tokens.duration1h' => '1 hora',
 			'tokens.duration2h' => '2 horas',
 			'tokens.visibility' => ({required Object n}) => 'Visibilidad x${n}',
-			'tokens.boostFor' => ({required Object count}) => 'Boost por ${count} tokens',
+			'tokens.boostFor' => ({required Object count}) => 'Destacar por ${count} tokens',
 			'tokens.boostActive' => ({required Object time}) => 'Boost activo hasta las ${time}',
 			'tokens.boostDone' => '¡Tu perfil tiene Boost!',
 			'tokens.historyEmpty' => 'Aún no hay actividad de tokens',

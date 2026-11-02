@@ -4,10 +4,41 @@ import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/data/remote/room_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/screens/discover/rooms/create_room_name_sheet.dart';
+import 'package:veylo/screens/discover/rooms/group_chat_page.dart';
+import 'package:veylo/screens/discover/rooms/room_live_page.dart';
 
 enum CreateSpaceType { room, group }
+
+/// İsim penceresi tamamen kapandıktan sonra oda/grup ekranını açar.
+/// iOS, pencere kapanırken yapılan push'u yutuyordu.
+Future<void> _openCreated(NavigatorState nav, CreatedSpace created) async {
+  switch (created) {
+    case CreatedRoom(:final id, :final title, :final anonymous):
+      await nav.push<void>(
+        MaterialPageRoute<void>(
+          builder: (_) => RoomLivePage(
+            roomId: id,
+            roomTitle: title,
+            anonymous: anonymous,
+          ),
+        ),
+      );
+      RoomStore.instance.refresh();
+    case CreatedGroup(:final thread):
+      await nav.push<void>(
+        MaterialPageRoute<void>(
+          builder: (_) => GroupChatPage(
+            title: thread.title,
+            memberCount: thread.memberCount,
+            thread: thread,
+          ),
+        ),
+      );
+  }
+}
 
 Future<void> showCreateRoomOrGroupSheet(BuildContext context) {
   return showModalBottomSheet<void>(
@@ -115,16 +146,18 @@ class _CreateRoomOrGroupSheetState extends State<_CreateRoomOrGroupSheet> {
           const SizedBox(height: 20),
           AppPrimaryButton(
             label: t.create,
-            onPressed: () {
+            onPressed: () async {
               final type = _type;
               final hideAccount = _hideAccount;
               final nav = Navigator.of(context, rootNavigator: true);
               nav.pop();
-              showCreateRoomNameSheet(
+              final created = await showCreateRoomNameSheet(
                 nav.context,
                 type: type,
                 hideAccount: hideAccount,
               );
+              if (created == null || !nav.mounted) return;
+              await _openCreated(nav, created);
             },
           ),
           const SizedBox(height: 12),

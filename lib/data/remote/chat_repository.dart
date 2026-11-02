@@ -96,12 +96,18 @@ class ChatRepository {
     required String reason,
     String? details,
     bool alsoBlock = false,
+    String? messageId,
   }) => _api.post(
     '/conversations/$id/report',
     body: {
       'reason': reason,
       if (details != null && details.isNotEmpty) 'details': details,
       'alsoBlock': alsoBlock,
+      'messageId': ?messageId,
     },
   );
+
+  /// Kendi mesajımı herkes için geri alır.
+  Future<void> deleteMessage(String id, String messageId) =>
+      _api.delete('/conversations/$id/messages/$messageId');
 }

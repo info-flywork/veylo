@@ -4,6 +4,7 @@ import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/screens/profile/widgets/picker_clear_action.dart';
 
 const _kMinCm = 140;
 const _kMaxCm = 220;
@@ -11,12 +12,13 @@ const _kDefaultCm = 177;
 const _kItemExtent = 44.0;
 const _kBtnColor = Color(0xFF1A1714);
 
-/// Height tekerlek picker — seçilen cm değerini döner.
-Future<int?> showHeightPickerSheet(
+/// Height tekerlek picker — seçilen cm değerini döner
+/// ([PickedValue.value] null: kullanıcı boyu temizledi).
+Future<PickedValue<int>?> showHeightPickerSheet(
   BuildContext context, {
   int? initialCm,
 }) {
-  return showModalBottomSheet<int>(
+  return showModalBottomSheet<PickedValue<int>>(
     context: context,
     backgroundColor: AppColors.white,
     isScrollControlled: true,
@@ -24,14 +26,22 @@ Future<int?> showHeightPickerSheet(
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
-    builder: (_) => HeightPickerSheet(initialCm: initialCm ?? _kDefaultCm),
+    builder: (_) => HeightPickerSheet(
+      initialCm: initialCm ?? _kDefaultCm,
+      canClear: initialCm != null,
+    ),
   );
 }
 
 class HeightPickerSheet extends StatefulWidget {
-  const HeightPickerSheet({super.key, required this.initialCm});
+  const HeightPickerSheet({
+    super.key,
+    required this.initialCm,
+    this.canClear = false,
+  });
 
   final int initialCm;
+  final bool canClear;
 
   @override
   State<HeightPickerSheet> createState() => _HeightPickerSheetState();
@@ -140,6 +150,12 @@ class _HeightPickerSheetState extends State<HeightPickerSheet> {
                 ),
               ),
             ),
+            if (widget.canClear) ...[
+              const SizedBox(height: 8),
+              PickerClearAction(
+                onTap: () => Navigator.of(context).pop(const PickedValue<int>(null)),
+              ),
+            ],
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
@@ -148,7 +164,7 @@ class _HeightPickerSheetState extends State<HeightPickerSheet> {
                 color: _kBtnColor,
                 borderRadius: BorderRadius.circular(999),
                 child: InkWell(
-                  onTap: () => Navigator.of(context).pop(_selectedCm),
+                  onTap: () => Navigator.of(context).pop(PickedValue(_selectedCm)),
                   borderRadius: BorderRadius.circular(999),
                   child: Center(
                     child: AppText(

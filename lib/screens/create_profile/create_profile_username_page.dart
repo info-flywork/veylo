@@ -197,6 +197,9 @@ class _CreateProfileUsernamePageState extends State<CreateProfileUsernamePage> {
             textInputAction: TextInputAction.done,
             autofillHints: const [AutofillHints.username],
             onChanged: _onUsernameChanged,
+            onSubmitted: (_) {
+              if (_canContinue) _continue();
+            },
             labelGap: 4,
           ),
           if (_status == _UsernameStatus.invalid) ...[

@@ -5,9 +5,11 @@ import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/widgets/profile_tappable_avatar.dart';
 import 'package:veylo/core/errors/error_messages.dart';
+import 'package:veylo/data/remote/vibe_repository.dart';
 import 'package:veylo/data/remote/vibe_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/vibes/vibe_post.dart';
+import 'package:veylo/screens/chat/report_reason_sheet.dart';
 import 'package:veylo/screens/vibes/vibe_share_sheet.dart';
 import 'package:veylo/screens/vibes/vibe_talk_sheet.dart';
 import 'package:veylo/screens/vibes/vibes_map_view.dart';
@@ -28,6 +30,9 @@ class _VibesPageState extends State<VibesPage> {
   final _searchCtrl = TextEditingController();
   final _store = VibeStore.instance;
   bool _mapOpen = false;
+
+  /// Başlıktaki sıralama butonu: en yeni (sunucu sırası) / en çok beğenilen.
+  bool _popular = false;
 
   @override
   void initState() {
@@ -51,14 +56,45 @@ class _VibesPageState extends State<VibesPage> {
   List<VibePost> get _visible {
     final q = _searchCtrl.text.trim().toLowerCase();
     final posts = _store.posts;
-    if (q.isEmpty) return posts;
-    return posts
-        .where(
-          (p) =>
-              p.name.toLowerCase().contains(q) ||
-              p.body.toLowerCase().contains(q),
-        )
-        .toList();
+    final filtered = q.isEmpty
+        ? posts
+        : posts
+              .where(
+                (p) =>
+                    p.name.toLowerCase().contains(q) ||
+                    p.body.toLowerCase().contains(q),
+              )
+              .toList();
+    if (!_popular) return filtered;
+    return List.of(filtered)
+      ..sort((a, b) => b.likeCount.compareTo(a.likeCount));
+  }
+
+  void _toggleSort() {
+    setState(() => _popular = !_popular);
+    final t = Translations.of(context).vibes;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(_popular ? t.sortPopular : t.sortNewest),
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 1),
+        ),
+      );
+  }
+
+  /// Uzun basma: kendi vibe'ım → silme onayı, başkasının → şikayet.
+  void _onPostLongPress(VibePost post) {
+    if (post.isMine) {
+      _confirmDelete(post);
+      return;
+    }
+    showReportReasonSheet(
+      context,
+      onSubmit: (reason) =>
+          VibeRepository.instance.report(post.id, reason: reason),
+    );
   }
 
   Future<void> _shareVibe() async {
@@ -116,7 +152,9 @@ class _VibesPageState extends State<VibesPage> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: _VibesHeader(
               mapOpen: _mapOpen,
+              popular: _popular,
               onToggleMap: () => setState(() => _mapOpen = !_mapOpen),
+              onToggleSort: _toggleSort,
               onCreate: _shareVibe,
             ),
           ),
@@ -130,10 +168,28 @@ class _VibesPageState extends State<VibesPage> {
           ),
           const SizedBox(height: 10),
           Expanded(
-            child: _mapOpen
-                ? const VibesMapView()
+            child: !_store.loaded && _store.loading
+                ? const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.brandPurple,
+                    ),
+                  )
+                : !_store.loaded && _store.error != null
+                ? _VibesError(
+                    text: t.vibes.loadFailed,
+                    retryLabel: t.common.retry,
+                    onRetry: _store.refresh,
+                  )
+                : _mapOpen
+                ? VibesMapView(
+                    posts: items,
+                    onLongPress: _onPostLongPress,
+                    onDelete: _confirmDelete,
+                  )
                 : _store.loaded && _store.posts.isEmpty
                 ? _VibesEmpty(text: t.vibes.empty, onRefresh: _store.refresh)
+                : items.isEmpty
+                ? _VibesEmpty(text: t.vibes.noResults, onRefresh: _store.refresh)
                 : RefreshIndicator(
                     onRefresh: _store.refresh,
                     color: AppColors.brandPurple,
@@ -165,9 +221,7 @@ class _VibesPageState extends State<VibesPage> {
                           }
                           final post = items[index ~/ 2];
                           return GestureDetector(
-                            onLongPress: post.isMine
-                                ? () => _confirmDelete(post)
-                                : null,
+                            onLongPress: () => _onPostLongPress(post),
                             child: _VibeCard(
                               post: post,
                               liked: post.likedByMe,
@@ -193,12 +247,16 @@ class _VibesPageState extends State<VibesPage> {
 class _VibesHeader extends StatelessWidget {
   const _VibesHeader({
     required this.mapOpen,
+    required this.popular,
     required this.onToggleMap,
+    required this.onToggleSort,
     required this.onCreate,
   });
 
   final bool mapOpen;
+  final bool popular;
   final VoidCallback onToggleMap;
+  final VoidCallback onToggleSort;
   final VoidCallback onCreate;
 
   @override
@@ -221,13 +279,17 @@ class _VibesHeader extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 16),
-        SvgPicture.asset(
-          AppAssets.iconConvert,
-          width: 24,
-          height: 24,
-          colorFilter: const ColorFilter.mode(
-            AppColors.textOnLight,
-            BlendMode.srcIn,
+        GestureDetector(
+          onTap: onToggleSort,
+          behavior: HitTestBehavior.opaque,
+          child: SvgPicture.asset(
+            AppAssets.iconConvert,
+            width: 24,
+            height: 24,
+            colorFilter: ColorFilter.mode(
+              popular ? AppColors.brandPurple : AppColors.textOnLight,
+              BlendMode.srcIn,
+            ),
           ),
         ),
         const SizedBox(width: 16),
@@ -433,6 +495,43 @@ class _VibesEmpty extends StatelessWidget {
             text,
             style: AppTextStyles.vibesDate,
             textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _VibesError extends StatelessWidget {
+  const _VibesError({
+    required this.text,
+    required this.retryLabel,
+    required this.onRetry,
+  });
+
+  final String text;
+  final String retryLabel;
+  final Future<void> Function() onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(32, 120, 32, 0),
+      child: Column(
+        children: [
+          AppText(
+            text,
+            style: AppTextStyles.vibesDate,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 12),
+          GestureDetector(
+            onTap: onRetry,
+            behavior: HitTestBehavior.opaque,
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: AppText(retryLabel, style: AppTextStyles.chatsRequestLink),
+            ),
           ),
         ],
       ),

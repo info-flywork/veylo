@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
@@ -5,7 +7,6 @@ import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_back_button.dart';
 import 'package:veylo/core/widgets/app_bottom_nav.dart';
 import 'package:veylo/core/errors/error_messages.dart';
-import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/data/remote/user_repository.dart';
@@ -65,9 +66,26 @@ class _FollowPageState extends State<FollowPage> {
   FollowSortFilter _sortFilter = FollowSortFilter.recent;
   final Set<String> _removedIds = {};
   final Set<String> _hiddenBadgeIds = {};
-  List<FollowUser> _following = const [];
-  List<FollowUser> _followers = const [];
   final _repo = UserRepository.instance;
+  final _scroll = ScrollController();
+
+  /// Sekme başına sayfalı liste (cursor ile; arama sunucuda).
+  final Map<FollowTab, List<FollowUser>> _lists = {
+    for (final tab in FollowTab.values) tab: const [],
+  };
+  final Map<FollowTab, String?> _cursors = {};
+  final Map<FollowTab, bool> _hasMore = {
+    for (final tab in FollowTab.values) tab: true,
+  };
+  final Set<FollowTab> _loading = {};
+  final Set<FollowTab> _loaded = {};
+
+  /// Son istek hata verdi: kendiliğinden tekrar denenmez (kaydırınca dener).
+  final Set<FollowTab> _failed = {};
+
+  /// Arama değişince eski istek cevapları yok sayılır.
+  int _generation = 0;
+  Timer? _searchDebounce;
 
   String? get _userId => widget.userId ?? SessionStore.instance.me?.id;
 
@@ -82,40 +100,91 @@ class _FollowPageState extends State<FollowPage> {
     super.initState();
     _tab = widget.initialTab;
     _searchCtrl = TextEditingController();
-    _load();
+    _scroll.addListener(_onScroll);
+    for (final tab in FollowTab.values) {
+      _loadPage(tab);
+    }
   }
 
-  Future<void> _load() async {
+  /// Sonraki sayfayı getirir (liste sonuna gelince / filtre az sonuç verince).
+  Future<void> _loadPage(FollowTab tab) async {
     final id = _userId;
-    if (id == null) return;
+    if (id == null || _loading.contains(tab) || _hasMore[tab] != true) return;
+    final generation = _generation;
+    setState(() => _loading.add(tab));
     try {
-      final results = await Future.wait([
-        _repo.follows(id, 'following'),
-        _repo.follows(id, 'followers'),
-      ]);
-      if (!mounted) return;
+      final page = await _repo.follows(
+        id,
+        tab == FollowTab.following ? 'following' : 'followers',
+        cursor: _cursors[tab],
+        query: _searchCtrl.text,
+      );
+      if (!mounted || generation != _generation) return;
       setState(() {
-        _following = results[0];
-        _followers = results[1];
+        _lists[tab] = [..._lists[tab]!, ...page.items];
+        _cursors[tab] = page.nextCursor;
+        _hasMore[tab] = page.nextCursor != null;
+        _loaded.add(tab);
+        _failed.remove(tab);
       });
     } catch (e) {
-      if (mounted) showErrorSnackBar(context, e);
+      if (!mounted || generation != _generation) return;
+      // Hata sonrası otomatik tekrar denenmesin; kaydırınca yeniden dener.
+      setState(() {
+        _loaded.add(tab);
+        _failed.add(tab);
+      });
+      showErrorSnackBar(context, e);
+    } finally {
+      if (mounted && generation == _generation) {
+        setState(() => _loading.remove(tab));
+      }
     }
+  }
+
+  void _onScroll() {
+    if (!_scroll.hasClients) return;
+    final pos = _scroll.position;
+    if (pos.pixels >= pos.maxScrollExtent - 300) _loadPage(_tab);
+  }
+
+  /// Arama sunucuda yapılır: yazmayı bitirince listeler baştan yüklenir.
+  void _onSearchChanged(String _) {
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 350), () {
+      if (!mounted) return;
+      _generation++;
+      setState(() {
+        for (final tab in FollowTab.values) {
+          _lists[tab] = const [];
+          _cursors[tab] = null;
+          _hasMore[tab] = true;
+        }
+        _loading.clear();
+        _loaded.clear();
+        _failed.clear();
+        _openSwipeId = null;
+      });
+      for (final tab in FollowTab.values) {
+        _loadPage(tab);
+      }
+    });
   }
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
+    _scroll.dispose();
     _searchCtrl.dispose();
     super.dispose();
   }
 
   List<FollowUser> get _source {
-    final base = _tab == FollowTab.following ? _following : _followers;
+    final base = _lists[_tab]!;
     return base.where((u) => !_removedIds.contains(u.id)).toList();
   }
 
   List<FollowUser> get _filtered {
-    final q = _searchCtrl.text.trim().toLowerCase();
     var list = _source;
 
     switch (_sortFilter) {
@@ -129,12 +198,6 @@ class _FollowPageState extends State<FollowPage> {
         list = list.where((u) => u.iFollow && !u.followsMe).toList();
       case FollowSortFilter.notFollowedByMe:
         list = list.where((u) => u.followsMe && !u.iFollow).toList();
-    }
-
-    if (q.isNotEmpty) {
-      list = list
-          .where((u) => u.displayName.toLowerCase().contains(q))
-          .toList();
     }
     return list;
   }
@@ -181,6 +244,17 @@ class _FollowPageState extends State<FollowPage> {
     final screenW = MediaQuery.sizeOf(context).width;
     final hPad = ((screenW - _kContentWidth) / 2).clamp(16.0, 40.0);
     final users = _filtered;
+    final loadingTab = _loading.contains(_tab);
+    // Filtre az sonuç verdiyse (liste kaydırılamaz) sonraki sayfaları kendiliğinden getir.
+    if (users.length < 15 &&
+        _hasMore[_tab] == true &&
+        _loaded.contains(_tab) &&
+        !_failed.contains(_tab) &&
+        !loadingTab) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _loadPage(_tab);
+      });
+    }
 
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -219,7 +293,7 @@ class _FollowPageState extends State<FollowPage> {
                   child: _SearchField(
                     controller: _searchCtrl,
                     hint: t.followSearch,
-                    onChanged: (_) => setState(() {}),
+                    onChanged: _onSearchChanged,
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -241,10 +315,19 @@ class _FollowPageState extends State<FollowPage> {
             ),
           ),
           Expanded(
-            child: users.isEmpty
+            child: users.isEmpty && (loadingTab || !_loaded.contains(_tab))
+                ? const Center(
+                    child: CircularProgressIndicator(
+                      color: AppColors.selectionBorder,
+                    ),
+                  )
+                : users.isEmpty
                 ? Center(
                     child: AppText(
-                      t.followSortEmpty,
+                      _sortFilter == FollowSortFilter.recent &&
+                              _searchCtrl.text.trim().isEmpty
+                          ? t.followEmpty
+                          : t.followSortEmpty,
                       style: AppTextStyles.followListName.copyWith(
                         color: const Color(0xA6000000),
                       ),
@@ -252,11 +335,22 @@ class _FollowPageState extends State<FollowPage> {
                     ),
                   )
                 : ListView.separated(
+                    controller: _scroll,
                     padding: EdgeInsets.fromLTRB(hPad, 12, hPad, bottom + 120),
-                    itemCount: users.length,
+                    itemCount: users.length + (loadingTab ? 1 : 0),
                     separatorBuilder: (_, _) =>
                         const SizedBox(height: _kListGap),
                     itemBuilder: (context, index) {
+                      if (index >= users.length) {
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(8),
+                            child: CircularProgressIndicator(
+                              color: AppColors.selectionBorder,
+                            ),
+                          ),
+                        );
+                      }
                       final user = users[index];
                       return _FollowRow(
                         key: ValueKey(user.id),
@@ -622,7 +716,6 @@ class _FollowRowState extends State<_FollowRow>
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
-                                    if (widget.user.isAi) const AiBadge(),
                                   ],
                                 ),
                               ),

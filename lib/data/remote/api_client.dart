@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:veylo/core/config/app_config.dart';
+import 'package:veylo/i18n/strings.g.dart';
 
 /// Backend hata cevabı: `{ "error": { "code": "...", "message": "..." } }`.
 class ApiException implements Exception {
@@ -32,6 +33,7 @@ class ApiClient {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
+          options.headers['Accept-Language'] = LocaleSettings.currentLocale.languageCode;
           if (kDebugMode && devUser != null) {
             options.headers['Authorization'] = 'Bearer dev:$devUser';
             return handler.next(options);

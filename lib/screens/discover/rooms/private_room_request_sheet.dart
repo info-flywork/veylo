@@ -9,7 +9,6 @@ import 'package:veylo/data/remote/room_store.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
-import 'package:veylo/screens/discover/rooms/room_approved_sheet.dart';
 import 'package:veylo/i18n/strings.g.dart';
 
 /// Kilitli (private) odalar — Request to join bottom sheet.
@@ -166,18 +165,7 @@ class _PrivateRoomRequestSheetState extends State<_PrivateRoomRequestSheet> {
                         }
                         return;
                       }
-                      final title = widget.roomTitle;
-                      final navigator = Navigator.of(context);
-                      navigator.pop();
-                      // Demo: admin kabulü sonrası başarı sheet'i
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        showRoomApprovedSheet(
-                          navigator.context,
-                          roomTitle: title,
-                          isGroup: widget.isGroup,
-                          memberCount: widget.memberCount,
-                        );
-                      });
+                      Navigator.of(context).pop();
                     },
                   ),
                   const SizedBox(height: 12),

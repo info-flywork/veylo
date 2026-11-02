@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
@@ -69,8 +71,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   late String _displayName;
   // Boş = kullanıcı henüz seçmedi ("Not set").
   ProfileGender? _gender;
-  /// Onboarding'de seçilen NON_BINARY bu ekranın listesinde yok; dokunulmazsa korunur.
-  String? _apiGender;
   RelationshipGoal? _relationshipGoal;
   ZodiacSign? _zodiac;
   EducationLevel? _education;
@@ -79,30 +79,45 @@ class _EditProfilePageState extends State<EditProfilePage> {
   SmokingPreference? _smoking;
   bool _profileVisible = true;
   int? _heightCm;
+  /// Konuştuğu diller (dil kodları).
+  List<String> _languages = const [];
   bool _saving = false;
   bool _uploadingPhoto = false;
 
-  ProfileUser get _baseProfile =>
-      widget.user ?? ProfileMockRepository.currentUser();
+  /// Açılıştaki alanlar — kaydedilmemiş değişiklik var mı karşılaştırması için.
+  String _initialFields = '';
 
-  ProfileUser get _profile =>
-      LocalProfileStore.instance.apply(_baseProfile);
+  /// Kaydettikten sonra çıkarken "değişiklikleri at" sorulmasın.
+  bool _leaving = false;
+
+  /// Oturum yoksa örnek profil gösterilmez (null → yükleniyor).
+  ProfileUser? get _baseProfile =>
+      widget.user ??
+      (SessionStore.instance.me == null
+          ? null
+          : ProfileMockRepository.currentUser());
+
+  ProfileUser? get _profile {
+    final base = _baseProfile;
+    return base == null ? null : LocalProfileStore.instance.apply(base);
+  }
 
   @override
   void initState() {
     super.initState();
-    final profile = LocalProfileStore.instance.apply(_baseProfile);
-    _interestCtrl = TextEditingController(text: profile.bio);
-    _displayName = profile.displayName;
+    final profile = _profile;
+    _interestCtrl = TextEditingController(text: profile?.bio ?? '');
+    _displayName = profile?.displayName ?? '';
     final me = SessionStore.instance.me;
     if (me != null) {
-      _apiGender = me.gender;
       _gender = switch (me.gender) {
         'FEMALE' => ProfileGender.female,
         'MALE' => ProfileGender.male,
+        'NON_BINARY' => ProfileGender.nonBinary,
         'PREFER_NOT_TO_SAY' => ProfileGender.preferNotToSay,
         _ => null,
       };
+      _languages = me.languages;
       _relationshipGoal = RelationshipGoal.values.asNameMap()[me.relationshipGoal];
       _zodiac = ZodiacSign.values.asNameMap()[me.zodiac];
       _education = EducationLevel.values.asNameMap()[me.education];
@@ -112,6 +127,42 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _heightCm = me.heightCm;
       _profileVisible = me.profileVisible;
     }
+    _initialFields = jsonEncode(_fields());
+  }
+
+  /// PATCH /users/me gövdesi.
+  Map<String, Object?> _fields() {
+    final bio = _interestCtrl.text.trim();
+    return {
+      if (_displayName.trim().isNotEmpty) 'displayName': _displayName.trim(),
+      'bio': bio.isEmpty ? null : bio,
+      'heightCm': _heightCm,
+      'languages': _languages,
+      'relationshipGoal': _relationshipGoal?.name,
+      'zodiac': _zodiac?.name,
+      'education': _education?.name,
+      'pets': _pets?.name,
+      'drinking': _drinking?.name,
+      'smoking': _smoking?.name,
+      'profileVisible': _profileVisible,
+      'gender': switch (_gender) {
+        ProfileGender.female => 'FEMALE',
+        ProfileGender.male => 'MALE',
+        ProfileGender.nonBinary => 'NON_BINARY',
+        ProfileGender.preferNotToSay => 'PREFER_NOT_TO_SAY',
+        null => null,
+      },
+    };
+  }
+
+  bool get _dirty => jsonEncode(_fields()) != _initialFields;
+
+  /// Geri: kaydedilmemiş değişiklik varsa önce onay.
+  Future<void> _onPopBlocked() async {
+    final discard = await _showDiscardChangesSheet(context);
+    if (!discard || !mounted) return;
+    setState(() => _leaving = true);
+    Navigator.of(context).pop();
   }
 
   Future<void> _openBorderSheet() async {
@@ -121,7 +172,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
     await showProfileBorderSheet(
       context,
-      avatarUrl: _profile.avatarUrl,
+      avatarUrl: _profile?.avatarUrl ?? '',
       initialBorderId: SessionStore.instance.me?.borderId,
     );
     if (mounted) setState(() {});
@@ -131,26 +182,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
   Future<void> _save() async {
     if (_saving) return;
     setState(() => _saving = true);
-    final bio = _interestCtrl.text.trim();
     try {
-      await UserRepository.instance.updateProfile({
-        if (_displayName.trim().isNotEmpty) 'displayName': _displayName.trim(),
-        'bio': bio.isEmpty ? null : bio,
-        'heightCm': _heightCm,
-        'relationshipGoal': _relationshipGoal?.name,
-        'zodiac': _zodiac?.name,
-        'education': _education?.name,
-        'pets': _pets?.name,
-        'drinking': _drinking?.name,
-        'smoking': _smoking?.name,
-        'profileVisible': _profileVisible,
-        if (_gender != null)
-          'gender': switch (_gender!) {
-            ProfileGender.female => 'FEMALE',
-            ProfileGender.male => 'MALE',
-            ProfileGender.preferNotToSay => 'PREFER_NOT_TO_SAY',
-          },
-      });
+      final fields = _fields();
+      await UserRepository.instance.updateProfile(fields);
+      _initialFields = jsonEncode(fields);
       // Eski yerel düzenlemeler sunucudaki değerin üstüne yazılmasın.
       await LocalProfileStore.instance.clear();
       if (!mounted) return;
@@ -208,12 +243,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final result = await showGenderSheet(
       context,
       initial: _gender ?? ProfileGender.female,
+      canClear: _gender != null,
     );
     if (result != null && mounted) {
-      setState(() {
-        _gender = result;
-        _apiGender = null;
-      });
+      setState(() => _gender = result.value);
     }
   }
 
@@ -221,9 +254,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final result = await showRelationshipGoalsSheet(
       context,
       initial: _relationshipGoal ?? RelationshipGoal.newFriends,
+      canClear: _relationshipGoal != null,
     );
     if (result != null && mounted) {
-      setState(() => _relationshipGoal = result);
+      setState(() => _relationshipGoal = result.value);
     }
   }
 
@@ -231,9 +265,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final result = await showZodiacSheet(
       context,
       initial: _zodiac ?? ZodiacSign.aries,
+      canClear: _zodiac != null,
     );
     if (result != null && mounted) {
-      setState(() => _zodiac = result);
+      setState(() => _zodiac = result.value);
     }
   }
 
@@ -241,9 +276,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final result = await showEducationSheet(
       context,
       initial: _education ?? EducationLevel.highSchool,
+      canClear: _education != null,
     );
     if (result != null && mounted) {
-      setState(() => _education = result);
+      setState(() => _education = result.value);
     }
   }
 
@@ -251,9 +287,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final result = await showPetsSheet(
       context,
       initial: _pets ?? PetsPreference.dontWant,
+      canClear: _pets != null,
     );
     if (result != null && mounted) {
-      setState(() => _pets = result);
+      setState(() => _pets = result.value);
     }
   }
 
@@ -261,9 +298,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final result = await showDrinkingSheet(
       context,
       initial: _drinking ?? DrinkingPreference.never,
+      canClear: _drinking != null,
     );
     if (result != null && mounted) {
-      setState(() => _drinking = result);
+      setState(() => _drinking = result.value);
     }
   }
 
@@ -271,9 +309,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final result = await showSmokingSheet(
       context,
       initial: _smoking ?? SmokingPreference.nonSmoker,
+      canClear: _smoking != null,
     );
     if (result != null && mounted) {
-      setState(() => _smoking = result);
+      setState(() => _smoking = result.value);
     }
   }
 
@@ -282,9 +321,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
       widget.onLanguageTap!();
       return;
     }
-    final result = await showLanguageSheet(context);
+    // Konuştuğu diller (profil alanı); uygulama dili Ayarlar > Language'da.
+    final result = await showSpokenLanguagesSheet(
+      context,
+      initial: _languages,
+    );
     if (result != null && mounted) {
-      setState(() {});
+      setState(() => _languages = result);
     }
   }
 
@@ -298,20 +341,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
       initialCm: _heightCm,
     );
     if (result != null && mounted) {
-      setState(() => _heightCm = result);
+      setState(() => _heightCm = result.value);
     }
   }
 
   String _genderLabel(Translations$profile$tr t) {
     final value = _gender;
-    if (value == null) {
-      return _apiGender == 'NON_BINARY'
-          ? Translations.of(context).createProfile.genderNonBinary
-          : t.notSet;
-    }
+    if (value == null) return t.notSet;
     return switch (value) {
       ProfileGender.female => t.genderFemale,
       ProfileGender.male => t.genderMale,
+      ProfileGender.nonBinary => t.genderNonBinary,
       ProfileGender.preferNotToSay => t.genderPreferNotToSay,
     };
   }
@@ -392,9 +432,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final bottom = MediaQuery.viewPaddingOf(context).bottom;
     final screenW = MediaQuery.sizeOf(context).width;
     final hPad = ((screenW - _kContentWidth) / 2).clamp(16.0, 40.0);
-    final langLabel = AppLanguage.fromCode(
-      LocaleSettings.currentLocale.languageCode,
-    ).label;
+    final langLabel = _languages.isEmpty
+        ? t.notSet
+        : [
+            for (final code in _languages) AppLanguage.fromCode(code).label,
+          ].join(', ');
 
     return ListenableBuilder(
       listenable: Listenable.merge([
@@ -403,9 +445,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ]),
       builder: (context, _) {
         final profile = _profile;
+        if (profile == null) {
+          return const Scaffold(
+            backgroundColor: AppColors.white,
+            body: Center(
+              child: CircularProgressIndicator(
+                color: AppColors.selectionBorder,
+              ),
+            ),
+          );
+        }
         final borderAsset = ProfileBorder.assetFor(profile.borderId);
 
-        return Scaffold(
+        return PopScope(
+          canPop: _leaving || !_dirty,
+          onPopInvokedWithResult: (didPop, _) {
+            if (!didPop) _onPopBlocked();
+          },
+          child: Scaffold(
       backgroundColor: AppColors.white,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -414,7 +471,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           _EditProfileHeader(
             eyebrow: t.eyebrow,
             title: t.editProfile,
-            onBack: () => Navigator.of(context).pop(),
+            onBack: () => Navigator.of(context).maybePop(),
             saveLabel: _saving ? Translations.of(context).common.loading : t.save,
             onSave: _save,
           ),
@@ -504,7 +561,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     label: (SessionStore.instance.me?.voiceIntroUrl ?? '')
                             .isEmpty
                         ? t.addVoice
-                        : 'Voice added',
+                        : t.voiceAdded,
                     onTap: () => showVoiceRecordSheet(context),
                   ),
                   const SizedBox(height: 24),
@@ -552,10 +609,113 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
         ],
       ),
+          ),
         );
       },
     );
   }
+}
+
+/// Kaydedilmemiş değişiklikler — Logout sheet ile aynı düzen. `true` = at ve çık.
+Future<bool> _showDiscardChangesSheet(BuildContext context) async {
+  final result = await showModalBottomSheet<bool>(
+    context: context,
+    backgroundColor: AppColors.white,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (context) {
+      final t = Translations.of(context).profile;
+      final bottom = MediaQuery.paddingOf(context).bottom;
+      return Padding(
+        padding: EdgeInsets.fromLTRB(16, 10, 16, 10 + bottom),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 10),
+            Container(
+              width: 46,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.sheetHandle,
+                borderRadius: BorderRadius.circular(9999),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              t.discardTitle,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontFamily: AppFonts.poppins,
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                height: 1,
+                letterSpacing: -0.4,
+                color: AppColors.black,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              t.discardBody,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontFamily: AppFonts.poppins,
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                height: 20 / 16,
+                letterSpacing: -0.32,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 22),
+            GestureDetector(
+              onTap: () => Navigator.of(context).pop(false),
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                width: double.infinity,
+                height: 52,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: AppColors.black,
+                  borderRadius: BorderRadius.circular(9999),
+                ),
+                child: Text(
+                  t.keepEditing,
+                  style: const TextStyle(
+                    fontFamily: AppFonts.poppins,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.white,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            GestureDetector(
+              onTap: () => Navigator.of(context).pop(true),
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Text(
+                  t.discardConfirm,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontFamily: AppFonts.poppins,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    height: 20 / 16,
+                    letterSpacing: -0.32,
+                    color: AppColors.black,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+  return result ?? false;
 }
 
 class _EditProfileHeader extends StatelessWidget {
