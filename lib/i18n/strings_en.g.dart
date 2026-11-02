@@ -130,6 +130,26 @@ class _Translations$chats$en extends Translations$chats$tr {
 	@override String get noteHint => 'What’s on your mind?';
 	@override String get noteShare => 'Share';
 	@override String get noteDelete => 'Delete note';
+	@override String get unlockNameApprovedMine => 'They approved. Their name stays visible.';
+	@override String get unlockNameApprovedTheirs => 'You approved. Your name stays visible in this chat.';
+	@override String get unlockNameRejectedMine => 'They declined the name request.';
+	@override String get unlockNameRejectedTheirs => 'You declined the name request.';
+	@override String get unlockNamePendingMine => 'You sent a request to see their name.';
+	@override String get unlockNamePendingTheirs => 'This person sent you a request to see your name.';
+	@override String get unlockPhotoApprovedMine => 'They approved. The blur is gone from their photo.';
+	@override String get unlockPhotoApprovedTheirs => 'You approved. The blur is gone from your photo in this chat.';
+	@override String get unlockPhotoRejectedMine => 'They declined the blurred photo request.';
+	@override String get unlockPhotoRejectedTheirs => 'You declined the blurred photo request.';
+	@override String get unlockPhotoPendingMine => 'You sent a request to see their blurred photo.';
+	@override String get unlockPhotoPendingTheirs => 'This person sent you a request to see your blurred photo.';
+	@override String get unlockFullApprovedMine => 'They approved. You can see their full profile.';
+	@override String get unlockFullApprovedTheirs => 'You approved. Your full profile stays visible in this chat.';
+	@override String get unlockFullRejectedMine => 'They declined the full profile request.';
+	@override String get unlockFullRejectedTheirs => 'You declined the full profile request.';
+	@override String get unlockFullPendingMine => 'You sent a request to see their full profile.';
+	@override String get unlockFullPendingTheirs => 'This person sent you a request to see your full profile.';
+	@override String unlockSent({required Object title}) => 'You sent a request: ${title}';
+	@override String unlockReceived({required Object title}) => 'The person you\'re chatting with sent you a request about ${title}';
 }
 
 // Path: profile
@@ -1098,6 +1118,26 @@ extension on TranslationsEn {
 			'chats.noteHint' => 'What’s on your mind?',
 			'chats.noteShare' => 'Share',
 			'chats.noteDelete' => 'Delete note',
+			'chats.unlockNameApprovedMine' => 'They approved. Their name stays visible.',
+			'chats.unlockNameApprovedTheirs' => 'You approved. Your name stays visible in this chat.',
+			'chats.unlockNameRejectedMine' => 'They declined the name request.',
+			'chats.unlockNameRejectedTheirs' => 'You declined the name request.',
+			'chats.unlockNamePendingMine' => 'You sent a request to see their name.',
+			'chats.unlockNamePendingTheirs' => 'This person sent you a request to see your name.',
+			'chats.unlockPhotoApprovedMine' => 'They approved. The blur is gone from their photo.',
+			'chats.unlockPhotoApprovedTheirs' => 'You approved. The blur is gone from your photo in this chat.',
+			'chats.unlockPhotoRejectedMine' => 'They declined the blurred photo request.',
+			'chats.unlockPhotoRejectedTheirs' => 'You declined the blurred photo request.',
+			'chats.unlockPhotoPendingMine' => 'You sent a request to see their blurred photo.',
+			'chats.unlockPhotoPendingTheirs' => 'This person sent you a request to see your blurred photo.',
+			'chats.unlockFullApprovedMine' => 'They approved. You can see their full profile.',
+			'chats.unlockFullApprovedTheirs' => 'You approved. Your full profile stays visible in this chat.',
+			'chats.unlockFullRejectedMine' => 'They declined the full profile request.',
+			'chats.unlockFullRejectedTheirs' => 'You declined the full profile request.',
+			'chats.unlockFullPendingMine' => 'You sent a request to see their full profile.',
+			'chats.unlockFullPendingTheirs' => 'This person sent you a request to see your full profile.',
+			'chats.unlockSent' => ({required Object title}) => 'You sent a request: ${title}',
+			'chats.unlockReceived' => ({required Object title}) => 'The person you\'re chatting with sent you a request about ${title}',
 			'profile.eyebrow' => 'Profile',
 			'profile.title' => 'Settings',
 			'profile.editProfile' => 'Edit Profile',
@@ -1546,6 +1586,8 @@ extension on TranslationsEn {
 			'createProfile.genderSubtitleLine2' => 'may use it to personalize content for you',
 			'createProfile.genderFemale' => 'Female',
 			'createProfile.genderMale' => 'Male',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.genderNonBinary' => 'Non-binary',
 			'createProfile.genderPreferNotToSay' => 'Prefer not to say',
 			'createProfile.stepInterests' => '4/5 Interests',
@@ -1566,8 +1608,6 @@ extension on TranslationsEn {
 			'createProfile.interests.travel' => 'Travel',
 			'createProfile.interests.camping' => 'Camping',
 			'createProfile.interests.meditation' => 'Meditation',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.interests.videoGames' => 'Video games',
 			'createProfile.interests.boardGames' => 'Board games',
 			'createProfile.interests.standUp' => 'Stand-up comedy',

@@ -130,6 +130,26 @@ class _Translations$chats$ru extends Translations$chats$tr {
 	@override String get noteHint => 'О чём думаешь?';
 	@override String get noteShare => 'Поделиться';
 	@override String get noteDelete => 'Удалить заметку';
+	@override String get unlockNameApprovedMine => 'Запрос принят. Имя остаётся видимым.';
+	@override String get unlockNameApprovedTheirs => 'Ты принял запрос. Твоё имя остаётся видимым в этом чате.';
+	@override String get unlockNameRejectedMine => 'Запрос имени отклонён.';
+	@override String get unlockNameRejectedTheirs => 'Ты отклонил запрос имени.';
+	@override String get unlockNamePendingMine => 'Ты отправил запрос увидеть имя.';
+	@override String get unlockNamePendingTheirs => 'Этот человек хочет увидеть твоё имя.';
+	@override String get unlockPhotoApprovedMine => 'Запрос принят. Размытие с фото снято.';
+	@override String get unlockPhotoApprovedTheirs => 'Ты принял запрос. Размытие с твоего фото снято в этом чате.';
+	@override String get unlockPhotoRejectedMine => 'Запрос размытого фото отклонён.';
+	@override String get unlockPhotoRejectedTheirs => 'Ты отклонил запрос размытого фото.';
+	@override String get unlockPhotoPendingMine => 'Ты отправил запрос увидеть размытое фото.';
+	@override String get unlockPhotoPendingTheirs => 'Этот человек хочет увидеть твоё размытое фото.';
+	@override String get unlockFullApprovedMine => 'Запрос принят. Можно видеть полный профиль.';
+	@override String get unlockFullApprovedTheirs => 'Ты принял запрос. Твой полный профиль остаётся открытым в этом чате.';
+	@override String get unlockFullRejectedMine => 'Запрос полного профиля отклонён.';
+	@override String get unlockFullRejectedTheirs => 'Ты отклонил запрос полного профиля.';
+	@override String get unlockFullPendingMine => 'Ты отправил запрос увидеть полный профиль.';
+	@override String get unlockFullPendingTheirs => 'Этот человек хочет увидеть твой полный профиль.';
+	@override String unlockSent({required Object title}) => 'Ты отправил запрос: ${title}';
+	@override String unlockReceived({required Object title}) => 'Собеседник отправил запрос о ${title}.';
 }
 
 // Path: profile
@@ -1091,6 +1111,26 @@ extension on TranslationsRu {
 			'chats.noteHint' => 'О чём думаешь?',
 			'chats.noteShare' => 'Поделиться',
 			'chats.noteDelete' => 'Удалить заметку',
+			'chats.unlockNameApprovedMine' => 'Запрос принят. Имя остаётся видимым.',
+			'chats.unlockNameApprovedTheirs' => 'Ты принял запрос. Твоё имя остаётся видимым в этом чате.',
+			'chats.unlockNameRejectedMine' => 'Запрос имени отклонён.',
+			'chats.unlockNameRejectedTheirs' => 'Ты отклонил запрос имени.',
+			'chats.unlockNamePendingMine' => 'Ты отправил запрос увидеть имя.',
+			'chats.unlockNamePendingTheirs' => 'Этот человек хочет увидеть твоё имя.',
+			'chats.unlockPhotoApprovedMine' => 'Запрос принят. Размытие с фото снято.',
+			'chats.unlockPhotoApprovedTheirs' => 'Ты принял запрос. Размытие с твоего фото снято в этом чате.',
+			'chats.unlockPhotoRejectedMine' => 'Запрос размытого фото отклонён.',
+			'chats.unlockPhotoRejectedTheirs' => 'Ты отклонил запрос размытого фото.',
+			'chats.unlockPhotoPendingMine' => 'Ты отправил запрос увидеть размытое фото.',
+			'chats.unlockPhotoPendingTheirs' => 'Этот человек хочет увидеть твоё размытое фото.',
+			'chats.unlockFullApprovedMine' => 'Запрос принят. Можно видеть полный профиль.',
+			'chats.unlockFullApprovedTheirs' => 'Ты принял запрос. Твой полный профиль остаётся открытым в этом чате.',
+			'chats.unlockFullRejectedMine' => 'Запрос полного профиля отклонён.',
+			'chats.unlockFullRejectedTheirs' => 'Ты отклонил запрос полного профиля.',
+			'chats.unlockFullPendingMine' => 'Ты отправил запрос увидеть полный профиль.',
+			'chats.unlockFullPendingTheirs' => 'Этот человек хочет увидеть твой полный профиль.',
+			'chats.unlockSent' => ({required Object title}) => 'Ты отправил запрос: ${title}',
+			'chats.unlockReceived' => ({required Object title}) => 'Собеседник отправил запрос о ${title}.',
 			'profile.eyebrow' => 'Профиль',
 			'profile.title' => 'Настройки',
 			'profile.editProfile' => 'Изменить профиль',
@@ -1539,6 +1579,8 @@ extension on TranslationsRu {
 			'createProfile.interestsSubtitle' => 'Выбери хотя бы 5 — так мы найдём людей, которые тебя поймут.',
 			'createProfile.interests.music' => 'Музыка',
 			'createProfile.interests.movies' => 'Кино',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.interests.tvShows' => 'Сериалы',
 			'createProfile.interests.reading' => 'Чтение',
 			'createProfile.interests.painting' => 'Живопись',
@@ -1559,8 +1601,6 @@ extension on TranslationsRu {
 			'createProfile.interests.coding' => 'Программирование',
 			'createProfile.interests.ai' => 'ИИ',
 			'createProfile.interests.podcast' => 'Подкасты',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.stepChatGoal' => '5/5 Цель общения',
 			'createProfile.chatGoalTitle' => 'Что ищешь сегодня?',
 			'createProfile.chatGoalSubtitle' => 'Так мы подберём собеседника под твоё настроение.',

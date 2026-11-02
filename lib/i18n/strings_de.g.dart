@@ -130,6 +130,26 @@ class _Translations$chats$de extends Translations$chats$tr {
 	@override String get noteHint => 'Was geht dir durch den Kopf?';
 	@override String get noteShare => 'Teilen';
 	@override String get noteDelete => 'Notiz löschen';
+	@override String get unlockNameApprovedMine => 'Angenommen. Der Name bleibt sichtbar.';
+	@override String get unlockNameApprovedTheirs => 'Du hast angenommen. Dein Name bleibt in diesem Chat sichtbar.';
+	@override String get unlockNameRejectedMine => 'Die Namensanfrage wurde abgelehnt.';
+	@override String get unlockNameRejectedTheirs => 'Du hast die Namensanfrage abgelehnt.';
+	@override String get unlockNamePendingMine => 'Du hast angefragt, den Namen zu sehen.';
+	@override String get unlockNamePendingTheirs => 'Diese Person möchte deinen Namen sehen.';
+	@override String get unlockPhotoApprovedMine => 'Angenommen. Die Unschärfe auf dem Foto ist weg.';
+	@override String get unlockPhotoApprovedTheirs => 'Du hast angenommen. Die Unschärfe auf deinem Foto ist in diesem Chat weg.';
+	@override String get unlockPhotoRejectedMine => 'Die Anfrage zum unscharfen Foto wurde abgelehnt.';
+	@override String get unlockPhotoRejectedTheirs => 'Du hast die Anfrage zum unscharfen Foto abgelehnt.';
+	@override String get unlockPhotoPendingMine => 'Du hast angefragt, das unscharfe Foto zu sehen.';
+	@override String get unlockPhotoPendingTheirs => 'Diese Person möchte dein unscharfes Foto sehen.';
+	@override String get unlockFullApprovedMine => 'Angenommen. Du kannst das vollständige Profil sehen.';
+	@override String get unlockFullApprovedTheirs => 'Du hast angenommen. Dein vollständiges Profil bleibt in diesem Chat sichtbar.';
+	@override String get unlockFullRejectedMine => 'Die Profilanfrage wurde abgelehnt.';
+	@override String get unlockFullRejectedTheirs => 'Du hast die Profilanfrage abgelehnt.';
+	@override String get unlockFullPendingMine => 'Du hast angefragt, das vollständige Profil zu sehen.';
+	@override String get unlockFullPendingTheirs => 'Diese Person möchte dein vollständiges Profil sehen.';
+	@override String unlockSent({required Object title}) => 'Du hast eine Anfrage gesendet: ${title}';
+	@override String unlockReceived({required Object title}) => 'Die Person im Chat hat eine Anfrage zu ${title} gesendet.';
 }
 
 // Path: profile
@@ -1091,6 +1111,26 @@ extension on TranslationsDe {
 			'chats.noteHint' => 'Was geht dir durch den Kopf?',
 			'chats.noteShare' => 'Teilen',
 			'chats.noteDelete' => 'Notiz löschen',
+			'chats.unlockNameApprovedMine' => 'Angenommen. Der Name bleibt sichtbar.',
+			'chats.unlockNameApprovedTheirs' => 'Du hast angenommen. Dein Name bleibt in diesem Chat sichtbar.',
+			'chats.unlockNameRejectedMine' => 'Die Namensanfrage wurde abgelehnt.',
+			'chats.unlockNameRejectedTheirs' => 'Du hast die Namensanfrage abgelehnt.',
+			'chats.unlockNamePendingMine' => 'Du hast angefragt, den Namen zu sehen.',
+			'chats.unlockNamePendingTheirs' => 'Diese Person möchte deinen Namen sehen.',
+			'chats.unlockPhotoApprovedMine' => 'Angenommen. Die Unschärfe auf dem Foto ist weg.',
+			'chats.unlockPhotoApprovedTheirs' => 'Du hast angenommen. Die Unschärfe auf deinem Foto ist in diesem Chat weg.',
+			'chats.unlockPhotoRejectedMine' => 'Die Anfrage zum unscharfen Foto wurde abgelehnt.',
+			'chats.unlockPhotoRejectedTheirs' => 'Du hast die Anfrage zum unscharfen Foto abgelehnt.',
+			'chats.unlockPhotoPendingMine' => 'Du hast angefragt, das unscharfe Foto zu sehen.',
+			'chats.unlockPhotoPendingTheirs' => 'Diese Person möchte dein unscharfes Foto sehen.',
+			'chats.unlockFullApprovedMine' => 'Angenommen. Du kannst das vollständige Profil sehen.',
+			'chats.unlockFullApprovedTheirs' => 'Du hast angenommen. Dein vollständiges Profil bleibt in diesem Chat sichtbar.',
+			'chats.unlockFullRejectedMine' => 'Die Profilanfrage wurde abgelehnt.',
+			'chats.unlockFullRejectedTheirs' => 'Du hast die Profilanfrage abgelehnt.',
+			'chats.unlockFullPendingMine' => 'Du hast angefragt, das vollständige Profil zu sehen.',
+			'chats.unlockFullPendingTheirs' => 'Diese Person möchte dein vollständiges Profil sehen.',
+			'chats.unlockSent' => ({required Object title}) => 'Du hast eine Anfrage gesendet: ${title}',
+			'chats.unlockReceived' => ({required Object title}) => 'Die Person im Chat hat eine Anfrage zu ${title} gesendet.',
 			'profile.eyebrow' => 'Profil',
 			'profile.title' => 'Einstellungen',
 			'profile.editProfile' => 'Profil bearbeiten',
@@ -1539,6 +1579,8 @@ extension on TranslationsDe {
 			'createProfile.interestsSubtitle' => 'Wähle mindestens 5 – so finden wir Leute, die dich wirklich verstehen.',
 			'createProfile.interests.music' => 'Musik',
 			'createProfile.interests.movies' => 'Filme',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.interests.tvShows' => 'Serien',
 			'createProfile.interests.reading' => 'Lesen',
 			'createProfile.interests.painting' => 'Malen',
@@ -1559,8 +1601,6 @@ extension on TranslationsDe {
 			'createProfile.interests.coding' => 'Programmieren',
 			'createProfile.interests.ai' => 'KI',
 			'createProfile.interests.podcast' => 'Podcasts',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.stepChatGoal' => '5/5 Chat-Ziel',
 			'createProfile.chatGoalTitle' => 'Wonach suchst du heute?',
 			'createProfile.chatGoalSubtitle' => 'So finden wir das richtige Match für deine aktuelle Stimmung.',
