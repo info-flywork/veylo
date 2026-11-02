@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -11,6 +12,45 @@ import 'package:veylo/data/remote/api_client.dart';
 import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/data/remote/socket_service.dart';
 import 'package:veylo/models/chat/chat_thread.dart';
+
+/// Dokunulan oda bildiriminin yükü.
+class RoomPush {
+  const RoomPush({
+    required this.roomId,
+    required this.title,
+    required this.isPrivate,
+  });
+
+  final String roomId;
+  final String title;
+  final bool isPrivate;
+
+  static RoomPush? parse(String payload) {
+    if (!payload.startsWith('{')) return null;
+    try {
+      final raw = jsonDecode(payload);
+      if (raw is! Map || raw['type'] != 'room') return null;
+      final id = raw['roomId'] as String? ?? '';
+      if (id.isEmpty) return null;
+      return RoomPush(
+        roomId: id,
+        title: raw['title'] as String? ?? '',
+        isPrivate: raw['isPrivate'] == true,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static String encode(Map<String, dynamic> data) {
+    return jsonEncode({
+      'type': 'room',
+      'roomId': data['roomId'],
+      'title': data['title'] ?? '',
+      'isPrivate': data['isPrivate'] == '1' || data['isPrivate'] == true,
+    });
+  }
+}
 
 /// Bildirimler iki yoldan gelir:
 /// - Uygulama açıkken: socket `message:new` → yerel bildirim (flutter_local_notifications).
@@ -209,6 +249,10 @@ class PushService {
       _onCall(data['inviteId'] as String?);
       return;
     }
+    if (data['type'] == 'roomCreated') {
+      _onTap(RoomPush.encode(data));
+      return;
+    }
     _onTap(data['conversationId'] as String?);
   }
 
@@ -279,6 +323,17 @@ class PushService {
   void _onForegroundPush(RemoteMessage m) {
     if (m.data['type'] == 'call') {
       _onCall(m.data['inviteId'] as String?);
+      return;
+    }
+    if (m.data['type'] == 'roomCreated') {
+      final n = m.notification;
+      if (!Platform.isIOS && n != null) {
+        _show(
+          conversationId: RoomPush.encode(m.data),
+          title: n.title ?? '',
+          body: n.body ?? '',
+        );
+      }
       return;
     }
     if (m.data['type'] == 'unlock') {
