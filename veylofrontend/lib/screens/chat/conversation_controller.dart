@@ -73,6 +73,7 @@ class ConversationController extends ChangeNotifier {
     _socket.reconnects.addListener(_syncMissed);
 
     try {
+      _thread = (await _repo.get(_thread.id)).copyWith(unreadCount: 0);
       final page = await _repo.messages(_thread.id);
       _messages = page.items;
       _hasMore = page.hasMore;

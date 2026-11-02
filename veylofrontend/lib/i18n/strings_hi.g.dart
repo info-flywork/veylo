@@ -130,6 +130,26 @@ class _Translations$chats$hi extends Translations$chats$tr {
 	@override String get noteHint => 'आपके मन में क्या है?';
 	@override String get noteShare => 'शेयर करें';
 	@override String get noteDelete => 'नोट डिलीट करें';
+	@override String get unlockNameApprovedMine => 'स्वीकार हो गया। नाम दिखाई देता रहेगा।';
+	@override String get unlockNameApprovedTheirs => 'आपने स्वीकार किया। आपका नाम इस चैट में दिखाई देता रहेगा।';
+	@override String get unlockNameRejectedMine => 'नाम का अनुरोध अस्वीकार हो गया।';
+	@override String get unlockNameRejectedTheirs => 'आपने नाम का अनुरोध अस्वीकार किया।';
+	@override String get unlockNamePendingMine => 'आपने नाम देखने का अनुरोध भेजा।';
+	@override String get unlockNamePendingTheirs => 'यह व्यक्ति आपका नाम देखना चाहता है।';
+	@override String get unlockPhotoApprovedMine => 'स्वीकार हो गया। फ़ोटो का धुंधलापन हट गया।';
+	@override String get unlockPhotoApprovedTheirs => 'आपने स्वीकार किया। इस चैट में आपकी फ़ोटो का धुंधलापन हट गया।';
+	@override String get unlockPhotoRejectedMine => 'धुंधली फ़ोटो का अनुरोध अस्वीकार हो गया।';
+	@override String get unlockPhotoRejectedTheirs => 'आपने धुंधली फ़ोटो का अनुरोध अस्वीकार किया।';
+	@override String get unlockPhotoPendingMine => 'आपने धुंधली फ़ोटो देखने का अनुरोध भेजा।';
+	@override String get unlockPhotoPendingTheirs => 'यह व्यक्ति आपकी धुंधली फ़ोटो देखना चाहता है।';
+	@override String get unlockFullApprovedMine => 'स्वीकार हो गया। पूरी प्रोफ़ाइल देख सकते हैं।';
+	@override String get unlockFullApprovedTheirs => 'आपने स्वीकार किया। आपकी पूरी प्रोफ़ाइल इस चैट में खुली रहेगी।';
+	@override String get unlockFullRejectedMine => 'पूरी प्रोफ़ाइल का अनुरोध अस्वीकार हो गया।';
+	@override String get unlockFullRejectedTheirs => 'आपने पूरी प्रोफ़ाइल का अनुरोध अस्वीकार किया।';
+	@override String get unlockFullPendingMine => 'आपने पूरी प्रोफ़ाइल देखने का अनुरोध भेजा।';
+	@override String get unlockFullPendingTheirs => 'यह व्यक्ति आपकी पूरी प्रोफ़ाइल देखना चाहता है।';
+	@override String unlockSent({required Object title}) => 'आपने अनुरोध भेजा: ${title}';
+	@override String unlockReceived({required Object title}) => 'जिससे आप चैट कर रहे हैं उसने ${title} के बारे में अनुरोध भेजा।';
 }
 
 // Path: profile
@@ -1091,6 +1111,26 @@ extension on TranslationsHi {
 			'chats.noteHint' => 'आपके मन में क्या है?',
 			'chats.noteShare' => 'शेयर करें',
 			'chats.noteDelete' => 'नोट डिलीट करें',
+			'chats.unlockNameApprovedMine' => 'स्वीकार हो गया। नाम दिखाई देता रहेगा।',
+			'chats.unlockNameApprovedTheirs' => 'आपने स्वीकार किया। आपका नाम इस चैट में दिखाई देता रहेगा।',
+			'chats.unlockNameRejectedMine' => 'नाम का अनुरोध अस्वीकार हो गया।',
+			'chats.unlockNameRejectedTheirs' => 'आपने नाम का अनुरोध अस्वीकार किया।',
+			'chats.unlockNamePendingMine' => 'आपने नाम देखने का अनुरोध भेजा।',
+			'chats.unlockNamePendingTheirs' => 'यह व्यक्ति आपका नाम देखना चाहता है।',
+			'chats.unlockPhotoApprovedMine' => 'स्वीकार हो गया। फ़ोटो का धुंधलापन हट गया।',
+			'chats.unlockPhotoApprovedTheirs' => 'आपने स्वीकार किया। इस चैट में आपकी फ़ोटो का धुंधलापन हट गया।',
+			'chats.unlockPhotoRejectedMine' => 'धुंधली फ़ोटो का अनुरोध अस्वीकार हो गया।',
+			'chats.unlockPhotoRejectedTheirs' => 'आपने धुंधली फ़ोटो का अनुरोध अस्वीकार किया।',
+			'chats.unlockPhotoPendingMine' => 'आपने धुंधली फ़ोटो देखने का अनुरोध भेजा।',
+			'chats.unlockPhotoPendingTheirs' => 'यह व्यक्ति आपकी धुंधली फ़ोटो देखना चाहता है।',
+			'chats.unlockFullApprovedMine' => 'स्वीकार हो गया। पूरी प्रोफ़ाइल देख सकते हैं।',
+			'chats.unlockFullApprovedTheirs' => 'आपने स्वीकार किया। आपकी पूरी प्रोफ़ाइल इस चैट में खुली रहेगी।',
+			'chats.unlockFullRejectedMine' => 'पूरी प्रोफ़ाइल का अनुरोध अस्वीकार हो गया।',
+			'chats.unlockFullRejectedTheirs' => 'आपने पूरी प्रोफ़ाइल का अनुरोध अस्वीकार किया।',
+			'chats.unlockFullPendingMine' => 'आपने पूरी प्रोफ़ाइल देखने का अनुरोध भेजा।',
+			'chats.unlockFullPendingTheirs' => 'यह व्यक्ति आपकी पूरी प्रोफ़ाइल देखना चाहता है।',
+			'chats.unlockSent' => ({required Object title}) => 'आपने अनुरोध भेजा: ${title}',
+			'chats.unlockReceived' => ({required Object title}) => 'जिससे आप चैट कर रहे हैं उसने ${title} के बारे में अनुरोध भेजा।',
 			'profile.eyebrow' => 'प्रोफ़ाइल',
 			'profile.title' => 'सेटिंग्स',
 			'profile.editProfile' => 'प्रोफ़ाइल एडिट करें',
@@ -1539,6 +1579,8 @@ extension on TranslationsHi {
 			'createProfile.interestsSubtitle' => 'कम से कम 5 चुनें — इससे हम आपको ऐसे लोगों से मिला पाएँगे जो सच में आपको समझें।',
 			'createProfile.interests.music' => 'म्यूज़िक',
 			'createProfile.interests.movies' => 'फ़िल्में',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.interests.tvShows' => 'TV शो',
 			'createProfile.interests.reading' => 'पढ़ना',
 			'createProfile.interests.painting' => 'पेंटिंग',
@@ -1559,8 +1601,6 @@ extension on TranslationsHi {
 			'createProfile.interests.coding' => 'कोडिंग',
 			'createProfile.interests.ai' => 'AI',
 			'createProfile.interests.podcast' => 'पॉडकास्ट',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.stepChatGoal' => '5/5 चैट का लक्ष्य',
 			'createProfile.chatGoalTitle' => 'आज आप क्या ढूँढ रहे हैं?',
 			'createProfile.chatGoalSubtitle' => 'इससे हम आपके अभी के मूड के हिसाब से सही मैच ढूँढ पाएँगे।',

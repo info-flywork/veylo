@@ -130,6 +130,26 @@ class _Translations$chats$ko extends Translations$chats$tr {
 	@override String get noteHint => '무슨 생각 하고 있어요?';
 	@override String get noteShare => '공유';
 	@override String get noteDelete => '노트 삭제';
+	@override String get unlockNameApprovedMine => '승인했어요. 이름이 계속 보여요.';
+	@override String get unlockNameApprovedTheirs => '승인했어요. 내 이름이 이 채팅에 계속 보여요.';
+	@override String get unlockNameRejectedMine => '이름 요청을 거절했어요.';
+	@override String get unlockNameRejectedTheirs => '이름 요청을 거절했어요.';
+	@override String get unlockNamePendingMine => '이름을 보고 싶다고 요청을 보냈어요.';
+	@override String get unlockNamePendingTheirs => '이 사람이 내 이름을 보고 싶다고 요청했어요.';
+	@override String get unlockPhotoApprovedMine => '승인했어요. 사진의 흐림이 사라졌어요.';
+	@override String get unlockPhotoApprovedTheirs => '승인했어요. 내 사진의 흐림이 이 채팅에서 사라졌어요.';
+	@override String get unlockPhotoRejectedMine => '흐린 사진 요청을 거절했어요.';
+	@override String get unlockPhotoRejectedTheirs => '흐린 사진 요청을 거절했어요.';
+	@override String get unlockPhotoPendingMine => '흐린 사진을 보고 싶다고 요청을 보냈어요.';
+	@override String get unlockPhotoPendingTheirs => '이 사람이 내 흐린 사진을 보고 싶다고 요청했어요.';
+	@override String get unlockFullApprovedMine => '승인했어요. 전체 프로필을 볼 수 있어요.';
+	@override String get unlockFullApprovedTheirs => '승인했어요. 내 전체 프로필이 이 채팅에 열려 있어요.';
+	@override String get unlockFullRejectedMine => '전체 프로필 요청을 거절했어요.';
+	@override String get unlockFullRejectedTheirs => '전체 프로필 요청을 거절했어요.';
+	@override String get unlockFullPendingMine => '전체 프로필을 보고 싶다고 요청을 보냈어요.';
+	@override String get unlockFullPendingTheirs => '이 사람이 내 전체 프로필을 보고 싶다고 요청했어요.';
+	@override String unlockSent({required Object title}) => '요청을 보냈어요: ${title}';
+	@override String unlockReceived({required Object title}) => '대화 상대가 ${title}에 대해 요청을 보냈어요.';
 }
 
 // Path: profile
@@ -1091,6 +1111,26 @@ extension on TranslationsKo {
 			'chats.noteHint' => '무슨 생각 하고 있어요?',
 			'chats.noteShare' => '공유',
 			'chats.noteDelete' => '노트 삭제',
+			'chats.unlockNameApprovedMine' => '승인했어요. 이름이 계속 보여요.',
+			'chats.unlockNameApprovedTheirs' => '승인했어요. 내 이름이 이 채팅에 계속 보여요.',
+			'chats.unlockNameRejectedMine' => '이름 요청을 거절했어요.',
+			'chats.unlockNameRejectedTheirs' => '이름 요청을 거절했어요.',
+			'chats.unlockNamePendingMine' => '이름을 보고 싶다고 요청을 보냈어요.',
+			'chats.unlockNamePendingTheirs' => '이 사람이 내 이름을 보고 싶다고 요청했어요.',
+			'chats.unlockPhotoApprovedMine' => '승인했어요. 사진의 흐림이 사라졌어요.',
+			'chats.unlockPhotoApprovedTheirs' => '승인했어요. 내 사진의 흐림이 이 채팅에서 사라졌어요.',
+			'chats.unlockPhotoRejectedMine' => '흐린 사진 요청을 거절했어요.',
+			'chats.unlockPhotoRejectedTheirs' => '흐린 사진 요청을 거절했어요.',
+			'chats.unlockPhotoPendingMine' => '흐린 사진을 보고 싶다고 요청을 보냈어요.',
+			'chats.unlockPhotoPendingTheirs' => '이 사람이 내 흐린 사진을 보고 싶다고 요청했어요.',
+			'chats.unlockFullApprovedMine' => '승인했어요. 전체 프로필을 볼 수 있어요.',
+			'chats.unlockFullApprovedTheirs' => '승인했어요. 내 전체 프로필이 이 채팅에 열려 있어요.',
+			'chats.unlockFullRejectedMine' => '전체 프로필 요청을 거절했어요.',
+			'chats.unlockFullRejectedTheirs' => '전체 프로필 요청을 거절했어요.',
+			'chats.unlockFullPendingMine' => '전체 프로필을 보고 싶다고 요청을 보냈어요.',
+			'chats.unlockFullPendingTheirs' => '이 사람이 내 전체 프로필을 보고 싶다고 요청했어요.',
+			'chats.unlockSent' => ({required Object title}) => '요청을 보냈어요: ${title}',
+			'chats.unlockReceived' => ({required Object title}) => '대화 상대가 ${title}에 대해 요청을 보냈어요.',
 			'profile.eyebrow' => '프로필',
 			'profile.title' => '설정',
 			'profile.editProfile' => '프로필 편집',
@@ -1539,6 +1579,8 @@ extension on TranslationsKo {
 			'createProfile.interestsSubtitle' => '5개 이상 골라주세요 — 나를 잘 이해하는 사람과 매칭하는 데 도움이 돼요.',
 			'createProfile.interests.music' => '음악',
 			'createProfile.interests.movies' => '영화',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.interests.tvShows' => 'TV 프로그램',
 			'createProfile.interests.reading' => '독서',
 			'createProfile.interests.painting' => '그림',
@@ -1559,8 +1601,6 @@ extension on TranslationsKo {
 			'createProfile.interests.coding' => '코딩',
 			'createProfile.interests.ai' => 'AI',
 			'createProfile.interests.podcast' => '팟캐스트',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.stepChatGoal' => '5/5 대화 목적',
 			'createProfile.chatGoalTitle' => '오늘은 무엇을 찾고 있나요?',
 			'createProfile.chatGoalSubtitle' => '지금 기분에 딱 맞는 상대를 찾는 데 도움이 돼요.',

@@ -220,6 +220,66 @@ class Translations$chats$tr {
 
 	/// tr: 'Notu sil'
 	String get noteDelete => 'Notu sil';
+
+	/// tr: 'Onayladı. Adı görünür kaldı.'
+	String get unlockNameApprovedMine => 'Onayladı. Adı görünür kaldı.';
+
+	/// tr: 'Onayladın. Adın bu sohbette görünür kaldı.'
+	String get unlockNameApprovedTheirs => 'Onayladın. Adın bu sohbette görünür kaldı.';
+
+	/// tr: 'İsim isteğini reddetti.'
+	String get unlockNameRejectedMine => 'İsim isteğini reddetti.';
+
+	/// tr: 'İsim isteğini reddettin.'
+	String get unlockNameRejectedTheirs => 'İsim isteğini reddettin.';
+
+	/// tr: 'Adını görmek için istek gönderdin.'
+	String get unlockNamePendingMine => 'Adını görmek için istek gönderdin.';
+
+	/// tr: 'Adını görmek için sana istek gönderdi.'
+	String get unlockNamePendingTheirs => 'Adını görmek için sana istek gönderdi.';
+
+	/// tr: 'Onayladı. Fotoğrafındaki bulanıklık kalktı.'
+	String get unlockPhotoApprovedMine => 'Onayladı. Fotoğrafındaki bulanıklık kalktı.';
+
+	/// tr: 'Onayladın. Fotoğrafındaki bulanıklık bu sohbette kalktı.'
+	String get unlockPhotoApprovedTheirs => 'Onayladın. Fotoğrafındaki bulanıklık bu sohbette kalktı.';
+
+	/// tr: 'Bulanık fotoğraf isteğini reddetti.'
+	String get unlockPhotoRejectedMine => 'Bulanık fotoğraf isteğini reddetti.';
+
+	/// tr: 'Bulanık fotoğraf isteğini reddettin.'
+	String get unlockPhotoRejectedTheirs => 'Bulanık fotoğraf isteğini reddettin.';
+
+	/// tr: 'Bulanık fotoğrafını görmek için istek gönderdin.'
+	String get unlockPhotoPendingMine => 'Bulanık fotoğrafını görmek için istek gönderdin.';
+
+	/// tr: 'Bulanık fotoğrafını görmek için sana istek gönderdi.'
+	String get unlockPhotoPendingTheirs => 'Bulanık fotoğrafını görmek için sana istek gönderdi.';
+
+	/// tr: 'Onayladı. Tam profilini görebilirsin.'
+	String get unlockFullApprovedMine => 'Onayladı. Tam profilini görebilirsin.';
+
+	/// tr: 'Onayladın. Tam profilin bu sohbette açık kaldı.'
+	String get unlockFullApprovedTheirs => 'Onayladın. Tam profilin bu sohbette açık kaldı.';
+
+	/// tr: 'Tam profil isteğini reddetti.'
+	String get unlockFullRejectedMine => 'Tam profil isteğini reddetti.';
+
+	/// tr: 'Tam profil isteğini reddettin.'
+	String get unlockFullRejectedTheirs => 'Tam profil isteğini reddettin.';
+
+	/// tr: 'Tam profilini görmek için istek gönderdin.'
+	String get unlockFullPendingMine => 'Tam profilini görmek için istek gönderdin.';
+
+	/// tr: 'Tam profilini görmek için sana istek gönderdi.'
+	String get unlockFullPendingTheirs => 'Tam profilini görmek için sana istek gönderdi.';
+
+	/// tr: 'İstek gönderdin: {title}'
+	String unlockSent({required Object title}) => 'İstek gönderdin: ${title}';
+
+	/// tr: 'Sohbet ettiğin kişi {title} hakkında istek gönderdi.'
+	String unlockReceived({required Object title}) => 'Sohbet ettiğin kişi ${title} hakkında istek gönderdi.';
 }
 
 // Path: profile
@@ -2413,6 +2473,26 @@ extension on Translations {
 			'chats.noteHint' => 'Aklında ne var?',
 			'chats.noteShare' => 'Paylaş',
 			'chats.noteDelete' => 'Notu sil',
+			'chats.unlockNameApprovedMine' => 'Onayladı. Adı görünür kaldı.',
+			'chats.unlockNameApprovedTheirs' => 'Onayladın. Adın bu sohbette görünür kaldı.',
+			'chats.unlockNameRejectedMine' => 'İsim isteğini reddetti.',
+			'chats.unlockNameRejectedTheirs' => 'İsim isteğini reddettin.',
+			'chats.unlockNamePendingMine' => 'Adını görmek için istek gönderdin.',
+			'chats.unlockNamePendingTheirs' => 'Adını görmek için sana istek gönderdi.',
+			'chats.unlockPhotoApprovedMine' => 'Onayladı. Fotoğrafındaki bulanıklık kalktı.',
+			'chats.unlockPhotoApprovedTheirs' => 'Onayladın. Fotoğrafındaki bulanıklık bu sohbette kalktı.',
+			'chats.unlockPhotoRejectedMine' => 'Bulanık fotoğraf isteğini reddetti.',
+			'chats.unlockPhotoRejectedTheirs' => 'Bulanık fotoğraf isteğini reddettin.',
+			'chats.unlockPhotoPendingMine' => 'Bulanık fotoğrafını görmek için istek gönderdin.',
+			'chats.unlockPhotoPendingTheirs' => 'Bulanık fotoğrafını görmek için sana istek gönderdi.',
+			'chats.unlockFullApprovedMine' => 'Onayladı. Tam profilini görebilirsin.',
+			'chats.unlockFullApprovedTheirs' => 'Onayladın. Tam profilin bu sohbette açık kaldı.',
+			'chats.unlockFullRejectedMine' => 'Tam profil isteğini reddetti.',
+			'chats.unlockFullRejectedTheirs' => 'Tam profil isteğini reddettin.',
+			'chats.unlockFullPendingMine' => 'Tam profilini görmek için istek gönderdin.',
+			'chats.unlockFullPendingTheirs' => 'Tam profilini görmek için sana istek gönderdi.',
+			'chats.unlockSent' => ({required Object title}) => 'İstek gönderdin: ${title}',
+			'chats.unlockReceived' => ({required Object title}) => 'Sohbet ettiğin kişi ${title} hakkında istek gönderdi.',
 			'profile.eyebrow' => 'Profil',
 			'profile.title' => 'Ayarlar',
 			'profile.editProfile' => 'Profili Düzenle',
@@ -2861,6 +2941,8 @@ extension on Translations {
 			'createProfile.genderSubtitleLine2' => 'kişiselleştirmek için kullanabiliriz.',
 			'createProfile.genderFemale' => 'Kadın',
 			'createProfile.genderMale' => 'Erkek',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.genderNonBinary' => 'Non-binary',
 			'createProfile.genderPreferNotToSay' => 'Belirtmek istemiyorum',
 			'createProfile.stepInterests' => '4/5 İlgi alanları',
@@ -2881,8 +2963,6 @@ extension on Translations {
 			'createProfile.interests.travel' => 'Seyahat',
 			'createProfile.interests.camping' => 'Kamp',
 			'createProfile.interests.meditation' => 'Meditasyon',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.interests.videoGames' => 'Video oyunları',
 			'createProfile.interests.boardGames' => 'Kutu oyunları',
 			'createProfile.interests.standUp' => 'Stand-up',

@@ -130,6 +130,26 @@ class _Translations$chats$zh extends Translations$chats$tr {
 	@override String get noteHint => '在想什么？';
 	@override String get noteShare => '分享';
 	@override String get noteDelete => '删除便签';
+	@override String get unlockNameApprovedMine => '已同意。名字会一直显示。';
+	@override String get unlockNameApprovedTheirs => '你已同意。你的名字会在这个聊天里一直显示。';
+	@override String get unlockNameRejectedMine => '姓名请求已被拒绝。';
+	@override String get unlockNameRejectedTheirs => '你拒绝了姓名请求。';
+	@override String get unlockNamePendingMine => '你发送了查看名字的请求。';
+	@override String get unlockNamePendingTheirs => '对方请求查看你的名字。';
+	@override String get unlockPhotoApprovedMine => '已同意。照片的模糊已去掉。';
+	@override String get unlockPhotoApprovedTheirs => '你已同意。你的照片在这个聊天里不再模糊。';
+	@override String get unlockPhotoRejectedMine => '模糊照片请求已被拒绝。';
+	@override String get unlockPhotoRejectedTheirs => '你拒绝了模糊照片请求。';
+	@override String get unlockPhotoPendingMine => '你发送了查看模糊照片的请求。';
+	@override String get unlockPhotoPendingTheirs => '对方请求查看你的模糊照片。';
+	@override String get unlockFullApprovedMine => '已同意。你可以查看完整资料。';
+	@override String get unlockFullApprovedTheirs => '你已同意。你的完整资料会在这个聊天里保持可见。';
+	@override String get unlockFullRejectedMine => '完整资料请求已被拒绝。';
+	@override String get unlockFullRejectedTheirs => '你拒绝了完整资料请求。';
+	@override String get unlockFullPendingMine => '你发送了查看完整资料的请求。';
+	@override String get unlockFullPendingTheirs => '对方请求查看你的完整资料。';
+	@override String unlockSent({required Object title}) => '你发送了请求：${title}';
+	@override String unlockReceived({required Object title}) => '聊天对象发送了关于${title}的请求。';
 }
 
 // Path: profile
@@ -1091,6 +1111,26 @@ extension on TranslationsZh {
 			'chats.noteHint' => '在想什么？',
 			'chats.noteShare' => '分享',
 			'chats.noteDelete' => '删除便签',
+			'chats.unlockNameApprovedMine' => '已同意。名字会一直显示。',
+			'chats.unlockNameApprovedTheirs' => '你已同意。你的名字会在这个聊天里一直显示。',
+			'chats.unlockNameRejectedMine' => '姓名请求已被拒绝。',
+			'chats.unlockNameRejectedTheirs' => '你拒绝了姓名请求。',
+			'chats.unlockNamePendingMine' => '你发送了查看名字的请求。',
+			'chats.unlockNamePendingTheirs' => '对方请求查看你的名字。',
+			'chats.unlockPhotoApprovedMine' => '已同意。照片的模糊已去掉。',
+			'chats.unlockPhotoApprovedTheirs' => '你已同意。你的照片在这个聊天里不再模糊。',
+			'chats.unlockPhotoRejectedMine' => '模糊照片请求已被拒绝。',
+			'chats.unlockPhotoRejectedTheirs' => '你拒绝了模糊照片请求。',
+			'chats.unlockPhotoPendingMine' => '你发送了查看模糊照片的请求。',
+			'chats.unlockPhotoPendingTheirs' => '对方请求查看你的模糊照片。',
+			'chats.unlockFullApprovedMine' => '已同意。你可以查看完整资料。',
+			'chats.unlockFullApprovedTheirs' => '你已同意。你的完整资料会在这个聊天里保持可见。',
+			'chats.unlockFullRejectedMine' => '完整资料请求已被拒绝。',
+			'chats.unlockFullRejectedTheirs' => '你拒绝了完整资料请求。',
+			'chats.unlockFullPendingMine' => '你发送了查看完整资料的请求。',
+			'chats.unlockFullPendingTheirs' => '对方请求查看你的完整资料。',
+			'chats.unlockSent' => ({required Object title}) => '你发送了请求：${title}',
+			'chats.unlockReceived' => ({required Object title}) => '聊天对象发送了关于${title}的请求。',
 			'profile.eyebrow' => '个人资料',
 			'profile.title' => '设置',
 			'profile.editProfile' => '编辑资料',
@@ -1539,6 +1579,8 @@ extension on TranslationsZh {
 			'createProfile.interestsSubtitle' => '至少选 5 个——帮你匹配真正懂你的人。',
 			'createProfile.interests.music' => '音乐',
 			'createProfile.interests.movies' => '电影',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.interests.tvShows' => '电视剧',
 			'createProfile.interests.reading' => '阅读',
 			'createProfile.interests.painting' => '绘画',
@@ -1559,8 +1601,6 @@ extension on TranslationsZh {
 			'createProfile.interests.coding' => '编程',
 			'createProfile.interests.ai' => 'AI',
 			'createProfile.interests.podcast' => '播客',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.stepChatGoal' => '5/5 聊天目标',
 			'createProfile.chatGoalTitle' => '你今天想找什么？',
 			'createProfile.chatGoalSubtitle' => '这能帮我们根据你此刻的心情找到合适的人。',

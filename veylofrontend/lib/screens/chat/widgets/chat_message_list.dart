@@ -159,42 +159,22 @@ class _UnlockNoticeState extends State<_UnlockNotice> {
     final body = widget.message.body;
     final title = switch (body) {
       'unlock:initial' || 'unlock:initial:approved' || 'unlock:initial:rejected' => t.milestoneInitial,
-      'unlock:photo' => t.milestonePhoto,
-      'unlock:full' => t.milestoneFull,
+      'unlock:photo' || 'unlock:photo:approved' || 'unlock:photo:rejected' => t.milestonePhoto,
+      'unlock:full' || 'unlock:full:approved' || 'unlock:full:rejected' => t.milestoneFull,
       _ => body ?? '',
     };
     final mine = widget.message.isMine;
     final text = switch (body) {
-      'unlock:initial:approved' => mine
-          ? 'They approved. Their name stays visible.'
-          : 'You approved. Your name stays visible in this chat.',
-      'unlock:initial:rejected' => mine
-          ? 'They declined the name request.'
-          : 'You declined the name request.',
-      'unlock:initial' => mine
-          ? 'You sent a request to see their name.'
-          : 'This person sent you a request to see your name.',
-      'unlock:photo:approved' => mine
-          ? 'They approved. You can see their blurred photo.'
-          : 'You approved. Your blurred photo stays visible in this chat.',
-      'unlock:photo:rejected' => mine
-          ? 'They declined the blurred photo request.'
-          : 'You declined the blurred photo request.',
-      'unlock:photo' => mine
-          ? 'You sent a request to see their blurred photo.'
-          : 'This person sent you a request to see your blurred photo.',
-      'unlock:full:approved' => mine
-          ? 'They approved. You can see their full profile.'
-          : 'You approved. Your full profile stays visible in this chat.',
-      'unlock:full:rejected' => mine
-          ? 'They declined the full profile request.'
-          : 'You declined the full profile request.',
-      'unlock:full' => mine
-          ? 'You sent a request to see their full profile.'
-          : 'This person sent you a request to see your full profile.',
-      _ => mine
-          ? 'You sent a request: $title'
-          : 'The person you\'re chatting with sent you a request about $title',
+      'unlock:initial:approved' => mine ? t.unlockNameApprovedMine : t.unlockNameApprovedTheirs,
+      'unlock:initial:rejected' => mine ? t.unlockNameRejectedMine : t.unlockNameRejectedTheirs,
+      'unlock:initial' => mine ? t.unlockNamePendingMine : t.unlockNamePendingTheirs,
+      'unlock:photo:approved' => mine ? t.unlockPhotoApprovedMine : t.unlockPhotoApprovedTheirs,
+      'unlock:photo:rejected' => mine ? t.unlockPhotoRejectedMine : t.unlockPhotoRejectedTheirs,
+      'unlock:photo' => mine ? t.unlockPhotoPendingMine : t.unlockPhotoPendingTheirs,
+      'unlock:full:approved' => mine ? t.unlockFullApprovedMine : t.unlockFullApprovedTheirs,
+      'unlock:full:rejected' => mine ? t.unlockFullRejectedMine : t.unlockFullRejectedTheirs,
+      'unlock:full' => mine ? t.unlockFullPendingMine : t.unlockFullPendingTheirs,
+      _ => mine ? t.unlockSent(title: title) : t.unlockReceived(title: title),
     };
     final canAnswer = (body == 'unlock:initial' || body == 'unlock:photo' || body == 'unlock:full') &&
         !mine &&

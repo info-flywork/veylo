@@ -130,6 +130,26 @@ class _Translations$chats$ja extends Translations$chats$tr {
 	@override String get noteHint => '今なにしてる？';
 	@override String get noteShare => 'シェア';
 	@override String get noteDelete => 'ノートを削除';
+	@override String get unlockNameApprovedMine => '承認されました。名前は表示されたままです。';
+	@override String get unlockNameApprovedTheirs => '承認しました。あなたの名前はこのチャットで表示されたままです。';
+	@override String get unlockNameRejectedMine => '名前のリクエストは拒否されました。';
+	@override String get unlockNameRejectedTheirs => '名前のリクエストを拒否しました。';
+	@override String get unlockNamePendingMine => '名前を見たいとリクエストを送りました。';
+	@override String get unlockNamePendingTheirs => 'この人があなたの名前を見たいとリクエストしました。';
+	@override String get unlockPhotoApprovedMine => '承認されました。写真のぼかしが外れました。';
+	@override String get unlockPhotoApprovedTheirs => '承認しました。あなたの写真のぼかしがこのチャットで外れました。';
+	@override String get unlockPhotoRejectedMine => 'ぼかし写真のリクエストは拒否されました。';
+	@override String get unlockPhotoRejectedTheirs => 'ぼかし写真のリクエストを拒否しました。';
+	@override String get unlockPhotoPendingMine => 'ぼかし写真を見たいとリクエストを送りました。';
+	@override String get unlockPhotoPendingTheirs => 'この人があなたのぼかし写真を見たいとリクエストしました。';
+	@override String get unlockFullApprovedMine => '承認されました。プロフィール全体を見られます。';
+	@override String get unlockFullApprovedTheirs => '承認しました。あなたのプロフィール全体はこのチャットで表示されたままです。';
+	@override String get unlockFullRejectedMine => 'プロフィール全体のリクエストは拒否されました。';
+	@override String get unlockFullRejectedTheirs => 'プロフィール全体のリクエストを拒否しました。';
+	@override String get unlockFullPendingMine => 'プロフィール全体を見たいとリクエストを送りました。';
+	@override String get unlockFullPendingTheirs => 'この人があなたのプロフィール全体を見たいとリクエストしました。';
+	@override String unlockSent({required Object title}) => 'リクエストを送りました: ${title}';
+	@override String unlockReceived({required Object title}) => 'チャット相手が${title}についてリクエストを送りました。';
 }
 
 // Path: profile
@@ -1091,6 +1111,26 @@ extension on TranslationsJa {
 			'chats.noteHint' => '今なにしてる？',
 			'chats.noteShare' => 'シェア',
 			'chats.noteDelete' => 'ノートを削除',
+			'chats.unlockNameApprovedMine' => '承認されました。名前は表示されたままです。',
+			'chats.unlockNameApprovedTheirs' => '承認しました。あなたの名前はこのチャットで表示されたままです。',
+			'chats.unlockNameRejectedMine' => '名前のリクエストは拒否されました。',
+			'chats.unlockNameRejectedTheirs' => '名前のリクエストを拒否しました。',
+			'chats.unlockNamePendingMine' => '名前を見たいとリクエストを送りました。',
+			'chats.unlockNamePendingTheirs' => 'この人があなたの名前を見たいとリクエストしました。',
+			'chats.unlockPhotoApprovedMine' => '承認されました。写真のぼかしが外れました。',
+			'chats.unlockPhotoApprovedTheirs' => '承認しました。あなたの写真のぼかしがこのチャットで外れました。',
+			'chats.unlockPhotoRejectedMine' => 'ぼかし写真のリクエストは拒否されました。',
+			'chats.unlockPhotoRejectedTheirs' => 'ぼかし写真のリクエストを拒否しました。',
+			'chats.unlockPhotoPendingMine' => 'ぼかし写真を見たいとリクエストを送りました。',
+			'chats.unlockPhotoPendingTheirs' => 'この人があなたのぼかし写真を見たいとリクエストしました。',
+			'chats.unlockFullApprovedMine' => '承認されました。プロフィール全体を見られます。',
+			'chats.unlockFullApprovedTheirs' => '承認しました。あなたのプロフィール全体はこのチャットで表示されたままです。',
+			'chats.unlockFullRejectedMine' => 'プロフィール全体のリクエストは拒否されました。',
+			'chats.unlockFullRejectedTheirs' => 'プロフィール全体のリクエストを拒否しました。',
+			'chats.unlockFullPendingMine' => 'プロフィール全体を見たいとリクエストを送りました。',
+			'chats.unlockFullPendingTheirs' => 'この人があなたのプロフィール全体を見たいとリクエストしました。',
+			'chats.unlockSent' => ({required Object title}) => 'リクエストを送りました: ${title}',
+			'chats.unlockReceived' => ({required Object title}) => 'チャット相手が${title}についてリクエストを送りました。',
 			'profile.eyebrow' => 'プロフィール',
 			'profile.title' => '設定',
 			'profile.editProfile' => 'プロフィールを編集',
@@ -1539,6 +1579,8 @@ extension on TranslationsJa {
 			'createProfile.interestsSubtitle' => '5つ以上選んでね。あなたを本当に分かってくれる人とマッチしやすくなります。',
 			'createProfile.interests.music' => '音楽',
 			'createProfile.interests.movies' => '映画',
+			_ => null,
+		} ?? switch (path) {
 			'createProfile.interests.tvShows' => 'ドラマ・TV',
 			'createProfile.interests.reading' => '読書',
 			'createProfile.interests.painting' => '絵画',
@@ -1559,8 +1601,6 @@ extension on TranslationsJa {
 			'createProfile.interests.coding' => 'プログラミング',
 			'createProfile.interests.ai' => 'AI',
 			'createProfile.interests.podcast' => 'ポッドキャスト',
-			_ => null,
-		} ?? switch (path) {
 			'createProfile.stepChatGoal' => '5/5 チャットの目的',
 			'createProfile.chatGoalTitle' => '今日は何を探してる？',
 			'createProfile.chatGoalSubtitle' => '今の気分にぴったりの相手を見つけるのに役立ちます。',
