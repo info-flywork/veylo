@@ -20,6 +20,9 @@ export interface NotificationTexts {
   newFollowerBody: (name: string) => string;
   newCommentTitle: string;
   newCommentBody: (name: string, text: string) => string;
+  roomCreatedTitle: string;
+  roomCreatedBody: (name: string, room: string) => string;
+  roomCreatedAnonymousBody: (room: string) => string;
 }
 
 /** Push bildirim metinleri: uygulamadaki 12 dil (Profil > Languages). */
@@ -42,6 +45,9 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     newFollowerBody: (n) => `${n} started following you`,
     newCommentTitle: 'New comment',
     newCommentBody: (n, c) => `${n}: ${c}`,
+    roomCreatedTitle: 'New room',
+    roomCreatedBody: (n, r) => `${n} created a room: ${r}`,
+    roomCreatedAnonymousBody: (r) => `A friend created a room: ${r}`,
   },
   tr: {
     messageRequestTitle: 'Yeni mesaj isteği',
@@ -61,6 +67,9 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     newFollowerBody: (n) => `${n} seni takip etmeye başladı`,
     newCommentTitle: 'Yeni yorum',
     newCommentBody: (n, c) => `${n}: ${c}`,
+    roomCreatedTitle: 'Yeni oda',
+    roomCreatedBody: (n, r) => `${n} bir oda oluşturdu: ${r}`,
+    roomCreatedAnonymousBody: (r) => `Bir arkadaşın bir oda oluşturdu: ${r}`,
   },
   de: {
     messageRequestTitle: 'Neue Nachrichtenanfrage',
@@ -80,6 +89,9 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     newFollowerBody: (n) => `${n} folgt dir jetzt`,
     newCommentTitle: 'Neuer Kommentar',
     newCommentBody: (n, c) => `${n}: ${c}`,
+    roomCreatedTitle: 'Neuer Raum',
+    roomCreatedBody: (n, r) => `${n} hat einen Raum erstellt: ${r}`,
+    roomCreatedAnonymousBody: (r) => `Ein Freund hat einen Raum erstellt: ${r}`,
   },
   it: {
     messageRequestTitle: 'Nuova richiesta di messaggio',
@@ -99,6 +111,9 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     newFollowerBody: (n) => `${n} ha iniziato a seguirti`,
     newCommentTitle: 'Nuovo commento',
     newCommentBody: (n, c) => `${n}: ${c}`,
+    roomCreatedTitle: 'Nuova stanza',
+    roomCreatedBody: (n, r) => `${n} ha creato una stanza: ${r}`,
+    roomCreatedAnonymousBody: (r) => `Un amico ha creato una stanza: ${r}`,
   },
   fr: {
     messageRequestTitle: 'Nouvelle demande de message',
@@ -118,6 +133,9 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     newFollowerBody: (n) => `${n} a commencé à te suivre`,
     newCommentTitle: 'Nouveau commentaire',
     newCommentBody: (n, c) => `${n} : ${c}`,
+    roomCreatedTitle: 'Nouveau salon',
+    roomCreatedBody: (n, r) => `${n} a créé un salon : ${r}`,
+    roomCreatedAnonymousBody: (r) => `Un ami a créé un salon : ${r}`,
   },
   ja: {
     messageRequestTitle: '新しいメッセージリクエスト',
@@ -137,6 +155,9 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     newFollowerBody: (n) => `${n}さんがあなたをフォローしました`,
     newCommentTitle: '新しいコメント',
     newCommentBody: (n, c) => `${n}：${c}`,
+    roomCreatedTitle: '新しいルーム',
+    roomCreatedBody: (n, r) => `${n}さんがルームを作成しました：${r}`,
+    roomCreatedAnonymousBody: (r) => `友だちがルームを作成しました：${r}`,
   },
   es: {
     messageRequestTitle: 'Nueva solicitud de mensaje',
@@ -156,6 +177,9 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     newFollowerBody: (n) => `${n} empezó a seguirte`,
     newCommentTitle: 'Nuevo comentario',
     newCommentBody: (n, c) => `${n}: ${c}`,
+    roomCreatedTitle: 'Nueva sala',
+    roomCreatedBody: (n, r) => `${n} creó una sala: ${r}`,
+    roomCreatedAnonymousBody: (r) => `Un amigo creó una sala: ${r}`,
   },
   ru: {
     messageRequestTitle: 'Новый запрос на переписку',
@@ -175,6 +199,9 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     newFollowerBody: (n) => `${n} подписался(-ась) на тебя`,
     newCommentTitle: 'Новый комментарий',
     newCommentBody: (n, c) => `${n}: ${c}`,
+    roomCreatedTitle: 'Новая комната',
+    roomCreatedBody: (n, r) => `${n} создал(а) комнату: ${r}`,
+    roomCreatedAnonymousBody: (r) => `Друг создал комнату: ${r}`,
   },
   ko: {
     messageRequestTitle: '새 메시지 요청',
@@ -194,6 +221,9 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     newFollowerBody: (n) => `${n}님이 회원님을 팔로우하기 시작했어요`,
     newCommentTitle: '새 댓글',
     newCommentBody: (n, c) => `${n}: ${c}`,
+    roomCreatedTitle: '새 방',
+    roomCreatedBody: (n, r) => `${n}님이 방을 만들었어요: ${r}`,
+    roomCreatedAnonymousBody: (r) => `친구가 방을 만들었어요: ${r}`,
   },
   hi: {
     messageRequestTitle: 'नया मैसेज अनुरोध',
@@ -213,6 +243,9 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     newFollowerBody: (n) => `${n} ने आपको फ़ॉलो करना शुरू किया`,
     newCommentTitle: 'नई टिप्पणी',
     newCommentBody: (n, c) => `${n}: ${c}`,
+    roomCreatedTitle: 'नया रूम',
+    roomCreatedBody: (n, r) => `${n} ने एक रूम बनाया: ${r}`,
+    roomCreatedAnonymousBody: (r) => `किसी मित्र ने एक रूम बनाया: ${r}`,
   },
   pt: {
     messageRequestTitle: 'Nova solicitação de mensagem',
@@ -232,6 +265,9 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     newFollowerBody: (n) => `${n} começou a seguir você`,
     newCommentTitle: 'Novo comentário',
     newCommentBody: (n, c) => `${n}: ${c}`,
+    roomCreatedTitle: 'Nova sala',
+    roomCreatedBody: (n, r) => `${n} criou uma sala: ${r}`,
+    roomCreatedAnonymousBody: (r) => `Um amigo criou uma sala: ${r}`,
   },
   zh: {
     messageRequestTitle: '新的消息请求',
@@ -251,6 +287,9 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     newFollowerBody: (n) => `${n} 关注了你`,
     newCommentTitle: '新评论',
     newCommentBody: (n, c) => `${n}：${c}`,
+    roomCreatedTitle: '新房间',
+    roomCreatedBody: (n, r) => `${n} 创建了房间：${r}`,
+    roomCreatedAnonymousBody: (r) => `一位好友创建了房间：${r}`,
   },
 };
 
