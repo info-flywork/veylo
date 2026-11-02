@@ -1,15 +1,16 @@
 import type { Request, Response } from 'express';
-import { vibeService } from '../services/vibe.service';
+import { vibeService, viewerLanguage } from '../services/vibe.service';
 
 const vid = (req: Request) => req.valid.params.vibeId as string;
+const lang = (req: Request) => viewerLanguage(req.user!.id, req.header('accept-language'));
 
 export async function feed(req: Request, res: Response) {
   const { cursor, q, limit } = req.valid.query;
-  res.json(await vibeService.feed(req.user!.id, { cursor, search: q, limit }));
+  res.json(await vibeService.feed(req.user!.id, { cursor, search: q, limit, locale: await lang(req) }));
 }
 
 export async function create(req: Request, res: Response) {
-  res.status(201).json(await vibeService.create(req.user!.id, req.valid.body));
+  res.status(201).json(await vibeService.create(req.user!.id, req.valid.body, await lang(req)));
 }
 
 export async function remove(req: Request, res: Response) {
@@ -18,15 +19,15 @@ export async function remove(req: Request, res: Response) {
 }
 
 export async function like(req: Request, res: Response) {
-  res.json(await vibeService.setLiked(req.user!.id, vid(req), true));
+  res.json(await vibeService.setLiked(req.user!.id, vid(req), true, await lang(req)));
 }
 
 export async function unlike(req: Request, res: Response) {
-  res.json(await vibeService.setLiked(req.user!.id, vid(req), false));
+  res.json(await vibeService.setLiked(req.user!.id, vid(req), false, await lang(req)));
 }
 
 export async function reply(req: Request, res: Response) {
-  res.status(201).json(await vibeService.reply(req.user!.id, vid(req), req.valid.body));
+  res.status(201).json(await vibeService.reply(req.user!.id, vid(req), req.valid.body, await lang(req)));
 }
 
 export async function report(req: Request, res: Response) {

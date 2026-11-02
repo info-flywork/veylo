@@ -1,17 +1,32 @@
 import { Prisma, type ReportReason, type User, type Vibe } from '@prisma/client';
-import { VIBE } from '../config/constants';
+import { ENUMS, VIBE } from '../config/constants';
 import { AppError } from '../errors/AppError';
 import { prisma } from '../lib/prisma';
+import { personaVibeBody } from '../personas/vibe-lines';
 import { maskName } from '../utils/mask';
 import { conversationService } from './conversation.service';
 import { safetyService } from './safety.service';
 
+/** İstekteki dil, yoksa kayıtlı telefon/uygulama dili. */
+export async function viewerLanguage(userId: string, acceptLanguage?: string | null) {
+  const header = acceptLanguage?.split(',')[0]?.split('-')[0]?.trim().toLowerCase();
+  if (header && (ENUMS.languages as readonly string[]).includes(header)) return header;
+  const device = await prisma.deviceToken.findFirst({
+    where: { userId },
+    orderBy: { updatedAt: 'desc' },
+    select: { locale: true },
+  });
+  if (device && (ENUMS.languages as readonly string[]).includes(device.locale)) return device.locale;
+  return 'en';
+}
+
 /** Anonim vibe'da yazarın kimliği hiçbir alanda dönmez. */
-function serializeVibe(v: Vibe & { author: User }, viewerId: string, likedByMe: boolean) {
+function serializeVibe(v: Vibe & { author: User }, viewerId: string, likedByMe: boolean, locale: string) {
   const name = v.author.displayName ?? v.author.username;
+  const body = v.author.isPersona ? personaVibeBody(v.body, locale, v.id, v.author.username) : v.body;
   return {
     id: v.id,
-    body: v.body,
+    body,
     anonymous: v.anonymous,
     author: v.anonymous
       ? {
@@ -47,7 +62,7 @@ async function loadActive(vibeId: string) {
 }
 
 /** Son 24 saatin vibe'ları (engellenenler hariç), en yeni önce. */
-async function feed(viewerId: string, q: { cursor?: string; search?: string; limit: number }) {
+async function feed(viewerId: string, q: { cursor?: string; search?: string; limit: number; locale: string }) {
   const blocked = await safetyService.blockedIdsFor(viewerId);
   const where: Prisma.VibeWhereInput = {
     deletedAt: null,
@@ -73,12 +88,12 @@ async function feed(viewerId: string, q: { cursor?: string; search?: string; lim
     ).map((l) => l.vibeId),
   );
   return {
-    items: page.map((v) => serializeVibe(v, viewerId, liked.has(v.id))),
+    items: page.map((v) => serializeVibe(v, viewerId, liked.has(v.id), q.locale)),
     nextCursor: rows.length > q.limit ? page[page.length - 1]!.id : null,
   };
 }
 
-async function create(viewerId: string, input: { body: string; anonymous: boolean }) {
+async function create(viewerId: string, input: { body: string; anonymous: boolean }, locale: string) {
   const since = new Date(Date.now() - VIBE.ttlHours * 60 * 60 * 1000);
   const recent = await prisma.vibe.count({ where: { authorId: viewerId, createdAt: { gte: since } } });
   if (recent >= VIBE.dailyLimit) throw AppError.forbidden('VIBE_DAILY_LIMIT');
@@ -92,7 +107,7 @@ async function create(viewerId: string, input: { body: string; anonymous: boolea
     },
     include: { author: true },
   });
-  return serializeVibe(v, viewerId, false);
+  return serializeVibe(v, viewerId, false, locale);
 }
 
 async function remove(viewerId: string, vibeId: string) {
@@ -103,7 +118,7 @@ async function remove(viewerId: string, vibeId: string) {
   if (res.count === 0) throw AppError.notFound('VIBE_NOT_FOUND');
 }
 
-async function setLiked(viewerId: string, vibeId: string, liked: boolean) {
+async function setLiked(viewerId: string, vibeId: string, liked: boolean, locale: string) {
   await loadActive(vibeId);
   // Beğeni ve sayaç aynı işlemde: çift dokunuşta sayaç kaymaz.
   await prisma.$transaction(async (tx) => {
@@ -121,17 +136,18 @@ async function setLiked(viewerId: string, vibeId: string, liked: boolean) {
     }
   });
   const v = await prisma.vibe.findUniqueOrThrow({ where: { id: vibeId }, include: { author: true } });
-  return serializeVibe(v, viewerId, liked);
+  return serializeVibe(v, viewerId, liked, locale);
 }
 
 /**
  * Vibe'a cevap: yazarla anonim sohbet açılır (vibe metni alıntı olarak) ve cevap ilk mesaj
  * olarak gider. Yazar onaylayana kadar mesaj isteği olarak bekler.
  */
-async function reply(viewerId: string, vibeId: string, input: { body: string; clientMsgId: string }) {
+async function reply(viewerId: string, vibeId: string, input: { body: string; clientMsgId: string }, locale: string) {
   const v = await loadActive(vibeId);
   if (v.authorId === viewerId) throw AppError.badRequest('CANNOT_REPLY_OWN_VIBE');
-  const conversation = await conversationService.createAnonymous(viewerId, v.authorId, v.body.slice(0, 160));
+  const quote = (v.author.isPersona ? personaVibeBody(v.body, locale, v.id, v.author.username) : v.body).slice(0, 160);
+  const conversation = await conversationService.createAnonymous(viewerId, v.authorId, quote);
   await conversationService.send(viewerId, conversation.id, {
     clientMsgId: input.clientMsgId,
     type: 'TEXT',
