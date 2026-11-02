@@ -8,6 +8,7 @@ import {
   createDirectBody,
   listConversationsQuery,
   markReadBody,
+  messageIdParams,
   messagesQuery,
   reportPeerBody,
   sendMessageBody,
@@ -31,6 +32,7 @@ conversationRoutes.patch('/:conversationId/settings', validate({ params: convers
 
 conversationRoutes.get('/:conversationId/messages', validate({ params: conversationIdParams, query: messagesQuery }), conv.messages);
 conversationRoutes.post('/:conversationId/messages', validate({ params: conversationIdParams, body: sendMessageBody }), conv.sendMessage);
+conversationRoutes.delete('/:conversationId/messages/:messageId', validate({ params: messageIdParams }), conv.deleteMessage);
 conversationRoutes.post('/:conversationId/read', validate({ params: conversationIdParams, body: markReadBody }), conv.markRead);
 
 // Mesaj isteği

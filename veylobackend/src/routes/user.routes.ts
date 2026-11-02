@@ -5,7 +5,7 @@ import { validate } from '../middlewares/validate.middleware';
 import {
   deletionRequestBody,
   deviceBody,
-  listQuery,
+  followListQuery,
   onboardingBody,
   updateProfileBody,
   userIdParams,
@@ -37,12 +37,12 @@ userRoutes.delete('/:userId/follow', requireOnboarded, validate({ params: userId
 userRoutes.get(
   '/:userId/followers',
   requireOnboarded,
-  validate({ params: userIdParams, query: listQuery }),
+  validate({ params: userIdParams, query: followListQuery }),
   users.followers,
 );
 userRoutes.get(
   '/:userId/following',
   requireOnboarded,
-  validate({ params: userIdParams, query: listQuery }),
+  validate({ params: userIdParams, query: followListQuery }),
   users.following,
 );

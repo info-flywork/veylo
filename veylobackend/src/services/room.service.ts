@@ -404,7 +404,16 @@ async function decideRequest(viewerId: string, roomId: string, requestId: string
   const req = await prisma.roomJoinRequest.findFirst({ where: { id: requestId, roomId, status: 'PENDING' } });
   if (!req) throw AppError.notFound('REQUEST_NOT_FOUND');
   await prisma.roomJoinRequest.update({ where: { id: req.id }, data: { status: approve ? 'APPROVED' : 'REJECTED' } });
-  if (approve) emitToUser(req.userId, 'room:approved', { roomId, title: room.title });
+  if (approve) {
+    emitToUser(req.userId, 'room:approved', { roomId, title: room.title });
+    // Uygulama kapalıysa push: dokununca odaya doğrudan girer (tekrar istek sorulmaz).
+    void notificationService.pushToUser(req.userId, (t) => ({
+      title: t.groupApprovedTitle,
+      body: t.roomApprovedBody(room.title),
+      data: { type: 'roomApproved', roomId, title: room.title, isPrivate: '1', hasAccess: '1' },
+      threadId: roomId,
+    }));
+  }
   return listRequests(viewerId, roomId);
 }
 

@@ -19,6 +19,16 @@ const INTENT_GOALS: Record<(typeof INTENTS)[number], string[]> = {
 const RESULT_COUNT = 5;
 const POOL = 200;
 
+/** /match/stats için son aramaların özeti (bellekte; süreç yeniden başlarsa sıfırlanır). */
+const STATS_WINDOW_MS = 24 * 60 * 60 * 1000;
+const STATS_MAX_SAMPLES = 1000;
+const samples: { at: number; matched: boolean; ms: number }[] = [];
+
+function recordSample(matched: boolean, ms: number) {
+  samples.push({ at: Date.now(), matched, ms });
+  if (samples.length > STATS_MAX_SAMPLES) samples.splice(0, samples.length - STATS_MAX_SAMPLES);
+}
+
 const interestsOf = (u: Pick<User, 'interests'>) => (Array.isArray(u.interests) ? (u.interests as string[]) : []);
 
 /**
@@ -26,6 +36,13 @@ const interestsOf = (u: Pick<User, 'interests'>) => (Array.isArray(u.interests) 
  * Sadece gerçek kullanıcılar (AI karakterler eşleşmeye girmez).
  */
 async function search(viewerId: string, input: { mood: (typeof MOODS)[number]; intent: (typeof INTENTS)[number] }) {
+  const started = Date.now();
+  const result = await runSearch(viewerId, input);
+  recordSample(result.items.length > 0, Date.now() - started);
+  return result;
+}
+
+async function runSearch(viewerId: string, input: { mood: (typeof MOODS)[number]; intent: (typeof INTENTS)[number] }) {
   const me = await prisma.user.findUniqueOrThrow({ where: { id: viewerId } });
   const blocked = await safetyService.blockedIdsFor(viewerId);
   const recent = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
@@ -77,9 +94,19 @@ async function search(viewerId: string, input: { mood: (typeof MOODS)[number]; i
   };
 }
 
-/** AI Match ekranındaki canlı sayı. */
+/**
+ * AI Match ekranındaki sayılar: çevrimiçi kişi, son 24 saatte en az bir aday dönen aramaların
+ * yüzdesi ve ortalama arama süresi (ms). Hiç arama yoksa oran/süre null.
+ */
 function stats() {
-  return { onlineCount: presence.onlineCount };
+  const since = Date.now() - STATS_WINDOW_MS;
+  const recent = samples.filter((s) => s.at >= since);
+  const n = recent.length;
+  return {
+    onlineCount: presence.onlineCount,
+    matchRatePercent: n ? Math.round((recent.filter((s) => s.matched).length / n) * 100) : null,
+    avgResponseMs: n ? Math.round(recent.reduce((sum, s) => sum + s.ms, 0) / n) : null,
+  };
 }
 
 export const matchService = { search, stats };

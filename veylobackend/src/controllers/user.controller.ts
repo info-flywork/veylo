@@ -37,13 +37,13 @@ export async function unfollow(req: Request, res: Response) {
 }
 
 export async function followers(req: Request, res: Response) {
-  const { cursor, limit } = req.valid.query;
-  res.json(await userService.listFollows(req.user!.id, req.valid.params.userId, 'followers', cursor, limit));
+  const { cursor, limit, q } = req.valid.query;
+  res.json(await userService.listFollows(req.user!.id, req.valid.params.userId, 'followers', cursor, limit, q));
 }
 
 export async function following(req: Request, res: Response) {
-  const { cursor, limit } = req.valid.query;
-  res.json(await userService.listFollows(req.user!.id, req.valid.params.userId, 'following', cursor, limit));
+  const { cursor, limit, q } = req.valid.query;
+  res.json(await userService.listFollows(req.user!.id, req.valid.params.userId, 'following', cursor, limit, q));
 }
 
 export async function registerDevice(req: Request, res: Response) {

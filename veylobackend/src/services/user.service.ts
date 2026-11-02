@@ -148,11 +148,19 @@ async function listFollows(
   kind: 'followers' | 'following',
   cursor: string | undefined,
   limit: number,
+  q?: string,
 ) {
   if (viewerId !== userId && (await safetyService.isBlockedBetween(viewerId, userId))) {
     throw AppError.notFound('USER_NOT_FOUND');
   }
-  const where = kind === 'followers' ? { followingId: userId } : { followerId: userId };
+  // Arama: listedeki kişinin görünen adı veya kullanıcı adı (MySQL collation'ı büyük/küçük harf duyarsız).
+  const person: Prisma.UserWhereInput | undefined = q
+    ? { OR: [{ displayName: { contains: q } }, { username: { contains: q } }] }
+    : undefined;
+  const where: Prisma.FollowWhereInput =
+    kind === 'followers'
+      ? { followingId: userId, ...(person ? { follower: person } : {}) }
+      : { followerId: userId, ...(person ? { following: person } : {}) };
   const rows = await prisma.follow.findMany({
     where,
     orderBy: { createdAt: 'desc' },

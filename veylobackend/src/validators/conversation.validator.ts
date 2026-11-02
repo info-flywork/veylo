@@ -3,6 +3,8 @@ import { CHAT } from '../config/constants';
 
 export const conversationIdParams = z.object({ conversationId: z.uuid() });
 
+export const messageIdParams = conversationIdParams.extend({ messageId: z.uuid() });
+
 export const listConversationsQuery = z.object({
   box: z.enum(['inbox', 'requests']).default('inbox'),
 });
@@ -33,6 +35,8 @@ export const messagesQuery = z.object({
   /** Bu seq'ten sonrakiler (bağlantı kopunca eksikleri tamamlama). */
   afterSeq: z.coerce.number().int().min(0).optional(),
   limit: z.coerce.number().int().min(1).max(100).default(CHAT.pageSize),
+  /** Sadece bu türdeki mesajlar (ör. grup galerisi için IMAGE). */
+  type: z.enum(['TEXT', 'IMAGE', 'VOICE']).optional(),
 });
 
 export const markReadBody = z.object({ seq: z.number().int().min(0) });
@@ -61,4 +65,6 @@ export const reportPeerBody = z.object({
   reason: reportReasonSchema,
   details: z.string().trim().max(1000).optional(),
   alsoBlock: z.boolean().default(false),
+  /** Belirli bir mesaj şikayet ediliyorsa (Report.contentId olarak saklanır). */
+  messageId: z.uuid().optional(),
 });
