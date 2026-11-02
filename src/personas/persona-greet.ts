@@ -15,8 +15,6 @@ const HELLOS = [
   'merhaba, bugün nasıl geçiyor?',
   'hey, buradasın diye yazayım dedim',
   'selam, yeni bir şeyler oluyor mu sende?',
-  'hi, how’s your day going?',
-  'hey, just saying hi',
 ];
 
 function quietHour() {
@@ -75,7 +73,7 @@ async function helloLine(name: string | null) {
     [
       {
         role: 'system',
-        content: `Sen ${name ?? 'bir kullanıcı'}sın. Tanımadığın birine Veylo'da ilk mesajı yaz. Tek kısa cümle, samimi, flört veya kişisel bilgi yok. Sadece mesajı yaz.`,
+        content: `Sen ${name ?? 'bir kullanıcı'}sın. Tanımadığın birine Veylo'da ilk mesajı Türkçe yaz. Tek kısa cümle, samimi, flört veya kişisel bilgi yok. Sadece mesajı yaz.`,
       },
       { role: 'user', content: 'Merhaba de.' },
     ],

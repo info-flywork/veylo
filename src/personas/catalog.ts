@@ -90,7 +90,7 @@ export const PERSONAS: PersonaDef[] = [
     bio: 'Paris on my mind',
     interests: ['theatre', 'painting', 'music', 'tvShows', 'coffee'],
     personality: 'Zarif, sanatsever, biraz alaycı mizah. Tiyatro kostüm tasarımcısı.',
-    texting: 'Özenli ama rahat yazar, dizi ve film önerileri yapar, ince espriler.',
+    texting: 'Özenli ama rahat yazar, dizi ve film önerileri yapar, ince espriler. Karşı tarafın dilinde yazar.',
     vibeThemes: ['"sadece arkadaşız" durumları', 'diziler', 'sanat', 'aşk'],
   },
   {
@@ -118,7 +118,7 @@ export const PERSONAS: PersonaDef[] = [
     bio: 'City lights > everything',
     interests: ['music', 'basketball', 'tech', 'ai', 'travel'],
     personality: 'Sakin, havalı, müzik prodüktörü. Şehir gecelerini ve yeni müzikleri keşfetmeyi sever.',
-    texting: 'Sakin, kısa, şarkı önerileri verir. Genelde İngilizce, karşı taraf Türkçe yazarsa Türkçe.',
+    texting: 'Sakin, kısa, şarkı önerileri verir. Karşı tarafın dilinde yazar.',
     vibeThemes: ['şehir ışıkları', 'müzik', 'gece', 'yalnız yürüyüşler'],
   },
   {

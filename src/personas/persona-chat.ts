@@ -63,12 +63,34 @@ function mentions(text: string, def: PersonaDef) {
   return t.includes(first) || t.includes(def.username.toLocaleLowerCase('tr'));
 }
 
-function soundsTurkish(text: string) {
-  return /[çğıöşüÇĞİÖŞÜ]|\b(ben|sen|bir|değil|mi|mı|ne|çok|var|yok|selam|merhaba|evet|hayır)\b/i.test(text);
+const TR_WORDS = new Set([
+  'abi', 'abla', 'akşam', 'aksam', 'aynen', 'ben', 'bence', 'bir', 'biz', 'bu', 'bugün', 'bugun',
+  'burada', 'çok', 'cok', 'çünkü', 'cunku', 'değil', 'degil', 'evet', 'eyvallah', 'gece', 'güzel',
+  'guzel', 'hadi', 'hayır', 'hayir', 'için', 'icin', 'işte', 'iste', 'kanka', 'lütfen', 'lutfen',
+  'merhaba', 'naber', 'nasıl', 'nasil', 'nasılsın', 'nasilsin', 'orada', 'sağol', 'sagol', 'selam',
+  'sen', 'sence', 'şimdi', 'simdi', 'siz', 'sonra', 'şu', 'su', 'tamam', 'teşekkür', 'tesekkur',
+  'valla', 'var', 'yok', 'yarın', 'yarin',
+]);
+
+function looksTurkish(text: string) {
+  if (/[çğıöşüıÇĞİÖŞÜ]/.test(text)) return true;
+  const words = text.toLocaleLowerCase('tr').split(/[^\p{L}]+/u).filter(Boolean);
+  const hits = words.filter((w) => TR_WORDS.has(w)).length;
+  return hits >= 2 || (hits >= 1 && words.length <= 4);
+}
+
+type ReplyLanguage = 'tr' | 'en' | 'other';
+
+function replyLanguage(text: string): ReplyLanguage {
+  const sample = text.trim();
+  if (!sample) return 'other';
+  if (looksTurkish(sample)) return 'tr';
+  if (/[а-яё]/i.test(sample) || /[ぁ-んァ-ン가-힣\u4e00-\u9fff]/.test(sample)) return 'other';
+  return 'en';
 }
 
 function fallbackReply(sample: string) {
-  const pool = soundsTurkish(sample) ? TR_REPLIES : EN_REPLIES;
+  const pool = replyLanguage(sample) === 'tr' ? TR_REPLIES : EN_REPLIES;
   return pool[Math.floor(Math.random() * pool.length)]!;
 }
 
@@ -197,10 +219,22 @@ async function deliver(conversationId: string, persona: { member: Member; def: P
     if (kind === 'ANONYMOUS' && !c.revealedAt) return 'Karşı taraf';
     return m.user.displayName ?? m.user.username ?? 'Biri';
   };
+  const humanTexts = history
+    .filter((m) => m.senderId === userId && m.type === 'TEXT' && m.body && !m.body.startsWith('sticker:'))
+    .slice(-4)
+    .map((m) => m.body ?? '');
+  const sample = humanTexts.join('\n');
+  const language = replyLanguage(sample);
   const turns: ChatTurn[] = [
-    { role: 'system', content: chatSystemPrompt(persona.def, { kind, groupTitle: c.title, quote: c.contextQuote }) },
+    { role: 'system', content: chatSystemPrompt(persona.def, { kind, groupTitle: c.title, quote: c.contextQuote, language }) },
     ...history.map((m): ChatTurn => {
-      const body = m.type === 'IMAGE' ? '[fotoğraf gönderdi]' : m.type === 'VOICE' ? '[sesli mesaj gönderdi]' : (m.body ?? '');
+      const body = m.type === 'IMAGE'
+        ? '[fotoğraf gönderdi]'
+        : m.type === 'VOICE'
+          ? '[sesli mesaj gönderdi]'
+          : m.body?.startsWith('sticker:')
+            ? '[çıkartma gönderdi]'
+            : (m.body ?? '');
       if (m.senderId === personaId) return { role: 'assistant', content: body };
       return { role: 'user', content: kind === 'GROUP' ? `${nameOf(m.senderId)}: ${body}` : body };
     }),
@@ -212,10 +246,9 @@ async function deliver(conversationId: string, persona: { member: Member; def: P
   // İstemci "yazıyor"u 3 sn sonra gizler; cevap üretilirken yenilenir.
   const ticker = setInterval(typing, 2_500);
   try {
-    const lastHuman = [...history].reverse().find((m) => m.senderId === userId);
-    const sample = lastHuman?.body ?? '';
     const raw = openAiEnabled() ? await complete(turns, { maxTokens: 160 }) : null;
-    const text = clean(raw, persona.def) ?? fallbackReply(sample);
+    const drafted = clean(raw, persona.def);
+    const text = drafted && (language !== 'tr' || looksTurkish(drafted)) ? drafted : fallbackReply(sample || 'merhaba');
     if (!text) return;
     // Yazma süresi: uzun mesaj biraz daha uzun sürer.
     await sleep(Math.min(6_000, 600 + text.length * 35));
