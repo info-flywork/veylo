@@ -33,14 +33,17 @@ function anonymousPeer(c: ConversationFull, peerMember: NonNullable<ReturnType<t
     : progress >= CONNECTION.milestones.initial
       ? maskName(name)
       : '******';
-  const photoVisible = peerMember.photoShared || progress >= CONNECTION.milestones.blurredPhoto;
+  const photoShared = peerMember.photoShared;
+  const milestoneBlur = progress >= CONNECTION.milestones.blurredPhoto;
+  const clearUrl = peerMember.user.avatarUrl;
+  const blurUrl = peerMember.user.avatarBlurUrl;
   return {
     id: null,
     username: null,
     displayName,
-    // Onay ya da %70: sunucuda üretilmiş bulanık önizleme (orijinal fotoğrafa ulaşılamaz).
-    avatarUrl: photoVisible ? peerMember.user.avatarBlurUrl : null,
-    avatarBlurred: true,
+    // İstek onaylanınca net fotoğraf. Yüzde 70'te yalnızca bulanık önizleme.
+    avatarUrl: photoShared ? (clearUrl ?? blurUrl) : milestoneBlur ? blurUrl : null,
+    avatarBlurred: !photoShared,
     borderId: null,
     // Kimlik gizli olsa da AI karakter olduğu her zaman belli.
     isAi: peerMember.user.isPersona,
