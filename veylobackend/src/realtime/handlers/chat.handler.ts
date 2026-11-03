@@ -3,8 +3,11 @@ import { AppError } from '../../errors/AppError';
 import { conversationService } from '../../services/conversation.service';
 import {
   conversationIdParams,
+  editMessageBody,
   markReadBody,
+  messageIdParams,
   messagesQuery,
+  reactMessageBody,
   sendMessageBody,
   unlockRequestBody,
   unlockResponseBody,
@@ -19,6 +22,8 @@ const typingLimiter = new WindowLimiter(1, 1_000);
 const sendSchema = sendMessageBody.and(conversationIdParams);
 const readSchema = markReadBody.and(conversationIdParams);
 const syncSchema = messagesQuery.and(conversationIdParams);
+const editSchema = editMessageBody.and(messageIdParams);
+const reactSchema = reactMessageBody.and(messageIdParams);
 
 export function registerChatHandlers(socket: Socket) {
   const userId: string = socket.data.userId;
@@ -38,6 +43,16 @@ export function registerChatHandlers(socket: Socket) {
   /** connection:respond { conversationId, messageId, decision } → isim kalıcı açılır veya reddedilir. */
   on(socket, 'connection:respond', unlockResponseBody, ({ conversationId, messageId, decision }) =>
     conversationService.respondUnlock(userId, conversationId, messageId, decision),
+  );
+
+  /** message:edit { conversationId, messageId, body } → güncel mesaj */
+  on(socket, 'message:edit', editSchema, ({ conversationId, messageId, body }) =>
+    conversationService.editMessage(userId, conversationId, messageId, body),
+  );
+
+  /** message:react { conversationId, messageId, emoji } → tepki özeti */
+  on(socket, 'message:react', reactSchema, ({ conversationId, messageId, emoji }) =>
+    conversationService.reactMessage(userId, conversationId, messageId, emoji),
   );
 
   /** message:read { conversationId, seq } */

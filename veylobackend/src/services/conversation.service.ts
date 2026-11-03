@@ -194,6 +194,31 @@ interface SendInput {
   type: 'TEXT' | 'IMAGE' | 'VOICE';
   body?: string;
   mediaId?: string;
+  replyToId?: string;
+}
+
+const REPLY_SELECT = { id: true, type: true, body: true, senderId: true } as const;
+
+type ReactionRow = { messageId: string; userId: string; emoji: string };
+
+async function loadReactionRows(messageIds: string[]): Promise<ReactionRow[]> {
+  if (!messageIds.length) return [];
+  return prisma.messageReaction.findMany({
+    where: { messageId: { in: messageIds } },
+    select: { messageId: true, userId: true, emoji: true },
+  });
+}
+
+function summarizeReactions(rows: ReactionRow[], messageId: string, viewerId: string) {
+  const byEmoji = new Map<string, { count: number; mine: boolean }>();
+  for (const r of rows) {
+    if (r.messageId !== messageId) continue;
+    const cur = byEmoji.get(r.emoji) ?? { count: 0, mine: false };
+    cur.count += 1;
+    if (r.userId === viewerId) cur.mine = true;
+    byEmoji.set(r.emoji, cur);
+  }
+  return [...byEmoji.entries()].map(([emoji, v]) => ({ emoji, count: v.count, mine: v.mine }));
 }
 
 /**
@@ -217,6 +242,16 @@ async function send(viewerId: string, conversationId: string, input: SendInput, 
     input.type !== 'TEXT' && input.mediaId
       ? await mediaService.resolveForMessage(viewerId, input.mediaId, input.type)
       : null;
+
+  let replyTo: { id: string; type: MessageType; body: string | null; senderId: string } | null = null;
+  if (input.replyToId && !asSystem) {
+    const target = await prisma.message.findFirst({
+      where: { id: input.replyToId, conversationId: c.id, type: { not: 'SYSTEM' } },
+      select: REPLY_SELECT,
+    });
+    if (!target) throw AppError.badRequest('REPLY_TARGET_NOT_FOUND');
+    replyTo = target;
+  }
 
   const storedType = asSystem ? 'SYSTEM' : input.type;
   const preview = asSystem ? 'Unlock request' : previewOf(input.type, input.body);
@@ -244,6 +279,8 @@ async function send(viewerId: string, conversationId: string, input: SendInput, 
         body: input.body ?? null,
         mediaId: media?.id ?? null,
         mediaUrl: media?.url ?? null,
+        replyToId: replyTo?.id ?? null,
+        editedAt: null,
         createdAt: new Date(),
       };
       await tx.message.createMany({ data: [msg] });
@@ -263,11 +300,13 @@ async function send(viewerId: string, conversationId: string, input: SendInput, 
     if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002') {
       const existing = await prisma.message.findUniqueOrThrow({
         where: { senderId_clientMsgId: { senderId: viewerId, clientMsgId: input.clientMsgId } },
+        include: { replyTo: { select: REPLY_SELECT } },
       });
       return { message: serializeMessage(existing, c, viewerId), duplicate: true };
     }
     throw err;
   }
+  const messageWithReply = { ...message, replyTo };
 
   // Kilit dışında ve kritik değil: mesaj zaten kaydedildi, bunlar başarısız olsa da gönderim geçerli.
   // Arka planda: gönderen ve alıcı bu güncellemeleri beklemez (iletim bellekteki halle yapılır).
@@ -301,9 +340,9 @@ async function send(viewerId: string, conversationId: string, input: SendInput, 
     })),
   };
   // İletim ve push arka planda: gönderenin onayı bunları beklemez.
-  void fanOutMessage(fresh, message, viewerId).catch((err) => logger.warn({ err }, 'Mesaj iletimi başarısız'));
+  void fanOutMessage(fresh, messageWithReply, viewerId).catch((err) => logger.warn({ err }, 'Mesaj iletimi başarısız'));
   chatEvents.emit('message:sent', { conversation: fresh, message, senderId: viewerId });
-  return { message: serializeMessage(message, fresh, viewerId), duplicate: false };
+  return { message: serializeMessage(messageWithReply, fresh, viewerId), duplicate: false };
 }
 
 /** Anonim sohbette bir kilidi erkenden istemek. Karşı tarafın sohbetinde bir satır olarak durur. */
@@ -402,7 +441,12 @@ async function assertCanSend(c: ConversationFull, viewerId: string) {
 }
 
 /** Mesajı üyelere iletir (her biri kendi bakış açısıyla), çevrimdışı olanlara push atar. */
-async function fanOutMessage(c: ConversationFull, message: Parameters<typeof serializeMessage>[0], senderId: string) {
+async function fanOutMessage(
+  c: ConversationFull,
+  message: Parameters<typeof serializeMessage>[0],
+  senderId: string,
+  event: 'message:new' | 'message:edited' = 'message:new',
+) {
   const senderMember = c.members.find((m) => m.userId === senderId)!;
   const sender = senderMember.user;
   // Anonim sohbet ya da grupta "Hesabımı gizle": bildirimde de maskeli ad.
@@ -422,13 +466,19 @@ async function fanOutMessage(c: ConversationFull, message: Parameters<typeof ser
       isOnline: (id: string) => presence.isOnline(id),
     };
   };
+  const reactionRows = await loadReactionRows([message.id]);
 
   await Promise.all(
     c.members.map(async (m) => {
-      emitToUser(m.userId, 'message:new', {
-        message: serializeMessage(message, c, m.userId),
-        conversation: serializeConversation(c, m.userId, ctxFor(m.userId)),
+      const reactions = summarizeReactions(reactionRows, message.id, m.userId);
+      emitToUser(m.userId, event, {
+        conversationId: c.id,
+        message: serializeMessage(message, c, m.userId, undefined, reactions),
+        ...(event === 'message:new'
+          ? { conversation: serializeConversation(c, m.userId, ctxFor(m.userId)) }
+          : {}),
       });
+      if (event !== 'message:new') return;
       if (m.userId === senderId || m.muted) return;
 
       const noticeBody = message.type === 'SYSTEM' ? message.body : null;
@@ -482,12 +532,14 @@ async function messages(
   const me = c.members.find((m) => m.userId === viewerId)!;
   const floor = me.clearedSeq;
 
+  const messageInclude = { replyTo: { select: REPLY_SELECT } } as const;
   let rows;
   if (q.afterSeq !== undefined) {
     rows = await prisma.message.findMany({
       where: { conversationId: c.id, seq: { gt: Math.max(q.afterSeq, floor) }, ...byType },
       orderBy: { seq: 'asc' },
       take: q.limit,
+      include: messageInclude,
     });
   } else {
     rows = await prisma.message.findMany({
@@ -498,6 +550,7 @@ async function messages(
       },
       orderBy: { seq: 'desc' },
       take: q.limit,
+      include: messageInclude,
     });
     rows.reverse();
   }
@@ -512,8 +565,11 @@ async function messages(
     }
   }
 
+  const reactionRows = await loadReactionRows(rows.map((m) => m.id));
   return {
-    items: rows.map((m) => serializeMessage(m, c, viewerId, former)),
+    items: rows.map((m) =>
+      serializeMessage(m, c, viewerId, former, summarizeReactions(reactionRows, m.id, viewerId)),
+    ),
     lastSeq: c.lastSeq,
     hasMore:
       q.afterSeq !== undefined || q.type
@@ -574,6 +630,82 @@ async function deleteMessage(viewerId: string, conversationId: string, messageId
     emitToUser(m.userId, 'message:deleted', { conversationId: c.id, messageId: msg.id, seq: msg.seq });
   }
   if (fresh !== c) await broadcastConversation(fresh);
+}
+
+/**
+ * Kendi TEXT mesajının metnini düzenler. IMAGE/VOICE/SYSTEM düzenlenmez.
+ * Üyelere `message:edited` gider.
+ */
+async function editMessage(viewerId: string, conversationId: string, messageId: string, body: string) {
+  const c = await loadForMember(conversationId, viewerId);
+  const msg = await prisma.message.findFirst({
+    where: { id: messageId, conversationId: c.id },
+    include: { replyTo: { select: REPLY_SELECT } },
+  });
+  if (!msg) throw AppError.notFound('MESSAGE_NOT_FOUND');
+  if (msg.senderId !== viewerId) throw AppError.forbidden('NOT_MESSAGE_SENDER');
+  if (msg.type !== 'TEXT') throw AppError.badRequest('CANNOT_EDIT_NON_TEXT');
+  if (msg.body?.startsWith('sticker:')) throw AppError.badRequest('CANNOT_EDIT_STICKER');
+
+  const editedAt = new Date();
+  const updated = await prisma.message.update({
+    where: { id: msg.id },
+    data: { body, editedAt },
+    include: { replyTo: { select: REPLY_SELECT } },
+  });
+
+  if (c.lastSeq === msg.seq) {
+    const preview = previewOf('TEXT', body);
+    await prisma.conversation.update({
+      where: { id: c.id },
+      data: { lastMessagePreview: preview },
+    });
+    await broadcastConversation({ ...c, lastMessagePreview: preview });
+  }
+
+  void fanOutMessage(c, updated, viewerId, 'message:edited').catch((err) =>
+    logger.warn({ err }, 'Düzenlenen mesaj iletilemedi'),
+  );
+  const reactionRows = await loadReactionRows([updated.id]);
+  return serializeMessage(updated, c, viewerId, undefined, summarizeReactions(reactionRows, updated.id, viewerId));
+}
+
+/**
+ * Mesaja emoji tepkisi ekler/kaldırır/değiştirir. Aynı emoji tekrar → kaldırır.
+ * Üyelere `message:reaction` gider.
+ */
+async function reactMessage(viewerId: string, conversationId: string, messageId: string, emoji: string) {
+  const c = await loadForMember(conversationId, viewerId);
+  const msg = await prisma.message.findFirst({ where: { id: messageId, conversationId: c.id } });
+  if (!msg) throw AppError.notFound('MESSAGE_NOT_FOUND');
+  if (msg.type === 'SYSTEM') throw AppError.badRequest('CANNOT_REACT_SYSTEM');
+
+  const existing = await prisma.messageReaction.findUnique({
+    where: { messageId_userId: { messageId: msg.id, userId: viewerId } },
+  });
+  if (existing?.emoji === emoji) {
+    await prisma.messageReaction.delete({
+      where: { messageId_userId: { messageId: msg.id, userId: viewerId } },
+    });
+  } else {
+    await prisma.messageReaction.upsert({
+      where: { messageId_userId: { messageId: msg.id, userId: viewerId } },
+      create: { messageId: msg.id, userId: viewerId, emoji },
+      update: { emoji },
+    });
+  }
+
+  const reactionRows = await loadReactionRows([msg.id]);
+  await Promise.all(
+    c.members.map(async (m) => {
+      emitToUser(m.userId, 'message:reaction', {
+        conversationId: c.id,
+        messageId: msg.id,
+        reactions: summarizeReactions(reactionRows, msg.id, m.userId),
+      });
+    }),
+  );
+  return { messageId: msg.id, reactions: summarizeReactions(reactionRows, msg.id, viewerId) };
 }
 
 // ───────────────────────────── istekler ─────────────────────────────
@@ -753,6 +885,8 @@ export const conversationService = {
   messages,
   markRead,
   deleteMessage,
+  editMessage,
+  reactMessage,
   approve,
   reject,
   reveal,

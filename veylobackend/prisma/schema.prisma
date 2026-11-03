@@ -79,6 +79,7 @@ model User {
 
   memberships      ConversationMember[]
   messages         Message[]
+  messageReactions MessageReaction[]
   following        Follow[]                 @relation("follower")
   followers        Follow[]                 @relation("following")
   blocksMade       Block[]                  @relation("blocker")
@@ -267,14 +268,36 @@ model Message {
   body           String?     @db.Text
   mediaId        String?     @map("media_id") @db.Char(36)
   mediaUrl       String?     @map("media_url") @db.VarChar(512)
+  /// Yanıtlanan mesaj (WhatsApp tarzı alıntı).
+  replyToId      String?     @map("reply_to_id") @db.Char(36)
+  editedAt       DateTime?   @map("edited_at")
   createdAt      DateTime    @default(now()) @map("created_at")
 
-  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  sender       User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  conversation Conversation      @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User              @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  replyTo      Message?          @relation("MessageReplies", fields: [replyToId], references: [id], onDelete: SetNull)
+  replies      Message[]         @relation("MessageReplies")
+  reactions    MessageReaction[]
 
   @@unique([conversationId, seq])
   @@unique([senderId, clientMsgId])
+  @@index([replyToId])
   @@map("messages")
+}
+
+/// Kullanıcı başına bir emoji tepkisi (aynı emojide tekrar → kaldırır, farklı → değiştirir).
+model MessageReaction {
+  messageId String   @map("message_id") @db.Char(36)
+  userId    String   @map("user_id") @db.Char(36)
+  emoji     String   @db.VarChar(8)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([messageId, userId])
+  @@index([messageId])
+  @@map("message_reactions")
 }
 
 // ─────────────────────────────── Güvenlik ───────────────────────────────

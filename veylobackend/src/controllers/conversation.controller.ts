@@ -65,6 +65,30 @@ export async function deleteMessage(req: Request, res: Response) {
   res.status(204).end();
 }
 
+/** Kendi TEXT mesajını düzenler. */
+export async function editMessage(req: Request, res: Response) {
+  res.json(
+    await conversationService.editMessage(
+      req.user!.id,
+      cid(req),
+      req.valid.params.messageId as string,
+      req.valid.body.body as string,
+    ),
+  );
+}
+
+/** Mesaja emoji tepkisi ekler / kaldırır. */
+export async function reactMessage(req: Request, res: Response) {
+  res.json(
+    await conversationService.reactMessage(
+      req.user!.id,
+      cid(req),
+      req.valid.params.messageId as string,
+      req.valid.body.emoji as string,
+    ),
+  );
+}
+
 export async function blockPeer(req: Request, res: Response) {
   await conversationService.blockPeer(req.user!.id, cid(req));
   res.status(204).end();

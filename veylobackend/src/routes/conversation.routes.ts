@@ -6,10 +6,12 @@ import {
   conversationIdParams,
   createAnonymousBody,
   createDirectBody,
+  editMessageBody,
   listConversationsQuery,
   markReadBody,
   messageIdParams,
   messagesQuery,
+  reactMessageBody,
   reportPeerBody,
   sendMessageBody,
   settingsBody,
@@ -33,6 +35,16 @@ conversationRoutes.patch('/:conversationId/settings', validate({ params: convers
 conversationRoutes.get('/:conversationId/messages', validate({ params: conversationIdParams, query: messagesQuery }), conv.messages);
 conversationRoutes.post('/:conversationId/messages', validate({ params: conversationIdParams, body: sendMessageBody }), conv.sendMessage);
 conversationRoutes.delete('/:conversationId/messages/:messageId', validate({ params: messageIdParams }), conv.deleteMessage);
+conversationRoutes.patch(
+  '/:conversationId/messages/:messageId',
+  validate({ params: messageIdParams, body: editMessageBody }),
+  conv.editMessage,
+);
+conversationRoutes.post(
+  '/:conversationId/messages/:messageId/reactions',
+  validate({ params: messageIdParams, body: reactMessageBody }),
+  conv.reactMessage,
+);
 conversationRoutes.post('/:conversationId/read', validate({ params: conversationIdParams, body: markReadBody }), conv.markRead);
 
 // Mesaj isteği
