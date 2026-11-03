@@ -17,6 +17,8 @@ export const createAnonymousBody = z.object({
   contextQuote: z.string().trim().max(160).optional(),
 });
 
+export const REACTION_EMOJIS = ['❤️', '😂', '😮', '😢', '😡', '👍'] as const;
+
 export const sendMessageBody = z
   .object({
     clientMsgId: z.string().min(8).max(64),
@@ -24,10 +26,20 @@ export const sendMessageBody = z
     body: z.string().trim().max(CHAT.maxMessageLength).optional(),
     /** POST /media/chat ile yüklenen dosyanın id'si. */
     mediaId: z.uuid().optional(),
+    /** Yanıtlanan mesaj (aynı sohbette olmalı). */
+    replyToId: z.uuid().optional(),
   })
   .refine((m) => (m.type === 'TEXT' ? Boolean(m.body) : Boolean(m.mediaId)), {
     message: 'TEXT için body, IMAGE/VOICE için mediaId zorunlu',
   });
+
+export const editMessageBody = z.object({
+  body: z.string().trim().min(1).max(CHAT.maxMessageLength),
+});
+
+export const reactMessageBody = z.object({
+  emoji: z.enum(REACTION_EMOJIS),
+});
 
 export const messagesQuery = z.object({
   /** Bu seq'ten öncekiler (yukarı kaydırma). */

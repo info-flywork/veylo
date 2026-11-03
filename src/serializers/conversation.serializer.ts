@@ -143,12 +143,24 @@ export function serializeConversation(c: ConversationFull, viewerId: string, ctx
   };
 }
 
+export type MessageReactionSummary = { emoji: string; count: number; mine: boolean };
+
+type ReplySource = Pick<Message, 'id' | 'type' | 'body' | 'senderId'>;
+
+function replyPreviewOf(r: ReplySource) {
+  if (r.type === 'IMAGE') return '📷 Photo';
+  if (r.type === 'VOICE') return '🎤 Voice message';
+  if (r.body?.startsWith('sticker:')) return '🎭 Sticker';
+  return (r.body ?? '').slice(0, 80);
+}
+
 export function serializeMessage(
-  m: Message,
+  m: Message & { replyTo?: ReplySource | null },
   c: { type: string; revealedAt: Date | null; members?: MemberWithUser[] },
   viewerId: string,
   /** Gruptan ayrılmış göndericiler (messages() doldurur). */
   formerMembers?: Map<string, User>,
+  reactions: MessageReactionSummary[] = [],
 ) {
   const isMine = m.senderId === viewerId;
   let sender = null;
@@ -158,6 +170,7 @@ export function serializeMessage(
     if (member) sender = serializeGroupMember(member);
     else if (former) sender = serializeGroupMember({ anonymous: true, user: former });
   }
+  const reply = m.replyTo;
   return {
     id: m.id,
     conversationId: m.conversationId,
@@ -169,6 +182,16 @@ export function serializeMessage(
     isMine,
     senderId: (isIdentityHidden(c) || (sender && sender.id === null)) && !isMine ? null : m.senderId,
     sender,
+    editedAt: m.editedAt,
+    replyTo: reply
+      ? {
+          id: reply.id,
+          type: reply.type,
+          body: replyPreviewOf(reply),
+          isMine: reply.senderId === viewerId,
+        }
+      : null,
+    reactions,
     createdAt: m.createdAt,
   };
 }
