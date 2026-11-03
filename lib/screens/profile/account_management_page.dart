@@ -5,6 +5,7 @@ import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/navigation/session_navigation.dart';
 import 'package:veylo/data/remote/chat_repository.dart';
 import 'package:veylo/data/remote/chat_store.dart';
+import 'package:veylo/data/remote/purchase_service.dart';
 import 'package:veylo/data/remote/push_service.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -183,10 +184,10 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
     );
   }
 
-  /// Token'lar tüketilebilir ürün: bakiye sunucuda tutulur, "geri yükleme" bakiyeyi yeniler.
+  /// Mağaza işlemlerini geri yükler; bakiye webhook / me ile güncellenir.
   Future<void> _restorePurchases() async {
     try {
-      await SessionStore.instance.refreshMe();
+      await PurchaseService.instance.restore();
     } catch (e) {
       if (mounted) showErrorSnackBar(context, e);
       return;

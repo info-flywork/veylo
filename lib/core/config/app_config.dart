@@ -15,6 +15,15 @@ abstract final class AppConfig {
   /// Firebase "Web client ID" — Android'de Google girişi ID token almak için gerekli (gizli değil).
   static const googleServerClientId =
       '619173059299-qd0o6eji37no6q7me3ugo4qnr1vdl7jd.apps.googleusercontent.com';
+
+  /// RevenueCat public SDK key (Apple). Gizli anahtar değil.
+  static const revenueCatAppleApiKey =
+      'appl_XgBEKbKfrANGtpsSKDNYHRNWWMc';
+
+  /// Android Play için: `flutter run --dart-define=REVENUECAT_GOOGLE_API_KEY=goog_...`
+  static const revenueCatGoogleApiKey = String.fromEnvironment(
+    'REVENUECAT_GOOGLE_API_KEY',
+  );
 }
 
 /// Backend'deki TOKENS ile aynı (fiyatlar sunucuda uygulanır; burada sadece gösterim).
