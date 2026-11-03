@@ -166,6 +166,11 @@ class _Translations$chats$ru extends Translations$chats$tr {
 	@override String get stickerEmpty => 'Нет недавних стикеров';
 	@override String get messageCopied => 'Сообщение скопировано';
 	@override String get messageReply => 'Ответить';
+	@override String get messageSending => 'Отправка…';
+	@override String get messageForward => 'Переслать';
+	@override String get forwardTitle => 'Переслать в чат';
+	@override String get forwardEmpty => 'Нет чатов для пересылки';
+	@override String get forwardSent => 'Переслано';
 	@override String get messageCopy => 'Копировать';
 	@override String get messageEdit => 'Изменить';
 	@override String get messageDelete => 'Удалить';
@@ -239,6 +244,7 @@ class _Translations$profile$ru extends Translations$profile$tr {
 	@override String get deleteAllBody => 'Если подтвердишь, все сообщения удалятся';
 	@override String get deleteAllAction => 'Удалить';
 	@override String get faqHelp => 'FAQ и помощь';
+	@override String get contactUs => 'Связаться с нами';
 	@override String get restorePurchases => 'Восстановить покупки';
 	@override String get termsOfService => 'Условия использования';
 	@override String get privacyPolicy => 'Политика конфиденциальности';
@@ -408,6 +414,9 @@ class _Translations$profile$ru extends Translations$profile$tr {
 	@override String get zodiacCapricorn => 'Козерог';
 	@override String get zodiacAquarius => 'Водолей';
 	@override String get zodiacPisces => 'Рыбы';
+	@override String get boostActiveTitle => 'You\'re standing out!';
+	@override String boostRemaining({required Object time}) => '${time} left';
+	@override String get boostExtend => 'Extend';
 }
 
 // Path: nav
@@ -431,11 +440,11 @@ class _Translations$call$ru extends Translations$call$tr {
 	final TranslationsRu _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Незнакомец на 60 секунд';
-	@override String get subtitle => 'Поговори 60 секунд со случайным незнакомцем — полностью анонимно. Без профиля, фото и имени. Только голос и момент.';
-	@override String get findingTitle => 'Ищем собеседника...';
+	@override String get title => '60 секунд анонимно';
+	@override String get subtitle => 'Поговори 60 секунд со случайным анонимом — полностью анонимно. Без профиля, фото и имени. Только голос и момент.';
+	@override String get findingTitle => 'Ищем анонима...';
 	@override String get findingSubtitle => 'Вы поговорите анонимно 60 секунд. Без профилей и имён.';
-	@override String get callStranger => 'Позвонить — 10 токенов';
+	@override String get callStranger => 'Анонимный звонок — 10 токенов';
 	@override String get cancel => 'Отмена';
 	@override String get female => 'Женщина';
 	@override String get male => 'Мужчина';
@@ -449,7 +458,7 @@ class _Translations$call$ru extends Translations$call$tr {
 	@override String get keepTalking => 'Продолжить';
 	@override String get endCall => 'Завершить';
 	@override String get waitingOther => 'Ждём собеседника...';
-	@override String get callStrangerFree => 'Позвонить';
+	@override String get callStrangerFree => 'Анонимный звонок';
 	@override String get peerLeft => 'Собеседник завершил звонок.';
 	@override String get noKeep => 'В этот раз чат не открылся.';
 	@override String get videoWaiting => 'Ждём, когда примут видеозвонок...';
@@ -730,7 +739,7 @@ class _Translations$faq$ru extends Translations$faq$tr {
 	@override String get q2 => 'Что такое анонимный чат?';
 	@override String get q3 => 'Что такое прогресс связи?';
 	@override String get q4 => 'Как раскрыть свой профиль?';
-	@override String get q5 => 'Что такое «Незнакомец на 60 секунд»?';
+	@override String get q5 => 'Что такое 60 секунд анонимно?';
 	@override String get q6 => 'Что такое Vibes?';
 	@override String get q7 => 'Как изменить профиль?';
 	@override String get q8 => 'Как настроить уведомления?';
@@ -1015,6 +1024,13 @@ class _Translations$discover$liveRoom$ru extends Translations$discover$liveRoom$
 	@override String get remove => 'Удалить из комнаты';
 	@override String get removed => 'Вас удалили из комнаты.';
 	@override String get seeProfile => 'Запросить просмотр профиля';
+	@override String get closeConfirmTitle => 'Are you sure you want to close the room?';
+	@override String get closeConfirmSubtitle => 'The room will end for everyone.';
+	@override String get closeConfirm => 'Close';
+	@override String get leaveConfirmTitle => 'Are you sure you want to leave the room?';
+	@override String get leaveConfirmSubtitle => 'You will leave while the conversation continues.';
+	@override String get leaveConfirm => 'Leave';
+	@override String get cancel => 'Cancel';
 }
 
 // Path: discover.groupChat
@@ -1278,6 +1294,11 @@ extension on TranslationsRu {
 			'chats.stickerEmpty' => 'Нет недавних стикеров',
 			'chats.messageCopied' => 'Сообщение скопировано',
 			'chats.messageReply' => 'Ответить',
+			'chats.messageSending' => 'Отправка…',
+			'chats.messageForward' => 'Переслать',
+			'chats.forwardTitle' => 'Переслать в чат',
+			'chats.forwardEmpty' => 'Нет чатов для пересылки',
+			'chats.forwardSent' => 'Переслано',
 			'chats.messageCopy' => 'Копировать',
 			'chats.messageEdit' => 'Изменить',
 			'chats.messageDelete' => 'Удалить',
@@ -1342,6 +1363,7 @@ extension on TranslationsRu {
 			'profile.deleteAllBody' => 'Если подтвердишь, все сообщения удалятся',
 			'profile.deleteAllAction' => 'Удалить',
 			'profile.faqHelp' => 'FAQ и помощь',
+			'profile.contactUs' => 'Связаться с нами',
 			'profile.restorePurchases' => 'Восстановить покупки',
 			'profile.termsOfService' => 'Условия использования',
 			'profile.privacyPolicy' => 'Политика конфиденциальности',
@@ -1511,16 +1533,19 @@ extension on TranslationsRu {
 			'profile.zodiacCapricorn' => 'Козерог',
 			'profile.zodiacAquarius' => 'Водолей',
 			'profile.zodiacPisces' => 'Рыбы',
+			'profile.boostActiveTitle' => 'You\'re standing out!',
+			'profile.boostRemaining' => ({required Object time}) => '${time} left',
+			'profile.boostExtend' => 'Extend',
 			'nav.discover' => 'Обзор',
 			'nav.chat' => 'Чат',
 			'nav.call' => 'Звонок',
 			'nav.vibes' => 'Вайб',
 			'nav.profile' => 'Профиль',
-			'call.title' => 'Незнакомец на 60 секунд',
-			'call.subtitle' => 'Поговори 60 секунд со случайным незнакомцем — полностью анонимно. Без профиля, фото и имени. Только голос и момент.',
-			'call.findingTitle' => 'Ищем собеседника...',
+			'call.title' => '60 секунд анонимно',
+			'call.subtitle' => 'Поговори 60 секунд со случайным анонимом — полностью анонимно. Без профиля, фото и имени. Только голос и момент.',
+			'call.findingTitle' => 'Ищем анонима...',
 			'call.findingSubtitle' => 'Вы поговорите анонимно 60 секунд. Без профилей и имён.',
-			'call.callStranger' => 'Позвонить — 10 токенов',
+			'call.callStranger' => 'Анонимный звонок — 10 токенов',
 			'call.cancel' => 'Отмена',
 			'call.female' => 'Женщина',
 			'call.male' => 'Мужчина',
@@ -1534,7 +1559,7 @@ extension on TranslationsRu {
 			'call.keepTalking' => 'Продолжить',
 			'call.endCall' => 'Завершить',
 			'call.waitingOther' => 'Ждём собеседника...',
-			'call.callStrangerFree' => 'Позвонить',
+			'call.callStrangerFree' => 'Анонимный звонок',
 			'call.peerLeft' => 'Собеседник завершил звонок.',
 			'call.noKeep' => 'В этот раз чат не открылся.',
 			'call.videoWaiting' => 'Ждём, когда примут видеозвонок...',
@@ -1676,6 +1701,13 @@ extension on TranslationsRu {
 			'discover.liveRoom.remove' => 'Удалить из комнаты',
 			'discover.liveRoom.removed' => 'Вас удалили из комнаты.',
 			'discover.liveRoom.seeProfile' => 'Запросить просмотр профиля',
+			'discover.liveRoom.closeConfirmTitle' => 'Are you sure you want to close the room?',
+			'discover.liveRoom.closeConfirmSubtitle' => 'The room will end for everyone.',
+			'discover.liveRoom.closeConfirm' => 'Close',
+			'discover.liveRoom.leaveConfirmTitle' => 'Are you sure you want to leave the room?',
+			'discover.liveRoom.leaveConfirmSubtitle' => 'You will leave while the conversation continues.',
+			'discover.liveRoom.leaveConfirm' => 'Leave',
+			'discover.liveRoom.cancel' => 'Cancel',
 			'discover.groupChat.usersCount' => ({required Object count}) => 'Участники: ${count}',
 			'discover.groupChat.sampleVictoria' => 'Мне ужасно скучно. Может, чем-нибудь займёмся?',
 			'discover.groupChat.sampleSona' => 'Чем займёмся? Есть идеи?',
@@ -1694,6 +1726,8 @@ extension on TranslationsRu {
 			'discover.groupInfo.requests' => 'Запросы на вход',
 			'discover.groupInfo.approve' => 'Принять',
 			'discover.groupInfo.reject' => 'Отклонить',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupInfo.addPeopleEmpty' => 'Подпишись на людей, чтобы добавить их в группу.',
 			'discover.groupInfo.add' => 'Добавить',
 			'discover.groupInfo.makeAdmin' => 'Сделать админом',
@@ -1710,8 +1744,6 @@ extension on TranslationsRu {
 			'discover.filters.distance' => 'Расстояние',
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} км',
 			'discover.filters.showMe' => 'Показывать',
-			_ => null,
-		} ?? switch (path) {
 			'discover.filters.everyone' => 'Всех',
 			'discover.filters.women' => 'Женщин',
 			'discover.filters.men' => 'Мужчин',
@@ -1912,7 +1944,7 @@ extension on TranslationsRu {
 			'faq.q2' => 'Что такое анонимный чат?',
 			'faq.q3' => 'Что такое прогресс связи?',
 			'faq.q4' => 'Как раскрыть свой профиль?',
-			'faq.q5' => 'Что такое «Незнакомец на 60 секунд»?',
+			'faq.q5' => 'Что такое 60 секунд анонимно?',
 			'faq.q6' => 'Что такое Vibes?',
 			'faq.q7' => 'Как изменить профиль?',
 			'faq.q8' => 'Как настроить уведомления?',

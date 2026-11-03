@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
@@ -7,6 +9,31 @@ import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
 
 enum VibeComposeMode { share, reply }
+
+/// Figma Conversation Cards scrim: #000 @ 65% + background blur 6.
+Widget vibeSheetWithScrim({
+  required Widget sheet,
+  VoidCallback? onBarrierTap,
+}) {
+  return SizedBox.expand(
+    child: Stack(
+      alignment: Alignment.bottomCenter,
+      children: [
+        Positioned.fill(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: onBarrierTap,
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+              child: const ColoredBox(color: Color(0xA6000000)),
+            ),
+          ),
+        ),
+        sheet,
+      ],
+    ),
+  );
+}
 
 /// Share sheet sonucu — listeye fake vibe eklemek için.
 class VibeShareDraft {
@@ -21,9 +48,13 @@ Future<VibeShareDraft?> showVibeShareSheet(BuildContext context) {
   return showModalBottomSheet<VibeShareDraft>(
     context: context,
     backgroundColor: Colors.transparent,
+    barrierColor: Colors.transparent,
     isScrollControlled: true,
     useSafeArea: false,
-    builder: (context) => const _VibeComposeSheet(mode: VibeComposeMode.share),
+    builder: (ctx) => vibeSheetWithScrim(
+      onBarrierTap: () => Navigator.of(ctx).pop(),
+      sheet: const _VibeComposeSheet(mode: VibeComposeMode.share),
+    ),
   );
 }
 
@@ -32,9 +63,13 @@ Future<String?> showVibeReplySheet(BuildContext context) {
   return showModalBottomSheet<String>(
     context: context,
     backgroundColor: Colors.transparent,
+    barrierColor: Colors.transparent,
     isScrollControlled: true,
     useSafeArea: false,
-    builder: (context) => const _VibeComposeSheet(mode: VibeComposeMode.reply),
+    builder: (ctx) => vibeSheetWithScrim(
+      onBarrierTap: () => Navigator.of(ctx).pop(),
+      sheet: const _VibeComposeSheet(mode: VibeComposeMode.reply),
+    ),
   );
 }
 

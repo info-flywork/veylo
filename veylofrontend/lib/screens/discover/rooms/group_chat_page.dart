@@ -255,6 +255,17 @@ class _GroupChatPageState extends State<GroupChatPage> {
                   showErrorSnackBar(context, err);
                 }
               },
+              onImages: (paths) async {
+                final current = _ctrl;
+                if (current == null) return;
+                await current.sendImages(paths);
+                if (!context.mounted) return;
+                final err = current.lastError;
+                if (err != null) {
+                  current.lastError = null;
+                  showErrorSnackBar(context, err);
+                }
+              },
             ),
           ),
         ],

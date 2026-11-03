@@ -53,19 +53,17 @@ const _kBadgeSize = 28.0;
 Future<PickedValue<ZodiacSign>?> showZodiacSheet(
   BuildContext context, {
   ZodiacSign initial = ZodiacSign.gemini,
-  bool canClear = false,
 }) {
   return showAppEditSheet<PickedValue<ZodiacSign>>(
     context: context,
-    builder: (_) => _ZodiacSheet(initial: initial, canClear: canClear),
+    builder: (_) => _ZodiacSheet(initial: initial),
   );
 }
 
 class _ZodiacSheet extends StatefulWidget {
-  const _ZodiacSheet({required this.initial, this.canClear = false});
+  const _ZodiacSheet({required this.initial});
 
   final ZodiacSign initial;
-  final bool canClear;
 
   @override
   State<_ZodiacSheet> createState() => _ZodiacSheetState();
@@ -172,11 +170,6 @@ class _ZodiacSheetState extends State<_ZodiacSheet> {
               ),
             ],
           ),
-          if (widget.canClear)
-            PickerClearAction(
-              onTap: () =>
-                  Navigator.of(context).pop(PickedValue<ZodiacSign>(null)),
-            ),
         ],
       ),
     );

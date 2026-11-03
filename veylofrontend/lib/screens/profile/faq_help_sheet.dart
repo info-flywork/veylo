@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:veylo/core/assets/app_assets.dart';
+import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/i18n/strings.g.dart';
 
 const _kItemFill = Color(0x0D998FED); // #998FED @ 5%
 const _kItemBorder = Color(0x3383A0B4); // #83A0B4 @ 20%
+const _kSupportEmail = 'support@fly-work.com';
 
 /// SSS / F.A.Q & Help bottom sheet.
 Future<void> showFaqHelpSheet(BuildContext context) {
@@ -42,6 +47,21 @@ class _FaqHelpSheetState extends State<FaqHelpSheet> {
     (q: f.q14, a: f.a14),
   ];
 
+  Future<void> _contactUs() async {
+    final uri = Uri(
+      scheme: 'mailto',
+      path: _kSupportEmail,
+    );
+    try {
+      final ok = await launchUrl(uri);
+      if (!ok && mounted) {
+        showErrorSnackBar(context, 'mailto:$_kSupportEmail');
+      }
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = Translations.of(context).profile;
@@ -60,56 +80,110 @@ class _FaqHelpSheetState extends State<FaqHelpSheet> {
             borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: Padding(
-          padding: EdgeInsets.fromLTRB(16, 10, 16, 10 + bottom),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Center(
-                child: Container(
-                  width: 46,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: AppColors.sheetHandle,
-                    borderRadius: BorderRadius.circular(9999),
+            padding: EdgeInsets.fromLTRB(16, 10, 16, 10 + bottom),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Center(
+                  child: Container(
+                    width: 46,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: AppColors.sheetHandle,
+                      borderRadius: BorderRadius.circular(9999),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
+                const SizedBox(height: 10),
+                Text(
+                  t.faqHelp,
+                  style: const TextStyle(
+                    fontFamily: AppFonts.poppins,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    height: 1,
+                    letterSpacing: 20 * -0.02,
+                    color: AppColors.black,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Expanded(
+                  child: ListView.separated(
+                    padding: EdgeInsets.zero,
+                    itemCount: items.length,
+                    separatorBuilder: (_, _) => const SizedBox(height: 10),
+                    itemBuilder: (context, index) {
+                      final item = items[index];
+                      final expanded = _expandedIndex == index;
+                      return _FaqItem(
+                        question: item.q,
+                        answer: item.a,
+                        expanded: expanded,
+                        onTap: () {
+                          setState(() {
+                            _expandedIndex = expanded ? null : index;
+                          });
+                        },
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _ContactUsButton(
+                  label: t.contactUs,
+                  onTap: _contactUs,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Figma: #1A1714, 50h, pill, metin + zarf ikonu (sağda).
+class _ContactUsButton extends StatelessWidget {
+  const _ContactUsButton({required this.label, required this.onTap});
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppColors.editSheetButton,
+      borderRadius: BorderRadius.circular(99999),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(99999),
+        child: SizedBox(
+          height: 50,
+          width: double.infinity,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
               Text(
-                t.faqHelp,
+                label,
                 style: const TextStyle(
                   fontFamily: AppFonts.poppins,
-                  fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  height: 1,
-                  letterSpacing: 20 * -0.02,
-                  color: AppColors.black,
+                  fontSize: 16,
+                  height: 20 / 16,
+                  color: AppColors.white,
                 ),
               ),
-              const SizedBox(height: 10),
-              Expanded(
-                child: ListView.separated(
-                  padding: EdgeInsets.zero,
-                  itemCount: items.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 10),
-                  itemBuilder: (context, index) {
-                    final item = items[index];
-                    final expanded = _expandedIndex == index;
-                    return _FaqItem(
-                      question: item.q,
-                      answer: item.a,
-                      expanded: expanded,
-                      onTap: () {
-                        setState(() {
-                          _expandedIndex = expanded ? null : index;
-                        });
-                      },
-                    );
-                  },
+              const SizedBox(width: 10),
+              SvgPicture.asset(
+                AppAssets.iconContactUs,
+                width: 22,
+                height: 22,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.white,
+                  BlendMode.srcIn,
                 ),
               ),
             ],
-          ),
           ),
         ),
       ),

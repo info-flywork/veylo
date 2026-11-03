@@ -48,8 +48,7 @@ Future<AppLanguage?> showLanguageSheet(BuildContext context) {
   );
 }
 
-/// Edit Profile > Languages — konuştuğu diller (çoklu seçim). Dil kodlarını döner;
-/// boş liste = "Not set". Uygulama dili ayrıca [showLanguageSheet] ile seçilir.
+/// Konuşulan diller (çoklu seçim). Edit Profil artık [showLanguageSheet] kullanır.
 Future<List<String>?> showSpokenLanguagesSheet(
   BuildContext context, {
   List<String> initial = const [],

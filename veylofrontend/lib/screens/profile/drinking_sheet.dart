@@ -23,19 +23,17 @@ const _kVisibleItems = 6;
 Future<PickedValue<DrinkingPreference>?> showDrinkingSheet(
   BuildContext context, {
   DrinkingPreference initial = DrinkingPreference.frequently,
-  bool canClear = false,
 }) {
   return showAppEditSheet<PickedValue<DrinkingPreference>>(
     context: context,
-    builder: (_) => _DrinkingSheet(initial: initial, canClear: canClear),
+    builder: (_) => _DrinkingSheet(initial: initial),
   );
 }
 
 class _DrinkingSheet extends StatefulWidget {
-  const _DrinkingSheet({required this.initial, this.canClear = false});
+  const _DrinkingSheet({required this.initial});
 
   final DrinkingPreference initial;
-  final bool canClear;
 
   @override
   State<_DrinkingSheet> createState() => _DrinkingSheetState();
@@ -152,11 +150,6 @@ class _DrinkingSheetState extends State<_DrinkingSheet> {
               ),
             ),
           ),
-          if (widget.canClear)
-            PickerClearAction(
-              onTap: () =>
-                  Navigator.of(context).pop(PickedValue<DrinkingPreference>(null)),
-            ),
         ],
       ),
     );

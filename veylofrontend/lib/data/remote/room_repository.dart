@@ -119,6 +119,10 @@ class RoomRepository {
   Future<void> leave(String roomId) =>
       _socket.request('room:leave', {'roomId': roomId});
 
+  /// Sahip: odayı herkes için kapatır.
+  Future<void> end(String roomId) =>
+      _socket.request('room:end', {'roomId': roomId});
+
   Future<void> kick(String roomId, int uid) =>
       _socket.request('room:kick', {'roomId': roomId, 'uid': uid});
 

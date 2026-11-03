@@ -84,6 +84,11 @@
     "stickerEmpty": "Son kullanılan çıkartma yok",
     "messageCopied": "Mesaj kopyalandı",
     "messageReply": "Yanıtla",
+    "messageSending": "Gönderiliyor…",
+    "messageForward": "İlet",
+    "forwardTitle": "Sohbete ilet",
+    "forwardEmpty": "İletilecek sohbet yok",
+    "forwardSent": "İletildi",
     "messageCopy": "Kopyala",
     "messageEdit": "Düzenle",
     "messageDelete": "Sil",
@@ -150,6 +155,7 @@
     "deleteAllBody": "Onaylarsan tüm mesajlar silinir",
     "deleteAllAction": "Sil",
     "faqHelp": "SSS ve Yardım",
+    "contactUs": "Bize Ulaşın",
     "restorePurchases": "Satın Alımları Geri Yükle",
     "termsOfService": "Hizmet Şartları",
     "privacyPolicy": "Gizlilik Politikası",
@@ -318,7 +324,10 @@
     "zodiacSagittarius": "Yay",
     "zodiacCapricorn": "Oğlak",
     "zodiacAquarius": "Kova",
-    "zodiacPisces": "Balık"
+    "zodiacPisces": "Balık",
+    "boostActiveTitle": "Öne çıkarıldın!",
+    "boostRemaining": "{time} kaldı",
+    "boostExtend": "Uzat"
   },
   "nav": {
     "discover": "Keşfet",
@@ -328,9 +337,9 @@
     "profile": "Profil"
   },
   "call": {
-    "title": "60 Saniyelik Yabancı",
-    "subtitle": "Rastgele bir yabancıyla 60 saniye konuş — tamamen anonim. Profil yok, fotoğraf yok, isim yok. Sadece bir ses ve bir an.",
-    "findingTitle": "Bir yabancı aranıyor...",
+    "title": "60 Saniyelik Anonim",
+    "subtitle": "Rastgele bir anonimle 60 saniye konuş — tamamen anonim. Profil yok, fotoğraf yok, isim yok. Sadece bir ses ve bir an.",
+    "findingTitle": "Bir anonim aranıyor...",
     "findingSubtitle": "60 saniye anonim konuşacaksın. Profil yok, isim yok.",
     "callStranger": "Anonim Ara - 10 Token",
     "cancel": "İptal",
@@ -506,7 +515,14 @@
       "wantsMic": "{name} mikrofonunu açmanı istiyor.",
       "reject": "Reddet",
       "pendingRequests": "Katılma istekleri",
-      "noRequests": "Bekleyen istek yok."
+      "noRequests": "Bekleyen istek yok.",
+      "closeConfirmTitle": "Odayı kapatmak istediğine emin misin?",
+      "closeConfirmSubtitle": "Oda herkes için kapanacak.",
+      "closeConfirm": "Kapat",
+      "leaveConfirmTitle": "Odadan ayrılmak istediğine emin misin?",
+      "leaveConfirmSubtitle": "Konuşma devam ederken odadan çıkacaksın.",
+      "leaveConfirm": "Ayrıl",
+      "cancel": "İptal"
     },
     "groupChat": {
       "usersCount": "{count} Kullanıcı",
@@ -772,7 +788,7 @@
     "q2": "Anonim sohbet nedir?",
     "q3": "Bağlantı İlerlemesi ne işe yarar?",
     "q4": "Profilimi nasıl açarım?",
-    "q5": "60 Saniyelik Yabancı nedir?",
+    "q5": "60 Saniyelik Anonim nedir?",
     "q6": "Vibeler nedir?",
     "q7": "Profilimi nasıl düzenlerim?",
     "q8": "Bildirimleri nasıl yönetirim?",

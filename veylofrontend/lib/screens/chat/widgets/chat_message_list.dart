@@ -29,12 +29,15 @@ class ChatMessageList extends StatefulWidget {
     this.onDeleteMessage,
     this.onReportMessage,
     this.onReact,
+    this.onForward,
+    this.sendingLabel,
   });
 
   final List<ChatMessage> messages;
   final List<Widget> leading;
   final int? peerLastReadSeq;
   final String? seenLabel;
+  final String? sendingLabel;
   final ValueChanged<ChatMessage>? onRetry;
   final Future<void> Function(ChatMessage message, String decision)? onUnlockDecision;
   final VoidCallback? onLoadOlder;
@@ -45,6 +48,7 @@ class ChatMessageList extends StatefulWidget {
   final ValueChanged<ChatMessage>? onDeleteMessage;
   final ValueChanged<ChatMessage>? onReportMessage;
   final Future<void> Function(ChatMessage message, String emoji)? onReact;
+  final ValueChanged<ChatMessage>? onForward;
 
   @override
   State<ChatMessageList> createState() => _ChatMessageListState();
@@ -79,6 +83,8 @@ class _ChatMessageListState extends State<ChatMessageList> {
         switch (action) {
           case MessageMenuAction.reply:
             widget.onReply?.call(m);
+          case MessageMenuAction.forward:
+            widget.onForward?.call(m);
           case MessageMenuAction.copy:
             await copyChatMessageText(context, m);
           case MessageMenuAction.edit:
@@ -111,6 +117,15 @@ class _ChatMessageListState extends State<ChatMessageList> {
               createdAt: DateTime(2000),
             ),
           );
+    final lastSendingMine = msgs.lastWhere(
+      (m) => m.isMine && m.status == ChatMessageStatus.sending,
+      orElse: () => ChatMessage(
+        clientMsgId: '',
+        isMine: false,
+        createdAt: DateTime(2000),
+      ),
+    );
+    final hasSending = lastSendingMine.clientMsgId.isNotEmpty;
 
     final children = <Widget>[
       ...widget.leading,
@@ -134,7 +149,26 @@ class _ChatMessageListState extends State<ChatMessageList> {
                   : (emoji) => widget.onReact!(m, emoji),
             ),
           ),
-        if (widget.seenLabel != null &&
+        if (hasSending &&
+            widget.sendingLabel != null &&
+            m.clientMsgId == lastSendingMine.clientMsgId)
+          Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: AppText(
+                widget.sendingLabel!,
+                style: TextStyle(
+                  fontFamily: AppFonts.poppins,
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                  color: AppColors.textOnLight.withValues(alpha: 0.45),
+                ),
+              ),
+            ),
+          )
+        else if (!hasSending &&
+            widget.seenLabel != null &&
             lastSeenMine != null &&
             m.clientMsgId == lastSeenMine.clientMsgId)
           Padding(

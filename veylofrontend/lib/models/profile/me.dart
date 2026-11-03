@@ -25,6 +25,7 @@ class Me {
     this.likeCount = 0,
     this.followerCount = 0,
     this.followingCount = 0,
+    this.boostedUntil,
   });
 
   final String id;
@@ -56,8 +57,15 @@ class Me {
   final int followerCount;
   final int followingCount;
 
+  /// Aktif profil boost bitiş zamanı (yoksa / süresi dolmuşsa null).
+  final DateTime? boostedUntil;
+
+  bool get boostActive =>
+      boostedUntil != null && boostedUntil!.isAfter(DateTime.now());
+
   factory Me.fromJson(Map<String, dynamic> j) {
     final stats = (j['stats'] as Map?) ?? const {};
+    final until = DateTime.tryParse(j['boostedUntil'] as String? ?? '');
     return Me(
       id: j['id'] as String,
       onboardingCompleted: j['onboardingCompleted'] as bool? ?? false,
@@ -85,6 +93,7 @@ class Me {
       likeCount: (stats['likeCount'] as num?)?.toInt() ?? 0,
       followerCount: (stats['followerCount'] as num?)?.toInt() ?? 0,
       followingCount: (stats['followingCount'] as num?)?.toInt() ?? 0,
+      boostedUntil: until?.toLocal(),
     );
   }
 
@@ -92,6 +101,8 @@ class Me {
     int? tokenBalance,
     int? followerCount,
     int? followingCount,
+    DateTime? boostedUntil,
+    bool clearBoost = false,
   }) => Me(
     id: id,
     onboardingCompleted: onboardingCompleted,
@@ -117,5 +128,6 @@ class Me {
     likeCount: likeCount,
     followerCount: followerCount ?? this.followerCount,
     followingCount: followingCount ?? this.followingCount,
+    boostedUntil: clearBoost ? null : (boostedUntil ?? this.boostedUntil),
   );
 }

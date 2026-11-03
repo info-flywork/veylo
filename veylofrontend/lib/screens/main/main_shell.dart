@@ -13,6 +13,7 @@ import 'package:veylo/data/remote/socket_service.dart';
 import 'package:veylo/data/remote/vibe_store.dart';
 import 'package:veylo/screens/discover/rooms/room_approved_sheet.dart';
 import 'package:veylo/screens/discover/rooms/room_list_item.dart';
+import 'package:veylo/screens/discover/rooms/room_pip_bubble.dart';
 import 'package:veylo/data/remote/discover_store.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/screens/call/call_stranger_page.dart';
@@ -195,28 +196,30 @@ class _MainShellState extends State<MainShell> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      extendBody: true,
-      body: IndexedStack(
-        index: _stackIndex,
-        children: [
-          const DiscoverPage(),
-          ChatsPage(
-            onRequestTap: () => ChatRequestPage.open(context),
-          ),
-          const VibesPage(),
-          ProfilePage(
-            onEditProfileTap: () => EditProfilePage.open(context),
-            onSettingsTap: () => AccountManagementPage.open(context),
-            onTokensTap: () => BoostPage.open(context),
-            onStandOutTap: () => BoostPage.open(context),
-          ),
-        ],
-      ),
-      bottomNavigationBar: AppBottomNav(
-        current: _tab,
-        onChanged: _onNavChanged,
+    return RoomPipOverlayHost(
+      child: Scaffold(
+        backgroundColor: AppColors.white,
+        extendBody: true,
+        body: IndexedStack(
+          index: _stackIndex,
+          children: [
+            const DiscoverPage(),
+            ChatsPage(
+              onRequestTap: () => ChatRequestPage.open(context),
+            ),
+            const VibesPage(),
+            ProfilePage(
+              onEditProfileTap: () => EditProfilePage.open(context),
+              onSettingsTap: () => AccountManagementPage.open(context),
+              onTokensTap: () => BoostPage.open(context),
+              onStandOutTap: () => BoostPage.open(context),
+            ),
+          ],
+        ),
+        bottomNavigationBar: AppBottomNav(
+          current: _tab,
+          onChanged: _onNavChanged,
+        ),
       ),
     );
   }

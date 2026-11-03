@@ -21,19 +21,17 @@ const _kVisibleItems = 5;
 Future<PickedValue<RelationshipGoal>?> showRelationshipGoalsSheet(
   BuildContext context, {
   RelationshipGoal initial = RelationshipGoal.newFriends,
-  bool canClear = false,
 }) {
   return showAppEditSheet<PickedValue<RelationshipGoal>>(
     context: context,
-    builder: (_) => _RelationshipGoalsSheet(initial: initial, canClear: canClear),
+    builder: (_) => _RelationshipGoalsSheet(initial: initial),
   );
 }
 
 class _RelationshipGoalsSheet extends StatefulWidget {
-  const _RelationshipGoalsSheet({required this.initial, this.canClear = false});
+  const _RelationshipGoalsSheet({required this.initial});
 
   final RelationshipGoal initial;
-  final bool canClear;
 
   @override
   State<_RelationshipGoalsSheet> createState() =>
@@ -147,11 +145,6 @@ class _RelationshipGoalsSheetState extends State<_RelationshipGoalsSheet> {
               ),
             ],
           ),
-          if (widget.canClear)
-            PickerClearAction(
-              onTap: () =>
-                  Navigator.of(context).pop(PickedValue<RelationshipGoal>(null)),
-            ),
         ],
       ),
     );

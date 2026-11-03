@@ -12,9 +12,25 @@ import 'package:veylo/screens/discover/ai_match_tab.dart';
 import 'package:veylo/screens/discover/discover_post_page.dart';
 import 'package:veylo/screens/discover/filters_sheet.dart';
 import 'package:veylo/screens/discover/highlight_sheet.dart';
+import 'package:veylo/core/widgets/app_bottom_nav.dart';
 import 'package:veylo/screens/discover/rooms/create_room_or_group_sheet.dart';
 import 'package:veylo/screens/discover/rooms/rooms_tab.dart';
 import 'package:veylo/screens/discover/story_camera_page.dart';
+
+/// Discover alt sekmeleri (Rooms / Discover / AI Match).
+class DiscoverShell {
+  static void Function(int tab)? _selectTab;
+
+  static void bind(void Function(int tab) select) => _selectTab = select;
+
+  static void unbind() => _selectTab = null;
+
+  /// Ana shell Discover + Rooms sekmesine gider.
+  static void showRooms() {
+    AppShell.select(AppNavTab.discover);
+    _selectTab?.call(0);
+  }
+}
 
 /// Discover — header, tabs, search+filter, 3 kolon grid.
 class DiscoverPage extends StatefulWidget {
@@ -32,6 +48,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
   @override
   void initState() {
     super.initState();
+    DiscoverShell.bind((tab) {
+      if (mounted) setState(() => _tabIndex = tab);
+    });
     _store.addListener(_onStore);
     _scroll.addListener(_onScroll);
     if (!_store.loaded || _store.posts.isEmpty) _store.refresh();
@@ -39,6 +58,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
   @override
   void dispose() {
+    DiscoverShell.unbind();
     _store.removeListener(_onStore);
     _scroll.removeListener(_onScroll);
     _scroll.dispose();

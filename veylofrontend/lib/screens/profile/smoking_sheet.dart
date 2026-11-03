@@ -23,19 +23,17 @@ const _kVisibleItems = 6;
 Future<PickedValue<SmokingPreference>?> showSmokingSheet(
   BuildContext context, {
   SmokingPreference initial = SmokingPreference.tryingToQuit,
-  bool canClear = false,
 }) {
   return showAppEditSheet<PickedValue<SmokingPreference>>(
     context: context,
-    builder: (_) => _SmokingSheet(initial: initial, canClear: canClear),
+    builder: (_) => _SmokingSheet(initial: initial),
   );
 }
 
 class _SmokingSheet extends StatefulWidget {
-  const _SmokingSheet({required this.initial, this.canClear = false});
+  const _SmokingSheet({required this.initial});
 
   final SmokingPreference initial;
-  final bool canClear;
 
   @override
   State<_SmokingSheet> createState() => _SmokingSheetState();
@@ -150,11 +148,6 @@ class _SmokingSheetState extends State<_SmokingSheet> {
               ),
             ),
           ),
-          if (widget.canClear)
-            PickerClearAction(
-              onTap: () =>
-                  Navigator.of(context).pop(PickedValue<SmokingPreference>(null)),
-            ),
         ],
       ),
     );

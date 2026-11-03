@@ -243,7 +243,7 @@ class _FollowPageState extends State<FollowPage> {
     final top = MediaQuery.viewPaddingOf(context).top;
     final bottom = MediaQuery.viewPaddingOf(context).bottom;
     final screenW = MediaQuery.sizeOf(context).width;
-    final hPad = ((screenW - _kContentWidth) / 2).clamp(16.0, 40.0);
+    final hPad = ((screenW - _kContentWidth) / 2).clamp(8.0, 40.0);
     final users = _filtered;
     final loadingTab = _loading.contains(_tab);
     // Filtre az sonuç verdiyse (liste kaydırılamaz) sonraki sayfaları kendiliğinden getir.

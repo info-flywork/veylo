@@ -26,6 +26,7 @@ class ProfileMockRepository {
       isSelf: true,
       borderId: me.borderId,
       voiceIntroUrl: me.voiceIntroUrl,
+      boostedUntil: me.boostedUntil,
     );
   }
 

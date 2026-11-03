@@ -128,6 +128,12 @@ class AgoraService {
     if (micOn && !await requestMic()) micOn = false;
     try {
       await _ensureEngine(rtc.appId);
+      // Aynı kanaldaysak (oda PiP → geri) yeniden join etme; ses kopmasın.
+      if (_channel == rtc.channel) {
+        localUid = rtc.uid;
+        await _engine?.muteLocalAudioStream(!micOn);
+        return true;
+      }
       if (_channel != null) await leave();
       localUid = rtc.uid;
       final engine = _engine!;

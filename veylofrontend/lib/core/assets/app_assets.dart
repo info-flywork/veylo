@@ -192,7 +192,15 @@ abstract final class AppAssets {
       'assets/icons/notificationBing.svg';
   static const String iconPrivateLock = 'assets/icons/privateLock.svg';
   static const String iconEmail = 'assets/icons/email.svg';
+  /// Settings (Account) satır ikonları.
+  static const String iconSettingsNotifications =
+      'assets/icons/settingsNotifications.svg';
+  static const String iconSettingsPassword =
+      'assets/icons/settingsPassword.svg';
+  static const String iconSettingsEmail = 'assets/icons/settinsEmail.svg';
   static const String iconShareUp = 'assets/icons/shareUp.svg';
+  static const String iconCopy = 'assets/icons/copyIcon.svg';
+  static const String iconContactUs = 'assets/icons/bizeulasin.svg';
   static const String iconAddPeople = 'assets/icons/addPeople.svg';
   static const String iconBlock = 'assets/icons/block.svg';
   static const String iconPinned = 'assets/icons/pinned.svg';

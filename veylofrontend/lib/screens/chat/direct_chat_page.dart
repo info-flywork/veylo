@@ -12,6 +12,7 @@ import 'package:veylo/screens/chat/chat_actions_sheet.dart';
 import 'package:veylo/screens/chat/widgets/chat_call_buttons.dart';
 import 'package:veylo/screens/chat/chat_sticker.dart';
 import 'package:veylo/screens/chat/conversation_controller.dart';
+import 'package:veylo/screens/chat/message_forward_sheet.dart';
 import 'package:veylo/screens/chat/widgets/chat_composer.dart';
 import 'package:veylo/screens/chat/widgets/chat_composer_context.dart';
 import 'package:veylo/screens/chat/widgets/chat_message_list.dart';
@@ -215,11 +216,17 @@ class _DirectChatPageState extends State<DirectChatPage> {
                   messages: _ctrl.messages,
                   peerLastReadSeq: thread.peerLastReadSeq,
                   seenLabel: t.seen,
+                  sendingLabel: t.messageSending,
                   onRetry: _ctrl.retry,
                   onLoadOlder: _ctrl.loadOlder,
                   skipFirstIncoming: firstIncoming != null,
                   peerAvatarUrl: thread.avatarUrl,
                   onReply: _ctrl.setReplyTarget,
+                  onForward: (m) => showMessageForwardSheet(
+                    context,
+                    controller: _ctrl,
+                    message: m,
+                  ),
                   onEdit: (m) {
                     _ctrl.setEditing(m);
                     _input.text = m.body ?? '';
@@ -273,6 +280,7 @@ class _DirectChatPageState extends State<DirectChatPage> {
                   onSend: _send,
                   onSticker: (asset) => _ctrl.send(ChatSticker.encode(asset)),
                   onMedia: (kind, path) => _ctrl.sendMedia(kind, path),
+                  onImages: _ctrl.sendImages,
                 ),
               ),
             ],

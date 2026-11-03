@@ -28,7 +28,6 @@ Future<PickedValue<int>?> showHeightPickerSheet(
     ),
     builder: (_) => HeightPickerSheet(
       initialCm: initialCm ?? _kDefaultCm,
-      canClear: initialCm != null,
     ),
   );
 }
@@ -37,11 +36,9 @@ class HeightPickerSheet extends StatefulWidget {
   const HeightPickerSheet({
     super.key,
     required this.initialCm,
-    this.canClear = false,
   });
 
   final int initialCm;
-  final bool canClear;
 
   @override
   State<HeightPickerSheet> createState() => _HeightPickerSheetState();
@@ -150,12 +147,6 @@ class _HeightPickerSheetState extends State<HeightPickerSheet> {
                 ),
               ),
             ),
-            if (widget.canClear) ...[
-              const SizedBox(height: 8),
-              PickerClearAction(
-                onTap: () => Navigator.of(context).pop(const PickedValue<int>(null)),
-              ),
-            ],
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,

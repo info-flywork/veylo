@@ -79,7 +79,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   SmokingPreference? _smoking;
   bool _profileVisible = true;
   int? _heightCm;
-  /// Konuştuğu diller (dil kodları).
+  /// Uygulama / profil dili (tek kod).
   List<String> _languages = const [];
   bool _saving = false;
   bool _uploadingPhoto = false;
@@ -243,7 +243,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final result = await showGenderSheet(
       context,
       initial: _gender ?? ProfileGender.female,
-      canClear: _gender != null,
     );
     if (result != null && mounted) {
       setState(() => _gender = result.value);
@@ -254,7 +253,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final result = await showRelationshipGoalsSheet(
       context,
       initial: _relationshipGoal ?? RelationshipGoal.newFriends,
-      canClear: _relationshipGoal != null,
     );
     if (result != null && mounted) {
       setState(() => _relationshipGoal = result.value);
@@ -265,7 +263,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final result = await showZodiacSheet(
       context,
       initial: _zodiac ?? ZodiacSign.aries,
-      canClear: _zodiac != null,
     );
     if (result != null && mounted) {
       setState(() => _zodiac = result.value);
@@ -276,7 +273,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final result = await showEducationSheet(
       context,
       initial: _education ?? EducationLevel.highSchool,
-      canClear: _education != null,
     );
     if (result != null && mounted) {
       setState(() => _education = result.value);
@@ -287,7 +283,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final result = await showPetsSheet(
       context,
       initial: _pets ?? PetsPreference.dontWant,
-      canClear: _pets != null,
     );
     if (result != null && mounted) {
       setState(() => _pets = result.value);
@@ -298,7 +293,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final result = await showDrinkingSheet(
       context,
       initial: _drinking ?? DrinkingPreference.never,
-      canClear: _drinking != null,
     );
     if (result != null && mounted) {
       setState(() => _drinking = result.value);
@@ -309,7 +303,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final result = await showSmokingSheet(
       context,
       initial: _smoking ?? SmokingPreference.nonSmoker,
-      canClear: _smoking != null,
     );
     if (result != null && mounted) {
       setState(() => _smoking = result.value);
@@ -321,13 +314,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
       widget.onLanguageTap!();
       return;
     }
-    // Konuştuğu diller (profil alanı); uygulama dili Ayarlar > Language'da.
-    final result = await showSpokenLanguagesSheet(
-      context,
-      initial: _languages,
-    );
+    // Tek dil: anında uygulama dilini değiştirir, profil alanına da yazar.
+    final result = await showLanguageSheet(context);
     if (result != null && mounted) {
-      setState(() => _languages = result);
+      setState(() => _languages = [result.code]);
     }
   }
 
@@ -432,11 +422,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
     final bottom = MediaQuery.viewPaddingOf(context).bottom;
     final screenW = MediaQuery.sizeOf(context).width;
     final hPad = ((screenW - _kContentWidth) / 2).clamp(16.0, 40.0);
-    final langLabel = _languages.isEmpty
-        ? t.notSet
-        : [
-            for (final code in _languages) AppLanguage.fromCode(code).label,
-          ].join(', ');
+    final langLabel = AppLanguage.fromCode(
+      LocaleSettings.currentLocale.languageCode,
+    ).label;
 
     return ListenableBuilder(
       listenable: Listenable.merge([

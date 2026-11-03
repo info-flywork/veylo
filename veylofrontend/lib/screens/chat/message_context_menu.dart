@@ -6,7 +6,7 @@ import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/chat/chat_message.dart';
 import 'package:veylo/screens/chat/chat_sticker.dart';
 
-enum MessageMenuAction { reply, copy, edit, delete, report }
+enum MessageMenuAction { reply, forward, copy, edit, delete, report }
 
 /// Uzun basınca: üstte emoji tepkileri, altta Yanıtla / Kopyala / Düzenle / Sil.
 Future<void> showMessageContextMenu(
@@ -20,6 +20,12 @@ Future<void> showMessageContextMenu(
       ChatSticker.assetOf(message.body) == null &&
       (message.body?.trim().isNotEmpty ?? false);
   final canEdit = message.canEdit;
+  final canForward = message.id != null &&
+      message.status != ChatMessageStatus.sending &&
+      message.status != ChatMessageStatus.failed &&
+      (message.type == 'TEXT' ||
+          message.type == 'IMAGE' ||
+          message.type == 'VOICE');
   final canDelete = message.status != ChatMessageStatus.sending;
   final canReport = !message.isMine && message.id != null;
 
@@ -76,6 +82,15 @@ Future<void> showMessageContextMenu(
                       onAction(MessageMenuAction.reply);
                     },
                   ),
+                  if (canForward)
+                    _MenuRow(
+                      icon: Icons.shortcut_rounded,
+                      label: t.messageForward,
+                      onTap: () {
+                        Navigator.of(ctx).pop();
+                        onAction(MessageMenuAction.forward);
+                      },
+                    ),
                   if (copyable)
                     _MenuRow(
                       icon: Icons.content_copy_rounded,

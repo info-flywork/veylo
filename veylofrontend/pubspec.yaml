@@ -63,6 +63,7 @@ dependencies:
   in_app_review: ^2.0.12
   image: ^4.12.0
   camera: ^0.12.2
+  url_launcher: ^6.3.3
 
 dev_dependencies:
   flutter_test:

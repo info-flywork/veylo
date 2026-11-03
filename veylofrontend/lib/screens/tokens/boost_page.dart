@@ -68,6 +68,7 @@ class _BoostPageState extends State<BoostPage> {
       final s = await _repo.status();
       if (!mounted) return;
       SessionStore.instance.updateTokenBalance(s.balance);
+      SessionStore.instance.updateBoostedUntil(s.boostUntil);
       setState(() {
         _status = s;
         _error = null;
@@ -85,6 +86,7 @@ class _BoostPageState extends State<BoostPage> {
       final s = await action();
       if (!mounted) return;
       SessionStore.instance.updateTokenBalance(s.balance);
+      SessionStore.instance.updateBoostedUntil(s.boostUntil);
       setState(() => _status = s);
       if (done != null && widget.startCallAfter) {
         Navigator.of(context).pop(true);
@@ -118,6 +120,7 @@ class _BoostPageState extends State<BoostPage> {
         final s = await _repo.status();
         if (!mounted) return;
         SessionStore.instance.updateTokenBalance(s.balance);
+        SessionStore.instance.updateBoostedUntil(s.boostUntil);
         setState(() => _status = s);
         return;
       } catch (_) {}

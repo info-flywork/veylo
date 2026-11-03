@@ -17,19 +17,17 @@ enum ProfileGender {
 Future<PickedValue<ProfileGender>?> showGenderSheet(
   BuildContext context, {
   ProfileGender initial = ProfileGender.male,
-  bool canClear = false,
 }) {
   return showAppEditSheet<PickedValue<ProfileGender>>(
     context: context,
-    builder: (_) => _GenderSheet(initial: initial, canClear: canClear),
+    builder: (_) => _GenderSheet(initial: initial),
   );
 }
 
 class _GenderSheet extends StatefulWidget {
-  const _GenderSheet({required this.initial, this.canClear = false});
+  const _GenderSheet({required this.initial});
 
   final ProfileGender initial;
-  final bool canClear;
 
   @override
   State<_GenderSheet> createState() => _GenderSheetState();
@@ -94,11 +92,6 @@ class _GenderSheetState extends State<_GenderSheet> {
               ],
             ),
           ),
-          if (widget.canClear)
-            PickerClearAction(
-              onTap: () =>
-                  Navigator.of(context).pop(PickedValue<ProfileGender>(null)),
-            ),
         ],
       ),
     );

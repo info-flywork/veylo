@@ -166,6 +166,11 @@ class _Translations$chats$ja extends Translations$chats$tr {
 	@override String get stickerEmpty => '最近のスタンプはありません';
 	@override String get messageCopied => 'メッセージをコピーしました';
 	@override String get messageReply => '返信';
+	@override String get messageSending => '送信中…';
+	@override String get messageForward => '転送';
+	@override String get forwardTitle => 'チャットに転送';
+	@override String get forwardEmpty => '転送先のチャットがありません';
+	@override String get forwardSent => '転送しました';
 	@override String get messageCopy => 'コピー';
 	@override String get messageEdit => '編集';
 	@override String get messageDelete => '削除';
@@ -239,6 +244,7 @@ class _Translations$profile$ja extends Translations$profile$tr {
 	@override String get deleteAllBody => '確認すると、すべてのメッセージが削除されます';
 	@override String get deleteAllAction => '削除';
 	@override String get faqHelp => 'よくある質問とヘルプ';
+	@override String get contactUs => 'お問い合わせ';
 	@override String get restorePurchases => '購入を復元';
 	@override String get termsOfService => '利用規約';
 	@override String get privacyPolicy => 'プライバシーポリシー';
@@ -408,6 +414,9 @@ class _Translations$profile$ja extends Translations$profile$tr {
 	@override String get zodiacCapricorn => 'やぎ座';
 	@override String get zodiacAquarius => 'みずがめ座';
 	@override String get zodiacPisces => 'うお座';
+	@override String get boostActiveTitle => 'You\'re standing out!';
+	@override String boostRemaining({required Object time}) => '${time} left';
+	@override String get boostExtend => 'Extend';
 }
 
 // Path: nav
@@ -431,11 +440,11 @@ class _Translations$call$ja extends Translations$call$tr {
 	final TranslationsJa _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => '60秒ストレンジャー';
-	@override String get subtitle => '知らない誰かと60秒間おしゃべり。完全匿名で、プロフィールも写真も名前もなし。声とその瞬間だけ。';
-	@override String get findingTitle => '相手を探しています...';
+	@override String get title => '60秒匿名';
+	@override String get subtitle => 'ランダムな匿名の人と60秒だけ話す — 完全匿名。プロフィールも写真も名前もなし。声と、この一瞬だけ。';
+	@override String get findingTitle => '匿名の相手を探しています...';
 	@override String get findingSubtitle => '60秒間、匿名で話せます。プロフィールも名前もなし。';
-	@override String get callStranger => '通話する - 10トークン';
+	@override String get callStranger => '匿名通話 - 10トークン';
 	@override String get cancel => 'キャンセル';
 	@override String get female => '女性';
 	@override String get male => '男性';
@@ -449,7 +458,7 @@ class _Translations$call$ja extends Translations$call$tr {
 	@override String get keepTalking => '話し続ける';
 	@override String get endCall => '通話を終了';
 	@override String get waitingOther => '相手の返事を待っています...';
-	@override String get callStrangerFree => '通話する';
+	@override String get callStrangerFree => '匿名通話';
 	@override String get peerLeft => '相手が通話を終了しました。';
 	@override String get noKeep => '今回はチャットが解放されませんでした。';
 	@override String get videoWaiting => '相手がビデオ通話を承認するのを待っています...';
@@ -730,7 +739,7 @@ class _Translations$faq$ja extends Translations$faq$tr {
 	@override String get q2 => '匿名チャットとは？';
 	@override String get q3 => 'つながり度とは？';
 	@override String get q4 => 'プロフィールを公開するには？';
-	@override String get q5 => '60秒ストレンジャーとは？';
+	@override String get q5 => '60秒匿名とは？';
 	@override String get q6 => 'Vibesとは？';
 	@override String get q7 => 'プロフィールを編集するには？';
 	@override String get q8 => '通知を管理するには？';
@@ -1015,6 +1024,13 @@ class _Translations$discover$liveRoom$ja extends Translations$discover$liveRoom$
 	@override String get remove => 'ルームから削除';
 	@override String get removed => 'ルームから削除されました。';
 	@override String get seeProfile => 'プロフィールの閲覧をリクエスト';
+	@override String get closeConfirmTitle => 'Are you sure you want to close the room?';
+	@override String get closeConfirmSubtitle => 'The room will end for everyone.';
+	@override String get closeConfirm => 'Close';
+	@override String get leaveConfirmTitle => 'Are you sure you want to leave the room?';
+	@override String get leaveConfirmSubtitle => 'You will leave while the conversation continues.';
+	@override String get leaveConfirm => 'Leave';
+	@override String get cancel => 'Cancel';
 }
 
 // Path: discover.groupChat
@@ -1278,6 +1294,11 @@ extension on TranslationsJa {
 			'chats.stickerEmpty' => '最近のスタンプはありません',
 			'chats.messageCopied' => 'メッセージをコピーしました',
 			'chats.messageReply' => '返信',
+			'chats.messageSending' => '送信中…',
+			'chats.messageForward' => '転送',
+			'chats.forwardTitle' => 'チャットに転送',
+			'chats.forwardEmpty' => '転送先のチャットがありません',
+			'chats.forwardSent' => '転送しました',
 			'chats.messageCopy' => 'コピー',
 			'chats.messageEdit' => '編集',
 			'chats.messageDelete' => '削除',
@@ -1342,6 +1363,7 @@ extension on TranslationsJa {
 			'profile.deleteAllBody' => '確認すると、すべてのメッセージが削除されます',
 			'profile.deleteAllAction' => '削除',
 			'profile.faqHelp' => 'よくある質問とヘルプ',
+			'profile.contactUs' => 'お問い合わせ',
 			'profile.restorePurchases' => '購入を復元',
 			'profile.termsOfService' => '利用規約',
 			'profile.privacyPolicy' => 'プライバシーポリシー',
@@ -1511,16 +1533,19 @@ extension on TranslationsJa {
 			'profile.zodiacCapricorn' => 'やぎ座',
 			'profile.zodiacAquarius' => 'みずがめ座',
 			'profile.zodiacPisces' => 'うお座',
+			'profile.boostActiveTitle' => 'You\'re standing out!',
+			'profile.boostRemaining' => ({required Object time}) => '${time} left',
+			'profile.boostExtend' => 'Extend',
 			'nav.discover' => '発見',
 			'nav.chat' => 'チャット',
 			'nav.call' => '通話',
 			'nav.vibes' => 'バイブス',
 			'nav.profile' => 'プロフィール',
-			'call.title' => '60秒ストレンジャー',
-			'call.subtitle' => '知らない誰かと60秒間おしゃべり。完全匿名で、プロフィールも写真も名前もなし。声とその瞬間だけ。',
-			'call.findingTitle' => '相手を探しています...',
+			'call.title' => '60秒匿名',
+			'call.subtitle' => 'ランダムな匿名の人と60秒だけ話す — 完全匿名。プロフィールも写真も名前もなし。声と、この一瞬だけ。',
+			'call.findingTitle' => '匿名の相手を探しています...',
 			'call.findingSubtitle' => '60秒間、匿名で話せます。プロフィールも名前もなし。',
-			'call.callStranger' => '通話する - 10トークン',
+			'call.callStranger' => '匿名通話 - 10トークン',
 			'call.cancel' => 'キャンセル',
 			'call.female' => '女性',
 			'call.male' => '男性',
@@ -1534,7 +1559,7 @@ extension on TranslationsJa {
 			'call.keepTalking' => '話し続ける',
 			'call.endCall' => '通話を終了',
 			'call.waitingOther' => '相手の返事を待っています...',
-			'call.callStrangerFree' => '通話する',
+			'call.callStrangerFree' => '匿名通話',
 			'call.peerLeft' => '相手が通話を終了しました。',
 			'call.noKeep' => '今回はチャットが解放されませんでした。',
 			'call.videoWaiting' => '相手がビデオ通話を承認するのを待っています...',
@@ -1676,6 +1701,13 @@ extension on TranslationsJa {
 			'discover.liveRoom.remove' => 'ルームから削除',
 			'discover.liveRoom.removed' => 'ルームから削除されました。',
 			'discover.liveRoom.seeProfile' => 'プロフィールの閲覧をリクエスト',
+			'discover.liveRoom.closeConfirmTitle' => 'Are you sure you want to close the room?',
+			'discover.liveRoom.closeConfirmSubtitle' => 'The room will end for everyone.',
+			'discover.liveRoom.closeConfirm' => 'Close',
+			'discover.liveRoom.leaveConfirmTitle' => 'Are you sure you want to leave the room?',
+			'discover.liveRoom.leaveConfirmSubtitle' => 'You will leave while the conversation continues.',
+			'discover.liveRoom.leaveConfirm' => 'Leave',
+			'discover.liveRoom.cancel' => 'Cancel',
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count}人のユーザー',
 			'discover.groupChat.sampleVictoria' => 'すごく退屈。みんなで何かしない？',
 			'discover.groupChat.sampleSona' => '何する？何かアイデアある？',
@@ -1694,6 +1726,8 @@ extension on TranslationsJa {
 			'discover.groupInfo.requests' => '参加リクエスト',
 			'discover.groupInfo.approve' => '承認',
 			'discover.groupInfo.reject' => '拒否',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupInfo.addPeopleEmpty' => 'フォローした人をグループに追加できます。',
 			'discover.groupInfo.add' => '追加',
 			'discover.groupInfo.makeAdmin' => '管理者にする',
@@ -1710,8 +1744,6 @@ extension on TranslationsJa {
 			'discover.filters.distance' => '距離',
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} km',
 			'discover.filters.showMe' => '表示する相手',
-			_ => null,
-		} ?? switch (path) {
 			'discover.filters.everyone' => '全員',
 			'discover.filters.women' => '女性',
 			'discover.filters.men' => '男性',
@@ -1912,7 +1944,7 @@ extension on TranslationsJa {
 			'faq.q2' => '匿名チャットとは？',
 			'faq.q3' => 'つながり度とは？',
 			'faq.q4' => 'プロフィールを公開するには？',
-			'faq.q5' => '60秒ストレンジャーとは？',
+			'faq.q5' => '60秒匿名とは？',
 			'faq.q6' => 'Vibesとは？',
 			'faq.q7' => 'プロフィールを編集するには？',
 			'faq.q8' => '通知を管理するには？',
