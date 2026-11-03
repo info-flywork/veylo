@@ -36,7 +36,7 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> {
   AppNavTab _tab = AppNavTab.discover;
   StreamSubscription<String>? _pushTaps;
-  StreamSubscription<String>? _callPush;
+  StreamSubscription<Map<String, dynamic>>? _callPush;
   StreamSubscription<Map<String, dynamic>>? _groupApproved;
   StreamSubscription<Map<String, dynamic>>? _roomApproved;
   StreamSubscription<Map<String, dynamic>>? _callIncoming;
@@ -64,9 +64,8 @@ class _MainShellState extends State<MainShell> {
       );
     });
     // Gizli canlı odaya katılma isteğim onaylandı.
-    _callIncoming = SocketService.instance.on('call:incoming').listen((e) {
-      _openIncomingCall(e['inviteId'] as String?);
-    });
+    _callIncoming =
+        SocketService.instance.on('call:incoming').listen(_openIncomingCall);
     _roomApproved = SocketService.instance.on('room:approved').listen((e) {
       final id = e['roomId'] as String?;
       if (id == null || !mounted) return;
@@ -106,12 +105,18 @@ class _MainShellState extends State<MainShell> {
     super.dispose();
   }
 
-  void _openIncomingCall(String? inviteId) {
-    if (inviteId == null || inviteId.isEmpty || !mounted || _incomingCallId == inviteId) {
+  /// Gelen arama (socket `call:incoming` ya da arama bildirimi).
+  /// kind=direct: sohbetten birebir arama; diğerleri rastgele (anonim) arama daveti.
+  void _openIncomingCall(Map<String, dynamic> event) {
+    final inviteId = event['inviteId'];
+    if (inviteId is! String || inviteId.isEmpty || !mounted || _incomingCallId == inviteId) {
       return;
     }
     _incomingCallId = inviteId;
-    CallStrangerPage.openIncoming(context, {'inviteId': inviteId}).whenComplete(() {
+    final open = event['kind'] == 'direct'
+        ? DirectCallPage.openIncoming(context, event)
+        : CallStrangerPage.openIncoming(context, {'inviteId': inviteId});
+    open.whenComplete(() {
       if (_incomingCallId == inviteId) _incomingCallId = null;
     });
   }

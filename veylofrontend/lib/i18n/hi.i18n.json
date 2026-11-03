@@ -83,6 +83,14 @@
     "previewSticker": "स्टिकर",
     "stickerEmpty": "कोई हाल का स्टिकर नहीं",
     "messageCopied": "संदेश कॉपी हो गया",
+    "messageReply": "जवाब दें",
+    "messageCopy": "कॉपी",
+    "messageEdit": "संपादित करें",
+    "messageDelete": "हटाएँ",
+    "messageReport": "रिपोर्ट",
+    "messageEdited": "संपादित",
+    "messageReplying": "जवाब दे रहे हैं",
+    "messageEditing": "संपादन",
     "reportReasonSubtitle": "आप इस संदेश की रिपोर्ट क्यों कर रहे हैं?",
     "reasonHarassment": "उत्पीड़न या धमकाना",
     "reasonHateSpeech": "नफ़रत भरी बातें",
@@ -98,7 +106,11 @@
     "emptyThreadsSubtitle": "जब आप किसी से बात करना शुरू करेंगे, आपकी चैट यहाँ दिखेंगी।",
     "noSearchResults": "कोई परिणाम नहीं मिला",
     "milestonePhotoUnlocked": "70% पर खुला",
-    "revealPeerWants": "{name} अपनी प्रोफ़ाइल दिखाना चाहते हैं"
+    "revealPeerWants": "{name} अपनी प्रोफ़ाइल दिखाना चाहते हैं",
+    "voiceCall": "वॉइस कॉल",
+    "videoCall": "वीडियो कॉल",
+    "videoLocked": "जब आप दोनों अपनी प्रोफ़ाइल दिखा देंगे, तब वीडियो कॉल अनलॉक होगी।",
+    "openSettings": "सेटिंग्स"
   },
   "profile": {
     "eyebrow": "प्रोफ़ाइल",
@@ -175,6 +187,7 @@
     "voiceRecording": "रिकॉर्ड हो रहा है {seconds} से",
     "voiceReady": "आपकी आवाज़ तैयार है",
     "voicePlay": "चलाएँ",
+    "voiceReRecord": "फिर से रिकॉर्ड करें",
     "voicePause": "रोकें",
     "voiceShare": "प्रोफ़ाइल पर शेयर करें",
     "voiceSaving": "सेव हो रहा है…",
@@ -293,7 +306,19 @@
     "borderOwned": "आपके पास है",
     "borderEquipCta": "बॉर्डर लगाएँ",
     "borderRemoveCta": "बॉर्डर हटाएँ",
-    "followEmpty": "यहाँ अभी कोई नहीं है"
+    "followEmpty": "यहाँ अभी कोई नहीं है",
+    "zodiacAries": "मेष",
+    "zodiacTaurus": "वृषभ",
+    "zodiacGemini": "मिथुन",
+    "zodiacCancer": "कर्क",
+    "zodiacLeo": "सिंह",
+    "zodiacVirgo": "कन्या",
+    "zodiacLibra": "तुला",
+    "zodiacScorpio": "वृश्चिक",
+    "zodiacSagittarius": "धनु",
+    "zodiacCapricorn": "मकर",
+    "zodiacAquarius": "कुंभ",
+    "zodiacPisces": "मीन"
   },
   "nav": {
     "discover": "डिस्कवर",
@@ -314,7 +339,7 @@
     "nonBinary": "नॉन-बाइनरी",
     "preferNotToSay": "बताना नहीं चाहते",
     "anonymousBadge": "🎙️ गुमनाम वॉइस कॉल",
-    "stranger": "स्ट्रेंजर",
+    "stranger": "गुमनाम",
     "secondsLeft": "{n}s",
     "timesUpTitle": "समय खत्म!",
     "timesUpSubtitle": "और बात करनी है? अगर दोनों हाँ कहें, तो चैट अनलॉक हो जाएगी।",
@@ -335,7 +360,11 @@
     "noMatchTitle": "अभी कोई उपलब्ध नहीं है",
     "noMatchBody": "इस समय बात करने के लिए कोई नहीं मिला। थोड़ी देर बाद फिर से कोशिश करें।",
     "noMatchOk": "ठीक है",
-    "cameraDenied": "वीडियो कॉल के लिए कैमरा एक्सेस ज़रूरी है। आप इसे सेटिंग्स में चालू कर सकते हैं।"
+    "cameraDenied": "वीडियो कॉल के लिए कैमरा एक्सेस ज़रूरी है। आप इसे सेटिंग्स में चालू कर सकते हैं।",
+    "incomingBody": "कोई गुमनाम कॉल शुरू करना चाहता है। यह तभी शुरू होगी जब आप स्वीकार करेंगे।",
+    "ringing": "घंटी बज रही है…",
+    "noAnswer": "कोई जवाब नहीं।",
+    "callDeclined": "उन्होंने कॉल अस्वीकार कर दी।"
   },
   "vibes": {
     "search": "खोजें",
@@ -550,7 +579,8 @@
       "unknownTrack": "अज्ञात",
       "downloaded": "गैलरी में सेव हो गया",
       "downloadFailed": "सेव नहीं हो सका",
-      "savedToDraft": "ड्राफ़्ट में सेव हो गया"
+      "savedToDraft": "ड्राफ़्ट में सेव हो गया",
+      "cameraDenied": "फ़ोटो लेने के लिए कैमरा अनुमति ज़रूरी है।"
     },
     "highlight": {
       "title": "हाइलाइट",
@@ -731,7 +761,9 @@
     "roomPrivate": "यह रूम प्राइवेट है। जॉइन करने के लिए होस्ट से पूछें।",
     "roomFull": "यह रूम भर चुका है।",
     "alreadyCheckedIn": "आप आज का इनाम पहले ही ले चुके हैं।",
-    "purchasesUnavailable": "खरीदारी अभी उपलब्ध नहीं है।"
+    "purchasesUnavailable": "खरीदारी अभी उपलब्ध नहीं है।",
+    "peerBusy": "वे अभी किसी दूसरी कॉल पर हैं। बाद में फिर कोशिश करें।",
+    "videoLocked": "जब आप दोनों अपनी प्रोफ़ाइल दिखा देंगे, तब वीडियो कॉल अनलॉक होगी।"
   },
   "faq": {
     "q1": "यह ऐप कैसे काम करता है?",

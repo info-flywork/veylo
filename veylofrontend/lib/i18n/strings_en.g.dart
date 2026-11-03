@@ -165,6 +165,14 @@ class _Translations$chats$en extends Translations$chats$tr {
 	@override String get previewSticker => 'Sticker';
 	@override String get stickerEmpty => 'No recent stickers';
 	@override String get messageCopied => 'Message copied';
+	@override String get messageReply => 'Reply';
+	@override String get messageCopy => 'Copy';
+	@override String get messageEdit => 'Edit';
+	@override String get messageDelete => 'Delete';
+	@override String get messageReport => 'Report';
+	@override String get messageEdited => 'edited';
+	@override String get messageReplying => 'Replying';
+	@override String get messageEditing => 'Editing';
 	@override String get reportReasonSubtitle => 'Why are you reporting this message?';
 	@override String get reasonHarassment => 'Harassment or bullying';
 	@override String get reasonHateSpeech => 'Hate speech';
@@ -181,6 +189,10 @@ class _Translations$chats$en extends Translations$chats$tr {
 	@override String get noSearchResults => 'No results found';
 	@override String get milestonePhotoUnlocked => 'Unlocked at 70%';
 	@override String revealPeerWants({required Object name}) => '${name} wants to reveal their profile';
+	@override String get voiceCall => 'Voice call';
+	@override String get videoCall => 'Video call';
+	@override String get videoLocked => 'Video calls unlock once you both reveal your profiles.';
+	@override String get openSettings => 'Settings';
 }
 
 // Path: profile
@@ -264,6 +276,7 @@ class _Translations$profile$en extends Translations$profile$tr {
 	@override String voiceRecording({required Object seconds}) => 'Recording ${seconds} s';
 	@override String get voiceReady => 'Your voice is ready';
 	@override String get voicePlay => 'Play';
+	@override String get voiceReRecord => 'Re-record';
 	@override String get voicePause => 'Pause';
 	@override String get voiceShare => 'Share on profile';
 	@override String get voiceSaving => 'Saving…';
@@ -383,6 +396,18 @@ class _Translations$profile$en extends Translations$profile$tr {
 	@override String get borderEquipCta => 'Use Border';
 	@override String get borderRemoveCta => 'Remove Border';
 	@override String get followEmpty => 'No one here yet';
+	@override String get zodiacAries => 'Aries';
+	@override String get zodiacTaurus => 'Taurus';
+	@override String get zodiacGemini => 'Gemini';
+	@override String get zodiacCancer => 'Cancer';
+	@override String get zodiacLeo => 'Leo';
+	@override String get zodiacVirgo => 'Virgo';
+	@override String get zodiacLibra => 'Libra';
+	@override String get zodiacScorpio => 'Scorpio';
+	@override String get zodiacSagittarius => 'Sagittarius';
+	@override String get zodiacCapricorn => 'Capricorn';
+	@override String get zodiacAquarius => 'Aquarius';
+	@override String get zodiacPisces => 'Pisces';
 }
 
 // Path: nav
@@ -417,7 +442,7 @@ class _Translations$call$en extends Translations$call$tr {
 	@override String get nonBinary => 'Non-binary';
 	@override String get preferNotToSay => 'Prefer not to say';
 	@override String get anonymousBadge => '🎙️ Anonymous voice call';
-	@override String get stranger => 'Stranger';
+	@override String get stranger => 'Anonymous';
 	@override String secondsLeft({required Object n}) => '${n}sn';
 	@override String get timesUpTitle => 'Time\'s up!';
 	@override String get timesUpSubtitle => 'Want to keep talking? If you both say yes, chat unlocks.';
@@ -439,6 +464,10 @@ class _Translations$call$en extends Translations$call$tr {
 	@override String get noMatchBody => 'We couldn\'t find anyone to talk to at the moment. Please try again a little later.';
 	@override String get noMatchOk => 'OK';
 	@override String get cameraDenied => 'Camera access is needed for video calls. You can enable it in Settings.';
+	@override String get incomingBody => 'Someone wants to start an anonymous call. It begins only if you accept.';
+	@override String get ringing => 'Ringing…';
+	@override String get noAnswer => 'No answer.';
+	@override String get callDeclined => 'The call was declined.';
 }
 
 // Path: vibes
@@ -686,6 +715,8 @@ class _Translations$errors$en extends Translations$errors$tr {
 	@override String get roomFull => 'This room is full.';
 	@override String get alreadyCheckedIn => 'You\'ve already collected today\'s reward.';
 	@override String get purchasesUnavailable => 'Purchases aren\'t available right now.';
+	@override String get peerBusy => 'They are in another call right now. Try again a bit later.';
+	@override String get videoLocked => 'Video calls unlock once you both reveal your profiles.';
 }
 
 // Path: faq
@@ -1096,6 +1127,7 @@ class _Translations$discover$story$en extends Translations$discover$story$tr {
 	@override String get downloaded => 'Saved to gallery';
 	@override String get downloadFailed => 'Could not save';
 	@override String get savedToDraft => 'Saved to drafts';
+	@override String get cameraDenied => 'Camera access is needed to take photos.';
 }
 
 // Path: discover.highlight
@@ -1247,6 +1279,14 @@ extension on TranslationsEn {
 			'chats.previewSticker' => 'Sticker',
 			'chats.stickerEmpty' => 'No recent stickers',
 			'chats.messageCopied' => 'Message copied',
+			'chats.messageReply' => 'Reply',
+			'chats.messageCopy' => 'Copy',
+			'chats.messageEdit' => 'Edit',
+			'chats.messageDelete' => 'Delete',
+			'chats.messageReport' => 'Report',
+			'chats.messageEdited' => 'edited',
+			'chats.messageReplying' => 'Replying',
+			'chats.messageEditing' => 'Editing',
 			'chats.reportReasonSubtitle' => 'Why are you reporting this message?',
 			'chats.reasonHarassment' => 'Harassment or bullying',
 			'chats.reasonHateSpeech' => 'Hate speech',
@@ -1263,6 +1303,10 @@ extension on TranslationsEn {
 			'chats.noSearchResults' => 'No results found',
 			'chats.milestonePhotoUnlocked' => 'Unlocked at 70%',
 			'chats.revealPeerWants' => ({required Object name}) => '${name} wants to reveal their profile',
+			'chats.voiceCall' => 'Voice call',
+			'chats.videoCall' => 'Video call',
+			'chats.videoLocked' => 'Video calls unlock once you both reveal your profiles.',
+			'chats.openSettings' => 'Settings',
 			'profile.eyebrow' => 'Profile',
 			'profile.title' => 'Settings',
 			'profile.editProfile' => 'Edit Profile',
@@ -1337,6 +1381,7 @@ extension on TranslationsEn {
 			'profile.voiceRecording' => ({required Object seconds}) => 'Recording ${seconds} s',
 			'profile.voiceReady' => 'Your voice is ready',
 			'profile.voicePlay' => 'Play',
+			'profile.voiceReRecord' => 'Re-record',
 			'profile.voicePause' => 'Pause',
 			'profile.voiceShare' => 'Share on profile',
 			'profile.voiceSaving' => 'Saving…',
@@ -1456,6 +1501,18 @@ extension on TranslationsEn {
 			'profile.borderEquipCta' => 'Use Border',
 			'profile.borderRemoveCta' => 'Remove Border',
 			'profile.followEmpty' => 'No one here yet',
+			'profile.zodiacAries' => 'Aries',
+			'profile.zodiacTaurus' => 'Taurus',
+			'profile.zodiacGemini' => 'Gemini',
+			'profile.zodiacCancer' => 'Cancer',
+			'profile.zodiacLeo' => 'Leo',
+			'profile.zodiacVirgo' => 'Virgo',
+			'profile.zodiacLibra' => 'Libra',
+			'profile.zodiacScorpio' => 'Scorpio',
+			'profile.zodiacSagittarius' => 'Sagittarius',
+			'profile.zodiacCapricorn' => 'Capricorn',
+			'profile.zodiacAquarius' => 'Aquarius',
+			'profile.zodiacPisces' => 'Pisces',
 			'nav.discover' => 'Discover',
 			'nav.chat' => 'Chat',
 			'nav.call' => 'Call',
@@ -1472,7 +1529,7 @@ extension on TranslationsEn {
 			'call.nonBinary' => 'Non-binary',
 			'call.preferNotToSay' => 'Prefer not to say',
 			'call.anonymousBadge' => '🎙️ Anonymous voice call',
-			'call.stranger' => 'Stranger',
+			'call.stranger' => 'Anonymous',
 			'call.secondsLeft' => ({required Object n}) => '${n}sn',
 			'call.timesUpTitle' => 'Time\'s up!',
 			'call.timesUpSubtitle' => 'Want to keep talking? If you both say yes, chat unlocks.',
@@ -1494,6 +1551,10 @@ extension on TranslationsEn {
 			'call.noMatchBody' => 'We couldn\'t find anyone to talk to at the moment. Please try again a little later.',
 			'call.noMatchOk' => 'OK',
 			'call.cameraDenied' => 'Camera access is needed for video calls. You can enable it in Settings.',
+			'call.incomingBody' => 'Someone wants to start an anonymous call. It begins only if you accept.',
+			'call.ringing' => 'Ringing…',
+			'call.noAnswer' => 'No answer.',
+			'call.callDeclined' => 'The call was declined.',
 			'vibes.search' => 'Search',
 			'vibes.sendMessage' => 'Send Message',
 			'vibes.wantsToTalk' => 'Wants to talk about this right now',
@@ -1651,6 +1712,8 @@ extension on TranslationsEn {
 			'discover.filters.ageRange' => 'Age Range',
 			'discover.filters.ageRangeValue' => ({required Object min, required Object max}) => '${min}-${max}',
 			'discover.filters.distance' => 'Distance',
+			_ => null,
+		} ?? switch (path) {
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} km',
 			'discover.filters.showMe' => 'Show me',
 			'discover.filters.everyone' => 'Everyone',
@@ -1680,12 +1743,11 @@ extension on TranslationsEn {
 			'discover.story.musicTitle' => 'Music',
 			'discover.story.musicEmpty' => 'No music found.',
 			'discover.story.musicError' => 'Could not load music.',
-			_ => null,
-		} ?? switch (path) {
 			'discover.story.unknownTrack' => 'Unknown',
 			'discover.story.downloaded' => 'Saved to gallery',
 			'discover.story.downloadFailed' => 'Could not save',
 			'discover.story.savedToDraft' => 'Saved to drafts',
+			'discover.story.cameraDenied' => 'Camera access is needed to take photos.',
 			'discover.highlight.title' => 'Highlight',
 			'discover.highlight.view' => 'View',
 			'discover.highlight.aiComments' => 'AI comments',
@@ -1848,6 +1910,8 @@ extension on TranslationsEn {
 			'errors.roomFull' => 'This room is full.',
 			'errors.alreadyCheckedIn' => 'You\'ve already collected today\'s reward.',
 			'errors.purchasesUnavailable' => 'Purchases aren\'t available right now.',
+			'errors.peerBusy' => 'They are in another call right now. Try again a bit later.',
+			'errors.videoLocked' => 'Video calls unlock once you both reveal your profiles.',
 			'faq.q1' => 'How does this app work?',
 			'faq.q2' => 'What is anonymous chat?',
 			'faq.q3' => 'What is Connection Progress?',

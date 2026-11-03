@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:veylo/core/widgets/app_text.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
-import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/data/remote/push_service.dart';
 import 'package:veylo/data/remote/vibe_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
@@ -150,7 +150,7 @@ class _SpokenLanguagesSheetState extends State<_SpokenLanguagesSheet> {
                 top: false,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                  child: AppPrimaryButton(
+                  child: _BlackSaveButton(
                     label: t.common.save,
                     onPressed: () => Navigator.of(context).pop([
                       // Sabit sıra (sunucu ve satır etiketi tutarlı olsun).
@@ -263,7 +263,7 @@ class _LanguageSheetState extends State<_LanguageSheet> {
                 top: false,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                  child: AppPrimaryButton(
+                  child: _BlackSaveButton(
                     label: t.save,
                     onPressed: _apply,
                   ),
@@ -330,6 +330,33 @@ class _LanguageRow extends StatelessWidget {
                 color: AppColors.brandPurple,
               ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Profil düzenleme pencereleriyle aynı siyah Kaydet (Figma: #1A1714, 54, tam yuvarlak).
+class _BlackSaveButton extends StatelessWidget {
+  const _BlackSaveButton({required this.label, required this.onPressed});
+
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 54,
+      child: Material(
+        color: AppColors.editSheetButton,
+        borderRadius: BorderRadius.circular(999),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(999),
+          onTap: onPressed,
+          child: Center(
+            child: AppText(label, style: AppTextStyles.editSheetSave),
+          ),
         ),
       ),
     );

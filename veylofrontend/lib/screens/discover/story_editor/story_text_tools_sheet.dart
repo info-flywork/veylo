@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -259,6 +260,10 @@ final class _StoryTextEditorOverlayState extends State<StoryTextEditorOverlay> {
   late StoryTextDraft _draft;
   late StoryTextToolMode _tab;
 
+  /// Görülen en büyük klavye yüksekliği: sekmeler arası geçişte araç çubuğu
+  /// aynı yerde kalsın, paneller klavyenin yerini birebir doldursun (zıplama olmasın).
+  double _keyboardHeight = 0;
+
   @override
   void initState() {
     super.initState();
@@ -318,8 +323,18 @@ final class _StoryTextEditorOverlayState extends State<StoryTextEditorOverlay> {
   Widget build(BuildContext context) {
     // Sistem klavyesinin yüksekliği — siyah toolbar bu kadar yukarı itilecek.
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+    if (bottomInset > _keyboardHeight) _keyboardHeight = bottomInset;
     final isKeyboardTab = _tab == StoryTextToolMode.keyboard;
-    final maxPanelHeight = MediaQuery.sizeOf(context).height * 0.45;
+    final safeBottom = MediaQuery.paddingOf(context).bottom;
+    // Panel yüksekliği = klavye yüksekliği (klavye hiç açılmadıysa makul bir varsayılan).
+    final panelHeight = _keyboardHeight > 0
+        ? _keyboardHeight
+        : math.max(260.0 + safeBottom, MediaQuery.sizeOf(context).height * 0.34);
+    // Klavye sekmesinde çubuk klavyenin üstünde; klavye açılıp kapanırken
+    // (biliniyorsa) sabit yükseklik kullanılır, böylece aşağı yukarı fırlamaz.
+    final toolbarBottom = isKeyboardTab
+        ? (_keyboardHeight > 0 ? _keyboardHeight : bottomInset)
+        : 0.0;
 
     return Material(
       type: MaterialType.transparency,
@@ -369,10 +384,8 @@ final class _StoryTextEditorOverlayState extends State<StoryTextEditorOverlay> {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: AnimatedPadding(
-              duration: const Duration(milliseconds: 180),
-              curve: Curves.easeOut,
-              padding: EdgeInsets.only(bottom: bottomInset),
+            child: Padding(
+              padding: EdgeInsets.only(bottom: toolbarBottom),
               child: ClipRRect(
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(16),
@@ -383,10 +396,7 @@ final class _StoryTextEditorOverlayState extends State<StoryTextEditorOverlay> {
                     width: double.infinity,
                     color: AppColors.black.withValues(alpha: 0.90),
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 10),
-                    child: AnimatedSize(
-                      duration: const Duration(milliseconds: 240),
-                      curve: Curves.easeOutCubic,
-                      alignment: Alignment.topCenter,
+                    child: SizedBox(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -452,10 +462,9 @@ final class _StoryTextEditorOverlayState extends State<StoryTextEditorOverlay> {
                           ),
                           if (!isKeyboardTab) ...[
                             const SizedBox(height: 10),
-                            ConstrainedBox(
-                              constraints: BoxConstraints(
-                                maxHeight: maxPanelHeight,
-                              ),
+                            // Sabit yükseklik: her sekmede aynı, klavyeyle eş.
+                            SizedBox(
+                              height: panelHeight - 10,
                               child: AnimatedSwitcher(
                                 duration: const Duration(milliseconds: 240),
                                 switchInCurve: Curves.easeOutCubic,

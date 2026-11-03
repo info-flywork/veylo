@@ -424,13 +424,18 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Icon(
-                                        _following
-                                            ? Icons.person
-                                            : Icons.person_add_alt_1,
-                                        size: 18,
-                                        color: AppColors.white,
-                                      ),
+                                      if (_following)
+                                        const Icon(
+                                          Icons.person,
+                                          size: 18,
+                                          color: AppColors.white,
+                                        )
+                                      else
+                                        SvgPicture.asset(
+                                          AppAssets.iconFollowUserPlus,
+                                          width: 20,
+                                          height: 20,
+                                        ),
                                       const SizedBox(width: 10),
                                       AppText(
                                         _following ? t.following : t.follow,

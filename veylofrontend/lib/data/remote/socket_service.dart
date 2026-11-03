@@ -24,6 +24,8 @@ class SocketService {
   static const _events = [
     'message:new',
     'message:deleted',
+    'message:edited',
+    'message:reaction',
     'conversation:updated',
     'conversation:read',
     'conversation:removed',
@@ -43,6 +45,9 @@ class SocketService {
     'call:video_started',
     'call:video_ended',
     'call:ended',
+    'call:direct_started',
+    'call:direct_declined',
+    'call:direct_no_answer',
     'call:error',
     'room:participant_joined',
     'room:participant_left',

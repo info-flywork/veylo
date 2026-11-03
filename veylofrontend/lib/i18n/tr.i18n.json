@@ -83,6 +83,14 @@
     "previewSticker": "Çıkartma",
     "stickerEmpty": "Son kullanılan çıkartma yok",
     "messageCopied": "Mesaj kopyalandı",
+    "messageReply": "Yanıtla",
+    "messageCopy": "Kopyala",
+    "messageEdit": "Düzenle",
+    "messageDelete": "Sil",
+    "messageReport": "Şikayet et",
+    "messageEdited": "düzenlendi",
+    "messageReplying": "Yanıtlanıyor",
+    "messageEditing": "Düzenleniyor",
     "reportReasonSubtitle": "Bu mesajı neden şikayet ediyorsun?",
     "reasonHarassment": "Taciz veya zorbalık",
     "reasonHateSpeech": "Nefret söylemi",
@@ -98,7 +106,11 @@
     "emptyThreadsSubtitle": "Biriyle konuşmaya başladığında sohbetlerin burada görünür.",
     "noSearchResults": "Sonuç bulunamadı",
     "milestonePhotoUnlocked": "%70'te açıldı",
-    "revealPeerWants": "{name} profilini açmak istiyor"
+    "revealPeerWants": "{name} profilini açmak istiyor",
+    "voiceCall": "Sesli arama",
+    "videoCall": "Görüntülü arama",
+    "videoLocked": "Görüntülü arama, ikiniz de profilinizi açtığınızda açılır.",
+    "openSettings": "Ayarlar"
   },
   "profile": {
     "eyebrow": "Profil",
@@ -175,6 +187,7 @@
     "voiceRecording": "Kaydediliyor {seconds} sn",
     "voiceReady": "Sesin hazır",
     "voicePlay": "Oynat",
+    "voiceReRecord": "Yeniden kaydet",
     "voicePause": "Duraklat",
     "voiceShare": "Profilde paylaş",
     "voiceSaving": "Kaydediliyor…",
@@ -293,7 +306,19 @@
     "borderOwned": "Sahipsin",
     "borderEquipCta": "Çerçeveyi Tak",
     "borderRemoveCta": "Çerçeveyi Kaldır",
-    "followEmpty": "Burada henüz kimse yok"
+    "followEmpty": "Burada henüz kimse yok",
+    "zodiacAries": "Koç",
+    "zodiacTaurus": "Boğa",
+    "zodiacGemini": "İkizler",
+    "zodiacCancer": "Yengeç",
+    "zodiacLeo": "Aslan",
+    "zodiacVirgo": "Başak",
+    "zodiacLibra": "Terazi",
+    "zodiacScorpio": "Akrep",
+    "zodiacSagittarius": "Yay",
+    "zodiacCapricorn": "Oğlak",
+    "zodiacAquarius": "Kova",
+    "zodiacPisces": "Balık"
   },
   "nav": {
     "discover": "Keşfet",
@@ -307,21 +332,21 @@
     "subtitle": "Rastgele bir yabancıyla 60 saniye konuş — tamamen anonim. Profil yok, fotoğraf yok, isim yok. Sadece bir ses ve bir an.",
     "findingTitle": "Bir yabancı aranıyor...",
     "findingSubtitle": "60 saniye anonim konuşacaksın. Profil yok, isim yok.",
-    "callStranger": "Yabancıyı Ara - 10 Token",
+    "callStranger": "Anonim Ara - 10 Token",
     "cancel": "İptal",
     "female": "Kadın",
     "male": "Erkek",
     "nonBinary": "İkili olmayan",
     "preferNotToSay": "Fark etmez",
     "anonymousBadge": "🎙️ Anonim sesli arama",
-    "stranger": "Yabancı",
+    "stranger": "Anonim",
     "secondsLeft": "{n} sn",
     "timesUpTitle": "Süre doldu!",
     "timesUpSubtitle": "Konuşmaya devam etmek ister misin? İkiniz de evet derseniz sohbet açılır.",
     "keepTalking": "Konuşmaya Devam Et",
     "endCall": "Aramayı Bitir",
     "waitingOther": "Karşı taraf bekleniyor...",
-    "callStrangerFree": "Yabancıyı Ara",
+    "callStrangerFree": "Anonim Ara",
     "peerLeft": "Karşı taraf aramayı bitirdi.",
     "noKeep": "Bu sefer sohbet açılmadı.",
     "videoWaiting": "Görüntülü aramayı kabul etmesi bekleniyor...",
@@ -335,7 +360,11 @@
     "noMatchTitle": "Şu an uygun kimse yok",
     "noMatchBody": "Şu anda konuşmaya müsait bir anonim kullanıcı bulamadık. Biraz sonra tekrar dene.",
     "noMatchOk": "Tamam",
-    "cameraDenied": "Görüntülü arama için kamera izni gerekli. Ayarlar'dan açabilirsin."
+    "cameraDenied": "Görüntülü arama için kamera izni gerekli. Ayarlar'dan açabilirsin.",
+    "incomingBody": "Biri seninle anonim bir arama başlatmak istiyor. Arama ancak sen kabul edersen başlar.",
+    "ringing": "Çalıyor…",
+    "noAnswer": "Cevap yok.",
+    "callDeclined": "Arama reddedildi."
   },
   "vibes": {
     "search": "Ara",
@@ -552,7 +581,8 @@
       "unknownTrack": "Bilinmiyor",
       "downloaded": "Galeriye kaydedildi",
       "downloadFailed": "Kaydedilemedi",
-      "savedToDraft": "Taslağa kaydedildi"
+      "savedToDraft": "Taslağa kaydedildi",
+      "cameraDenied": "Fotoğraf çekmek için kamera izni gerekli."
     },
     "highlight": {
       "title": "Öne Çıkan",
@@ -733,7 +763,9 @@
     "roomPrivate": "Bu oda gizli. Katılmak için istek gönder.",
     "roomFull": "Oda dolu.",
     "alreadyCheckedIn": "Bugünün ödülünü zaten topladın.",
-    "purchasesUnavailable": "Satın alma şu an kullanılamıyor."
+    "purchasesUnavailable": "Satın alma şu an kullanılamıyor.",
+    "peerBusy": "Kişi şu an başka bir görüşmede. Biraz sonra tekrar dene.",
+    "videoLocked": "Görüntülü arama, ikiniz de profilinizi açtığınızda açılır."
   },
   "faq": {
     "q1": "Bu uygulama nasıl çalışır?",

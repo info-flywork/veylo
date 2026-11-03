@@ -165,6 +165,14 @@ class _Translations$chats$ko extends Translations$chats$tr {
 	@override String get previewSticker => '스티커';
 	@override String get stickerEmpty => '최근 스티커 없음';
 	@override String get messageCopied => '메시지를 복사했어요';
+	@override String get messageReply => '답장';
+	@override String get messageCopy => '복사';
+	@override String get messageEdit => '수정';
+	@override String get messageDelete => '삭제';
+	@override String get messageReport => '신고';
+	@override String get messageEdited => '수정됨';
+	@override String get messageReplying => '답장 중';
+	@override String get messageEditing => '수정 중';
 	@override String get reportReasonSubtitle => '이 메시지를 신고하는 이유가 무엇인가요?';
 	@override String get reasonHarassment => '괴롭힘 또는 따돌림';
 	@override String get reasonHateSpeech => '혐오 발언';
@@ -181,6 +189,10 @@ class _Translations$chats$ko extends Translations$chats$tr {
 	@override String get noSearchResults => '검색 결과가 없어요';
 	@override String get milestonePhotoUnlocked => '70%에서 해제됨';
 	@override String revealPeerWants({required Object name}) => '${name}님이 프로필 공개를 원해요';
+	@override String get voiceCall => '음성 통화';
+	@override String get videoCall => '영상 통화';
+	@override String get videoLocked => '두 사람 모두 프로필을 공개하면 영상 통화를 사용할 수 있어요.';
+	@override String get openSettings => '설정';
 }
 
 // Path: profile
@@ -264,6 +276,7 @@ class _Translations$profile$ko extends Translations$profile$tr {
 	@override String voiceRecording({required Object seconds}) => '녹음 중 ${seconds}초';
 	@override String get voiceReady => '음성이 준비됐어요';
 	@override String get voicePlay => '재생';
+	@override String get voiceReRecord => '다시 녹음';
 	@override String get voicePause => '일시정지';
 	@override String get voiceShare => '프로필에 공유';
 	@override String get voiceSaving => '저장 중…';
@@ -383,6 +396,18 @@ class _Translations$profile$ko extends Translations$profile$tr {
 	@override String get borderEquipCta => '테두리 사용';
 	@override String get borderRemoveCta => '테두리 제거';
 	@override String get followEmpty => '아직 아무도 없어요';
+	@override String get zodiacAries => '양자리';
+	@override String get zodiacTaurus => '황소자리';
+	@override String get zodiacGemini => '쌍둥이자리';
+	@override String get zodiacCancer => '게자리';
+	@override String get zodiacLeo => '사자자리';
+	@override String get zodiacVirgo => '처녀자리';
+	@override String get zodiacLibra => '천칭자리';
+	@override String get zodiacScorpio => '전갈자리';
+	@override String get zodiacSagittarius => '사수자리';
+	@override String get zodiacCapricorn => '염소자리';
+	@override String get zodiacAquarius => '물병자리';
+	@override String get zodiacPisces => '물고기자리';
 }
 
 // Path: nav
@@ -417,7 +442,7 @@ class _Translations$call$ko extends Translations$call$tr {
 	@override String get nonBinary => '논바이너리';
 	@override String get preferNotToSay => '밝히고 싶지 않아요';
 	@override String get anonymousBadge => '🎙️ 익명 음성 통화';
-	@override String get stranger => '낯선 사람';
+	@override String get stranger => '익명';
 	@override String secondsLeft({required Object n}) => '${n}초';
 	@override String get timesUpTitle => '시간 종료!';
 	@override String get timesUpSubtitle => '계속 대화할래요? 둘 다 동의하면 채팅이 열려요.';
@@ -439,6 +464,10 @@ class _Translations$call$ko extends Translations$call$tr {
 	@override String get noMatchBody => '지금은 대화 상대를 찾지 못했어요. 잠시 후에 다시 시도해 주세요.';
 	@override String get noMatchOk => '확인';
 	@override String get cameraDenied => '영상 통화하려면 카메라 권한이 필요해요. 설정에서 켤 수 있어요.';
+	@override String get incomingBody => '누군가 익명 통화를 시작하고 싶어 해요. 수락해야만 시작돼요.';
+	@override String get ringing => '연결 중…';
+	@override String get noAnswer => '응답이 없어요.';
+	@override String get callDeclined => '상대방이 통화를 거절했어요.';
 }
 
 // Path: vibes
@@ -686,6 +715,8 @@ class _Translations$errors$ko extends Translations$errors$tr {
 	@override String get roomFull => '룸 인원이 가득 찼어요.';
 	@override String get alreadyCheckedIn => '오늘 보상은 이미 받았어요.';
 	@override String get purchasesUnavailable => '지금은 구매할 수 없어요.';
+	@override String get peerBusy => '상대방이 다른 통화 중이에요. 잠시 후 다시 시도해 주세요.';
+	@override String get videoLocked => '두 사람 모두 프로필을 공개하면 영상 통화를 사용할 수 있어요.';
 }
 
 // Path: faq
@@ -1094,6 +1125,7 @@ class _Translations$discover$story$ko extends Translations$discover$story$tr {
 	@override String get downloaded => '갤러리에 저장됐어요';
 	@override String get downloadFailed => '저장할 수 없어요';
 	@override String get savedToDraft => '임시 저장했어요';
+	@override String get cameraDenied => '사진을 찍으려면 카메라 접근 권한이 필요해요.';
 }
 
 // Path: discover.highlight
@@ -1245,6 +1277,14 @@ extension on TranslationsKo {
 			'chats.previewSticker' => '스티커',
 			'chats.stickerEmpty' => '최근 스티커 없음',
 			'chats.messageCopied' => '메시지를 복사했어요',
+			'chats.messageReply' => '답장',
+			'chats.messageCopy' => '복사',
+			'chats.messageEdit' => '수정',
+			'chats.messageDelete' => '삭제',
+			'chats.messageReport' => '신고',
+			'chats.messageEdited' => '수정됨',
+			'chats.messageReplying' => '답장 중',
+			'chats.messageEditing' => '수정 중',
 			'chats.reportReasonSubtitle' => '이 메시지를 신고하는 이유가 무엇인가요?',
 			'chats.reasonHarassment' => '괴롭힘 또는 따돌림',
 			'chats.reasonHateSpeech' => '혐오 발언',
@@ -1261,6 +1301,10 @@ extension on TranslationsKo {
 			'chats.noSearchResults' => '검색 결과가 없어요',
 			'chats.milestonePhotoUnlocked' => '70%에서 해제됨',
 			'chats.revealPeerWants' => ({required Object name}) => '${name}님이 프로필 공개를 원해요',
+			'chats.voiceCall' => '음성 통화',
+			'chats.videoCall' => '영상 통화',
+			'chats.videoLocked' => '두 사람 모두 프로필을 공개하면 영상 통화를 사용할 수 있어요.',
+			'chats.openSettings' => '설정',
 			'profile.eyebrow' => '프로필',
 			'profile.title' => '설정',
 			'profile.editProfile' => '프로필 편집',
@@ -1335,6 +1379,7 @@ extension on TranslationsKo {
 			'profile.voiceRecording' => ({required Object seconds}) => '녹음 중 ${seconds}초',
 			'profile.voiceReady' => '음성이 준비됐어요',
 			'profile.voicePlay' => '재생',
+			'profile.voiceReRecord' => '다시 녹음',
 			'profile.voicePause' => '일시정지',
 			'profile.voiceShare' => '프로필에 공유',
 			'profile.voiceSaving' => '저장 중…',
@@ -1454,6 +1499,18 @@ extension on TranslationsKo {
 			'profile.borderEquipCta' => '테두리 사용',
 			'profile.borderRemoveCta' => '테두리 제거',
 			'profile.followEmpty' => '아직 아무도 없어요',
+			'profile.zodiacAries' => '양자리',
+			'profile.zodiacTaurus' => '황소자리',
+			'profile.zodiacGemini' => '쌍둥이자리',
+			'profile.zodiacCancer' => '게자리',
+			'profile.zodiacLeo' => '사자자리',
+			'profile.zodiacVirgo' => '처녀자리',
+			'profile.zodiacLibra' => '천칭자리',
+			'profile.zodiacScorpio' => '전갈자리',
+			'profile.zodiacSagittarius' => '사수자리',
+			'profile.zodiacCapricorn' => '염소자리',
+			'profile.zodiacAquarius' => '물병자리',
+			'profile.zodiacPisces' => '물고기자리',
 			'nav.discover' => '탐색',
 			'nav.chat' => '채팅',
 			'nav.call' => '통화',
@@ -1470,7 +1527,7 @@ extension on TranslationsKo {
 			'call.nonBinary' => '논바이너리',
 			'call.preferNotToSay' => '밝히고 싶지 않아요',
 			'call.anonymousBadge' => '🎙️ 익명 음성 통화',
-			'call.stranger' => '낯선 사람',
+			'call.stranger' => '익명',
 			'call.secondsLeft' => ({required Object n}) => '${n}초',
 			'call.timesUpTitle' => '시간 종료!',
 			'call.timesUpSubtitle' => '계속 대화할래요? 둘 다 동의하면 채팅이 열려요.',
@@ -1492,6 +1549,10 @@ extension on TranslationsKo {
 			'call.noMatchBody' => '지금은 대화 상대를 찾지 못했어요. 잠시 후에 다시 시도해 주세요.',
 			'call.noMatchOk' => '확인',
 			'call.cameraDenied' => '영상 통화하려면 카메라 권한이 필요해요. 설정에서 켤 수 있어요.',
+			'call.incomingBody' => '누군가 익명 통화를 시작하고 싶어 해요. 수락해야만 시작돼요.',
+			'call.ringing' => '연결 중…',
+			'call.noAnswer' => '응답이 없어요.',
+			'call.callDeclined' => '상대방이 통화를 거절했어요.',
 			'vibes.search' => '검색',
 			'vibes.sendMessage' => '메시지 보내기',
 			'vibes.wantsToTalk' => '지금 바로 이 얘기를 하고 싶어해요',
@@ -1649,6 +1710,8 @@ extension on TranslationsKo {
 			'discover.filters.distance' => '거리',
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} km',
 			'discover.filters.showMe' => '표시 대상',
+			_ => null,
+		} ?? switch (path) {
 			'discover.filters.everyone' => '모두',
 			'discover.filters.women' => '여성',
 			'discover.filters.men' => '남성',
@@ -1678,10 +1741,9 @@ extension on TranslationsKo {
 			'discover.story.musicError' => '음악을 불러올 수 없어요.',
 			'discover.story.unknownTrack' => '알 수 없음',
 			'discover.story.downloaded' => '갤러리에 저장됐어요',
-			_ => null,
-		} ?? switch (path) {
 			'discover.story.downloadFailed' => '저장할 수 없어요',
 			'discover.story.savedToDraft' => '임시 저장했어요',
+			'discover.story.cameraDenied' => '사진을 찍으려면 카메라 접근 권한이 필요해요.',
 			'discover.highlight.title' => '하이라이트',
 			'discover.highlight.view' => '보기',
 			'discover.highlight.aiComments' => 'AI 댓글',
@@ -1844,6 +1906,8 @@ extension on TranslationsKo {
 			'errors.roomFull' => '룸 인원이 가득 찼어요.',
 			'errors.alreadyCheckedIn' => '오늘 보상은 이미 받았어요.',
 			'errors.purchasesUnavailable' => '지금은 구매할 수 없어요.',
+			'errors.peerBusy' => '상대방이 다른 통화 중이에요. 잠시 후 다시 시도해 주세요.',
+			'errors.videoLocked' => '두 사람 모두 프로필을 공개하면 영상 통화를 사용할 수 있어요.',
 			'faq.q1' => '이 앱은 어떻게 작동하나요?',
 			'faq.q2' => '익명 채팅이란 무엇인가요?',
 			'faq.q3' => '연결 진행도란 무엇인가요?',

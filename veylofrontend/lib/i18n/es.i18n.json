@@ -83,6 +83,14 @@
     "previewSticker": "Sticker",
     "stickerEmpty": "No hay stickers recientes",
     "messageCopied": "Mensaje copiado",
+    "messageReply": "Responder",
+    "messageCopy": "Copiar",
+    "messageEdit": "Editar",
+    "messageDelete": "Eliminar",
+    "messageReport": "Denunciar",
+    "messageEdited": "editado",
+    "messageReplying": "Respondiendo",
+    "messageEditing": "Editando",
     "reportReasonSubtitle": "¿Por qué denuncias este mensaje?",
     "reasonHarassment": "Acoso o intimidación",
     "reasonHateSpeech": "Discurso de odio",
@@ -98,7 +106,11 @@
     "emptyThreadsSubtitle": "Cuando empieces a hablar con alguien, tus chats aparecerán aquí.",
     "noSearchResults": "No se encontraron resultados",
     "milestonePhotoUnlocked": "Desbloqueado al 70%",
-    "revealPeerWants": "{name} quiere revelar su perfil"
+    "revealPeerWants": "{name} quiere revelar su perfil",
+    "voiceCall": "Llamada de voz",
+    "videoCall": "Videollamada",
+    "videoLocked": "Las videollamadas se desbloquean cuando ambos revelen sus perfiles.",
+    "openSettings": "Ajustes"
   },
   "profile": {
     "eyebrow": "Perfil",
@@ -175,6 +187,7 @@
     "voiceRecording": "Grabando {seconds} s",
     "voiceReady": "Tu voz está lista",
     "voicePlay": "Reproducir",
+    "voiceReRecord": "Volver a grabar",
     "voicePause": "Pausa",
     "voiceShare": "Compartir en el perfil",
     "voiceSaving": "Guardando…",
@@ -293,7 +306,19 @@
     "borderOwned": "Comprado",
     "borderEquipCta": "Usar marco",
     "borderRemoveCta": "Quitar marco",
-    "followEmpty": "Aún no hay nadie aquí"
+    "followEmpty": "Aún no hay nadie aquí",
+    "zodiacAries": "Aries",
+    "zodiacTaurus": "Tauro",
+    "zodiacGemini": "Géminis",
+    "zodiacCancer": "Cáncer",
+    "zodiacLeo": "Leo",
+    "zodiacVirgo": "Virgo",
+    "zodiacLibra": "Libra",
+    "zodiacScorpio": "Escorpio",
+    "zodiacSagittarius": "Sagitario",
+    "zodiacCapricorn": "Capricornio",
+    "zodiacAquarius": "Acuario",
+    "zodiacPisces": "Piscis"
   },
   "nav": {
     "discover": "Descubrir",
@@ -314,7 +339,7 @@
     "nonBinary": "No binario",
     "preferNotToSay": "Prefiero no decirlo",
     "anonymousBadge": "🎙️ Llamada de voz anónima",
-    "stranger": "Extraño",
+    "stranger": "Anónimo",
     "secondsLeft": "{n}s",
     "timesUpTitle": "¡Se acabó el tiempo!",
     "timesUpSubtitle": "¿Quieres seguir hablando? Si ambos dicen que sí, se desbloquea el chat.",
@@ -335,7 +360,11 @@
     "noMatchTitle": "No hay nadie disponible ahora",
     "noMatchBody": "No encontramos a nadie con quien hablar en este momento. Vuelve a intentarlo un poco más tarde.",
     "noMatchOk": "OK",
-    "cameraDenied": "Se necesita acceso a la cámara para las videollamadas. Puedes activarlo en Ajustes."
+    "cameraDenied": "Se necesita acceso a la cámara para las videollamadas. Puedes activarlo en Ajustes.",
+    "incomingBody": "Alguien quiere iniciar una llamada anónima. Solo empieza si aceptas.",
+    "ringing": "Sonando…",
+    "noAnswer": "Sin respuesta.",
+    "callDeclined": "Rechazó la llamada."
   },
   "vibes": {
     "search": "Buscar",
@@ -550,7 +579,8 @@
       "unknownTrack": "Desconocido",
       "downloaded": "Guardado en la galería",
       "downloadFailed": "No se pudo guardar",
-      "savedToDraft": "Guardado en borradores"
+      "savedToDraft": "Guardado en borradores",
+      "cameraDenied": "Se necesita acceso a la cámara para hacer fotos."
     },
     "highlight": {
       "title": "Destacado",
@@ -731,7 +761,9 @@
     "roomPrivate": "Esta sala es privada. Pide al anfitrión que te deje entrar.",
     "roomFull": "Esta sala está llena.",
     "alreadyCheckedIn": "Ya recogiste la recompensa de hoy.",
-    "purchasesUnavailable": "Las compras no están disponibles ahora."
+    "purchasesUnavailable": "Las compras no están disponibles ahora.",
+    "peerBusy": "Está en otra llamada ahora mismo. Inténtalo más tarde.",
+    "videoLocked": "Las videollamadas se desbloquean cuando ambos revelen sus perfiles."
   },
   "faq": {
     "q1": "¿Cómo funciona esta app?",

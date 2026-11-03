@@ -77,11 +77,11 @@ class PushService {
   final _local = FlutterLocalNotificationsPlugin();
   final _api = ApiClient.instance;
   final _taps = StreamController<String>.broadcast();
-  final _callInvites = StreamController<String>.broadcast();
+  final _callInvites = StreamController<Map<String, dynamic>>.broadcast();
   final List<StreamSubscription<dynamic>> _subs = [];
 
   String? _pendingTap;
-  String? _pendingCall;
+  Map<String, dynamic>? _pendingCall;
   String? _token;
   String _language = 'en';
   bool _started = false;
@@ -89,8 +89,9 @@ class PushService {
   /// Bildirime dokunulunca açılacak sohbet id'si.
   Stream<String> get taps => _taps.stream;
 
-  /// Arama bildirimine dokunulunca açılacak davet.
-  Stream<String> get callInvites => _callInvites.stream;
+  /// Arama bildirimine dokunulunca açılacak davet (bildirimin tüm verisi:
+  /// inviteId, birebir aramada kind/conversationId/video/name/avatarUrl).
+  Stream<Map<String, dynamic>> get callInvites => _callInvites.stream;
 
   /// Uygulama bildirime dokunularak açıldıysa (ana ekran hazır olunca bir kez okunur).
   String? takePendingTap() {
@@ -99,7 +100,7 @@ class PushService {
     return id;
   }
 
-  String? takePendingCall() {
+  Map<String, dynamic>? takePendingCall() {
     final id = _pendingCall;
     _pendingCall = null;
     return id;
@@ -252,7 +253,7 @@ class PushService {
 
   void _capturePush(Map<String, dynamic> data) {
     if (data['type'] == 'call') {
-      _onCall(data['inviteId'] as String?);
+      _onCall(data);
       return;
     }
     if (data['type'] == 'roomCreated' || data['type'] == 'roomApproved') {
@@ -262,12 +263,14 @@ class PushService {
     _onTap(data['conversationId'] as String?);
   }
 
-  void _onCall(String? inviteId) {
-    if (inviteId == null || inviteId.isEmpty) return;
+  void _onCall(Map<String, dynamic> data) {
+    final inviteId = data['inviteId'];
+    if (inviteId is! String || inviteId.isEmpty) return;
+    final event = Map<String, dynamic>.from(data);
     if (_callInvites.hasListener) {
-      _callInvites.add(inviteId);
+      _callInvites.add(event);
     } else {
-      _pendingCall = inviteId;
+      _pendingCall = event;
     }
   }
 
@@ -328,7 +331,7 @@ class PushService {
   /// iOS'ta sistem bunu zaten gösterir (AppDelegate willPresent).
   void _onForegroundPush(RemoteMessage m) {
     if (m.data['type'] == 'call') {
-      _onCall(m.data['inviteId'] as String?);
+      _onCall(m.data);
       return;
     }
     if (m.data['type'] == 'roomCreated' || m.data['type'] == 'roomApproved') {

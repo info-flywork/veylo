@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:veylo/core/permissions/mic_permission.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:record/record.dart';
 import 'package:veylo/core/errors/error_messages.dart';
@@ -80,15 +81,9 @@ class _VoiceRecordSheetState extends State<_VoiceRecordSheet> {
       await _stop();
       return;
     }
-    final allowed = await _recorder.hasPermission();
-      if (!allowed) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(Translations.of(context).chats.micNeeded)),
-        );
-      }
-      return;
-    }
+    // İzin yoksa sistem penceresini açar; reddedilmişse Ayarlar'a yönlendiren uyarı gösterir.
+    if (!await ensureMicPermission(context)) return;
+    if (!mounted) return;
     await _player.stop();
     final path =
         '${Directory.systemTemp.path}/veylo-voice-${DateTime.now().millisecondsSinceEpoch}.m4a';
@@ -129,17 +124,36 @@ class _VoiceRecordSheetState extends State<_VoiceRecordSheet> {
     final local = _filePath;
     final remote = _sharedUrl;
     final source = local ?? remote;
-    if (source == null) return;
+    if (source == null || _busy) return;
     if (_playing) {
       await _player.pause();
       return;
     }
-    if (local != null) {
-      await _player.setFilePath(local);
-    } else {
-      await _player.setUrl(remote!);
+    try {
+      if (local != null) {
+        await _player.setFilePath(local);
+      } else {
+        await _player.setUrl(remote!);
+      }
+      await _player.play();
+    } on PlayerInterruptedException {
+      // Yeni yükleme önceki yüklemeyi kestiğinde just_audio bunu fırlatır.
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
     }
-    await _player.play();
+  }
+
+  Future<void> _reRecord() async {
+    if (_busy || _recording) return;
+    try {
+      await _player.stop();
+    } catch (_) {}
+    setState(() {
+      _filePath = null;
+      _playing = false;
+      _seconds = 0;
+    });
+    await _toggleRecord();
   }
 
   Future<void> _share() async {
@@ -212,9 +226,10 @@ class _VoiceRecordSheetState extends State<_VoiceRecordSheet> {
                 height: 72,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
+                  // Profil düzenleme sayfalarındaki siyah butonlarla aynı (#1A1714).
                   color: _recording
                       ? const Color(0xFFE24B4B)
-                      : AppColors.brandPurple,
+                      : AppColors.editSheetButton,
                 ),
                 child: Icon(
                   _recording ? Icons.stop_rounded : Icons.mic_rounded,
@@ -224,19 +239,42 @@ class _VoiceRecordSheetState extends State<_VoiceRecordSheet> {
               ),
             ),
           ),
-          if (hasTake || (shared != null && !hasTake)) ...[
-            const SizedBox(height: 16),
-            OutlinedButton.icon(
-              onPressed: _togglePlay,
-              icon: Icon(_playing ? Icons.pause_rounded : Icons.play_arrow_rounded),
-              label: Text(_playing ? t.voicePause : t.voicePlay),
-            ),
-          ],
           if (hasTake) ...[
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _togglePlay,
+                    icon: Icon(
+                      _playing ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                    ),
+                    label: Text(_playing ? t.voicePause : t.voicePlay),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: _reRecord,
+                    icon: const Icon(Icons.mic_rounded),
+                    label: Text(t.voiceReRecord),
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 12),
             AppPrimaryButton(
               label: _busy ? t.voiceSaving : t.voiceShare,
               onPressed: _busy ? null : _share,
+            ),
+          ] else if (shared != null) ...[
+            const SizedBox(height: 16),
+            OutlinedButton.icon(
+              onPressed: _togglePlay,
+              icon: Icon(
+                _playing ? Icons.pause_rounded : Icons.play_arrow_rounded,
+              ),
+              label: Text(_playing ? t.voicePause : t.voicePlay),
             ),
           ],
           if (shared != null && !hasTake) ...[
@@ -266,6 +304,8 @@ class _VoiceIntroBarState extends State<VoiceIntroBar> {
   final _player = AudioPlayer();
   StreamSubscription<PlayerState>? _playSub;
   bool _playing = false;
+  bool _busy = false;
+  String? _loadedUrl;
 
   @override
   void initState() {
@@ -281,6 +321,12 @@ class _VoiceIntroBarState extends State<VoiceIntroBar> {
   }
 
   @override
+  void didUpdateWidget(covariant VoiceIntroBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.url != widget.url) _loadedUrl = null;
+  }
+
+  @override
   void dispose() {
     _playSub?.cancel();
     _player.dispose();
@@ -288,12 +334,27 @@ class _VoiceIntroBarState extends State<VoiceIntroBar> {
   }
 
   Future<void> _toggle() async {
+    if (_busy) return;
     if (_playing) {
       await _player.pause();
       return;
     }
-    await _player.setUrl(widget.url);
-    await _player.play();
+    setState(() => _busy = true);
+    try {
+      if (_loadedUrl != widget.url) {
+        await _player.setUrl(widget.url);
+        _loadedUrl = widget.url;
+      } else {
+        await _player.seek(Duration.zero);
+      }
+      await _player.play();
+    } on PlayerInterruptedException {
+      // Çift tıklama veya yeni setUrl önceki yüklemeyi kestiğinde normal.
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
   }
 
   @override

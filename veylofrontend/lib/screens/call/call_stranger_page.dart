@@ -21,6 +21,8 @@ import 'package:veylo/screens/tokens/boost_page.dart';
 import 'package:veylo/screens/tokens/token_packs_sheet.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 
+part 'direct_call_page.dart';
+
 enum _StrangerGender { female, male, nonBinary, preferNotToSay }
 
 enum _CallPhase {
@@ -702,12 +704,16 @@ class _NamedCallBody extends StatelessWidget {
     required this.onToggleMic,
     required this.onCamera,
     required this.onEnd,
+    this.status,
   });
 
   final _StrangerGender? gender;
   final String name;
   final String avatarUrl;
   final bool isAi;
+
+  /// Adın altındaki durum yazısı (ör. "Çalıyor..." / süre). Boşsa "Calling".
+  final String? status;
   final bool speakerOn;
   final bool micOn;
   final VoidCallback onToggleSpeaker;
@@ -737,7 +743,7 @@ class _NamedCallBody extends StatelessWidget {
       children: [
         _PeerName(name: name, isAi: isAi),
         Text(
-          Translations.of(context).call.calling,
+          status ?? Translations.of(context).call.calling,
           textAlign: TextAlign.center,
           style: const TextStyle(
             fontFamily: AppFonts.poppins,
@@ -1021,6 +1027,7 @@ class _VideoIncomingBody extends StatelessWidget {
     required this.isAi,
     required this.onDecline,
     required this.onAccept,
+    this.icon,
   });
 
   final _StrangerGender? gender;
@@ -1029,6 +1036,9 @@ class _VideoIncomingBody extends StatelessWidget {
   final bool isAi;
   final VoidCallback onDecline;
   final VoidCallback onAccept;
+
+  /// "Calling" yanındaki simge. Boşsa kamera (görüntülü arama).
+  final String? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -1039,7 +1049,7 @@ class _VideoIncomingBody extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SvgPicture.asset(
-              AppAssets.iconCameraVoiceCall,
+              icon ?? AppAssets.iconCameraVoiceCall,
               width: 22,
               height: 22,
               colorFilter: const ColorFilter.mode(
@@ -1623,14 +1633,14 @@ class _IncomingCallBody extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40),
           child: AppText(
-            'Someone wants to start an anonymous call. It begins only if you accept.',
+            t.incomingBody,
             style: AppTextStyles.callStrangerSubtitle,
             textAlign: TextAlign.center,
           ),
         ),
         const SizedBox(height: 28),
         AppPrimaryButton(
-          label: accepting ? '...' : 'Accept',
+          label: accepting ? '...' : t.accept,
           onPressed: accepting ? null : onAccept,
         ),
         const SizedBox(height: 12),

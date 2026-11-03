@@ -56,7 +56,6 @@ class OnboardingSlideView extends StatelessWidget {
                 ],
               ),
             ),
-            // Page 1: tam 2 satır (conversations sonrası kırılım).
             // Page 2: 308 → "ready." 3. satır.
             // Page 3: 364 → 2 satır.
             Padding(
@@ -64,18 +63,16 @@ class OnboardingSlideView extends StatelessWidget {
                 horizontal: AppSpacing.screenHorizontal,
               ),
               child: Center(
-                child: pageIndex == 0
-                    ? _OnboardingSubtitleTwoLines(text: slide.subtitle)
-                    : ConstrainedBox(
-                        constraints: BoxConstraints(
-                          maxWidth: isPage2 ? 308 : 364,
-                        ),
-                        child: AppText(
-                          slide.subtitle,
-                          style: AppTextStyles.onboardingSubtitle,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+                // Figma: Poppins Medium 18 / 24, -2%, ortalı, 364 genişlikte doğal kırılım
+                // (küçültme yok; uzun dillerde 3. satıra iner).
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: isPage2 ? 308 : 364),
+                  child: AppText(
+                    slide.subtitle.replaceAll('\n', ' '),
+                    style: AppTextStyles.onboardingSubtitle,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ),
             ),
             Padding(
@@ -135,42 +132,6 @@ class OnboardingSlideView extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-      ],
-    );
-  }
-}
-
-/// Page 1 subtitle — `\n` ile 2 satır; dar ekranda 1. satır FittedBox ile sığar.
-class _OnboardingSubtitleTwoLines extends StatelessWidget {
-  const _OnboardingSubtitleTwoLines({required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    final parts = text.split('\n');
-    final line1 = parts.isNotEmpty ? parts[0] : text;
-    final line2 = parts.length > 1 ? parts.sublist(1).join(' ') : '';
-
-    return Column(
-      children: [
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(
-            line1,
-            maxLines: 1,
-            softWrap: false,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.onboardingSubtitle,
-          ),
-        ),
-        if (line2.isNotEmpty)
-          Text(
-            line2,
-            maxLines: 1,
-            textAlign: TextAlign.center,
-            style: AppTextStyles.onboardingSubtitle,
           ),
       ],
     );

@@ -19,6 +19,8 @@ import 'package:veylo/screens/discover/story_editor/story_draft_sheet.dart';
 import 'package:veylo/screens/discover/story_editor/story_music_sheet.dart';
 import 'package:veylo/screens/discover/story_editor/story_sticker_sheet.dart';
 import 'package:veylo/screens/discover/story_editor/story_text_tools_sheet.dart';
+import 'package:flutter/foundation.dart';
+import 'package:image/image.dart' as img;
 
 /// Capture sonrası Stories tarzı müdahale ekranı.
 class StoryEditorPage extends StatefulWidget {
@@ -44,7 +46,12 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
   StoryTextDraft _textDraft = const StoryTextDraft();
   bool _toolsExpanded = true;
   bool _textEditorOpen = false;
+  /// Yazının ekran ortasına göre konumu, ölçeği ve açısı (iki parmakla büyüt/döndür).
   Offset _textOffset = const Offset(0, -80);
+  double _textScale = 1;
+  double _textRotation = 0;
+  double _gestureStartScale = 1;
+  double _gestureStartRotation = 0;
   StoryMusicTrack? _music;
 
   /// Görsele eklenen çıkartmalar (asset + ekran konumu, merkez).
@@ -79,7 +86,8 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
     }
   }
 
-  /// Görsel ve üzerindeki yazıyı ekran çözünürlüğünde tek PNG'ye çevirir.
+  /// Görsel ve üzerindeki yazıyı ekran çözünürlüğünde tek JPEG'e çevirir.
+  /// PNG fotoğrafta 10 MB yükleme sınırını aşıyordu (FILE_TOO_LARGE).
   Future<File> _renderCanvas() async {
     final ratio = MediaQuery.devicePixelRatioOf(context).clamp(1.0, 3.0);
     setState(() => _capturing = true);
@@ -88,10 +96,16 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
       final boundary =
           _canvasKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
       final image = await boundary.toImage(pixelRatio: ratio);
-      final bytes = await image.toByteData(format: ImageByteFormat.png);
+      final rgba = await image.toByteData(format: ImageByteFormat.rawRgba);
+      final jpeg = await compute(_encodeJpeg, (
+        bytes: rgba!.buffer.asUint8List(),
+        width: image.width,
+        height: image.height,
+      ));
+      image.dispose();
       final dir = await Directory.systemTemp.createTemp('veylo_post');
-      final file = File('${dir.path}/post.png');
-      await file.writeAsBytes(bytes!.buffer.asUint8List());
+      final file = File('${dir.path}/post.jpg');
+      await file.writeAsBytes(jpeg);
       return file;
     } finally {
       if (mounted) setState(() => _capturing = false);
@@ -173,11 +187,16 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
   }
 
   Future<void> _openMusic() async {
+    // Sheet kendi player'ını açmadan önce editör önizlemesini durdur.
+    try {
+      await _audio.pause();
+    } catch (_) {}
+    if (!mounted) return;
     final track = await showStoryMusicSheet(context);
     if (track == null || !mounted) return;
     setState(() => _music = track);
     final url = track.audioUrl;
-    if (url == null) return;
+    if (url == null || url.isEmpty) return;
     try {
       await _audio.setUrl(url);
       final total = track.durationSec;
@@ -187,12 +206,12 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
       await _audio.setLoopMode(LoopMode.off);
       await _audio.seek(Duration(seconds: startSec));
       _musicPosSub = _audio.positionStream.listen((pos) {
-        if (!mounted) return;
-        if (endSec > 0 && pos.inSeconds >= endSec) {
-          _audio.seek(Duration(seconds: startSec));
+        if (!mounted || endSec <= 0) return;
+        if (pos.inSeconds >= endSec) {
+          unawaited(_audio.seek(Duration(seconds: startSec)));
         }
       });
-      _audio.play();
+      unawaited(_audio.play());
     } catch (_) {}
   }
 
@@ -239,6 +258,51 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
         ),
       );
     }
+  }
+
+  /// Yazı katmanı: editörde ve görsele işlenirken aynı konum/ölçek/açı.
+  Widget _textLayer(String text, Color color, {bool gestures = false}) {
+    Widget label = Text(
+      text,
+      textAlign: _textDraft.align,
+      style: _textDraft.textStyle.copyWith(color: color),
+    );
+    if (gestures) {
+      label = GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => _openTextTools(),
+        onScaleStart: (_) {
+          _gestureStartScale = _textScale;
+          _gestureStartRotation = _textRotation;
+        },
+        onScaleUpdate: (d) => setState(() {
+          _textOffset += d.focalPointDelta;
+          if (d.pointerCount > 1) {
+            _textScale = (_gestureStartScale * d.scale).clamp(0.4, 5.0);
+            _textRotation = _gestureStartRotation + d.rotation;
+          }
+        }),
+        child: label,
+      );
+    }
+    return IgnorePointer(
+      ignoring: !gestures,
+      child: Center(
+        child: Transform.translate(
+          offset: _textOffset,
+          child: Transform.rotate(
+            angle: _textRotation,
+            child: Transform.scale(
+              scale: _textScale,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: label,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -291,18 +355,7 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
                   ),
                 // Paylaşırken görsele işlenen yazı (editörde aşağıdaki katman görünür).
                 if (_capturing && hasText)
-                  Positioned(
-                    left: 24,
-                    right: 56,
-                    top: size.height / 2 + _textOffset.dy,
-                    child: Text(
-                      displayText,
-                      textAlign: _textDraft.align,
-                      style: _textDraft.textStyle.copyWith(
-                        color: _textDraft.color,
-                      ),
-                    ),
-                  ),
+                  Positioned.fill(child: _textLayer(displayText, _textDraft.color)),
               ],
             ),
           ),
@@ -394,31 +447,29 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
           ),
 
           // Canvas text — overlay açıkken gizle (çift placeholder olmasın)
-          if (!_textEditorOpen && !_capturing)
+          if (!_textEditorOpen && !_capturing && !hasText)
             Positioned(
               left: 24,
               right: 56,
-              top: hasText
-                  ? size.height / 2 + _textOffset.dy
-                  : size.height * 0.28,
+              top: size.height * 0.28,
               child: GestureDetector(
-                onPanUpdate: hasText
-                    ? (d) {
-                        setState(() {
-                          _textOffset += Offset(0, d.delta.dy);
-                        });
-                      }
-                    : null,
                 onTap: () => _openTextTools(),
                 child: Text(
-                  hasText ? displayText : t.textPlaceholder,
+                  t.textPlaceholder,
                   textAlign: _textDraft.align,
                   style: _textDraft.textStyle.copyWith(
-                    color: hasText
-                        ? _textDraft.color
-                        : AppColors.white.withValues(alpha: 0.55),
+                    color: AppColors.white.withValues(alpha: 0.55),
                   ),
                 ),
+              ),
+            ),
+          // Yazı: tek parmakla taşı, iki parmakla büyüt/küçült ve döndür, dokun düzenle.
+          if (!_textEditorOpen && !_capturing && hasText)
+            Positioned.fill(
+              child: _textLayer(
+                displayText,
+                _textDraft.color,
+                gestures: true,
               ),
             ),
 
@@ -668,4 +719,15 @@ class _MusicChip extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Arka planda (isolate) RGBA → JPEG.
+Uint8List _encodeJpeg(({Uint8List bytes, int width, int height}) raw) {
+  final frame = img.Image.fromBytes(
+    width: raw.width,
+    height: raw.height,
+    bytes: raw.bytes.buffer,
+    numChannels: 4,
+  );
+  return img.encodeJpg(frame, quality: 88);
 }

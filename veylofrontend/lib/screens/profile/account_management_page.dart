@@ -17,7 +17,6 @@ import 'package:veylo/screens/profile/change_password_sheet.dart';
 import 'package:veylo/screens/profile/delete_account_sheet.dart';
 import 'package:veylo/screens/profile/delete_conversation_sheet.dart';
 import 'package:veylo/screens/profile/faq_help_sheet.dart';
-import 'package:veylo/screens/profile/language_sheet.dart';
 import 'package:veylo/screens/profile/legal_doc_sheet.dart';
 import 'package:veylo/screens/profile/logout_sheet.dart';
 import 'package:veylo/screens/profile/share_app_sheet.dart';
@@ -89,12 +88,6 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
       return;
     }
     if (mounted) Navigator.of(context).pop();
-  }
-
-  /// Uygulama dili (Edit Profile > Languages artık konuşulan dilleri düzenler).
-  Future<void> _openAppLanguage() async {
-    final result = await showLanguageSheet(context);
-    if (result != null && mounted) setState(() {});
   }
 
   Future<void> _rateApp() async {
@@ -264,15 +257,6 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                       onChanged: (v) =>
                           _setNotifications(v),
                     ),
-                  ),
-                  const SizedBox(height: 8),
-                  _SettingsRow(
-                    iconAsset: AppAssets.iconEpTranslation,
-                    label: t.language,
-                    value: AppLanguage.fromCode(
-                      LocaleSettings.currentLocale.languageCode,
-                    ).label,
-                    onTap: _openAppLanguage,
                   ),
                   const SizedBox(height: 8),
                   _SettingsRow(
@@ -500,12 +484,16 @@ class _SettingsRow extends StatelessWidget {
               ),
               if (value != null) ...[
                 const SizedBox(width: 8),
+                // Kısa değer (ör. "Türkçe") satırın ortasında kalmasın: sağa yaslı.
                 Flexible(
-                  child: AppText(
-                    value!,
-                    style: AppTextStyles.editProfileFieldValue,
-                    maxLines: 1,
-                    textAlign: TextAlign.end,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: AppText(
+                      value!,
+                      style: AppTextStyles.editProfileFieldValue,
+                      maxLines: 1,
+                      textAlign: TextAlign.end,
+                    ),
                   ),
                 ),
               ],

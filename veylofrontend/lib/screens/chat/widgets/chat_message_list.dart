@@ -6,12 +6,12 @@ import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/chat/chat_message.dart';
 import 'package:veylo/screens/chat/chat_sticker.dart';
+import 'package:veylo/screens/chat/message_context_menu.dart';
 import 'package:veylo/screens/chat/widgets/chat_attachment.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
-import 'package:veylo/screens/chat/widgets/chat_swipe_action.dart';
 
 /// Sohbet balonları (Direct ve Anonymous ekranlarının ortak listesi).
-/// [leading] listenin başına eklenen öğeler (ör. Vibes alıntısı, istek bloğu).
+/// Kaydır → yanıtla; basılı tut → emoji + düzenle/sil; fotoğrafa dokun → büyüt.
 class ChatMessageList extends StatefulWidget {
   const ChatMessageList({
     super.key,
@@ -24,8 +24,11 @@ class ChatMessageList extends StatefulWidget {
     this.onLoadOlder,
     this.skipFirstIncoming = false,
     this.peerAvatarUrl,
+    this.onReply,
+    this.onEdit,
     this.onDeleteMessage,
     this.onReportMessage,
+    this.onReact,
   });
 
   final List<ChatMessage> messages;
@@ -35,19 +38,13 @@ class ChatMessageList extends StatefulWidget {
   final ValueChanged<ChatMessage>? onRetry;
   final Future<void> Function(ChatMessage message, String decision)? onUnlockDecision;
   final VoidCallback? onLoadOlder;
-
-  /// İlk gelen mesaj [leading] içinde (istek bloğu) gösterildiyse listede tekrar gösterme.
   final bool skipFirstIncoming;
-
-  /// Verilirse gelen mesajların solunda karşı tarafın avatarı gösterilir (Figma).
-  /// Boş/asset değilse anonim yer tutucu ikon kullanılır.
   final String? peerAvatarUrl;
-
-  /// Verilirse balon sola kaydırılınca Sil (kendi mesajım: herkesten, diğerleri: benden) görünür.
+  final ValueChanged<ChatMessage>? onReply;
+  final ValueChanged<ChatMessage>? onEdit;
   final ValueChanged<ChatMessage>? onDeleteMessage;
-
-  /// Verilirse karşı tarafın mesajında Şikayet Et görünür.
   final ValueChanged<ChatMessage>? onReportMessage;
+  final Future<void> Function(ChatMessage message, String emoji)? onReact;
 
   @override
   State<ChatMessageList> createState() => _ChatMessageListState();
@@ -56,55 +53,10 @@ class ChatMessageList extends StatefulWidget {
 class _ChatMessageListState extends State<ChatMessageList> {
   final _scroll = ScrollController();
 
-  /// Aksiyonları açık olan balon (aynı anda tek balon açık kalır).
-  String? _openMessageId;
-
-  /// Sola kaydırınca görünen aksiyonlar: Kopyala (metin), Şikayet Et (karşı taraf), Sil.
-  List<_MessageAction> _actionsFor(ChatMessage m) {
-    final copyable = m.type == 'TEXT' &&
-        ChatSticker.assetOf(m.body) == null &&
-        (m.body?.trim().isNotEmpty ?? false);
-    final canReport = !m.isMine && m.id != null && widget.onReportMessage != null;
-    final canDelete = widget.onDeleteMessage != null &&
-        (m.isMine || m.id != null) &&
-        m.status != ChatMessageStatus.sending;
-    return [
-      if (copyable)
-        _MessageAction(
-          color: kChatSwipePinBg,
-          icon: Icons.content_copy_rounded,
-          onTap: () => _copy(m),
-        ),
-      if (canReport)
-        _MessageAction(
-          color: kChatSwipeBlockBg,
-          icon: Icons.flag_rounded,
-          onTap: () => widget.onReportMessage!(m),
-        ),
-      if (canDelete)
-        _MessageAction(
-          color: kChatSwipeDeleteBg,
-          iconAsset: AppAssets.iconTrash,
-          onTap: () => widget.onDeleteMessage!(m),
-        ),
-    ];
-  }
-
-  void _copy(ChatMessage m) {
-    Clipboard.setData(ClipboardData(text: m.body ?? ''));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(Translations.of(context).chats.messageCopied),
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-  }
-
   @override
   void initState() {
     super.initState();
     _scroll.addListener(() {
-      // reverse: true → en üst (eski mesajlar) maxScrollExtent'te.
       if (_scroll.position.pixels > _scroll.position.maxScrollExtent - 200) {
         widget.onLoadOlder?.call();
       }
@@ -117,6 +69,29 @@ class _ChatMessageListState extends State<ChatMessageList> {
     super.dispose();
   }
 
+  Future<void> _onLongPress(ChatMessage m) async {
+    if (m.type == 'SYSTEM' || m.status == ChatMessageStatus.sending) return;
+    await showMessageContextMenu(
+      context,
+      message: m,
+      onReact: (emoji) => widget.onReact?.call(m, emoji),
+      onAction: (action) async {
+        switch (action) {
+          case MessageMenuAction.reply:
+            widget.onReply?.call(m);
+          case MessageMenuAction.copy:
+            await copyChatMessageText(context, m);
+          case MessageMenuAction.edit:
+            widget.onEdit?.call(m);
+          case MessageMenuAction.delete:
+            widget.onDeleteMessage?.call(m);
+          case MessageMenuAction.report:
+            widget.onReportMessage?.call(m);
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final maxBubble = MediaQuery.sizeOf(context).width * 0.78;
@@ -125,7 +100,6 @@ class _ChatMessageListState extends State<ChatMessageList> {
       final i = msgs.indexWhere((m) => !m.isMine);
       if (i >= 0) msgs = [...msgs.sublist(0, i), ...msgs.sublist(i + 1)];
     }
-    // "Görüldü": karşı tarafın okuduğu son kendi mesajım.
     final lastSeenMine = widget.peerLastReadSeq == null
         ? null
         : msgs.lastWhere(
@@ -144,26 +118,22 @@ class _ChatMessageListState extends State<ChatMessageList> {
         if (m.type == 'SYSTEM')
           _UnlockNotice(message: m, onDecision: widget.onUnlockDecision)
         else
-        _SwipeableMessage(
-          key: ValueKey('swipe_${m.clientMsgId}'),
-          actions: _actionsFor(m),
-          isOpen: _openMessageId == m.clientMsgId,
-          onOpenChanged: (open) => setState(() {
-            if (open) {
-              _openMessageId = m.clientMsgId;
-            } else if (_openMessageId == m.clientMsgId) {
-              _openMessageId = null;
-            }
-          }),
-          child: _Bubble(
-            message: m,
-            maxWidth: maxBubble,
-            onRetry: widget.onRetry,
-            peerAvatarUrl: widget.peerAvatarUrl,
-            // Art arda gelen mesajlarda avatar ilkinde; diğerleri aynı hizada.
-            showAvatar: !m.isMine && (i == 0 || msgs[i - 1].isMine),
+          _SwipeToReply(
+            key: ValueKey('swipe_${m.clientMsgId}'),
+            enabled: m.id != null && widget.onReply != null,
+            onReply: () => widget.onReply?.call(m),
+            child: _Bubble(
+              message: m,
+              maxWidth: maxBubble,
+              onRetry: widget.onRetry,
+              peerAvatarUrl: widget.peerAvatarUrl,
+              showAvatar: !m.isMine && (i == 0 || msgs[i - 1].isMine),
+              onLongPress: () => _onLongPress(m),
+              onReactTap: widget.onReact == null
+                  ? null
+                  : (emoji) => widget.onReact!(m, emoji),
+            ),
           ),
-        ),
         if (widget.seenLabel != null &&
             lastSeenMine != null &&
             m.clientMsgId == lastSeenMine.clientMsgId)
@@ -185,7 +155,6 @@ class _ChatMessageListState extends State<ChatMessageList> {
       ],
     ];
 
-    // Ters liste: klavye açılınca ve yeni mesajda en altta kalır.
     return ListView.separated(
       controller: _scroll,
       reverse: true,
@@ -197,147 +166,75 @@ class _ChatMessageListState extends State<ChatMessageList> {
   }
 }
 
-class _MessageAction {
-  const _MessageAction({
-    required this.color,
-    required this.onTap,
-    this.icon,
-    this.iconAsset,
-  });
-
-  final Color color;
-  final IconData? icon;
-  final String? iconAsset;
-  final VoidCallback onTap;
-}
-
-/// Balonu sola kaydırınca sohbet listesindeki satırla aynı kare butonlar açılır.
-class _SwipeableMessage extends StatefulWidget {
-  const _SwipeableMessage({
+/// WhatsApp gibi kaydırınca yanıtla (eşiği geçince tetiklenir, geri yaylanır).
+class _SwipeToReply extends StatefulWidget {
+  const _SwipeToReply({
     super.key,
-    required this.actions,
-    required this.isOpen,
-    required this.onOpenChanged,
     required this.child,
+    required this.enabled,
+    required this.onReply,
   });
 
-  final List<_MessageAction> actions;
-  final bool isOpen;
-  final ValueChanged<bool> onOpenChanged;
   final Widget child;
+  final bool enabled;
+  final VoidCallback onReply;
 
   @override
-  State<_SwipeableMessage> createState() => _SwipeableMessageState();
+  State<_SwipeToReply> createState() => _SwipeToReplyState();
 }
 
-class _SwipeableMessageState extends State<_SwipeableMessage>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 220),
-    value: widget.isOpen ? 1 : 0,
-  );
-  late double _dragExtent = widget.isOpen ? -_revealWidth : 0;
+class _SwipeToReplyState extends State<_SwipeToReply> {
+  double _dx = 0;
+  bool _fired = false;
+  static const _threshold = 56.0;
 
-  double get _revealWidth => chatSwipeRevealWidth(widget.actions.length);
-
-  @override
-  void didUpdateWidget(covariant _SwipeableMessage oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.isOpen != widget.isOpen) {
-      if (widget.isOpen) {
-        _open(notify: false);
-      } else {
-        _close(notify: false);
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _open({bool notify = true}) {
-    _controller.animateTo(1, curve: Curves.easeOutCubic);
-    _dragExtent = -_revealWidth;
-    if (notify) widget.onOpenChanged(true);
-  }
-
-  void _close({bool notify = true}) {
-    _controller.animateTo(0, curve: Curves.easeOutCubic);
-    _dragExtent = 0;
-    if (notify) widget.onOpenChanged(false);
-  }
-
-  void _onDragUpdate(DragUpdateDetails details) {
-    _dragExtent = (_dragExtent + details.delta.dx).clamp(-_revealWidth, 0.0);
-    _controller.value = (-_dragExtent / _revealWidth).clamp(0.0, 1.0);
-  }
-
-  void _onDragEnd(DragEndDetails details) {
-    final velocity = details.primaryVelocity ?? 0;
-    if (velocity < -400 || _dragExtent < -_revealWidth * 0.4) {
-      _open();
-    } else {
-      _close();
-    }
+  void _end() {
+    if (_fired) widget.onReply();
+    setState(() {
+      _dx = 0;
+      _fired = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.actions.isEmpty) return widget.child;
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        Positioned.fill(
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.only(right: kChatSwipeActionsPadding),
-              child: FadeTransition(
-                opacity: _controller,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    for (final (i, action) in widget.actions.indexed) ...[
-                      if (i > 0) const SizedBox(width: kChatSwipeActionGap),
-                      ChatSwipeActionButton(
-                        color: action.color,
-                        icon: action.icon,
-                        iconAsset: action.iconAsset,
-                        onTap: () {
-                          _close();
-                          action.onTap();
-                        },
-                      ),
-                    ],
-                  ],
+    if (!widget.enabled) return widget.child;
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onHorizontalDragUpdate: (d) {
+        final next = (_dx + d.delta.dx).clamp(-80.0, 80.0);
+        final crossed = next.abs() >= _threshold;
+        if (crossed && !_fired) {
+          _fired = true;
+          HapticFeedback.mediumImpact();
+        } else if (!crossed) {
+          _fired = false;
+        }
+        setState(() => _dx = next);
+      },
+      onHorizontalDragEnd: (_) => _end(),
+      onHorizontalDragCancel: _end,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          if (_dx.abs() > 8)
+            Align(
+              alignment: _dx > 0 ? Alignment.centerLeft : Alignment.centerRight,
+              child: Opacity(
+                opacity: (_dx.abs() / _threshold).clamp(0.2, 1),
+                child: Icon(
+                  Icons.reply_rounded,
+                  color: AppColors.selectionBorder,
+                  size: 22,
                 ),
               ),
             ),
+          Transform.translate(
+            offset: Offset(_dx * 0.35, 0),
+            child: widget.child,
           ),
-        ),
-        AnimatedBuilder(
-          animation: _controller,
-          builder: (context, child) => Transform.translate(
-            offset: Offset(-_revealWidth * _controller.value, 0),
-            child: GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onHorizontalDragUpdate: _onDragUpdate,
-              onHorizontalDragEnd: _onDragEnd,
-              onTap: _controller.value > 0.05 ? () => _close() : null,
-              // Açıkken balonun içindeki dokunuşlar (fotoğraf, tekrar dene) kapanmaya gider.
-              child: AbsorbPointer(
-                absorbing: _controller.value > 0.05,
-                child: child,
-              ),
-            ),
-          ),
-          child: widget.child,
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -498,6 +395,8 @@ class _Bubble extends StatelessWidget {
     this.onRetry,
     this.peerAvatarUrl,
     this.showAvatar = false,
+    this.onLongPress,
+    this.onReactTap,
   });
 
   final ChatMessage message;
@@ -505,6 +404,8 @@ class _Bubble extends StatelessWidget {
   final ValueChanged<ChatMessage>? onRetry;
   final String? peerAvatarUrl;
   final bool showAvatar;
+  final VoidCallback? onLongPress;
+  final ValueChanged<String>? onReactTap;
 
   static const _avatarSize = 36.0;
   static const _avatarGap = 8.0;
@@ -514,41 +415,134 @@ class _Bubble extends StatelessWidget {
     final mine = message.isMine;
     final failed = message.status == ChatMessageStatus.failed;
     final sticker = ChatSticker.assetOf(message.body);
+    final t = Translations.of(context).chats;
+    final reply = message.replyTo;
     final bubble = ConstrainedBox(
       constraints: BoxConstraints(maxWidth: maxWidth),
       child: Opacity(
         opacity: message.status == ChatMessageStatus.sending ? 0.6 : 1,
-        child: sticker != null
-            ? ChatStickerImage(asset: sticker)
-            : Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: mine ? AppColors.selectionBorder : const Color(0x1A998FED),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(mine ? 16 : 0),
-                    topRight: Radius.circular(mine ? 0 : 16),
-                    bottomRight: const Radius.circular(16),
-                    bottomLeft: const Radius.circular(16),
-                  ),
-                ),
-                child: message.type == 'TEXT'
-                    ? AppText(
-                        message.displayText,
-                        style: TextStyle(
-                          fontFamily: AppFonts.poppins,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16,
-                          height: 20 / 16,
-                          letterSpacing: 16 * -0.02,
-                          color: mine ? AppColors.white : AppColors.textOnLight,
+        child: Column(
+          crossAxisAlignment: mine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onLongPress: onLongPress,
+              child: sticker != null
+                  ? ChatStickerImage(asset: sticker)
+                  : Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: mine ? AppColors.selectionBorder : const Color(0x1A998FED),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(mine ? 16 : 0),
+                          topRight: Radius.circular(mine ? 0 : 16),
+                          bottomRight: const Radius.circular(16),
+                          bottomLeft: const Radius.circular(16),
                         ),
-                      )
-                    : ChatAttachment(
-                        type: message.type,
-                        url: message.mediaUrl,
-                        mine: mine,
                       ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (reply != null) ...[
+                            Container(
+                              width: double.infinity,
+                              margin: const EdgeInsets.only(bottom: 8),
+                              padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
+                              decoration: BoxDecoration(
+                                color: mine
+                                    ? AppColors.white.withValues(alpha: 0.18)
+                                    : AppColors.selectionBorder.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border(
+                                  left: BorderSide(
+                                    color: mine ? AppColors.white : AppColors.selectionBorder,
+                                    width: 3,
+                                  ),
+                                ),
+                              ),
+                              child: AppText(
+                                reply.body ?? '',
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontFamily: AppFonts.poppins,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12,
+                                  height: 16 / 12,
+                                  color: mine
+                                      ? AppColors.white.withValues(alpha: 0.9)
+                                      : AppColors.textOnLight.withValues(alpha: 0.75),
+                                ),
+                              ),
+                            ),
+                          ],
+                          if (message.type == 'TEXT')
+                            AppText(
+                              message.displayText,
+                              style: TextStyle(
+                                fontFamily: AppFonts.poppins,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                                height: 20 / 16,
+                                letterSpacing: 16 * -0.02,
+                                color: mine ? AppColors.white : AppColors.textOnLight,
+                              ),
+                            )
+                          else
+                            ChatAttachment(
+                              type: message.type,
+                              url: message.mediaUrl,
+                              mine: mine,
+                            ),
+                          if (message.editedAt != null) ...[
+                            const SizedBox(height: 4),
+                            AppText(
+                              t.messageEdited,
+                              style: TextStyle(
+                                fontFamily: AppFonts.poppins,
+                                fontSize: 11,
+                                color: mine
+                                    ? AppColors.white.withValues(alpha: 0.7)
+                                    : AppColors.textOnLight.withValues(alpha: 0.45),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+            ),
+            if (message.reactions.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Wrap(
+                spacing: 4,
+                runSpacing: 4,
+                children: [
+                  for (final r in message.reactions)
+                    GestureDetector(
+                      onTap: onReactTap == null ? null : () => onReactTap!(r.emoji),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: r.mine
+                              ? AppColors.selectionBorder.withValues(alpha: 0.15)
+                              : AppColors.inputFill,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: r.mine
+                                ? AppColors.selectionBorder
+                                : AppColors.black.withValues(alpha: 0.06),
+                          ),
+                        ),
+                        child: Text(
+                          '${r.emoji} ${r.count}',
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                      ),
+                    ),
+                ],
               ),
+            ],
+          ],
+        ),
       ),
     );
 

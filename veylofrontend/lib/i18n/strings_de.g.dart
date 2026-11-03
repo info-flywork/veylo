@@ -165,6 +165,14 @@ class _Translations$chats$de extends Translations$chats$tr {
 	@override String get previewSticker => 'Sticker';
 	@override String get stickerEmpty => 'Keine letzten Sticker';
 	@override String get messageCopied => 'Nachricht kopiert';
+	@override String get messageReply => 'Antworten';
+	@override String get messageCopy => 'Kopieren';
+	@override String get messageEdit => 'Bearbeiten';
+	@override String get messageDelete => 'Löschen';
+	@override String get messageReport => 'Melden';
+	@override String get messageEdited => 'bearbeitet';
+	@override String get messageReplying => 'Antworten';
+	@override String get messageEditing => 'Bearbeiten';
 	@override String get reportReasonSubtitle => 'Warum meldest du diese Nachricht?';
 	@override String get reasonHarassment => 'Belästigung oder Mobbing';
 	@override String get reasonHateSpeech => 'Hassrede';
@@ -181,6 +189,10 @@ class _Translations$chats$de extends Translations$chats$tr {
 	@override String get noSearchResults => 'Keine Ergebnisse gefunden';
 	@override String get milestonePhotoUnlocked => 'Freigeschaltet bei 70%';
 	@override String revealPeerWants({required Object name}) => '${name} möchte das Profil aufdecken';
+	@override String get voiceCall => 'Sprachanruf';
+	@override String get videoCall => 'Videoanruf';
+	@override String get videoLocked => 'Videoanrufe werden freigeschaltet, sobald ihr beide eure Profile aufgedeckt habt.';
+	@override String get openSettings => 'Einstellungen';
 }
 
 // Path: profile
@@ -264,6 +276,7 @@ class _Translations$profile$de extends Translations$profile$tr {
 	@override String voiceRecording({required Object seconds}) => 'Aufnahme ${seconds} s';
 	@override String get voiceReady => 'Deine Stimme ist bereit';
 	@override String get voicePlay => 'Abspielen';
+	@override String get voiceReRecord => 'Neu aufnehmen';
 	@override String get voicePause => 'Pause';
 	@override String get voiceShare => 'Im Profil teilen';
 	@override String get voiceSaving => 'Wird gespeichert…';
@@ -383,6 +396,18 @@ class _Translations$profile$de extends Translations$profile$tr {
 	@override String get borderEquipCta => 'Rahmen verwenden';
 	@override String get borderRemoveCta => 'Rahmen entfernen';
 	@override String get followEmpty => 'Hier ist noch niemand';
+	@override String get zodiacAries => 'Widder';
+	@override String get zodiacTaurus => 'Stier';
+	@override String get zodiacGemini => 'Zwillinge';
+	@override String get zodiacCancer => 'Krebs';
+	@override String get zodiacLeo => 'Löwe';
+	@override String get zodiacVirgo => 'Jungfrau';
+	@override String get zodiacLibra => 'Waage';
+	@override String get zodiacScorpio => 'Skorpion';
+	@override String get zodiacSagittarius => 'Schütze';
+	@override String get zodiacCapricorn => 'Steinbock';
+	@override String get zodiacAquarius => 'Wassermann';
+	@override String get zodiacPisces => 'Fische';
 }
 
 // Path: nav
@@ -417,7 +442,7 @@ class _Translations$call$de extends Translations$call$tr {
 	@override String get nonBinary => 'Nicht-binär';
 	@override String get preferNotToSay => 'Keine Angabe';
 	@override String get anonymousBadge => '🎙️ Anonymer Sprachanruf';
-	@override String get stranger => 'Fremde Person';
+	@override String get stranger => 'Anonym';
 	@override String secondsLeft({required Object n}) => '${n} s';
 	@override String get timesUpTitle => 'Die Zeit ist um!';
 	@override String get timesUpSubtitle => 'Wollt ihr weiterreden? Wenn ihr beide Ja sagt, wird der Chat freigeschaltet.';
@@ -439,6 +464,10 @@ class _Translations$call$de extends Translations$call$tr {
 	@override String get noMatchBody => 'Wir konnten gerade niemanden zum Reden finden. Versuch es etwas später noch einmal.';
 	@override String get noMatchOk => 'OK';
 	@override String get cameraDenied => 'Für Videoanrufe brauchen wir Zugriff auf deine Kamera. Du kannst ihn in den Einstellungen erlauben.';
+	@override String get incomingBody => 'Jemand möchte einen anonymen Anruf starten. Er beginnt nur, wenn du annimmst.';
+	@override String get ringing => 'Klingelt…';
+	@override String get noAnswer => 'Keine Antwort.';
+	@override String get callDeclined => 'Der Anruf wurde abgelehnt.';
 }
 
 // Path: vibes
@@ -686,6 +715,8 @@ class _Translations$errors$de extends Translations$errors$tr {
 	@override String get roomFull => 'Dieser Raum ist voll.';
 	@override String get alreadyCheckedIn => 'Du hast die heutige Belohnung schon abgeholt.';
 	@override String get purchasesUnavailable => 'Käufe sind gerade nicht verfügbar.';
+	@override String get peerBusy => 'Die Person ist gerade in einem anderen Anruf. Versuch es später noch einmal.';
+	@override String get videoLocked => 'Videoanrufe werden freigeschaltet, sobald ihr beide eure Profile aufgedeckt habt.';
 }
 
 // Path: faq
@@ -1094,6 +1125,7 @@ class _Translations$discover$story$de extends Translations$discover$story$tr {
 	@override String get downloaded => 'In der Galerie gespeichert';
 	@override String get downloadFailed => 'Speichern fehlgeschlagen';
 	@override String get savedToDraft => 'Als Entwurf gespeichert';
+	@override String get cameraDenied => 'Für Fotos wird Kamerazugriff benötigt.';
 }
 
 // Path: discover.highlight
@@ -1245,6 +1277,14 @@ extension on TranslationsDe {
 			'chats.previewSticker' => 'Sticker',
 			'chats.stickerEmpty' => 'Keine letzten Sticker',
 			'chats.messageCopied' => 'Nachricht kopiert',
+			'chats.messageReply' => 'Antworten',
+			'chats.messageCopy' => 'Kopieren',
+			'chats.messageEdit' => 'Bearbeiten',
+			'chats.messageDelete' => 'Löschen',
+			'chats.messageReport' => 'Melden',
+			'chats.messageEdited' => 'bearbeitet',
+			'chats.messageReplying' => 'Antworten',
+			'chats.messageEditing' => 'Bearbeiten',
 			'chats.reportReasonSubtitle' => 'Warum meldest du diese Nachricht?',
 			'chats.reasonHarassment' => 'Belästigung oder Mobbing',
 			'chats.reasonHateSpeech' => 'Hassrede',
@@ -1261,6 +1301,10 @@ extension on TranslationsDe {
 			'chats.noSearchResults' => 'Keine Ergebnisse gefunden',
 			'chats.milestonePhotoUnlocked' => 'Freigeschaltet bei 70%',
 			'chats.revealPeerWants' => ({required Object name}) => '${name} möchte das Profil aufdecken',
+			'chats.voiceCall' => 'Sprachanruf',
+			'chats.videoCall' => 'Videoanruf',
+			'chats.videoLocked' => 'Videoanrufe werden freigeschaltet, sobald ihr beide eure Profile aufgedeckt habt.',
+			'chats.openSettings' => 'Einstellungen',
 			'profile.eyebrow' => 'Profil',
 			'profile.title' => 'Einstellungen',
 			'profile.editProfile' => 'Profil bearbeiten',
@@ -1335,6 +1379,7 @@ extension on TranslationsDe {
 			'profile.voiceRecording' => ({required Object seconds}) => 'Aufnahme ${seconds} s',
 			'profile.voiceReady' => 'Deine Stimme ist bereit',
 			'profile.voicePlay' => 'Abspielen',
+			'profile.voiceReRecord' => 'Neu aufnehmen',
 			'profile.voicePause' => 'Pause',
 			'profile.voiceShare' => 'Im Profil teilen',
 			'profile.voiceSaving' => 'Wird gespeichert…',
@@ -1454,6 +1499,18 @@ extension on TranslationsDe {
 			'profile.borderEquipCta' => 'Rahmen verwenden',
 			'profile.borderRemoveCta' => 'Rahmen entfernen',
 			'profile.followEmpty' => 'Hier ist noch niemand',
+			'profile.zodiacAries' => 'Widder',
+			'profile.zodiacTaurus' => 'Stier',
+			'profile.zodiacGemini' => 'Zwillinge',
+			'profile.zodiacCancer' => 'Krebs',
+			'profile.zodiacLeo' => 'Löwe',
+			'profile.zodiacVirgo' => 'Jungfrau',
+			'profile.zodiacLibra' => 'Waage',
+			'profile.zodiacScorpio' => 'Skorpion',
+			'profile.zodiacSagittarius' => 'Schütze',
+			'profile.zodiacCapricorn' => 'Steinbock',
+			'profile.zodiacAquarius' => 'Wassermann',
+			'profile.zodiacPisces' => 'Fische',
 			'nav.discover' => 'Entdecken',
 			'nav.chat' => 'Chat',
 			'nav.call' => 'Anruf',
@@ -1470,7 +1527,7 @@ extension on TranslationsDe {
 			'call.nonBinary' => 'Nicht-binär',
 			'call.preferNotToSay' => 'Keine Angabe',
 			'call.anonymousBadge' => '🎙️ Anonymer Sprachanruf',
-			'call.stranger' => 'Fremde Person',
+			'call.stranger' => 'Anonym',
 			'call.secondsLeft' => ({required Object n}) => '${n} s',
 			'call.timesUpTitle' => 'Die Zeit ist um!',
 			'call.timesUpSubtitle' => 'Wollt ihr weiterreden? Wenn ihr beide Ja sagt, wird der Chat freigeschaltet.',
@@ -1492,6 +1549,10 @@ extension on TranslationsDe {
 			'call.noMatchBody' => 'Wir konnten gerade niemanden zum Reden finden. Versuch es etwas später noch einmal.',
 			'call.noMatchOk' => 'OK',
 			'call.cameraDenied' => 'Für Videoanrufe brauchen wir Zugriff auf deine Kamera. Du kannst ihn in den Einstellungen erlauben.',
+			'call.incomingBody' => 'Jemand möchte einen anonymen Anruf starten. Er beginnt nur, wenn du annimmst.',
+			'call.ringing' => 'Klingelt…',
+			'call.noAnswer' => 'Keine Antwort.',
+			'call.callDeclined' => 'Der Anruf wurde abgelehnt.',
 			'vibes.search' => 'Suchen',
 			'vibes.sendMessage' => 'Nachricht senden',
 			'vibes.wantsToTalk' => 'Will gerade darüber reden',
@@ -1649,6 +1710,8 @@ extension on TranslationsDe {
 			'discover.filters.distance' => 'Entfernung',
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} km',
 			'discover.filters.showMe' => 'Zeig mir',
+			_ => null,
+		} ?? switch (path) {
 			'discover.filters.everyone' => 'Alle',
 			'discover.filters.women' => 'Frauen',
 			'discover.filters.men' => 'Männer',
@@ -1678,10 +1741,9 @@ extension on TranslationsDe {
 			'discover.story.musicError' => 'Musik konnte nicht geladen werden.',
 			'discover.story.unknownTrack' => 'Unbekannt',
 			'discover.story.downloaded' => 'In der Galerie gespeichert',
-			_ => null,
-		} ?? switch (path) {
 			'discover.story.downloadFailed' => 'Speichern fehlgeschlagen',
 			'discover.story.savedToDraft' => 'Als Entwurf gespeichert',
+			'discover.story.cameraDenied' => 'Für Fotos wird Kamerazugriff benötigt.',
 			'discover.highlight.title' => 'Highlight',
 			'discover.highlight.view' => 'Ansehen',
 			'discover.highlight.aiComments' => 'KI-Kommentare',
@@ -1844,6 +1906,8 @@ extension on TranslationsDe {
 			'errors.roomFull' => 'Dieser Raum ist voll.',
 			'errors.alreadyCheckedIn' => 'Du hast die heutige Belohnung schon abgeholt.',
 			'errors.purchasesUnavailable' => 'Käufe sind gerade nicht verfügbar.',
+			'errors.peerBusy' => 'Die Person ist gerade in einem anderen Anruf. Versuch es später noch einmal.',
+			'errors.videoLocked' => 'Videoanrufe werden freigeschaltet, sobald ihr beide eure Profile aufgedeckt habt.',
 			'faq.q1' => 'Wie funktioniert die App?',
 			'faq.q2' => 'Was ist ein anonymer Chat?',
 			'faq.q3' => 'Was ist der Verbindungsfortschritt?',

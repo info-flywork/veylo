@@ -83,6 +83,14 @@
     "previewSticker": "Adesivo",
     "stickerEmpty": "Nenhum adesivo recente",
     "messageCopied": "Mensagem copiada",
+    "messageReply": "Responder",
+    "messageCopy": "Copiar",
+    "messageEdit": "Editar",
+    "messageDelete": "Apagar",
+    "messageReport": "Denunciar",
+    "messageEdited": "editado",
+    "messageReplying": "Respondendo",
+    "messageEditing": "Editando",
     "reportReasonSubtitle": "Por que você está denunciando esta mensagem?",
     "reasonHarassment": "Assédio ou bullying",
     "reasonHateSpeech": "Discurso de ódio",
@@ -98,7 +106,11 @@
     "emptyThreadsSubtitle": "Quando você começar a conversar com alguém, suas conversas aparecerão aqui.",
     "noSearchResults": "Nenhum resultado encontrado",
     "milestonePhotoUnlocked": "Desbloqueado em 70%",
-    "revealPeerWants": "{name} quer revelar o perfil"
+    "revealPeerWants": "{name} quer revelar o perfil",
+    "voiceCall": "Chamada de voz",
+    "videoCall": "Videochamada",
+    "videoLocked": "As videochamadas são liberadas quando vocês dois revelarem seus perfis.",
+    "openSettings": "Ajustes"
   },
   "profile": {
     "eyebrow": "Perfil",
@@ -175,6 +187,7 @@
     "voiceRecording": "Gravando {seconds} s",
     "voiceReady": "Sua voz está pronta",
     "voicePlay": "Ouvir",
+    "voiceReRecord": "Gravar de novo",
     "voicePause": "Pausar",
     "voiceShare": "Compartilhar no perfil",
     "voiceSaving": "Salvando…",
@@ -293,7 +306,19 @@
     "borderOwned": "Comprada",
     "borderEquipCta": "Usar moldura",
     "borderRemoveCta": "Remover moldura",
-    "followEmpty": "Ainda não há ninguém aqui"
+    "followEmpty": "Ainda não há ninguém aqui",
+    "zodiacAries": "Áries",
+    "zodiacTaurus": "Touro",
+    "zodiacGemini": "Gêmeos",
+    "zodiacCancer": "Câncer",
+    "zodiacLeo": "Leão",
+    "zodiacVirgo": "Virgem",
+    "zodiacLibra": "Libra",
+    "zodiacScorpio": "Escorpião",
+    "zodiacSagittarius": "Sagitário",
+    "zodiacCapricorn": "Capricórnio",
+    "zodiacAquarius": "Aquário",
+    "zodiacPisces": "Peixes"
   },
   "nav": {
     "discover": "Descobrir",
@@ -314,7 +339,7 @@
     "nonBinary": "Não binário",
     "preferNotToSay": "Prefiro não dizer",
     "anonymousBadge": "🎙️ Chamada de voz anônima",
-    "stranger": "Estranho",
+    "stranger": "Anônimo",
     "secondsLeft": "{n}s",
     "timesUpTitle": "Acabou o tempo!",
     "timesUpSubtitle": "Quer continuar conversando? Se os dois disserem sim, o chat é liberado.",
@@ -335,7 +360,11 @@
     "noMatchTitle": "Ninguém disponível agora",
     "noMatchBody": "Não encontramos ninguém para conversar no momento. Tente novamente daqui a pouco.",
     "noMatchOk": "OK",
-    "cameraDenied": "As videochamadas precisam de acesso à câmera. Você pode ativar nos Ajustes."
+    "cameraDenied": "As videochamadas precisam de acesso à câmera. Você pode ativar nos Ajustes.",
+    "incomingBody": "Alguém quer iniciar uma chamada anônima. Ela só começa se você aceitar.",
+    "ringing": "Chamando…",
+    "noAnswer": "Sem resposta.",
+    "callDeclined": "A chamada foi recusada."
   },
   "vibes": {
     "search": "Buscar",
@@ -550,7 +579,8 @@
       "unknownTrack": "Desconhecido",
       "downloaded": "Salvo na galeria",
       "downloadFailed": "Não foi possível salvar",
-      "savedToDraft": "Salvo nos rascunhos"
+      "savedToDraft": "Salvo nos rascunhos",
+      "cameraDenied": "É preciso acesso à câmera para tirar fotos."
     },
     "highlight": {
       "title": "Destaque",
@@ -731,7 +761,9 @@
     "roomPrivate": "Esta sala é privada. Peça ao anfitrião para entrar.",
     "roomFull": "Esta sala está cheia.",
     "alreadyCheckedIn": "Você já coletou a recompensa de hoje.",
-    "purchasesUnavailable": "Compras indisponíveis no momento."
+    "purchasesUnavailable": "Compras indisponíveis no momento.",
+    "peerBusy": "Essa pessoa está em outra chamada agora. Tente novamente mais tarde.",
+    "videoLocked": "As videochamadas são liberadas quando vocês dois revelarem seus perfis."
   },
   "faq": {
     "q1": "Como o app funciona?",

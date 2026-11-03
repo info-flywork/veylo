@@ -477,6 +477,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
           Expanded(
             child: SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               padding: EdgeInsets.fromLTRB(hPad, 24, hPad, bottom + 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -540,7 +541,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   _ProfileFieldRow(
                     iconAsset: AppAssets.iconEpZodiac,
                     label: t.zodiac,
-                    value: _zodiac?.label ?? t.notSet,
+                    value: _zodiac?.localized(context) ?? t.notSet,
                     onTap: _openZodiacSheet,
                   ),
                   const SizedBox(height: 10),
@@ -1000,6 +1001,10 @@ class _InterestField extends StatelessWidget {
               maxLength: _kInterestMax,
               maxLines: null,
               expands: true,
+              // Klavye "Bitti" ile ve alanın dışına dokununca kapanır.
+              textInputAction: TextInputAction.done,
+              onSubmitted: (_) => FocusScope.of(context).unfocus(),
+              onTapOutside: (_) => FocusScope.of(context).unfocus(),
               textAlignVertical: TextAlignVertical.top,
               style: AppTextStyles.editProfileInterest,
               cursorColor: AppColors.selectionBorder,

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:veylo/core/permissions/mic_permission.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:record/record.dart';
@@ -42,13 +43,17 @@ class ChatComposer extends StatefulWidget {
 }
 
 class _ChatComposerState extends State<ChatComposer> {
+  static const _maxImages = 10;
+
   final _picker = ImagePicker();
   final _recorder = AudioRecorder();
   Timer? _ticker;
   bool _recording = false;
   bool _picking = false;
+  bool _sending = false;
   bool _stickers = false;
   int _seconds = 0;
+  final List<String> _pendingImages = [];
 
   @override
   void initState() {
@@ -69,16 +74,76 @@ class _ChatComposerState extends State<ChatComposer> {
   }
 
   Future<void> _pick(ImageSource source) async {
-    final send = widget.onMedia;
-    if (send == null || _picking || _recording) return;
+    if (widget.onMedia == null || _picking || _recording || _sending) return;
+    final room = _maxImages - _pendingImages.length;
+    if (room <= 0) return;
     setState(() => _picking = true);
     try {
-      final file = await _picker.pickImage(source: source, imageQuality: 85);
-      if (file != null) await send('image', file.path);
+      // Önce inputta önizleme; gönder’e basınca yollanır.
+      // Tam çözünürlüklü telefon fotoğrafı 10 MB yükleme sınırını aşıyordu.
+      if (source == ImageSource.gallery) {
+        final files = await _picker.pickMultiImage(
+          maxWidth: 2048,
+          maxHeight: 2048,
+          imageQuality: 85,
+          limit: room,
+        );
+        if (files.isEmpty || !mounted) return;
+        setState(() {
+          for (final f in files) {
+            if (_pendingImages.length >= _maxImages) break;
+            if (!_pendingImages.contains(f.path)) _pendingImages.add(f.path);
+          }
+          _stickers = false;
+        });
+      } else {
+        final file = await _picker.pickImage(
+          source: source,
+          maxWidth: 2048,
+          maxHeight: 2048,
+          imageQuality: 85,
+        );
+        if (file == null || !mounted) return;
+        setState(() {
+          if (_pendingImages.length < _maxImages &&
+              !_pendingImages.contains(file.path)) {
+            _pendingImages.add(file.path);
+          }
+          _stickers = false;
+        });
+      }
     } catch (e) {
       if (mounted) showErrorSnackBar(context, e);
     } finally {
       if (mounted) setState(() => _picking = false);
+    }
+  }
+
+  void _removePending(int index) {
+    if (index < 0 || index >= _pendingImages.length) return;
+    setState(() => _pendingImages.removeAt(index));
+  }
+
+  Future<void> _submit() async {
+    if (_sending || _recording || _picking) return;
+    final sendMedia = widget.onMedia;
+    final images = List<String>.of(_pendingImages);
+    final hasText = widget.controller.text.trim().isNotEmpty;
+    if (images.isEmpty && !hasText) return;
+
+    setState(() {
+      _sending = true;
+      _pendingImages.clear();
+    });
+    try {
+      for (final path in images) {
+        await sendMedia?.call('image', path);
+      }
+      if (hasText) widget.onSend();
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    } finally {
+      if (mounted) setState(() => _sending = false);
     }
   }
 
@@ -89,15 +154,9 @@ class _ChatComposerState extends State<ChatComposer> {
       await _finishRecord(send);
       return;
     }
-    final allowed = await _recorder.hasPermission();
-    if (!allowed) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(Translations.of(context).chats.micNeeded)),
-        );
-      }
-      return;
-    }
+    // İzin yoksa sistem penceresini açar; reddedilmişse Ayarlar'a yönlendiren uyarı gösterir.
+    if (!await ensureMicPermission(context)) return;
+    if (!mounted) return;
     final path =
         '${Directory.systemTemp.path}/veylo-chat-${DateTime.now().millisecondsSinceEpoch}.m4a';
     try {
@@ -173,6 +232,7 @@ class _ChatComposerState extends State<ChatComposer> {
   @override
   Widget build(BuildContext context) {
     final hasText = widget.controller.text.trim().isNotEmpty;
+    final canSend = hasText || _pendingImages.isNotEmpty;
     final t = Translations.of(context).chats;
     final categories = [
       for (final entry in chatStickerPack.entries)
@@ -226,12 +286,72 @@ class _ChatComposerState extends State<ChatComposer> {
           ),
           const SizedBox(height: 8),
         ],
-        _bar(hasText),
+        if (_pendingImages.isNotEmpty) ...[
+          _imagePreview(),
+          const SizedBox(height: 8),
+        ],
+        _bar(canSend),
       ],
     );
   }
 
-  Widget _bar(bool hasText) {
+  Widget _imagePreview() {
+    return SizedBox(
+      height: 88,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: _pendingImages.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
+        itemBuilder: (context, i) {
+          final path = _pendingImages[i];
+          return Stack(
+            clipBehavior: Clip.none,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.file(
+                  File(path),
+                  width: 88,
+                  height: 88,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, _, _) => Container(
+                    width: 88,
+                    height: 88,
+                    color: AppColors.sheetMuted,
+                    alignment: Alignment.center,
+                    child: const Icon(Icons.broken_image_outlined, size: 28),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: -4,
+                right: -4,
+                child: Material(
+                  color: AppColors.black.withValues(alpha: 0.65),
+                  shape: const CircleBorder(),
+                  child: InkWell(
+                    customBorder: const CircleBorder(),
+                    onTap: () => _removePending(i),
+                    child: const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: 16,
+                        color: AppColors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _bar(bool canSend) {
     return Container(
       height: 56,
       padding: const EdgeInsets.fromLTRB(6, 6, 10, 6),
@@ -261,7 +381,7 @@ class _ChatComposerState extends State<ChatComposer> {
                       if (_stickers) setState(() => _stickers = false);
                     },
                     onChanged: widget.onChanged,
-                    onSubmitted: (_) => widget.onSend(),
+                    onSubmitted: (_) => _submit(),
                     textInputAction: TextInputAction.send,
                     style: AppTextStyles.liveRoomMessageHint.copyWith(
                       color: AppColors.textOnLight,
@@ -303,11 +423,11 @@ class _ChatComposerState extends State<ChatComposer> {
             const SizedBox(width: 8),
             _roundIcon(AppAssets.imageIcon, onTap: () => _pick(ImageSource.gallery)),
             const SizedBox(width: 8),
-            if (!hasText)
+            if (!canSend)
               _roundIcon(AppAssets.iconMicrophone, onTap: _toggleRecord)
             else
               GestureDetector(
-                onTap: widget.onSend,
+                onTap: _sending ? null : _submit,
                 child: Container(
                   width: 28,
                   height: 28,
@@ -316,7 +436,16 @@ class _ChatComposerState extends State<ChatComposer> {
                     color: AppColors.selectionBorder,
                   ),
                   alignment: Alignment.center,
-                  child: const Icon(Icons.send_rounded, size: 15, color: AppColors.white),
+                  child: _sending
+                      ? const SizedBox(
+                          width: 14,
+                          height: 14,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.white,
+                          ),
+                        )
+                      : const Icon(Icons.send_rounded, size: 15, color: AppColors.white),
                 ),
               ),
           ],

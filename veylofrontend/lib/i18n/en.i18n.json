@@ -83,6 +83,14 @@
     "previewSticker": "Sticker",
     "stickerEmpty": "No recent stickers",
     "messageCopied": "Message copied",
+    "messageReply": "Reply",
+    "messageCopy": "Copy",
+    "messageEdit": "Edit",
+    "messageDelete": "Delete",
+    "messageReport": "Report",
+    "messageEdited": "edited",
+    "messageReplying": "Replying",
+    "messageEditing": "Editing",
     "reportReasonSubtitle": "Why are you reporting this message?",
     "reasonHarassment": "Harassment or bullying",
     "reasonHateSpeech": "Hate speech",
@@ -98,7 +106,11 @@
     "emptyThreadsSubtitle": "When you start talking to someone, your chats will show up here.",
     "noSearchResults": "No results found",
     "milestonePhotoUnlocked": "Unlocked at 70%",
-    "revealPeerWants": "{name} wants to reveal their profile"
+    "revealPeerWants": "{name} wants to reveal their profile",
+    "voiceCall": "Voice call",
+    "videoCall": "Video call",
+    "videoLocked": "Video calls unlock once you both reveal your profiles.",
+    "openSettings": "Settings"
   },
   "profile": {
     "eyebrow": "Profile",
@@ -175,6 +187,7 @@
     "voiceRecording": "Recording {seconds} s",
     "voiceReady": "Your voice is ready",
     "voicePlay": "Play",
+    "voiceReRecord": "Re-record",
     "voicePause": "Pause",
     "voiceShare": "Share on profile",
     "voiceSaving": "Saving…",
@@ -293,7 +306,19 @@
     "borderOwned": "Owned",
     "borderEquipCta": "Use Border",
     "borderRemoveCta": "Remove Border",
-    "followEmpty": "No one here yet"
+    "followEmpty": "No one here yet",
+    "zodiacAries": "Aries",
+    "zodiacTaurus": "Taurus",
+    "zodiacGemini": "Gemini",
+    "zodiacCancer": "Cancer",
+    "zodiacLeo": "Leo",
+    "zodiacVirgo": "Virgo",
+    "zodiacLibra": "Libra",
+    "zodiacScorpio": "Scorpio",
+    "zodiacSagittarius": "Sagittarius",
+    "zodiacCapricorn": "Capricorn",
+    "zodiacAquarius": "Aquarius",
+    "zodiacPisces": "Pisces"
   },
   "nav": {
     "discover": "Discover",
@@ -314,7 +339,7 @@
     "nonBinary": "Non-binary",
     "preferNotToSay": "Prefer not to say",
     "anonymousBadge": "🎙️ Anonymous voice call",
-    "stranger": "Stranger",
+    "stranger": "Anonymous",
     "secondsLeft": "{n}sn",
     "timesUpTitle": "Time's up!",
     "timesUpSubtitle": "Want to keep talking? If you both say yes, chat unlocks.",
@@ -335,7 +360,11 @@
     "noMatchTitle": "No one is available right now",
     "noMatchBody": "We couldn't find anyone to talk to at the moment. Please try again a little later.",
     "noMatchOk": "OK",
-    "cameraDenied": "Camera access is needed for video calls. You can enable it in Settings."
+    "cameraDenied": "Camera access is needed for video calls. You can enable it in Settings.",
+    "incomingBody": "Someone wants to start an anonymous call. It begins only if you accept.",
+    "ringing": "Ringing…",
+    "noAnswer": "No answer.",
+    "callDeclined": "The call was declined."
   },
   "vibes": {
     "search": "Search",
@@ -552,7 +581,8 @@
       "unknownTrack": "Unknown",
       "downloaded": "Saved to gallery",
       "downloadFailed": "Could not save",
-      "savedToDraft": "Saved to drafts"
+      "savedToDraft": "Saved to drafts",
+      "cameraDenied": "Camera access is needed to take photos."
     },
     "highlight": {
       "title": "Highlight",
@@ -733,7 +763,9 @@
     "roomPrivate": "This room is private. Ask the host to join.",
     "roomFull": "This room is full.",
     "alreadyCheckedIn": "You've already collected today's reward.",
-    "purchasesUnavailable": "Purchases aren't available right now."
+    "purchasesUnavailable": "Purchases aren't available right now.",
+    "peerBusy": "They are in another call right now. Try again a bit later.",
+    "videoLocked": "Video calls unlock once you both reveal your profiles."
   },
   "faq": {
     "q1": "How does this app work?",

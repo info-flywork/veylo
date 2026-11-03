@@ -165,6 +165,14 @@ class _Translations$chats$hi extends Translations$chats$tr {
 	@override String get previewSticker => 'स्टिकर';
 	@override String get stickerEmpty => 'कोई हाल का स्टिकर नहीं';
 	@override String get messageCopied => 'संदेश कॉपी हो गया';
+	@override String get messageReply => 'जवाब दें';
+	@override String get messageCopy => 'कॉपी';
+	@override String get messageEdit => 'संपादित करें';
+	@override String get messageDelete => 'हटाएँ';
+	@override String get messageReport => 'रिपोर्ट';
+	@override String get messageEdited => 'संपादित';
+	@override String get messageReplying => 'जवाब दे रहे हैं';
+	@override String get messageEditing => 'संपादन';
 	@override String get reportReasonSubtitle => 'आप इस संदेश की रिपोर्ट क्यों कर रहे हैं?';
 	@override String get reasonHarassment => 'उत्पीड़न या धमकाना';
 	@override String get reasonHateSpeech => 'नफ़रत भरी बातें';
@@ -181,6 +189,10 @@ class _Translations$chats$hi extends Translations$chats$tr {
 	@override String get noSearchResults => 'कोई परिणाम नहीं मिला';
 	@override String get milestonePhotoUnlocked => '70% पर खुला';
 	@override String revealPeerWants({required Object name}) => '${name} अपनी प्रोफ़ाइल दिखाना चाहते हैं';
+	@override String get voiceCall => 'वॉइस कॉल';
+	@override String get videoCall => 'वीडियो कॉल';
+	@override String get videoLocked => 'जब आप दोनों अपनी प्रोफ़ाइल दिखा देंगे, तब वीडियो कॉल अनलॉक होगी।';
+	@override String get openSettings => 'सेटिंग्स';
 }
 
 // Path: profile
@@ -264,6 +276,7 @@ class _Translations$profile$hi extends Translations$profile$tr {
 	@override String voiceRecording({required Object seconds}) => 'रिकॉर्ड हो रहा है ${seconds} से';
 	@override String get voiceReady => 'आपकी आवाज़ तैयार है';
 	@override String get voicePlay => 'चलाएँ';
+	@override String get voiceReRecord => 'फिर से रिकॉर्ड करें';
 	@override String get voicePause => 'रोकें';
 	@override String get voiceShare => 'प्रोफ़ाइल पर शेयर करें';
 	@override String get voiceSaving => 'सेव हो रहा है…';
@@ -383,6 +396,18 @@ class _Translations$profile$hi extends Translations$profile$tr {
 	@override String get borderEquipCta => 'बॉर्डर लगाएँ';
 	@override String get borderRemoveCta => 'बॉर्डर हटाएँ';
 	@override String get followEmpty => 'यहाँ अभी कोई नहीं है';
+	@override String get zodiacAries => 'मेष';
+	@override String get zodiacTaurus => 'वृषभ';
+	@override String get zodiacGemini => 'मिथुन';
+	@override String get zodiacCancer => 'कर्क';
+	@override String get zodiacLeo => 'सिंह';
+	@override String get zodiacVirgo => 'कन्या';
+	@override String get zodiacLibra => 'तुला';
+	@override String get zodiacScorpio => 'वृश्चिक';
+	@override String get zodiacSagittarius => 'धनु';
+	@override String get zodiacCapricorn => 'मकर';
+	@override String get zodiacAquarius => 'कुंभ';
+	@override String get zodiacPisces => 'मीन';
 }
 
 // Path: nav
@@ -417,7 +442,7 @@ class _Translations$call$hi extends Translations$call$tr {
 	@override String get nonBinary => 'नॉन-बाइनरी';
 	@override String get preferNotToSay => 'बताना नहीं चाहते';
 	@override String get anonymousBadge => '🎙️ गुमनाम वॉइस कॉल';
-	@override String get stranger => 'स्ट्रेंजर';
+	@override String get stranger => 'गुमनाम';
 	@override String secondsLeft({required Object n}) => '${n}s';
 	@override String get timesUpTitle => 'समय खत्म!';
 	@override String get timesUpSubtitle => 'और बात करनी है? अगर दोनों हाँ कहें, तो चैट अनलॉक हो जाएगी।';
@@ -439,6 +464,10 @@ class _Translations$call$hi extends Translations$call$tr {
 	@override String get noMatchBody => 'इस समय बात करने के लिए कोई नहीं मिला। थोड़ी देर बाद फिर से कोशिश करें।';
 	@override String get noMatchOk => 'ठीक है';
 	@override String get cameraDenied => 'वीडियो कॉल के लिए कैमरा एक्सेस ज़रूरी है। आप इसे सेटिंग्स में चालू कर सकते हैं।';
+	@override String get incomingBody => 'कोई गुमनाम कॉल शुरू करना चाहता है। यह तभी शुरू होगी जब आप स्वीकार करेंगे।';
+	@override String get ringing => 'घंटी बज रही है…';
+	@override String get noAnswer => 'कोई जवाब नहीं।';
+	@override String get callDeclined => 'उन्होंने कॉल अस्वीकार कर दी।';
 }
 
 // Path: vibes
@@ -686,6 +715,8 @@ class _Translations$errors$hi extends Translations$errors$tr {
 	@override String get roomFull => 'यह रूम भर चुका है।';
 	@override String get alreadyCheckedIn => 'आप आज का इनाम पहले ही ले चुके हैं।';
 	@override String get purchasesUnavailable => 'खरीदारी अभी उपलब्ध नहीं है।';
+	@override String get peerBusy => 'वे अभी किसी दूसरी कॉल पर हैं। बाद में फिर कोशिश करें।';
+	@override String get videoLocked => 'जब आप दोनों अपनी प्रोफ़ाइल दिखा देंगे, तब वीडियो कॉल अनलॉक होगी।';
 }
 
 // Path: faq
@@ -1094,6 +1125,7 @@ class _Translations$discover$story$hi extends Translations$discover$story$tr {
 	@override String get downloaded => 'गैलरी में सेव हो गया';
 	@override String get downloadFailed => 'सेव नहीं हो सका';
 	@override String get savedToDraft => 'ड्राफ़्ट में सेव हो गया';
+	@override String get cameraDenied => 'फ़ोटो लेने के लिए कैमरा अनुमति ज़रूरी है।';
 }
 
 // Path: discover.highlight
@@ -1245,6 +1277,14 @@ extension on TranslationsHi {
 			'chats.previewSticker' => 'स्टिकर',
 			'chats.stickerEmpty' => 'कोई हाल का स्टिकर नहीं',
 			'chats.messageCopied' => 'संदेश कॉपी हो गया',
+			'chats.messageReply' => 'जवाब दें',
+			'chats.messageCopy' => 'कॉपी',
+			'chats.messageEdit' => 'संपादित करें',
+			'chats.messageDelete' => 'हटाएँ',
+			'chats.messageReport' => 'रिपोर्ट',
+			'chats.messageEdited' => 'संपादित',
+			'chats.messageReplying' => 'जवाब दे रहे हैं',
+			'chats.messageEditing' => 'संपादन',
 			'chats.reportReasonSubtitle' => 'आप इस संदेश की रिपोर्ट क्यों कर रहे हैं?',
 			'chats.reasonHarassment' => 'उत्पीड़न या धमकाना',
 			'chats.reasonHateSpeech' => 'नफ़रत भरी बातें',
@@ -1261,6 +1301,10 @@ extension on TranslationsHi {
 			'chats.noSearchResults' => 'कोई परिणाम नहीं मिला',
 			'chats.milestonePhotoUnlocked' => '70% पर खुला',
 			'chats.revealPeerWants' => ({required Object name}) => '${name} अपनी प्रोफ़ाइल दिखाना चाहते हैं',
+			'chats.voiceCall' => 'वॉइस कॉल',
+			'chats.videoCall' => 'वीडियो कॉल',
+			'chats.videoLocked' => 'जब आप दोनों अपनी प्रोफ़ाइल दिखा देंगे, तब वीडियो कॉल अनलॉक होगी।',
+			'chats.openSettings' => 'सेटिंग्स',
 			'profile.eyebrow' => 'प्रोफ़ाइल',
 			'profile.title' => 'सेटिंग्स',
 			'profile.editProfile' => 'प्रोफ़ाइल एडिट करें',
@@ -1335,6 +1379,7 @@ extension on TranslationsHi {
 			'profile.voiceRecording' => ({required Object seconds}) => 'रिकॉर्ड हो रहा है ${seconds} से',
 			'profile.voiceReady' => 'आपकी आवाज़ तैयार है',
 			'profile.voicePlay' => 'चलाएँ',
+			'profile.voiceReRecord' => 'फिर से रिकॉर्ड करें',
 			'profile.voicePause' => 'रोकें',
 			'profile.voiceShare' => 'प्रोफ़ाइल पर शेयर करें',
 			'profile.voiceSaving' => 'सेव हो रहा है…',
@@ -1454,6 +1499,18 @@ extension on TranslationsHi {
 			'profile.borderEquipCta' => 'बॉर्डर लगाएँ',
 			'profile.borderRemoveCta' => 'बॉर्डर हटाएँ',
 			'profile.followEmpty' => 'यहाँ अभी कोई नहीं है',
+			'profile.zodiacAries' => 'मेष',
+			'profile.zodiacTaurus' => 'वृषभ',
+			'profile.zodiacGemini' => 'मिथुन',
+			'profile.zodiacCancer' => 'कर्क',
+			'profile.zodiacLeo' => 'सिंह',
+			'profile.zodiacVirgo' => 'कन्या',
+			'profile.zodiacLibra' => 'तुला',
+			'profile.zodiacScorpio' => 'वृश्चिक',
+			'profile.zodiacSagittarius' => 'धनु',
+			'profile.zodiacCapricorn' => 'मकर',
+			'profile.zodiacAquarius' => 'कुंभ',
+			'profile.zodiacPisces' => 'मीन',
 			'nav.discover' => 'डिस्कवर',
 			'nav.chat' => 'चैट',
 			'nav.call' => 'कॉल',
@@ -1470,7 +1527,7 @@ extension on TranslationsHi {
 			'call.nonBinary' => 'नॉन-बाइनरी',
 			'call.preferNotToSay' => 'बताना नहीं चाहते',
 			'call.anonymousBadge' => '🎙️ गुमनाम वॉइस कॉल',
-			'call.stranger' => 'स्ट्रेंजर',
+			'call.stranger' => 'गुमनाम',
 			'call.secondsLeft' => ({required Object n}) => '${n}s',
 			'call.timesUpTitle' => 'समय खत्म!',
 			'call.timesUpSubtitle' => 'और बात करनी है? अगर दोनों हाँ कहें, तो चैट अनलॉक हो जाएगी।',
@@ -1492,6 +1549,10 @@ extension on TranslationsHi {
 			'call.noMatchBody' => 'इस समय बात करने के लिए कोई नहीं मिला। थोड़ी देर बाद फिर से कोशिश करें।',
 			'call.noMatchOk' => 'ठीक है',
 			'call.cameraDenied' => 'वीडियो कॉल के लिए कैमरा एक्सेस ज़रूरी है। आप इसे सेटिंग्स में चालू कर सकते हैं।',
+			'call.incomingBody' => 'कोई गुमनाम कॉल शुरू करना चाहता है। यह तभी शुरू होगी जब आप स्वीकार करेंगे।',
+			'call.ringing' => 'घंटी बज रही है…',
+			'call.noAnswer' => 'कोई जवाब नहीं।',
+			'call.callDeclined' => 'उन्होंने कॉल अस्वीकार कर दी।',
 			'vibes.search' => 'खोजें',
 			'vibes.sendMessage' => 'मैसेज भेजें',
 			'vibes.wantsToTalk' => 'अभी इस बारे में बात करना चाहते हैं',
@@ -1649,6 +1710,8 @@ extension on TranslationsHi {
 			'discover.filters.distance' => 'दूरी',
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} किमी',
 			'discover.filters.showMe' => 'मुझे दिखाएँ',
+			_ => null,
+		} ?? switch (path) {
 			'discover.filters.everyone' => 'सभी',
 			'discover.filters.women' => 'महिलाएँ',
 			'discover.filters.men' => 'पुरुष',
@@ -1678,10 +1741,9 @@ extension on TranslationsHi {
 			'discover.story.musicError' => 'म्यूज़िक लोड नहीं हो सका।',
 			'discover.story.unknownTrack' => 'अज्ञात',
 			'discover.story.downloaded' => 'गैलरी में सेव हो गया',
-			_ => null,
-		} ?? switch (path) {
 			'discover.story.downloadFailed' => 'सेव नहीं हो सका',
 			'discover.story.savedToDraft' => 'ड्राफ़्ट में सेव हो गया',
+			'discover.story.cameraDenied' => 'फ़ोटो लेने के लिए कैमरा अनुमति ज़रूरी है।',
 			'discover.highlight.title' => 'हाइलाइट',
 			'discover.highlight.view' => 'देखें',
 			'discover.highlight.aiComments' => 'AI कमेंट',
@@ -1844,6 +1906,8 @@ extension on TranslationsHi {
 			'errors.roomFull' => 'यह रूम भर चुका है।',
 			'errors.alreadyCheckedIn' => 'आप आज का इनाम पहले ही ले चुके हैं।',
 			'errors.purchasesUnavailable' => 'खरीदारी अभी उपलब्ध नहीं है।',
+			'errors.peerBusy' => 'वे अभी किसी दूसरी कॉल पर हैं। बाद में फिर कोशिश करें।',
+			'errors.videoLocked' => 'जब आप दोनों अपनी प्रोफ़ाइल दिखा देंगे, तब वीडियो कॉल अनलॉक होगी।',
 			'faq.q1' => 'यह ऐप कैसे काम करता है?',
 			'faq.q2' => 'गुमनाम चैट क्या है?',
 			'faq.q3' => 'कनेक्शन प्रोग्रेस क्या है?',

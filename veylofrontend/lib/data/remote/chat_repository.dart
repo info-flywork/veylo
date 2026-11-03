@@ -110,4 +110,30 @@ class ChatRepository {
   /// Kendi mesajımı herkes için geri alır.
   Future<void> deleteMessage(String id, String messageId) =>
       _api.delete('/conversations/$id/messages/$messageId');
+
+  /// Kendi TEXT mesajını düzenler.
+  Future<ChatMessage> editMessage(String id, String messageId, String body) async {
+    final res = await _api.patch(
+      '/conversations/$id/messages/$messageId',
+      body: {'body': body},
+    );
+    return ChatMessage.fromJson(Map<String, dynamic>.from(res as Map));
+  }
+
+  /// Mesaja emoji tepkisi ekler / kaldırır.
+  Future<List<ChatReaction>> reactMessage(
+    String id,
+    String messageId,
+    String emoji,
+  ) async {
+    final res = await _api.post(
+      '/conversations/$id/messages/$messageId/reactions',
+      body: {'emoji': emoji},
+    );
+    final map = Map<String, dynamic>.from(res as Map);
+    return [
+      for (final r in (map['reactions'] as List? ?? const []))
+        if (r is Map) ChatReaction.fromJson(Map<String, dynamic>.from(r)),
+    ];
+  }
 }

@@ -1,10 +1,13 @@
 import 'dart:io';
 
+import 'package:camera/camera.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:veylo/core/assets/app_assets.dart';
+import 'package:veylo/core/permissions/av_permissions.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
@@ -18,8 +21,15 @@ class StoryCameraPage extends StatefulWidget {
   State<StoryCameraPage> createState() => _StoryCameraPageState();
 }
 
-class _StoryCameraPageState extends State<StoryCameraPage> {
+class _StoryCameraPageState extends State<StoryCameraPage>
+    with WidgetsBindingObserver {
   final _picker = ImagePicker();
+
+  /// Canlı önizleme: sayfa açılır açılmaz kamera izni sorulur, görüntü siyah kalmaz.
+  CameraController? _camera;
+  List<CameraDescription> _cameras = const [];
+  bool _cameraDenied = false;
+  bool _shooting = false;
 
   /// 0 = Draft, 1 = Story
   int _mode = 1;
@@ -33,6 +43,73 @@ class _StoryCameraPageState extends State<StoryCameraPage> {
       return Platform.environment.containsKey('SIMULATOR_DEVICE_NAME');
     }
     return false;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _initCamera();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _camera?.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Arka plana geçince kamerayı bırak, dönünce (Ayarlar'dan izin verilmiş olabilir) yeniden aç.
+    if (state == AppLifecycleState.inactive) {
+      final cam = _camera;
+      _camera = null;
+      cam?.dispose();
+      if (mounted) setState(() {});
+    } else if (state == AppLifecycleState.resumed && _camera == null) {
+      _initCamera();
+    }
+  }
+
+  Future<void> _initCamera() async {
+    if (_cameraUnavailable) return;
+    try {
+      if (_cameras.isEmpty) _cameras = await availableCameras();
+      if (_cameras.isEmpty) return;
+      final lens = _useFront
+          ? CameraLensDirection.front
+          : CameraLensDirection.back;
+      final desc = _cameras.firstWhere(
+        (c) => c.lensDirection == lens,
+        orElse: () => _cameras.first,
+      );
+      final controller = CameraController(
+        desc,
+        ResolutionPreset.high,
+        enableAudio: false,
+        imageFormatGroup: ImageFormatGroup.jpeg,
+      );
+      await controller.initialize();
+      if (!mounted) {
+        await controller.dispose();
+        return;
+      }
+      final old = _camera;
+      setState(() {
+        _camera = controller;
+        _cameraDenied = false;
+      });
+      await old?.dispose();
+    } on CameraException catch (e) {
+      if (!mounted) return;
+      setState(() => _cameraDenied = e.code.startsWith('CameraAccess'));
+    }
+  }
+
+  Future<void> _flip() async {
+    setState(() => _useFront = !_useFront);
+    await _initCamera();
   }
 
   Future<void> _openEditor(File file) async {
@@ -49,11 +126,32 @@ class _StoryCameraPageState extends State<StoryCameraPage> {
       await _pickGallery();
       return;
     }
+    final cam = _camera;
+    if (cam != null && cam.value.isInitialized) {
+      if (_shooting) return;
+      _shooting = true;
+      try {
+        final shot = await cam.takePicture();
+        if (mounted) await _openEditor(File(shot.path));
+      } catch (_) {
+        if (mounted) await _pickGallery();
+      } finally {
+        _shooting = false;
+      }
+      return;
+    }
+    if (_cameraDenied) {
+      // İzin reddedilmiş: iOS bir daha sormaz, Ayarlar'a yönlendir.
+      await AvPermissions.openSettings();
+      return;
+    }
     try {
       final file = await _picker.pickImage(
         source: ImageSource.camera,
         preferredCameraDevice:
             _useFront ? CameraDevice.front : CameraDevice.rear,
+        maxWidth: 2048,
+        maxHeight: 2048,
         imageQuality: 90,
       );
       if (file == null || !mounted) return;
@@ -69,6 +167,8 @@ class _StoryCameraPageState extends State<StoryCameraPage> {
     try {
       final file = await _picker.pickImage(
         source: ImageSource.gallery,
+        maxWidth: 2048,
+        maxHeight: 2048,
         imageQuality: 90,
       );
       if (file == null || !mounted) return;
@@ -84,12 +184,18 @@ class _StoryCameraPageState extends State<StoryCameraPage> {
 
   @override
   Widget build(BuildContext context) {
+    final cam = _camera;
     return _CameraView(
+      preview: cam != null && cam.value.isInitialized
+          ? _CameraPreviewFill(controller: cam)
+          : null,
+      denied: _cameraDenied,
+      onOpenSettings: AvPermissions.openSettings,
       mode: _mode,
       galleryThumb: _galleryThumb,
       onClose: () => Navigator.of(context).pop(),
       onModeChanged: (m) => setState(() => _mode = m),
-      onFlip: () => setState(() => _useFront = !_useFront),
+      onFlip: _flip,
       onCapture: _capture,
       onGallery: _pickGallery,
     );
@@ -98,6 +204,9 @@ class _StoryCameraPageState extends State<StoryCameraPage> {
 
 class _CameraView extends StatelessWidget {
   const _CameraView({
+    required this.preview,
+    required this.denied,
+    required this.onOpenSettings,
     required this.mode,
     required this.galleryThumb,
     required this.onClose,
@@ -107,6 +216,10 @@ class _CameraView extends StatelessWidget {
     required this.onGallery,
   });
 
+  /// Canlı kamera görüntüsü (yoksa siyah zemin).
+  final Widget? preview;
+  final bool denied;
+  final VoidCallback onOpenSettings;
   final int mode;
   final File? galleryThumb;
   final VoidCallback onClose;
@@ -129,7 +242,40 @@ class _CameraView extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                const ColoredBox(color: AppColors.black),
+                preview ?? const ColoredBox(color: AppColors.black),
+                if (denied)
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 40),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          AppText(
+                            t.cameraDenied,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontFamily: AppFonts.poppins,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: AppColors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 14),
+                          OutlinedButton(
+                            onPressed: onOpenSettings,
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppColors.white,
+                              side: const BorderSide(color: AppColors.white),
+                              shape: const StadiumBorder(),
+                            ),
+                            child: Text(
+                              Translations.of(context).chats.openSettings,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 Positioned(
                   top: top + 8,
                   left: 16,
@@ -263,6 +409,30 @@ class _CircleIconButton extends StatelessWidget {
         ),
         alignment: Alignment.center,
         child: child,
+      ),
+    );
+  }
+}
+
+/// Önizlemeyi ekranı kaplayacak şekilde (kırparak) gösterir.
+class _CameraPreviewFill extends StatelessWidget {
+  const _CameraPreviewFill({required this.controller});
+
+  final CameraController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = controller.value.previewSize;
+    if (size == null) return CameraPreview(controller);
+    // previewSize yatay verilir; dikey ekranda en/boy yer değiştirir.
+    return ClipRect(
+      child: FittedBox(
+        fit: BoxFit.cover,
+        child: SizedBox(
+          width: size.height,
+          height: size.width,
+          child: CameraPreview(controller),
+        ),
       ),
     );
   }
