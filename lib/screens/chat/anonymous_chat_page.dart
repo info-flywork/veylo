@@ -6,6 +6,7 @@ import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/widgets/profile_tappable_avatar.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/models/chat/chat_thread.dart';
 import 'package:veylo/screens/chat/chat_actions_sheet.dart';
 import 'package:veylo/screens/chat/widgets/chat_call_buttons.dart';
@@ -15,6 +16,7 @@ import 'package:veylo/screens/chat/conversation_controller.dart';
 import 'package:veylo/screens/chat/direct_chat_page.dart';
 import 'package:veylo/screens/chat/reveal_profile_sheet.dart';
 import 'package:veylo/screens/chat/widgets/chat_composer.dart';
+import 'package:veylo/screens/chat/widgets/chat_composer_context.dart';
 import 'package:veylo/screens/chat/widgets/chat_message_list.dart';
 import 'package:veylo/screens/chat/widgets/stranger_request_block.dart';
 
@@ -25,6 +27,7 @@ class AnonymousChatPage extends StatefulWidget {
   final ChatThread thread;
 
   static Future<void> open(BuildContext context, ChatThread thread) {
+    ChatStore.instance.prefetchMessages(thread.id);
     return Navigator.of(context).push<void>(
       MaterialPageRoute<void>(
         builder: (_) => AnonymousChatPage(thread: thread),
@@ -266,8 +269,17 @@ class _AnonymousChatPageState extends State<AnonymousChatPage> {
                   onLoadOlder: _ctrl.loadOlder,
                   skipFirstIncoming: firstIncoming != null,
                   peerAvatarUrl: thread.avatarUrl,
+                  onReply: _ctrl.setReplyTarget,
+                  onEdit: (m) {
+                    _ctrl.setEditing(m);
+                    _input.text = m.body ?? '';
+                    _input.selection = TextSelection.collapsed(
+                      offset: _input.text.length,
+                    );
+                  },
                   onDeleteMessage: (m) => deleteChatMessage(context, _ctrl, m),
                   onReportMessage: (m) => reportChatMessage(context, _ctrl, m),
+                  onReact: (m, emoji) => _ctrl.reactToMessage(m, emoji),
                   leading: [
                     if (quote != null && quote.isNotEmpty)
                       ChatQuoteBubble(text: quote),
@@ -287,6 +299,15 @@ class _AnonymousChatPageState extends State<AnonymousChatPage> {
                       ),
                   ],
                 ),
+              ),
+              ChatComposerContextBar(
+                reply: _ctrl.replyTarget,
+                editing: _ctrl.editingMessage,
+                onClear: () {
+                  final wasEditing = _ctrl.editingMessage != null;
+                  _ctrl.clearComposerContext();
+                  if (wasEditing) _input.clear();
+                },
               ),
               Padding(
                 padding: EdgeInsets.fromLTRB(

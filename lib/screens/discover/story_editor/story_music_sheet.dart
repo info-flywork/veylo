@@ -82,7 +82,7 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
   bool _loading = true;
   String? _error;
   StoryMusicTrack? _selected;
-  final _player = AudioPlayer();
+  AudioPlayer? _player;
 
   // Trim durumu — seçimin başlangıç/bitiş oranı (0–1).
   static const _minClipSec = 5;
@@ -92,35 +92,48 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
   Timer? _rangeDebounce;
   bool _seeking = false;
 
+  AudioPlayer get _audio {
+    return _player ??= AudioPlayer();
+  }
+
   @override
   void initState() {
     super.initState();
-    _fetch();
+    // Translations.of(context) initState sırasında InheritedWidget'a bağlanamaz;
+    // ilk frame'den sonra Jamendo listesini çek.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) unawaited(_fetch());
+    });
   }
 
   @override
   void dispose() {
     _rangeDebounce?.cancel();
     _posSub?.cancel();
-    _player.dispose();
+    _player?.dispose();
     super.dispose();
   }
 
   Future<void> _fetch() async {
-    final unknown = Translations.of(context).discover.story.unknownTrack;
+    // Context'siz global çeviri — init/async güvenli.
+    final unknown = t.discover.story.unknownTrack;
     try {
       // `tags=pop` hiç sonuç döndürmüyordu ("müzik bulunamadı"). `fuzzytags` çalışıyor;
       // Jamendo bazı parametre birleşimlerinde boş döndüğü için boşsa filtresiz dene.
       var results = await _query({'fuzzytags': 'pop', 'include': 'musicinfo'});
       if (results.isEmpty) results = await _query({'order': 'popularity_total'});
       final tracks = results.map((raw) {
-        final m = raw as Map<String, dynamic>;
+        final m = Map<String, dynamic>.from(raw as Map);
         final sec = (m['duration'] as num?)?.toInt() ?? 0;
         final genres =
             ((m['musicinfo'] as Map?)?['tags'] as Map?)?['genres'] as List?;
-        final genre = genres == null || genres.isEmpty
-            ? 'Pop'
-            : _capitalize(genres.first as String);
+        String genre = 'Pop';
+        if (genres != null && genres.isNotEmpty) {
+          final first = genres.first;
+          if (first is String && first.isNotEmpty) {
+            genre = _capitalize(first);
+          }
+        }
         return StoryMusicTrack(
           title: (m['name'] as String?) ?? unknown,
           artist: (m['artist_name'] as String?) ?? unknown,
@@ -130,7 +143,7 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
           audioUrl: m['audio'] as String?,
           genre: genre,
         );
-      }).where((t) => (t.audioUrl ?? '').isNotEmpty).toList();
+      }).where((track) => (track.audioUrl ?? '').isNotEmpty).toList();
       if (!mounted) return;
       setState(() {
         _tracks = tracks;
@@ -140,7 +153,7 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
       if (!mounted) return;
       setState(() {
         _loading = false;
-        _error = Translations.of(context).discover.story.musicError;
+        _error = t.discover.story.musicError;
       });
     }
   }
@@ -198,32 +211,36 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
     final url = track.audioUrl;
     if (url == null || url.isEmpty) return;
     try {
-      await _player.setUrl(url);
-      await _player.setLoopMode(LoopMode.off);
+      final player = _audio;
+      await player.setUrl(url);
+      await player.setLoopMode(LoopMode.off);
 
       await _posSub?.cancel();
-      _posSub = _player.positionStream.listen((pos) async {
+      _posSub = player.positionStream.listen((pos) async {
         if (_seeking || !mounted) return;
+        // duration 0 veya clip henüz hazır değilse seek döngüsüne girme
+        if (_totalSec <= 0 || _clipEnd <= Duration.zero) return;
         if (pos < _clipEnd) return;
         _seeking = true;
         try {
-          await _player.seek(_clipStart);
-          _player.play();
+          await player.seek(_clipStart);
+          unawaited(player.play());
         } finally {
           _seeking = false;
         }
       });
 
-      await _player.seek(_clipStart);
-      _player.play();
+      await player.seek(_clipStart);
+      unawaited(player.play());
     } catch (_) {}
   }
 
   Future<void> _seekToClipStart() async {
     _seeking = true;
     try {
-      await _player.seek(_clipStart);
-      if (_player.playing != true) _player.play();
+      final player = _audio;
+      await player.seek(_clipStart);
+      if (!player.playing) unawaited(player.play());
     } catch (_) {
     } finally {
       _seeking = false;
@@ -251,18 +268,18 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
 
   Future<void> _back() async {
     try {
-      await _player.stop();
+      await _player?.stop();
     } catch (_) {}
     await _posSub?.cancel();
     _posSub = null;
-    setState(() => _selected = null);
+    if (mounted) setState(() => _selected = null);
   }
 
   Future<void> _save() async {
     final track = _selected;
     if (track == null) return;
     try {
-      await _player.stop();
+      await _player?.stop();
     } catch (_) {}
     if (!mounted) return;
     Navigator.of(context).pop(

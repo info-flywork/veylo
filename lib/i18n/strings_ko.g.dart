@@ -165,6 +165,14 @@ class _Translations$chats$ko extends Translations$chats$tr {
 	@override String get previewSticker => '스티커';
 	@override String get stickerEmpty => '최근 스티커 없음';
 	@override String get messageCopied => '메시지를 복사했어요';
+	@override String get messageReply => '답장';
+	@override String get messageCopy => '복사';
+	@override String get messageEdit => '수정';
+	@override String get messageDelete => '삭제';
+	@override String get messageReport => '신고';
+	@override String get messageEdited => '수정됨';
+	@override String get messageReplying => '답장 중';
+	@override String get messageEditing => '수정 중';
 	@override String get reportReasonSubtitle => '이 메시지를 신고하는 이유가 무엇인가요?';
 	@override String get reasonHarassment => '괴롭힘 또는 따돌림';
 	@override String get reasonHateSpeech => '혐오 발언';
@@ -268,6 +276,7 @@ class _Translations$profile$ko extends Translations$profile$tr {
 	@override String voiceRecording({required Object seconds}) => '녹음 중 ${seconds}초';
 	@override String get voiceReady => '음성이 준비됐어요';
 	@override String get voicePlay => '재생';
+	@override String get voiceReRecord => '다시 녹음';
 	@override String get voicePause => '일시정지';
 	@override String get voiceShare => '프로필에 공유';
 	@override String get voiceSaving => '저장 중…';
@@ -1268,6 +1277,14 @@ extension on TranslationsKo {
 			'chats.previewSticker' => '스티커',
 			'chats.stickerEmpty' => '최근 스티커 없음',
 			'chats.messageCopied' => '메시지를 복사했어요',
+			'chats.messageReply' => '답장',
+			'chats.messageCopy' => '복사',
+			'chats.messageEdit' => '수정',
+			'chats.messageDelete' => '삭제',
+			'chats.messageReport' => '신고',
+			'chats.messageEdited' => '수정됨',
+			'chats.messageReplying' => '답장 중',
+			'chats.messageEditing' => '수정 중',
 			'chats.reportReasonSubtitle' => '이 메시지를 신고하는 이유가 무엇인가요?',
 			'chats.reasonHarassment' => '괴롭힘 또는 따돌림',
 			'chats.reasonHateSpeech' => '혐오 발언',
@@ -1362,6 +1379,7 @@ extension on TranslationsKo {
 			'profile.voiceRecording' => ({required Object seconds}) => '녹음 중 ${seconds}초',
 			'profile.voiceReady' => '음성이 준비됐어요',
 			'profile.voicePlay' => '재생',
+			'profile.voiceReRecord' => '다시 녹음',
 			'profile.voicePause' => '일시정지',
 			'profile.voiceShare' => '프로필에 공유',
 			'profile.voiceSaving' => '저장 중…',
@@ -1692,6 +1710,8 @@ extension on TranslationsKo {
 			'discover.filters.distance' => '거리',
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} km',
 			'discover.filters.showMe' => '표시 대상',
+			_ => null,
+		} ?? switch (path) {
 			'discover.filters.everyone' => '모두',
 			'discover.filters.women' => '여성',
 			'discover.filters.men' => '남성',
@@ -1701,8 +1721,6 @@ extension on TranslationsKo {
 			'discover.filters.showResult' => '결과 보기',
 			'discover.post.follow' => '팔로우',
 			'discover.post.following' => '팔로잉',
-			_ => null,
-		} ?? switch (path) {
 			'discover.post.addComment' => '댓글 달기...',
 			'discover.post.commentsTitle' => '댓글',
 			'discover.post.sampleCaption' => '멋진 하루 끝에 마시는 커피 한 잔만 한 게 없죠. <3',

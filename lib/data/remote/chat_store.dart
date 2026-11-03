@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:veylo/data/remote/chat_repository.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/data/remote/socket_service.dart';
+import 'package:veylo/models/chat/chat_message.dart';
 import 'package:veylo/models/chat/chat_thread.dart';
 
 /// Sohbet listesi ve mesaj istekleri; socket olaylarıyla canlı güncellenir.
@@ -23,6 +24,10 @@ class ChatStore extends ChangeNotifier {
   final List<StreamSubscription<dynamic>> _subs = [];
   AppLifecycleListener? _lifecycle;
 
+  /// Açılan sohbetlerin son mesaj sayfası — tekrar girince boş ekran olmasın.
+  final Map<String, List<ChatMessage>> _messageCache = {};
+  final Set<String> _prefetching = {};
+
   /// Şu an ekranda açık sohbet: okunmamış sayacı artmaz.
   String? activeConversationId;
 
@@ -31,13 +36,75 @@ class ChatStore extends ChangeNotifier {
   bool get loading => _loading;
   Object? get error => _error;
 
+  List<ChatMessage>? cachedMessages(String conversationId) {
+    final list = _messageCache[conversationId];
+    if (list == null || list.isEmpty) return null;
+    return List.of(list);
+  }
+
+  void cacheMessages(String conversationId, List<ChatMessage> messages) {
+    if (conversationId.isEmpty) return;
+    _messageCache[conversationId] = List.of(messages);
+  }
+
+  void cacheUpsertMessage(String conversationId, ChatMessage message) {
+    if (conversationId.isEmpty) return;
+    final list = List.of(_messageCache[conversationId] ?? const <ChatMessage>[]);
+    final i = list.indexWhere(
+      (m) =>
+          (message.id != null && m.id == message.id) ||
+          (m.isMine && message.isMine && m.clientMsgId == message.clientMsgId),
+    );
+    if (i >= 0) {
+      list[i] = message;
+    } else {
+      list.add(message);
+    }
+    list.sort((a, b) => (a.seq ?? 1 << 30).compareTo(b.seq ?? 1 << 30));
+    // Bellekte son ~80 mesaj yeterli (sohbet açılış sayfası).
+    _messageCache[conversationId] =
+        list.length > 80 ? list.sublist(list.length - 80) : list;
+  }
+
+  void cacheRemoveMessage(String conversationId, String messageId) {
+    final list = _messageCache[conversationId];
+    if (list == null) return;
+    _messageCache[conversationId] =
+        list.where((m) => m.id != messageId).toList();
+  }
+
+  /// Sohbete tıklanınca navigasyon animasyonu sırasında mesajları çekmeye başlar.
+  Future<void> prefetchMessages(String conversationId) async {
+    if (conversationId.isEmpty ||
+        _messageCache.containsKey(conversationId) ||
+        _prefetching.contains(conversationId)) {
+      return;
+    }
+    _prefetching.add(conversationId);
+    try {
+      final page = await _repo.messages(conversationId);
+      cacheMessages(conversationId, page.items);
+    } catch (_) {
+    } finally {
+      _prefetching.remove(conversationId);
+    }
+  }
+
   /// Girişten sonra bir kez: socket'e bağlanır, listeyi yükler, olayları dinler.
   void start() {
     if (_started) return;
     _started = true;
     _socket.connect();
     _subs
-      ..add(_socket.on('message:new').listen((e) => _upsert(e['conversation'])))
+      ..add(_socket.on('message:new').listen(_onMessageNew))
+      ..add(_socket.on('message:edited').listen(_onMessageEdited))
+      ..add(
+        _socket.on('message:deleted').listen((e) {
+          final cid = e['conversationId'] as String?;
+          final mid = e['messageId'] as String?;
+          if (cid != null && mid != null) cacheRemoveMessage(cid, mid);
+        }),
+      )
       ..add(_socket.on('conversation:updated').listen(_upsert))
       ..add(_socket.on('conversation:read').listen(_onRead))
       // Gruptan çıkarıldım.
@@ -64,6 +131,30 @@ class ChatStore extends ChangeNotifier {
     refresh();
   }
 
+  void _onMessageNew(Map<String, dynamic> e) {
+    _upsert(e['conversation']);
+    final raw = e['message'];
+    if (raw is! Map) return;
+    final map = Map<String, dynamic>.from(raw);
+    final cid =
+        map['conversationId'] as String? ??
+        (e['conversation'] is Map
+            ? (e['conversation'] as Map)['id'] as String?
+            : null);
+    if (cid == null) return;
+    cacheUpsertMessage(cid, ChatMessage.fromJson(map));
+  }
+
+  void _onMessageEdited(Map<String, dynamic> e) {
+    final raw = e['message'];
+    if (raw is! Map) return;
+    final map = Map<String, dynamic>.from(raw);
+    final cid =
+        map['conversationId'] as String? ?? e['conversationId'] as String?;
+    if (cid == null) return;
+    cacheUpsertMessage(cid, ChatMessage.fromJson(map));
+  }
+
   /// Çıkışta: bağlantıyı ve listeyi sıfırla.
   void stop() {
     for (final s in _subs) {
@@ -77,6 +168,8 @@ class ChatStore extends ChangeNotifier {
     _started = false;
     _inbox = const [];
     _requests = const [];
+    _messageCache.clear();
+    _prefetching.clear();
     activeConversationId = null;
     notifyListeners();
   }
@@ -92,6 +185,10 @@ class ChatStore extends ChangeNotifier {
       _inbox = _sorted(results[0]);
       _requests = _sorted(results[1]);
       _error = null;
+      // Üstteki sohbetleri arka planda ısıt — tıklayınca boş ekran azalır.
+      for (final t in _inbox.take(5)) {
+        unawaited(prefetchMessages(t.id));
+      }
     } catch (e) {
       _error = e;
     } finally {

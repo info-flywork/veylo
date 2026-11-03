@@ -165,6 +165,14 @@ class _Translations$chats$ru extends Translations$chats$tr {
 	@override String get previewSticker => 'Стикер';
 	@override String get stickerEmpty => 'Нет недавних стикеров';
 	@override String get messageCopied => 'Сообщение скопировано';
+	@override String get messageReply => 'Ответить';
+	@override String get messageCopy => 'Копировать';
+	@override String get messageEdit => 'Изменить';
+	@override String get messageDelete => 'Удалить';
+	@override String get messageReport => 'Пожаловаться';
+	@override String get messageEdited => 'изменено';
+	@override String get messageReplying => 'Ответ';
+	@override String get messageEditing => 'Редактирование';
 	@override String get reportReasonSubtitle => 'Почему вы жалуетесь на это сообщение?';
 	@override String get reasonHarassment => 'Оскорбления или травля';
 	@override String get reasonHateSpeech => 'Язык вражды';
@@ -268,6 +276,7 @@ class _Translations$profile$ru extends Translations$profile$tr {
 	@override String voiceRecording({required Object seconds}) => 'Запись ${seconds} с';
 	@override String get voiceReady => 'Голос готов';
 	@override String get voicePlay => 'Слушать';
+	@override String get voiceReRecord => 'Перезаписать';
 	@override String get voicePause => 'Пауза';
 	@override String get voiceShare => 'Поделиться в профиле';
 	@override String get voiceSaving => 'Сохранение…';
@@ -1268,6 +1277,14 @@ extension on TranslationsRu {
 			'chats.previewSticker' => 'Стикер',
 			'chats.stickerEmpty' => 'Нет недавних стикеров',
 			'chats.messageCopied' => 'Сообщение скопировано',
+			'chats.messageReply' => 'Ответить',
+			'chats.messageCopy' => 'Копировать',
+			'chats.messageEdit' => 'Изменить',
+			'chats.messageDelete' => 'Удалить',
+			'chats.messageReport' => 'Пожаловаться',
+			'chats.messageEdited' => 'изменено',
+			'chats.messageReplying' => 'Ответ',
+			'chats.messageEditing' => 'Редактирование',
 			'chats.reportReasonSubtitle' => 'Почему вы жалуетесь на это сообщение?',
 			'chats.reasonHarassment' => 'Оскорбления или травля',
 			'chats.reasonHateSpeech' => 'Язык вражды',
@@ -1362,6 +1379,7 @@ extension on TranslationsRu {
 			'profile.voiceRecording' => ({required Object seconds}) => 'Запись ${seconds} с',
 			'profile.voiceReady' => 'Голос готов',
 			'profile.voicePlay' => 'Слушать',
+			'profile.voiceReRecord' => 'Перезаписать',
 			'profile.voicePause' => 'Пауза',
 			'profile.voiceShare' => 'Поделиться в профиле',
 			'profile.voiceSaving' => 'Сохранение…',
@@ -1692,6 +1710,8 @@ extension on TranslationsRu {
 			'discover.filters.distance' => 'Расстояние',
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} км',
 			'discover.filters.showMe' => 'Показывать',
+			_ => null,
+		} ?? switch (path) {
 			'discover.filters.everyone' => 'Всех',
 			'discover.filters.women' => 'Женщин',
 			'discover.filters.men' => 'Мужчин',
@@ -1701,8 +1721,6 @@ extension on TranslationsRu {
 			'discover.filters.showResult' => 'Показать',
 			'discover.post.follow' => 'Подписаться',
 			'discover.post.following' => 'Подписки',
-			_ => null,
-		} ?? switch (path) {
 			'discover.post.addComment' => 'Комментарий...',
 			'discover.post.commentsTitle' => 'Комментарии',
 			'discover.post.sampleCaption' => 'Нет ничего лучше чашки кофе после прекрасного дня. <3',

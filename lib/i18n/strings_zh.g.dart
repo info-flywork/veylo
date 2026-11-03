@@ -165,6 +165,14 @@ class _Translations$chats$zh extends Translations$chats$tr {
 	@override String get previewSticker => '贴纸';
 	@override String get stickerEmpty => '没有最近使用的贴纸';
 	@override String get messageCopied => '消息已复制';
+	@override String get messageReply => '回复';
+	@override String get messageCopy => '复制';
+	@override String get messageEdit => '编辑';
+	@override String get messageDelete => '删除';
+	@override String get messageReport => '举报';
+	@override String get messageEdited => '已编辑';
+	@override String get messageReplying => '正在回复';
+	@override String get messageEditing => '正在编辑';
 	@override String get reportReasonSubtitle => '你为什么要举报这条消息？';
 	@override String get reasonHarassment => '骚扰或欺凌';
 	@override String get reasonHateSpeech => '仇恨言论';
@@ -268,6 +276,7 @@ class _Translations$profile$zh extends Translations$profile$tr {
 	@override String voiceRecording({required Object seconds}) => '正在录制 ${seconds} 秒';
 	@override String get voiceReady => '语音已准备好';
 	@override String get voicePlay => '播放';
+	@override String get voiceReRecord => '重新录制';
 	@override String get voicePause => '暂停';
 	@override String get voiceShare => '分享到主页';
 	@override String get voiceSaving => '正在保存…';
@@ -1268,6 +1277,14 @@ extension on TranslationsZh {
 			'chats.previewSticker' => '贴纸',
 			'chats.stickerEmpty' => '没有最近使用的贴纸',
 			'chats.messageCopied' => '消息已复制',
+			'chats.messageReply' => '回复',
+			'chats.messageCopy' => '复制',
+			'chats.messageEdit' => '编辑',
+			'chats.messageDelete' => '删除',
+			'chats.messageReport' => '举报',
+			'chats.messageEdited' => '已编辑',
+			'chats.messageReplying' => '正在回复',
+			'chats.messageEditing' => '正在编辑',
 			'chats.reportReasonSubtitle' => '你为什么要举报这条消息？',
 			'chats.reasonHarassment' => '骚扰或欺凌',
 			'chats.reasonHateSpeech' => '仇恨言论',
@@ -1362,6 +1379,7 @@ extension on TranslationsZh {
 			'profile.voiceRecording' => ({required Object seconds}) => '正在录制 ${seconds} 秒',
 			'profile.voiceReady' => '语音已准备好',
 			'profile.voicePlay' => '播放',
+			'profile.voiceReRecord' => '重新录制',
 			'profile.voicePause' => '暂停',
 			'profile.voiceShare' => '分享到主页',
 			'profile.voiceSaving' => '正在保存…',
@@ -1692,6 +1710,8 @@ extension on TranslationsZh {
 			'discover.filters.distance' => '距离',
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} 公里',
 			'discover.filters.showMe' => '显示',
+			_ => null,
+		} ?? switch (path) {
 			'discover.filters.everyone' => '所有人',
 			'discover.filters.women' => '女性',
 			'discover.filters.men' => '男性',
@@ -1701,8 +1721,6 @@ extension on TranslationsZh {
 			'discover.filters.showResult' => '查看结果',
 			'discover.post.follow' => '关注',
 			'discover.post.following' => '已关注',
-			_ => null,
-		} ?? switch (path) {
 			'discover.post.addComment' => '添加评论...',
 			'discover.post.commentsTitle' => '评论',
 			'discover.post.sampleCaption' => '美好的一天过后来杯咖啡，真是再惬意不过了。<3',

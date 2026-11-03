@@ -165,6 +165,14 @@ class _Translations$chats$en extends Translations$chats$tr {
 	@override String get previewSticker => 'Sticker';
 	@override String get stickerEmpty => 'No recent stickers';
 	@override String get messageCopied => 'Message copied';
+	@override String get messageReply => 'Reply';
+	@override String get messageCopy => 'Copy';
+	@override String get messageEdit => 'Edit';
+	@override String get messageDelete => 'Delete';
+	@override String get messageReport => 'Report';
+	@override String get messageEdited => 'edited';
+	@override String get messageReplying => 'Replying';
+	@override String get messageEditing => 'Editing';
 	@override String get reportReasonSubtitle => 'Why are you reporting this message?';
 	@override String get reasonHarassment => 'Harassment or bullying';
 	@override String get reasonHateSpeech => 'Hate speech';
@@ -268,6 +276,7 @@ class _Translations$profile$en extends Translations$profile$tr {
 	@override String voiceRecording({required Object seconds}) => 'Recording ${seconds} s';
 	@override String get voiceReady => 'Your voice is ready';
 	@override String get voicePlay => 'Play';
+	@override String get voiceReRecord => 'Re-record';
 	@override String get voicePause => 'Pause';
 	@override String get voiceShare => 'Share on profile';
 	@override String get voiceSaving => 'Saving…';
@@ -1270,6 +1279,14 @@ extension on TranslationsEn {
 			'chats.previewSticker' => 'Sticker',
 			'chats.stickerEmpty' => 'No recent stickers',
 			'chats.messageCopied' => 'Message copied',
+			'chats.messageReply' => 'Reply',
+			'chats.messageCopy' => 'Copy',
+			'chats.messageEdit' => 'Edit',
+			'chats.messageDelete' => 'Delete',
+			'chats.messageReport' => 'Report',
+			'chats.messageEdited' => 'edited',
+			'chats.messageReplying' => 'Replying',
+			'chats.messageEditing' => 'Editing',
 			'chats.reportReasonSubtitle' => 'Why are you reporting this message?',
 			'chats.reasonHarassment' => 'Harassment or bullying',
 			'chats.reasonHateSpeech' => 'Hate speech',
@@ -1364,6 +1381,7 @@ extension on TranslationsEn {
 			'profile.voiceRecording' => ({required Object seconds}) => 'Recording ${seconds} s',
 			'profile.voiceReady' => 'Your voice is ready',
 			'profile.voicePlay' => 'Play',
+			'profile.voiceReRecord' => 'Re-record',
 			'profile.voicePause' => 'Pause',
 			'profile.voiceShare' => 'Share on profile',
 			'profile.voiceSaving' => 'Saving…',
@@ -1694,6 +1712,8 @@ extension on TranslationsEn {
 			'discover.filters.ageRange' => 'Age Range',
 			'discover.filters.ageRangeValue' => ({required Object min, required Object max}) => '${min}-${max}',
 			'discover.filters.distance' => 'Distance',
+			_ => null,
+		} ?? switch (path) {
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} km',
 			'discover.filters.showMe' => 'Show me',
 			'discover.filters.everyone' => 'Everyone',
@@ -1703,8 +1723,6 @@ extension on TranslationsEn {
 			'discover.filters.activeNow' => 'Active now',
 			'discover.filters.activeNowSubtitle' => 'Only show people online right now',
 			'discover.filters.showResult' => 'Show Result',
-			_ => null,
-		} ?? switch (path) {
 			'discover.post.follow' => 'Follow',
 			'discover.post.following' => 'Following',
 			'discover.post.addComment' => 'Add comment...',

@@ -21,6 +21,7 @@ Future<void> showVibeTalkSheet(BuildContext context, VibePost post) async {
   final wantsReply = await showModalBottomSheet<bool>(
     context: context,
     backgroundColor: Colors.transparent,
+    barrierColor: Colors.white,
     isScrollControlled: true,
     useSafeArea: false,
     builder: (sheetContext) => _VibeTalkSheet(

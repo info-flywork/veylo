@@ -165,6 +165,14 @@ class _Translations$chats$pt extends Translations$chats$tr {
 	@override String get previewSticker => 'Adesivo';
 	@override String get stickerEmpty => 'Nenhum adesivo recente';
 	@override String get messageCopied => 'Mensagem copiada';
+	@override String get messageReply => 'Responder';
+	@override String get messageCopy => 'Copiar';
+	@override String get messageEdit => 'Editar';
+	@override String get messageDelete => 'Apagar';
+	@override String get messageReport => 'Denunciar';
+	@override String get messageEdited => 'editado';
+	@override String get messageReplying => 'Respondendo';
+	@override String get messageEditing => 'Editando';
 	@override String get reportReasonSubtitle => 'Por que você está denunciando esta mensagem?';
 	@override String get reasonHarassment => 'Assédio ou bullying';
 	@override String get reasonHateSpeech => 'Discurso de ódio';
@@ -268,6 +276,7 @@ class _Translations$profile$pt extends Translations$profile$tr {
 	@override String voiceRecording({required Object seconds}) => 'Gravando ${seconds} s';
 	@override String get voiceReady => 'Sua voz está pronta';
 	@override String get voicePlay => 'Ouvir';
+	@override String get voiceReRecord => 'Gravar de novo';
 	@override String get voicePause => 'Pausar';
 	@override String get voiceShare => 'Compartilhar no perfil';
 	@override String get voiceSaving => 'Salvando…';
@@ -1268,6 +1277,14 @@ extension on TranslationsPt {
 			'chats.previewSticker' => 'Adesivo',
 			'chats.stickerEmpty' => 'Nenhum adesivo recente',
 			'chats.messageCopied' => 'Mensagem copiada',
+			'chats.messageReply' => 'Responder',
+			'chats.messageCopy' => 'Copiar',
+			'chats.messageEdit' => 'Editar',
+			'chats.messageDelete' => 'Apagar',
+			'chats.messageReport' => 'Denunciar',
+			'chats.messageEdited' => 'editado',
+			'chats.messageReplying' => 'Respondendo',
+			'chats.messageEditing' => 'Editando',
 			'chats.reportReasonSubtitle' => 'Por que você está denunciando esta mensagem?',
 			'chats.reasonHarassment' => 'Assédio ou bullying',
 			'chats.reasonHateSpeech' => 'Discurso de ódio',
@@ -1362,6 +1379,7 @@ extension on TranslationsPt {
 			'profile.voiceRecording' => ({required Object seconds}) => 'Gravando ${seconds} s',
 			'profile.voiceReady' => 'Sua voz está pronta',
 			'profile.voicePlay' => 'Ouvir',
+			'profile.voiceReRecord' => 'Gravar de novo',
 			'profile.voicePause' => 'Pausar',
 			'profile.voiceShare' => 'Compartilhar no perfil',
 			'profile.voiceSaving' => 'Salvando…',
@@ -1692,6 +1710,8 @@ extension on TranslationsPt {
 			'discover.filters.distance' => 'Distância',
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} km',
 			'discover.filters.showMe' => 'Mostrar',
+			_ => null,
+		} ?? switch (path) {
 			'discover.filters.everyone' => 'Todos',
 			'discover.filters.women' => 'Mulheres',
 			'discover.filters.men' => 'Homens',
@@ -1701,8 +1721,6 @@ extension on TranslationsPt {
 			'discover.filters.showResult' => 'Ver resultado',
 			'discover.post.follow' => 'Seguir',
 			'discover.post.following' => 'Seguindo',
-			_ => null,
-		} ?? switch (path) {
 			'discover.post.addComment' => 'Adicionar comentário...',
 			'discover.post.commentsTitle' => 'Comentários',
 			'discover.post.sampleCaption' => 'Nada como um cafezinho depois de um dia lindo. <3',

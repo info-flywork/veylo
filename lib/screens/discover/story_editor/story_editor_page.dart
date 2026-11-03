@@ -187,11 +187,16 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
   }
 
   Future<void> _openMusic() async {
+    // Sheet kendi player'ını açmadan önce editör önizlemesini durdur.
+    try {
+      await _audio.pause();
+    } catch (_) {}
+    if (!mounted) return;
     final track = await showStoryMusicSheet(context);
     if (track == null || !mounted) return;
     setState(() => _music = track);
     final url = track.audioUrl;
-    if (url == null) return;
+    if (url == null || url.isEmpty) return;
     try {
       await _audio.setUrl(url);
       final total = track.durationSec;
@@ -201,12 +206,12 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
       await _audio.setLoopMode(LoopMode.off);
       await _audio.seek(Duration(seconds: startSec));
       _musicPosSub = _audio.positionStream.listen((pos) {
-        if (!mounted) return;
-        if (endSec > 0 && pos.inSeconds >= endSec) {
-          _audio.seek(Duration(seconds: startSec));
+        if (!mounted || endSec <= 0) return;
+        if (pos.inSeconds >= endSec) {
+          unawaited(_audio.seek(Duration(seconds: startSec)));
         }
       });
-      _audio.play();
+      unawaited(_audio.play());
     } catch (_) {}
   }
 

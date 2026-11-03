@@ -55,9 +55,28 @@ class ConversationController extends ChangeNotifier {
     ChatStore.instance.activeConversationId = _thread.id;
     _subs
       ..add(_socket.on('message:new').where(_mine).listen(_onMessage))
+      ..add(_socket.on('message:edited').where(_mine).listen(_onMessage))
       ..add(
         _socket.on('message:deleted').where(_mine).listen((e) {
           _removeMessage(e['messageId'] as String?);
+          _notify();
+        }),
+      )
+      ..add(
+        _socket.on('message:reaction').where(_mine).listen((e) {
+          final id = e['messageId'] as String?;
+          if (id == null) return;
+          final raw = e['reactions'] as List? ?? const [];
+          final reactions = [
+            for (final r in raw)
+              if (r is Map)
+                ChatReaction.fromJson(Map<String, dynamic>.from(r)),
+          ];
+          final i = _messages.indexWhere((m) => m.id == id);
+          if (i < 0) return;
+          final list = List.of(_messages);
+          list[i] = list[i].copyWith(reactions: reactions);
+          _messages = list;
           _notify();
         }),
       )
@@ -84,15 +103,36 @@ class ConversationController extends ChangeNotifier {
       );
     _socket.reconnects.addListener(_syncMissed);
 
-    _hidden = await _loadHidden();
+    // Önce cache: boş ekran / 1–2 sn beklemeyi keser.
+    final cached = ChatStore.instance.cachedMessages(_thread.id);
+    if (cached != null && cached.isNotEmpty) {
+      _messages = cached;
+      _loading = false;
+      _notify();
+    }
+
+    // Ağ + gizli mesaj listesi paralel; get mesajları bloklamasın.
+    final hiddenFuture = _loadHidden();
+    final messagesFuture = _repo.messages(_thread.id);
+    final threadFuture = _repo.get(_thread.id);
+
     try {
-      _thread = (await _repo.get(_thread.id)).copyWith(unreadCount: 0);
-      final page = await _repo.messages(_thread.id);
+      final page = await messagesFuture;
+      if (_disposed) return;
       _messages = page.items;
       _hasMore = page.hasMore;
+      ChatStore.instance.cacheMessages(_thread.id, page.items);
     } catch (_) {
-      // Liste boş kalır; ekran tekrar açılınca yeniden denenir.
+      // Cache varsa ekranda kalsın.
     }
+
+    try {
+      final fresh = await threadFuture;
+      if (!_disposed) _thread = fresh.copyWith(unreadCount: 0);
+    } catch (_) {}
+
+    _hidden = await hiddenFuture;
+    if (_disposed) return;
     _loading = false;
     _notify();
     _markRead();
@@ -137,6 +177,9 @@ class ConversationController extends ChangeNotifier {
     }
     list.sort((a, b) => (a.seq ?? 1 << 30).compareTo(b.seq ?? 1 << 30));
     _messages = list;
+    if (!_thread.isLocalOnly) {
+      ChatStore.instance.cacheUpsertMessage(_thread.id, msg);
+    }
   }
 
   /// Yeniden bağlanınca kaçırılan mesajlar.
@@ -173,9 +216,35 @@ class ConversationController extends ChangeNotifier {
     }
   }
 
+  ChatMessage? _replyTarget;
+  ChatMessage? _editing;
+
+  ChatMessage? get replyTarget => _replyTarget;
+  ChatMessage? get editingMessage => _editing;
+
+  void setReplyTarget(ChatMessage? message) {
+    _replyTarget = message?.id == null || message?.type == 'SYSTEM' ? null : message;
+    _editing = null;
+    _notify();
+  }
+
+  void setEditing(ChatMessage? message) {
+    _editing = message?.canEdit == true ? message : null;
+    _replyTarget = null;
+    _notify();
+  }
+
+  void clearComposerContext() {
+    _replyTarget = null;
+    _editing = null;
+    _notify();
+  }
+
   /// Fotoğraf veya ses: önce dosya yüklenir, sonra mesaj gider.
   Future<void> sendMedia(String kind, String path) async {
     if (_thread.isLocalOnly || path.isEmpty) return;
+    final reply = _replyTarget;
+    _replyTarget = null;
     final pending = ChatMessage(
       clientMsgId: _uuid.v4(),
       isMine: true,
@@ -183,6 +252,19 @@ class ConversationController extends ChangeNotifier {
       mediaUrl: path,
       createdAt: DateTime.now(),
       status: ChatMessageStatus.sending,
+      replyToId: reply?.id,
+      replyTo: reply == null
+          ? null
+          : ChatReplyPreview(
+              id: reply.id!,
+              type: reply.type,
+              body: reply.type == 'TEXT'
+                  ? (reply.body?.startsWith('sticker:') == true
+                        ? '🎭 Sticker'
+                        : reply.body)
+                  : reply.displayText,
+              isMine: reply.isMine,
+            ),
     );
     _messages = [..._messages, pending];
     _notify();
@@ -193,16 +275,92 @@ class ConversationController extends ChangeNotifier {
   Future<void> send(String text) async {
     final body = text.trim();
     if (body.isEmpty || _thread.isLocalOnly) return;
+    final editing = _editing;
+    if (editing != null) {
+      _editing = null;
+      _notify();
+      await editMessage(editing, body);
+      return;
+    }
+    final reply = _replyTarget;
+    _replyTarget = null;
     final pending = ChatMessage(
       clientMsgId: _uuid.v4(),
       isMine: true,
       body: body,
       createdAt: DateTime.now(),
       status: ChatMessageStatus.sending,
+      replyToId: reply?.id,
+      replyTo: reply == null
+          ? null
+          : ChatReplyPreview(
+              id: reply.id!,
+              type: reply.type,
+              body: reply.type == 'TEXT'
+                  ? (reply.body?.startsWith('sticker:') == true
+                        ? '🎭 Sticker'
+                        : reply.body)
+                  : reply.displayText,
+              isMine: reply.isMine,
+            ),
     );
     _messages = [..._messages, pending];
     _notify();
     await _deliver(pending);
+  }
+
+  Future<void> editMessage(ChatMessage message, String body) async {
+    final id = message.id;
+    final text = body.trim();
+    if (id == null || text.isEmpty || !message.canEdit) return;
+    final before = message;
+    _upsertMessage(message.copyWith(body: text, editedAt: DateTime.now()));
+    _notify();
+    try {
+      final dynamic res = _socket.connected.value
+          ? await _socket.request('message:edit', {
+              'conversationId': _thread.id,
+              'messageId': id,
+              'body': text,
+            })
+          : await _repo.editMessage(_thread.id, id, text);
+      _upsertMessage(
+        ChatMessage.fromJson(Map<String, dynamic>.from(res as Map)),
+      );
+    } catch (_) {
+      _upsertMessage(before);
+      rethrow;
+    }
+    _notify();
+  }
+
+  Future<void> reactToMessage(ChatMessage message, String emoji) async {
+    final id = message.id;
+    if (id == null || _thread.isLocalOnly) return;
+    try {
+      final dynamic res = _socket.connected.value
+          ? await _socket.request('message:react', {
+              'conversationId': _thread.id,
+              'messageId': id,
+              'emoji': emoji,
+            })
+          : null;
+      final reactions = res is Map
+          ? [
+              for (final r in (res['reactions'] as List? ?? const []))
+                if (r is Map)
+                  ChatReaction.fromJson(Map<String, dynamic>.from(r)),
+            ]
+          : await _repo.reactMessage(_thread.id, id, emoji);
+      final i = _messages.indexWhere((m) => m.id == id);
+      if (i < 0) return;
+      final list = List.of(_messages);
+      list[i] = list[i].copyWith(reactions: reactions);
+      _messages = list;
+      _notify();
+    } catch (_) {
+      rethrow;
+    }
   }
 
   /// Bağlantı adımı için istek. Karşı tarafın sohbetinde bir satır olarak görünür.
@@ -265,6 +423,7 @@ class ConversationController extends ChangeNotifier {
         'type': current.type,
         if (current.type == 'TEXT') 'body': current.body,
         if (current.type != 'TEXT') 'mediaId': current.mediaId,
+        if (current.replyToId != null) 'replyToId': current.replyToId,
       };
       final dynamic res = _socket.connected.value
           ? await _socket.request('message:send', payload)
@@ -275,6 +434,7 @@ class ConversationController extends ChangeNotifier {
                 'type': current.type,
                 if (current.type == 'TEXT') 'body': current.body,
                 if (current.type != 'TEXT') 'mediaId': current.mediaId,
+                if (current.replyToId != null) 'replyToId': current.replyToId,
               },
             );
       _upsertMessage(
@@ -422,6 +582,9 @@ class ConversationController extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
+    if (_messages.isNotEmpty && !_thread.isLocalOnly) {
+      ChatStore.instance.cacheMessages(_thread.id, _messages);
+    }
     for (final s in _subs) {
       s.cancel();
     }

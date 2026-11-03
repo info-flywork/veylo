@@ -165,6 +165,14 @@ class _Translations$chats$ja extends Translations$chats$tr {
 	@override String get previewSticker => 'スタンプ';
 	@override String get stickerEmpty => '最近のスタンプはありません';
 	@override String get messageCopied => 'メッセージをコピーしました';
+	@override String get messageReply => '返信';
+	@override String get messageCopy => 'コピー';
+	@override String get messageEdit => '編集';
+	@override String get messageDelete => '削除';
+	@override String get messageReport => '報告';
+	@override String get messageEdited => '編集済み';
+	@override String get messageReplying => '返信中';
+	@override String get messageEditing => '編集中';
 	@override String get reportReasonSubtitle => 'このメッセージを報告する理由は？';
 	@override String get reasonHarassment => '嫌がらせ・いじめ';
 	@override String get reasonHateSpeech => 'ヘイトスピーチ';
@@ -268,6 +276,7 @@ class _Translations$profile$ja extends Translations$profile$tr {
 	@override String voiceRecording({required Object seconds}) => '録音中 ${seconds}秒';
 	@override String get voiceReady => '音声の準備ができました';
 	@override String get voicePlay => '再生';
+	@override String get voiceReRecord => '録り直す';
 	@override String get voicePause => '一時停止';
 	@override String get voiceShare => 'プロフィールに共有';
 	@override String get voiceSaving => '保存中…';
@@ -1268,6 +1277,14 @@ extension on TranslationsJa {
 			'chats.previewSticker' => 'スタンプ',
 			'chats.stickerEmpty' => '最近のスタンプはありません',
 			'chats.messageCopied' => 'メッセージをコピーしました',
+			'chats.messageReply' => '返信',
+			'chats.messageCopy' => 'コピー',
+			'chats.messageEdit' => '編集',
+			'chats.messageDelete' => '削除',
+			'chats.messageReport' => '報告',
+			'chats.messageEdited' => '編集済み',
+			'chats.messageReplying' => '返信中',
+			'chats.messageEditing' => '編集中',
 			'chats.reportReasonSubtitle' => 'このメッセージを報告する理由は？',
 			'chats.reasonHarassment' => '嫌がらせ・いじめ',
 			'chats.reasonHateSpeech' => 'ヘイトスピーチ',
@@ -1362,6 +1379,7 @@ extension on TranslationsJa {
 			'profile.voiceRecording' => ({required Object seconds}) => '録音中 ${seconds}秒',
 			'profile.voiceReady' => '音声の準備ができました',
 			'profile.voicePlay' => '再生',
+			'profile.voiceReRecord' => '録り直す',
 			'profile.voicePause' => '一時停止',
 			'profile.voiceShare' => 'プロフィールに共有',
 			'profile.voiceSaving' => '保存中…',
@@ -1692,6 +1710,8 @@ extension on TranslationsJa {
 			'discover.filters.distance' => '距離',
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} km',
 			'discover.filters.showMe' => '表示する相手',
+			_ => null,
+		} ?? switch (path) {
 			'discover.filters.everyone' => '全員',
 			'discover.filters.women' => '女性',
 			'discover.filters.men' => '男性',
@@ -1701,8 +1721,6 @@ extension on TranslationsJa {
 			'discover.filters.showResult' => '結果を表示',
 			'discover.post.follow' => 'フォロー',
 			'discover.post.following' => 'フォロー中',
-			_ => null,
-		} ?? switch (path) {
 			'discover.post.addComment' => 'コメントを追加...',
 			'discover.post.commentsTitle' => 'コメント',
 			'discover.post.sampleCaption' => '素敵な一日のあとに飲むコーヒーは格別。<3',

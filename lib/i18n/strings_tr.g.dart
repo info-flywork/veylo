@@ -326,6 +326,30 @@ class Translations$chats$tr {
 	/// tr: 'Mesaj kopyalandı'
 	String get messageCopied => 'Mesaj kopyalandı';
 
+	/// tr: 'Yanıtla'
+	String get messageReply => 'Yanıtla';
+
+	/// tr: 'Kopyala'
+	String get messageCopy => 'Kopyala';
+
+	/// tr: 'Düzenle'
+	String get messageEdit => 'Düzenle';
+
+	/// tr: 'Sil'
+	String get messageDelete => 'Sil';
+
+	/// tr: 'Şikayet et'
+	String get messageReport => 'Şikayet et';
+
+	/// tr: 'düzenlendi'
+	String get messageEdited => 'düzenlendi';
+
+	/// tr: 'Yanıtlanıyor'
+	String get messageReplying => 'Yanıtlanıyor';
+
+	/// tr: 'Düzenleniyor'
+	String get messageEditing => 'Düzenleniyor';
+
 	/// tr: 'Bu mesajı neden şikayet ediyorsun?'
 	String get reportReasonSubtitle => 'Bu mesajı neden şikayet ediyorsun?';
 
@@ -616,6 +640,9 @@ class Translations$profile$tr {
 
 	/// tr: 'Oynat'
 	String get voicePlay => 'Oynat';
+
+	/// tr: 'Yeniden kaydet'
+	String get voiceReRecord => 'Yeniden kaydet';
 
 	/// tr: 'Duraklat'
 	String get voicePause => 'Duraklat';
@@ -2859,6 +2886,14 @@ extension on Translations {
 			'chats.previewSticker' => 'Çıkartma',
 			'chats.stickerEmpty' => 'Son kullanılan çıkartma yok',
 			'chats.messageCopied' => 'Mesaj kopyalandı',
+			'chats.messageReply' => 'Yanıtla',
+			'chats.messageCopy' => 'Kopyala',
+			'chats.messageEdit' => 'Düzenle',
+			'chats.messageDelete' => 'Sil',
+			'chats.messageReport' => 'Şikayet et',
+			'chats.messageEdited' => 'düzenlendi',
+			'chats.messageReplying' => 'Yanıtlanıyor',
+			'chats.messageEditing' => 'Düzenleniyor',
 			'chats.reportReasonSubtitle' => 'Bu mesajı neden şikayet ediyorsun?',
 			'chats.reasonHarassment' => 'Taciz veya zorbalık',
 			'chats.reasonHateSpeech' => 'Nefret söylemi',
@@ -2953,6 +2988,7 @@ extension on Translations {
 			'profile.voiceRecording' => ({required Object seconds}) => 'Kaydediliyor ${seconds} sn',
 			'profile.voiceReady' => 'Sesin hazır',
 			'profile.voicePlay' => 'Oynat',
+			'profile.voiceReRecord' => 'Yeniden kaydet',
 			'profile.voicePause' => 'Duraklat',
 			'profile.voiceShare' => 'Profilde paylaş',
 			'profile.voiceSaving' => 'Kaydediliyor…',
@@ -3283,6 +3319,8 @@ extension on Translations {
 			'discover.filters.ageRange' => 'Yaş aralığı',
 			'discover.filters.ageRangeValue' => ({required Object min, required Object max}) => '${min}-${max}',
 			'discover.filters.distance' => 'Mesafe',
+			_ => null,
+		} ?? switch (path) {
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} km',
 			'discover.filters.showMe' => 'Göster',
 			'discover.filters.everyone' => 'Herkes',
@@ -3292,8 +3330,6 @@ extension on Translations {
 			'discover.filters.activeNow' => 'Şu an aktif',
 			'discover.filters.activeNowSubtitle' => 'Yalnızca şu an çevrimiçi olanları göster',
 			'discover.filters.showResult' => 'Sonuçları göster',
-			_ => null,
-		} ?? switch (path) {
 			'discover.post.follow' => 'Takip Et',
 			'discover.post.following' => 'Takipte',
 			'discover.post.addComment' => 'Yorum ekle...',

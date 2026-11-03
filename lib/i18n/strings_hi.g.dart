@@ -165,6 +165,14 @@ class _Translations$chats$hi extends Translations$chats$tr {
 	@override String get previewSticker => 'स्टिकर';
 	@override String get stickerEmpty => 'कोई हाल का स्टिकर नहीं';
 	@override String get messageCopied => 'संदेश कॉपी हो गया';
+	@override String get messageReply => 'जवाब दें';
+	@override String get messageCopy => 'कॉपी';
+	@override String get messageEdit => 'संपादित करें';
+	@override String get messageDelete => 'हटाएँ';
+	@override String get messageReport => 'रिपोर्ट';
+	@override String get messageEdited => 'संपादित';
+	@override String get messageReplying => 'जवाब दे रहे हैं';
+	@override String get messageEditing => 'संपादन';
 	@override String get reportReasonSubtitle => 'आप इस संदेश की रिपोर्ट क्यों कर रहे हैं?';
 	@override String get reasonHarassment => 'उत्पीड़न या धमकाना';
 	@override String get reasonHateSpeech => 'नफ़रत भरी बातें';
@@ -268,6 +276,7 @@ class _Translations$profile$hi extends Translations$profile$tr {
 	@override String voiceRecording({required Object seconds}) => 'रिकॉर्ड हो रहा है ${seconds} से';
 	@override String get voiceReady => 'आपकी आवाज़ तैयार है';
 	@override String get voicePlay => 'चलाएँ';
+	@override String get voiceReRecord => 'फिर से रिकॉर्ड करें';
 	@override String get voicePause => 'रोकें';
 	@override String get voiceShare => 'प्रोफ़ाइल पर शेयर करें';
 	@override String get voiceSaving => 'सेव हो रहा है…';
@@ -1268,6 +1277,14 @@ extension on TranslationsHi {
 			'chats.previewSticker' => 'स्टिकर',
 			'chats.stickerEmpty' => 'कोई हाल का स्टिकर नहीं',
 			'chats.messageCopied' => 'संदेश कॉपी हो गया',
+			'chats.messageReply' => 'जवाब दें',
+			'chats.messageCopy' => 'कॉपी',
+			'chats.messageEdit' => 'संपादित करें',
+			'chats.messageDelete' => 'हटाएँ',
+			'chats.messageReport' => 'रिपोर्ट',
+			'chats.messageEdited' => 'संपादित',
+			'chats.messageReplying' => 'जवाब दे रहे हैं',
+			'chats.messageEditing' => 'संपादन',
 			'chats.reportReasonSubtitle' => 'आप इस संदेश की रिपोर्ट क्यों कर रहे हैं?',
 			'chats.reasonHarassment' => 'उत्पीड़न या धमकाना',
 			'chats.reasonHateSpeech' => 'नफ़रत भरी बातें',
@@ -1362,6 +1379,7 @@ extension on TranslationsHi {
 			'profile.voiceRecording' => ({required Object seconds}) => 'रिकॉर्ड हो रहा है ${seconds} से',
 			'profile.voiceReady' => 'आपकी आवाज़ तैयार है',
 			'profile.voicePlay' => 'चलाएँ',
+			'profile.voiceReRecord' => 'फिर से रिकॉर्ड करें',
 			'profile.voicePause' => 'रोकें',
 			'profile.voiceShare' => 'प्रोफ़ाइल पर शेयर करें',
 			'profile.voiceSaving' => 'सेव हो रहा है…',
@@ -1692,6 +1710,8 @@ extension on TranslationsHi {
 			'discover.filters.distance' => 'दूरी',
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} किमी',
 			'discover.filters.showMe' => 'मुझे दिखाएँ',
+			_ => null,
+		} ?? switch (path) {
 			'discover.filters.everyone' => 'सभी',
 			'discover.filters.women' => 'महिलाएँ',
 			'discover.filters.men' => 'पुरुष',
@@ -1701,8 +1721,6 @@ extension on TranslationsHi {
 			'discover.filters.showResult' => 'रिज़ल्ट दिखाएँ',
 			'discover.post.follow' => 'फ़ॉलो करें',
 			'discover.post.following' => 'फ़ॉलो कर रहे हैं',
-			_ => null,
-		} ?? switch (path) {
 			'discover.post.addComment' => 'कमेंट करें...',
 			'discover.post.commentsTitle' => 'कमेंट',
 			'discover.post.sampleCaption' => 'एक खूबसूरत दिन के बाद एक कप कॉफ़ी जैसा कुछ नहीं। <3',

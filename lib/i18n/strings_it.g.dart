@@ -165,6 +165,14 @@ class _Translations$chats$it extends Translations$chats$tr {
 	@override String get previewSticker => 'Adesivo';
 	@override String get stickerEmpty => 'Nessun adesivo recente';
 	@override String get messageCopied => 'Messaggio copiato';
+	@override String get messageReply => 'Rispondi';
+	@override String get messageCopy => 'Copia';
+	@override String get messageEdit => 'Modifica';
+	@override String get messageDelete => 'Elimina';
+	@override String get messageReport => 'Segnala';
+	@override String get messageEdited => 'modificato';
+	@override String get messageReplying => 'Rispondendo';
+	@override String get messageEditing => 'Modifica';
 	@override String get reportReasonSubtitle => 'Perché stai segnalando questo messaggio?';
 	@override String get reasonHarassment => 'Molestie o bullismo';
 	@override String get reasonHateSpeech => 'Incitamento all\'odio';
@@ -268,6 +276,7 @@ class _Translations$profile$it extends Translations$profile$tr {
 	@override String voiceRecording({required Object seconds}) => 'Registrazione ${seconds} s';
 	@override String get voiceReady => 'La tua voce è pronta';
 	@override String get voicePlay => 'Riproduci';
+	@override String get voiceReRecord => 'Registra di nuovo';
 	@override String get voicePause => 'Pausa';
 	@override String get voiceShare => 'Condividi sul profilo';
 	@override String get voiceSaving => 'Salvataggio…';
@@ -1268,6 +1277,14 @@ extension on TranslationsIt {
 			'chats.previewSticker' => 'Adesivo',
 			'chats.stickerEmpty' => 'Nessun adesivo recente',
 			'chats.messageCopied' => 'Messaggio copiato',
+			'chats.messageReply' => 'Rispondi',
+			'chats.messageCopy' => 'Copia',
+			'chats.messageEdit' => 'Modifica',
+			'chats.messageDelete' => 'Elimina',
+			'chats.messageReport' => 'Segnala',
+			'chats.messageEdited' => 'modificato',
+			'chats.messageReplying' => 'Rispondendo',
+			'chats.messageEditing' => 'Modifica',
 			'chats.reportReasonSubtitle' => 'Perché stai segnalando questo messaggio?',
 			'chats.reasonHarassment' => 'Molestie o bullismo',
 			'chats.reasonHateSpeech' => 'Incitamento all\'odio',
@@ -1362,6 +1379,7 @@ extension on TranslationsIt {
 			'profile.voiceRecording' => ({required Object seconds}) => 'Registrazione ${seconds} s',
 			'profile.voiceReady' => 'La tua voce è pronta',
 			'profile.voicePlay' => 'Riproduci',
+			'profile.voiceReRecord' => 'Registra di nuovo',
 			'profile.voicePause' => 'Pausa',
 			'profile.voiceShare' => 'Condividi sul profilo',
 			'profile.voiceSaving' => 'Salvataggio…',
@@ -1692,6 +1710,8 @@ extension on TranslationsIt {
 			'discover.filters.distance' => 'Distanza',
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} km',
 			'discover.filters.showMe' => 'Mostrami',
+			_ => null,
+		} ?? switch (path) {
 			'discover.filters.everyone' => 'Tutti',
 			'discover.filters.women' => 'Donne',
 			'discover.filters.men' => 'Uomini',
@@ -1701,8 +1721,6 @@ extension on TranslationsIt {
 			'discover.filters.showResult' => 'Mostra risultati',
 			'discover.post.follow' => 'Segui',
 			'discover.post.following' => 'Segui già',
-			_ => null,
-		} ?? switch (path) {
 			'discover.post.addComment' => 'Aggiungi un commento...',
 			'discover.post.commentsTitle' => 'Commenti',
 			'discover.post.sampleCaption' => 'Non c\'è niente di meglio di un caffè dopo una bella giornata. <3',

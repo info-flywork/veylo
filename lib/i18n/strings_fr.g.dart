@@ -165,6 +165,14 @@ class _Translations$chats$fr extends Translations$chats$tr {
 	@override String get previewSticker => 'Autocollant';
 	@override String get stickerEmpty => 'Aucun autocollant récent';
 	@override String get messageCopied => 'Message copié';
+	@override String get messageReply => 'Répondre';
+	@override String get messageCopy => 'Copier';
+	@override String get messageEdit => 'Modifier';
+	@override String get messageDelete => 'Supprimer';
+	@override String get messageReport => 'Signaler';
+	@override String get messageEdited => 'modifié';
+	@override String get messageReplying => 'Réponse';
+	@override String get messageEditing => 'Modification';
 	@override String get reportReasonSubtitle => 'Pourquoi signales-tu ce message ?';
 	@override String get reasonHarassment => 'Harcèlement ou intimidation';
 	@override String get reasonHateSpeech => 'Discours haineux';
@@ -268,6 +276,7 @@ class _Translations$profile$fr extends Translations$profile$tr {
 	@override String voiceRecording({required Object seconds}) => 'Enregistrement ${seconds} s';
 	@override String get voiceReady => 'Ta voix est prête';
 	@override String get voicePlay => 'Lecture';
+	@override String get voiceReRecord => 'Réenregistrer';
 	@override String get voicePause => 'Pause';
 	@override String get voiceShare => 'Partager sur le profil';
 	@override String get voiceSaving => 'Enregistrement…';
@@ -1268,6 +1277,14 @@ extension on TranslationsFr {
 			'chats.previewSticker' => 'Autocollant',
 			'chats.stickerEmpty' => 'Aucun autocollant récent',
 			'chats.messageCopied' => 'Message copié',
+			'chats.messageReply' => 'Répondre',
+			'chats.messageCopy' => 'Copier',
+			'chats.messageEdit' => 'Modifier',
+			'chats.messageDelete' => 'Supprimer',
+			'chats.messageReport' => 'Signaler',
+			'chats.messageEdited' => 'modifié',
+			'chats.messageReplying' => 'Réponse',
+			'chats.messageEditing' => 'Modification',
 			'chats.reportReasonSubtitle' => 'Pourquoi signales-tu ce message ?',
 			'chats.reasonHarassment' => 'Harcèlement ou intimidation',
 			'chats.reasonHateSpeech' => 'Discours haineux',
@@ -1362,6 +1379,7 @@ extension on TranslationsFr {
 			'profile.voiceRecording' => ({required Object seconds}) => 'Enregistrement ${seconds} s',
 			'profile.voiceReady' => 'Ta voix est prête',
 			'profile.voicePlay' => 'Lecture',
+			'profile.voiceReRecord' => 'Réenregistrer',
 			'profile.voicePause' => 'Pause',
 			'profile.voiceShare' => 'Partager sur le profil',
 			'profile.voiceSaving' => 'Enregistrement…',
@@ -1692,6 +1710,8 @@ extension on TranslationsFr {
 			'discover.filters.distance' => 'Distance',
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} km',
 			'discover.filters.showMe' => 'Me montrer',
+			_ => null,
+		} ?? switch (path) {
 			'discover.filters.everyone' => 'Tout le monde',
 			'discover.filters.women' => 'Femmes',
 			'discover.filters.men' => 'Hommes',
@@ -1701,8 +1721,6 @@ extension on TranslationsFr {
 			'discover.filters.showResult' => 'Voir les résultats',
 			'discover.post.follow' => 'Suivre',
 			'discover.post.following' => 'Abonné(e)',
-			_ => null,
-		} ?? switch (path) {
 			'discover.post.addComment' => 'Ajouter un commentaire...',
 			'discover.post.commentsTitle' => 'Commentaires',
 			'discover.post.sampleCaption' => 'Rien de tel qu\'une tasse de café après une belle journée. <3',
