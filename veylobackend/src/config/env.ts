@@ -28,10 +28,6 @@ const envSchema = z
     /** Sadece test: anonim arama süresi (sn). Production'da her zaman 60. */
     CALL_ANON_SECONDS: z.coerce.number().int().min(1).max(60).optional(),
     /**
-     * true iken bakiye yetmese de oda, arama ve diğer ücretli işlemler geçer.
-     * Mağazaya çıkmadan önce false yap.
-     */
-    /**
      * Mağaza henüz RevenueCat'e bağlı değilken: uygulamadaki paket satın alma ödeme almadan token yükler.
      * Gerçek ödemeye geçince mutlaka false olmalı.
      */
@@ -39,9 +35,13 @@ const envSchema = z
       .string()
       .default('false')
       .transform((v) => v === 'true'),
+    /**
+     * true iken taç / oda / arama vb. ücretli işlemlerde bakiye düşmez (yerel test).
+     * Varsayılan false. Production'da true olamaz.
+     */
     SKIP_TOKEN_SPEND: z
       .string()
-      .default('true')
+      .default('false')
       .transform((v) => v === 'true'),
     /** AI karakterler (persona). Boşsa hazır cümlelerle cevap verir ve vibe paylaşır. */
     OPENAI_API_KEY: z.string().optional(),
@@ -65,6 +65,9 @@ const envSchema = z
   })
   .refine((e) => !(e.NODE_ENV === 'production' && e.AUTH_DEV_BYPASS), {
     message: 'AUTH_DEV_BYPASS production ortamında açık olamaz',
+  })
+  .refine((e) => !(e.NODE_ENV === 'production' && e.SKIP_TOKEN_SPEND), {
+    message: 'SKIP_TOKEN_SPEND production ortamında açık olamaz',
   })
   .refine((e) => !(e.NODE_ENV === 'production' && e.REVENUECAT_WEBHOOK_AUTH === 'change-me'), {
     message: 'REVENUECAT_WEBHOOK_AUTH production ortamında ayarlanmalı',

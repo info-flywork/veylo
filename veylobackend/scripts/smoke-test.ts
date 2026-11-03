@@ -186,8 +186,8 @@ async function main() {
   check(r2.data.connection.revealed && r2.data.peer.id === alice.id, 'iki taraf onaylayınca profiller açıldı');
 
   // ── Token: çerçeve satın alma
-  // SKIP_TOKEN_SPEND varsayılan açık: testte bakiye düşmez.
-  const tokensFree = (process.env.SKIP_TOKEN_SPEND ?? 'true') !== 'false';
+  // SKIP_TOKEN_SPEND=true ise testte bakiye düşmez (yerel).
+  const tokensFree = process.env.SKIP_TOKEN_SPEND === 'true';
   const buy = await call(alice.token, 'POST', '/store/borders/sapphire/purchase');
   if (tokensFree) {
     check(buy.status === 200 && buy.data.charged === 0, 'token kontrolü kapalı: çerçeve bakiyesiz alındı');

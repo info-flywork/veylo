@@ -268,6 +268,14 @@ async function leave(viewerId: string, roomId: string) {
   if (r.participants.size === 0) await endRoom(roomId, isHost ? 'HOST_LEFT' : 'EMPTY');
 }
 
+/** Sahip odayı herkes için kapatır (PiP / çarpı). */
+async function endByHost(viewerId: string, roomId: string) {
+  const r = live.get(roomId);
+  if (!r) return;
+  if (r.room.hostId !== viewerId) throw AppError.forbidden('NOT_ROOM_HOST');
+  await endRoom(roomId, 'HOST_LEFT');
+}
+
 function person(r: LiveRoom, uid: number) {
   return [...r.participants.values()].find((p) => agoraUid(p.userId) === uid);
 }
@@ -422,6 +430,7 @@ export const roomService = {
   create,
   join,
   leave,
+  endByHost,
   kick,
   setMic,
   setMicLock,

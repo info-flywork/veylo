@@ -20,6 +20,7 @@ export function registerRoomHandlers(socket: Socket) {
 
   on(socket, 'room:join', roomJoinEvent, ({ roomId, anonymous }) => roomService.join(userId, roomId, anonymous));
   on(socket, 'room:leave', roomIdParams, ({ roomId }) => roomService.leave(userId, roomId));
+  on(socket, 'room:end', roomIdParams, ({ roomId }) => roomService.endByHost(userId, roomId));
   on(socket, 'room:kick', roomKickEvent, ({ roomId, uid }) => roomService.kick(userId, roomId, uid));
   on(socket, 'room:mic_lock', roomMicLockEvent, ({ roomId, uid, locked }) =>
     roomService.setMicLock(userId, roomId, uid, locked),
