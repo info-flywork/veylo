@@ -4,6 +4,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:veylo/app.dart';
 import 'package:veylo/data/local/language_store.dart';
 import 'package:veylo/data/local/local_profile_store.dart';
+import 'package:veylo/data/remote/purchase_service.dart';
 import 'package:veylo/data/remote/push_service.dart';
 import 'package:veylo/firebase_options.dart';
 import 'package:veylo/i18n/strings.g.dart';
@@ -17,6 +18,7 @@ Future<void> main() async {
   await LocaleSettings.setLocaleRaw(await LanguageStore.instance.current());
   await LocalProfileStore.instance.init();
   await PushService.instance.init();
+  await PurchaseService.instance.configure();
 
   runApp(
     TranslationProvider(

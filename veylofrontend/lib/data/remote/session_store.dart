@@ -10,6 +10,7 @@ import 'package:veylo/data/remote/discover_store.dart';
 import 'package:veylo/data/remote/group_store.dart';
 import 'package:veylo/data/remote/room_store.dart';
 import 'package:veylo/data/remote/note_store.dart';
+import 'package:veylo/data/remote/purchase_service.dart';
 import 'package:veylo/data/remote/push_service.dart';
 import 'package:veylo/data/remote/vibe_store.dart';
 import 'package:veylo/models/profile/me.dart';
@@ -217,7 +218,10 @@ class SessionStore extends ChangeNotifier {
 
   Future<void> _createSession() async {
     final res = await _api.post('/auth/session') as Map<String, dynamic>;
-    setMe(Me.fromJson(res['user'] as Map<String, dynamic>));
+    final me = Me.fromJson(res['user'] as Map<String, dynamic>);
+    setMe(me);
+    // RevenueCat webhook bakiyeyi bizim user id ile eşleştirsin.
+    await PurchaseService.instance.logIn(me.id);
   }
 
   Future<void> refreshMe() async {
@@ -259,6 +263,7 @@ class SessionStore extends ChangeNotifier {
   Future<void> signOut() async {
     // Cihaz kaydı silinirken hâlâ oturum token'ı gerekiyor.
     await PushService.instance.stop();
+    await PurchaseService.instance.logOut();
     _me = null;
     ChatStore.instance.stop();
     VibeStore.instance.clear();

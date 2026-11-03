@@ -142,8 +142,9 @@ class TokenRepository {
     ),
   );
 
-  /// RevenueCat bağlanana kadar: paket ödemesiz yüklenir (sunucuda STORE_TEST_PURCHASES).
-  Future<int> purchase(String productId) async {
+  /// Eski test satın alma (yalnız STORE_TEST_PURCHASES=true sunucuda).
+  /// Gerçek ödeme [PurchaseService] üzerinden.
+  Future<int> testPurchase(String productId) async {
     final res =
         await _api.post('/tokens/test-purchase', body: {'productId': productId})
             as Map;
