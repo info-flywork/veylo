@@ -9,6 +9,7 @@ import { prisma } from '../lib/prisma';
 import { emitToUser } from '../realtime/emitter';
 import { presence } from '../realtime/presence.store';
 import { serializeUserSummary } from '../serializers/user.serializer';
+import { maskName } from '../utils/mask';
 import { notificationService } from './notification.service';
 import { safetyService } from './safety.service';
 import { tokenService } from './token.service';
@@ -20,6 +21,8 @@ export const CALL = {
   voteSeconds: 20,
   /** Uygulama arkadayken de yetişilsin diye çalma süresi. */
   ringSeconds: 45,
+  /** Sohbetten başlatılan birebir aramanın çalma süresi. */
+  directRingSeconds: 30,
   /** Bir görüntülü ödemenin süresi. */
   videoMinutes: 15,
   /** Az önce konuşulan kişiyle hemen tekrar eşleşilmez. */
@@ -61,6 +64,27 @@ interface LiveCall {
   videoTimer: NodeJS.Timeout | null;
   /** Karşı taraf AI karakterse oyunu kendisi vermiş sayılır. */
   personaId: string | null;
+  /** Sohbetten başlatılan birebir arama: süre/oy/ücret yok. */
+  direct: boolean;
+}
+
+/** Sohbet başlığından başlatılan, karşı tarafta çalan birebir arama. */
+interface DirectInvite {
+  id: string;
+  callerId: string;
+  calleeId: string;
+  conversationId: string;
+  video: boolean;
+  videoAllowed: boolean;
+  timer: NodeJS.Timeout;
+}
+
+/** startCall seçeneği: birebir aramada 60 sn sınırı, oy, ücret ve tekrar eşleşme beklemesi yok. */
+interface DirectStart {
+  inviteId: string;
+  conversationId: string;
+  video: boolean;
+  videoAllowed: boolean;
 }
 
 interface PendingInvite {
@@ -77,6 +101,12 @@ const calls = new Map<string, LiveCall>();
 const userCall = new Map<string, string>();
 const recentPair = new Map<string, number>();
 const graceTimers = new Map<string, NodeJS.Timeout>();
+/** inviteId → çalan birebir arama. */
+const directInvites = new Map<string, DirectInvite>();
+
+/** Birebir araması çalan (arayan ya da aranan) kullanıcı. */
+const isRinging = (userId: string) =>
+  [...directInvites.values()].some((d) => d.callerId === userId || d.calleeId === userId);
 
 const pairKey = (x: string, y: string) => (x < y ? `${x}:${y}` : `${y}:${x}`);
 const peerOf = (c: LiveCall, userId: string) => (c.a === userId ? c.b : c.a);
@@ -91,6 +121,7 @@ function compatible(me: Ticket, other: Ticket) {
   if (me.userId === other.userId) return false;
   if (me.blocked.has(other.userId) || other.blocked.has(me.userId)) return false;
   if (!presence.isOnline(other.userId)) return false;
+  if (isRinging(me.userId) || isRinging(other.userId)) return false;
   if (me.target !== 'any' && other.gender !== TARGET_GENDER[me.target]) return false;
   if (other.target !== 'any' && me.gender !== TARGET_GENDER[other.target]) return false;
   return true;
@@ -120,7 +151,7 @@ function removeFromQueue(userId: string) {
  * Cinsiyet seçen kişi eşleşince 10 token öder (iptal ederse ödemez).
  */
 async function joinQueue(userId: string, target: CallTarget) {
-  if (userCall.has(userId)) throw AppError.conflict('ALREADY_IN_CALL');
+  if (userCall.has(userId) || isRinging(userId)) throw AppError.conflict('ALREADY_IN_CALL');
   leaveQueue(userId);
 
   const user = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
@@ -190,7 +221,11 @@ async function matchOnlineHuman(userId: string) {
   const i = queue.findIndex((t) => t.userId === userId);
   if (i === -1 || userCall.has(userId)) return false;
   const me = queue[i]!;
-  const busy = new Set([...userCall.keys(), ...queue.map((t) => t.userId)]);
+  const busy = new Set([
+    ...userCall.keys(),
+    ...queue.map((t) => t.userId),
+    ...[...directInvites.values()].flatMap((d) => [d.callerId, d.calleeId]),
+  ]);
   const gender = me.target === 'any' ? undefined : TARGET_GENDER[me.target];
   let ids = presence
     .onlineUserIds()
@@ -247,9 +282,9 @@ async function matchOnlineHuman(userId: string) {
   emitToUser(pick.id, 'call:incoming', { inviteId: invite.id });
   void notificationService.pushToUser(
     pick.id,
-    () => ({
-      title: 'Incoming call',
-      body: 'Someone wants to start an anonymous call.',
+    (t) => ({
+      title: t.incomingCallTitle,
+      body: t.incomingCallBody,
       data: { type: 'call', inviteId: invite.id },
     }),
     { evenIfOnline: true },
@@ -270,6 +305,7 @@ function cancelInvite(callerId: string, resumeSearch: boolean) {
 }
 
 async function acceptInvite(userId: string, inviteId: string) {
+  if (directInvites.has(inviteId)) return acceptDirect(userId, inviteId);
   const inv = [...invites.values()].find((v) => v.id === inviteId && v.calleeId === userId);
   if (!inv) throw AppError.notFound('INVITE_NOT_FOUND');
   clearTimeout(inv.timer);
@@ -287,6 +323,12 @@ async function acceptInvite(userId: string, inviteId: string) {
 }
 
 function declineInvite(userId: string, inviteId: string) {
+  const direct = directInvites.get(inviteId);
+  if (direct) {
+    if (direct.calleeId !== userId) return { declined: true };
+    endDirectInvite(direct, 'DECLINED');
+    return { declined: true };
+  }
   const inv = [...invites.values()].find((v) => v.id === inviteId && v.calleeId === userId);
   if (!inv) return { declined: true };
   cancelInvite(inv.caller.userId, true);
@@ -327,19 +369,20 @@ function leaveQueue(userId: string) {
   if (i >= 0) queue.splice(i, 1);
 }
 
-async function startCall(a: Ticket, b: Ticket) {
+async function startCall(a: Ticket, b: Ticket, direct?: DirectStart) {
   const call = await prisma.call.create({
     data: {
       userAId: a.userId,
       userBId: b.userId,
       aFilter: a.target === 'any' ? null : a.target,
       bFilter: b.target === 'any' ? null : b.target,
+      conversationId: direct?.conversationId ?? null,
     },
   });
 
   // Cinsiyet filtresi ücreti: eşleşme anında. Bakiye o arada yetmezse görüşme başlamaz.
   for (const t of [a, b]) {
-    if (t.target === 'any') continue;
+    if (direct || t.target === 'any') continue;
     try {
       const { balance } = await prisma.$transaction((tx) =>
         tokenService.spend(tx, t.userId, TOKENS.callGenderFilter, 'CALL_GENDER_FILTER', call.id),
@@ -362,17 +405,38 @@ async function startCall(a: Ticket, b: Ticket) {
     a: a.userId,
     b: b.userId,
     channel: `call_${call.id}`,
-    phase: 'anon',
+    phase: direct ? 'revealed' : 'anon',
     keep: new Set(),
     timers: [],
     videoRequestedBy: null,
     videoUntil: null,
     videoTimer: null,
     personaId: a.persona ? a.userId : b.persona ? b.userId : null,
+    direct: Boolean(direct),
   };
   calls.set(call.id, live);
   userCall.set(a.userId, call.id);
   userCall.set(b.userId, call.id);
+
+  if (direct) {
+    for (const [me, peer] of [
+      [a.userId, b.userId],
+      [b.userId, a.userId],
+    ] as const) {
+      emitToUser(me, 'call:direct_started', {
+        callId: call.id,
+        inviteId: direct.inviteId,
+        conversationId: direct.conversationId,
+        video: direct.video,
+        videoAllowed: direct.videoAllowed,
+        rtc: rtcCredentials(live.channel, me),
+        peerUid: agoraUid(peer),
+      });
+    }
+    logger.info({ callId: call.id, conversationId: direct.conversationId }, 'Birebir arama başladı');
+    return;
+  }
+
   recentPair.set(pairKey(a.userId, b.userId), Date.now());
 
   const endsAt = new Date(call.startedAt.getTime() + CALL.anonSeconds * 1000);
@@ -460,6 +524,8 @@ async function openDirect(a: string, b: string) {
 /** Kimlikler açıldıktan sonra görüntülüye geçme isteği (isteyen öder). */
 async function requestVideo(userId: string, callId: string) {
   const c = loadMine(userId, callId);
+  // Birebir aramada görüntü ücretsiz; kamera istemciden açılır.
+  if (c.direct) throw AppError.badRequest('DIRECT_CALL');
   if (c.phase !== 'revealed') throw AppError.badRequest('NOT_REVEALED');
   if (c.videoUntil && c.videoUntil > new Date()) throw AppError.conflict('VIDEO_ACTIVE');
   const user = await prisma.user.findUniqueOrThrow({ where: { id: userId }, select: { tokenBalance: true } });
@@ -501,6 +567,129 @@ async function respondVideo(userId: string, callId: string, accept: boolean) {
   return { started: true };
 }
 
+// ───────────────────────────── birebir (sohbetten) ─────────────────────────────
+
+type DirectEndReason = 'CANCELLED' | 'TIMEOUT' | 'DECLINED';
+
+function endDirectInvite(d: DirectInvite, reason: DirectEndReason) {
+  if (directInvites.get(d.id) !== d) return;
+  clearTimeout(d.timer);
+  directInvites.delete(d.id);
+  emitToUser(d.calleeId, 'call:invite_ended', { inviteId: d.id, reason });
+  if (reason === 'DECLINED') emitToUser(d.callerId, 'call:direct_declined', { inviteId: d.id });
+  if (reason === 'TIMEOUT') emitToUser(d.callerId, 'call:direct_no_answer', { inviteId: d.id });
+}
+
+/** Aramada, sırada ya da çalan bir aramada mı. */
+function isBusy(userId: string) {
+  return (
+    userCall.has(userId) ||
+    queue.some((t) => t.userId === userId) ||
+    invites.has(userId) ||
+    [...invites.values()].some((v) => v.calleeId === userId) ||
+    isRinging(userId)
+  );
+}
+
+/** Sohbet başlığından birebir sesli/görüntülü arama başlatır; karşı tarafta 30 sn çalar. */
+async function startDirect(userId: string, conversationId: string, video: boolean) {
+  const c = await prisma.conversation.findUnique({
+    where: { id: conversationId },
+    include: { members: { include: { user: true } } },
+  });
+  const me = c?.members.find((m) => m.userId === userId);
+  if (!c || !me) throw AppError.notFound('CONVERSATION_NOT_FOUND');
+  if (c.type !== 'DIRECT' && c.type !== 'ANONYMOUS') throw AppError.badRequest('NOT_CALLABLE');
+  if (c.status !== 'ACCEPTED') throw AppError.forbidden('REQUEST_NOT_ACCEPTED');
+  const peer = c.members.find((m) => m.userId !== userId);
+  if (!peer || peer.user.status !== 'ACTIVE' || peer.user.isPersona) throw AppError.badRequest('PEER_UNAVAILABLE');
+  if (await safetyService.isBlockedBetween(userId, peer.userId)) throw AppError.forbidden('BLOCKED');
+  const videoAllowed = c.type === 'DIRECT' || Boolean(c.revealedAt);
+  if (video && !videoAllowed) throw AppError.forbidden('VIDEO_LOCKED');
+  if (userCall.has(userId) || isRinging(userId)) throw AppError.conflict('ALREADY_IN_CALL');
+  if (isBusy(peer.userId)) throw AppError.conflict('PEER_BUSY');
+  // Rastgele arama sırasındaysa oradan çıkar.
+  leaveQueue(userId);
+
+  const anonymous = c.type === 'ANONYMOUS' && !c.revealedAt;
+  const fullName = me.user.displayName ?? me.user.username ?? '';
+  const name = anonymous && !me.nameShared && !me.profileShared ? maskName(fullName) : fullName;
+  const avatarUrl = anonymous ? null : me.user.avatarUrl;
+
+  const invite: DirectInvite = {
+    id: randomUUID(),
+    callerId: userId,
+    calleeId: peer.userId,
+    conversationId: c.id,
+    video,
+    videoAllowed,
+    timer: setTimeout(() => {
+      const cur = directInvites.get(invite.id);
+      if (cur) endDirectInvite(cur, 'TIMEOUT');
+    }, CALL.directRingSeconds * 1000),
+  };
+  directInvites.set(invite.id, invite);
+
+  emitToUser(peer.userId, 'call:incoming', {
+    inviteId: invite.id,
+    kind: 'direct',
+    conversationId: c.id,
+    video,
+    caller: { displayName: name, avatarUrl, isAi: me.user.isPersona },
+  });
+  void notificationService.pushToUser(
+    peer.userId,
+    (t) => ({
+      title: t.incomingCallTitle,
+      body: video ? t.directVideoCallBody(name) : t.directCallBody(name),
+      data: {
+        type: 'call',
+        kind: 'direct',
+        inviteId: invite.id,
+        conversationId: c.id,
+        video: video ? '1' : '0',
+        name,
+        avatarUrl: avatarUrl ?? '',
+      },
+    }),
+    { evenIfOnline: true },
+  );
+  logger.info({ caller: userId, callee: peer.userId, conversationId: c.id, video }, 'Birebir arama çalıyor');
+  return { inviteId: invite.id, ringSeconds: CALL.directRingSeconds };
+}
+
+/** Arayan vazgeçti. */
+function cancelDirect(userId: string, inviteId: string) {
+  const d = directInvites.get(inviteId);
+  if (d && d.callerId === userId) endDirectInvite(d, 'CANCELLED');
+  return { cancelled: true };
+}
+
+async function acceptDirect(userId: string, inviteId: string) {
+  const d = directInvites.get(inviteId);
+  if (!d || d.calleeId !== userId) throw AppError.notFound('INVITE_NOT_FOUND');
+  if (userCall.has(userId)) throw AppError.conflict('ALREADY_IN_CALL');
+  clearTimeout(d.timer);
+  directInvites.delete(d.id);
+  if (userCall.has(d.callerId)) {
+    emitToUser(d.calleeId, 'call:invite_ended', { inviteId: d.id, reason: 'CANCELLED' });
+    throw AppError.notFound('INVITE_NOT_FOUND');
+  }
+  // Aranan rastgele aramadaydıysa / ona başka arama çalıyorsa bırakılır.
+  leaveQueue(userId);
+  for (const inv of [...invites.values()]) {
+    if (inv.calleeId === userId) cancelInvite(inv.caller.userId, true);
+  }
+  const ticket = (id: string): Ticket => ({ userId: id, gender: null, target: 'any', blocked: new Set() });
+  await startCall(ticket(d.callerId), ticket(d.calleeId), {
+    inviteId: d.id,
+    conversationId: d.conversationId,
+    video: d.video && d.videoAllowed,
+    videoAllowed: d.videoAllowed,
+  });
+  return { accepted: true };
+}
+
 // ───────────────────────────── bitirme ─────────────────────────────
 
 async function end(callId: string, reason: 'HANGUP' | 'TIMEOUT' | 'DISCONNECT' | 'NO_KEEP', by?: string) {
@@ -526,6 +715,10 @@ async function hangUp(userId: string, callId: string) {
 /** Son bağlantısı koptu: sıradan çıkar, kısa bir süre içinde dönmezse görüşmeyi bitir. */
 function onDisconnect(userId: string) {
   leaveQueue(userId);
+  // Arayanın bağlantısı koptu: çalma durur. Aranan çevrimdışıysa bildirimle çalmaya devam eder.
+  for (const d of [...directInvites.values()]) {
+    if (d.callerId === userId) endDirectInvite(d, 'CANCELLED');
+  }
   for (const inv of [...invites.values()]) {
     if (inv.calleeId === userId) cancelInvite(inv.caller.userId, true);
   }
@@ -552,6 +745,8 @@ export const callService = {
   leaveQueue,
   acceptInvite,
   declineInvite,
+  startDirect,
+  cancelDirect,
   keepTalking,
   requestVideo,
   respondVideo,

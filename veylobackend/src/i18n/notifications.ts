@@ -25,6 +25,10 @@ export interface NotificationTexts {
   roomCreatedTitle: string;
   roomCreatedBody: (name: string, room: string) => string;
   roomCreatedAnonymousBody: (room: string) => string;
+  incomingCallTitle: string;
+  incomingCallBody: string;
+  directCallBody: (name: string) => string;
+  directVideoCallBody: (name: string) => string;
 }
 
 /** Push bildirim metinleri: uygulamadaki 12 dil (Profil > Languages). */
@@ -52,6 +56,10 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     roomCreatedTitle: 'New room',
     roomCreatedBody: (n, r) => `${n} created a room: ${r}`,
     roomCreatedAnonymousBody: (r) => `A friend created a room: ${r}`,
+    incomingCallTitle: 'Incoming call',
+    incomingCallBody: 'Someone wants to start an anonymous call.',
+    directCallBody: (n) => `${n} is calling you`,
+    directVideoCallBody: (n) => `${n} is video calling you`,
   },
   tr: {
     messageRequestTitle: 'Yeni mesaj isteği',
@@ -76,6 +84,10 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     roomCreatedTitle: 'Yeni oda',
     roomCreatedBody: (n, r) => `${n} bir oda oluşturdu: ${r}`,
     roomCreatedAnonymousBody: (r) => `Bir arkadaşın bir oda oluşturdu: ${r}`,
+    incomingCallTitle: 'Gelen arama',
+    incomingCallBody: 'Biri seninle anonim bir arama başlatmak istiyor.',
+    directCallBody: (n) => `${n} seni arıyor`,
+    directVideoCallBody: (n) => `${n} seni görüntülü arıyor`,
   },
   de: {
     messageRequestTitle: 'Neue Nachrichtenanfrage',
@@ -100,6 +112,10 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     roomCreatedTitle: 'Neuer Raum',
     roomCreatedBody: (n, r) => `${n} hat einen Raum erstellt: ${r}`,
     roomCreatedAnonymousBody: (r) => `Ein Freund hat einen Raum erstellt: ${r}`,
+    incomingCallTitle: 'Eingehender Anruf',
+    incomingCallBody: 'Jemand möchte einen anonymen Anruf mit dir starten.',
+    directCallBody: (n) => `${n} ruft dich an`,
+    directVideoCallBody: (n) => `${n} ruft dich per Video an`,
   },
   it: {
     messageRequestTitle: 'Nuova richiesta di messaggio',
@@ -124,6 +140,10 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     roomCreatedTitle: 'Nuova stanza',
     roomCreatedBody: (n, r) => `${n} ha creato una stanza: ${r}`,
     roomCreatedAnonymousBody: (r) => `Un amico ha creato una stanza: ${r}`,
+    incomingCallTitle: 'Chiamata in arrivo',
+    incomingCallBody: 'Qualcuno vuole iniziare una chiamata anonima con te.',
+    directCallBody: (n) => `${n} ti sta chiamando`,
+    directVideoCallBody: (n) => `${n} ti sta videochiamando`,
   },
   fr: {
     messageRequestTitle: 'Nouvelle demande de message',
@@ -148,6 +168,10 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     roomCreatedTitle: 'Nouveau salon',
     roomCreatedBody: (n, r) => `${n} a créé un salon : ${r}`,
     roomCreatedAnonymousBody: (r) => `Un ami a créé un salon : ${r}`,
+    incomingCallTitle: 'Appel entrant',
+    incomingCallBody: 'Quelqu’un veut lancer un appel anonyme avec toi.',
+    directCallBody: (n) => `${n} t’appelle`,
+    directVideoCallBody: (n) => `${n} t’appelle en vidéo`,
   },
   ja: {
     messageRequestTitle: '新しいメッセージリクエスト',
@@ -172,6 +196,10 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     roomCreatedTitle: '新しいルーム',
     roomCreatedBody: (n, r) => `${n}さんがルームを作成しました：${r}`,
     roomCreatedAnonymousBody: (r) => `友だちがルームを作成しました：${r}`,
+    incomingCallTitle: '着信',
+    incomingCallBody: '誰かがあなたと匿名通話を始めたがっています。',
+    directCallBody: (n) => `${n}さんから着信中`,
+    directVideoCallBody: (n) => `${n}さんからビデオ通話の着信`,
   },
   es: {
     messageRequestTitle: 'Nueva solicitud de mensaje',
@@ -196,6 +224,10 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     roomCreatedTitle: 'Nueva sala',
     roomCreatedBody: (n, r) => `${n} creó una sala: ${r}`,
     roomCreatedAnonymousBody: (r) => `Un amigo creó una sala: ${r}`,
+    incomingCallTitle: 'Llamada entrante',
+    incomingCallBody: 'Alguien quiere iniciar una llamada anónima contigo.',
+    directCallBody: (n) => `${n} te está llamando`,
+    directVideoCallBody: (n) => `${n} te está haciendo una videollamada`,
   },
   ru: {
     messageRequestTitle: 'Новый запрос на переписку',
@@ -220,6 +252,10 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     roomCreatedTitle: 'Новая комната',
     roomCreatedBody: (n, r) => `${n} создал(а) комнату: ${r}`,
     roomCreatedAnonymousBody: (r) => `Друг создал комнату: ${r}`,
+    incomingCallTitle: 'Входящий звонок',
+    incomingCallBody: 'Кто-то хочет начать с тобой анонимный звонок.',
+    directCallBody: (n) => `${n} звонит тебе`,
+    directVideoCallBody: (n) => `${n} звонит тебе по видео`,
   },
   ko: {
     messageRequestTitle: '새 메시지 요청',
@@ -244,6 +280,10 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     roomCreatedTitle: '새 방',
     roomCreatedBody: (n, r) => `${n}님이 방을 만들었어요: ${r}`,
     roomCreatedAnonymousBody: (r) => `친구가 방을 만들었어요: ${r}`,
+    incomingCallTitle: '수신 전화',
+    incomingCallBody: '누군가 당신과 익명 통화를 시작하려고 해요.',
+    directCallBody: (n) => `${n}님이 전화를 걸고 있어요`,
+    directVideoCallBody: (n) => `${n}님이 영상통화를 걸고 있어요`,
   },
   hi: {
     messageRequestTitle: 'नया मैसेज अनुरोध',
@@ -268,6 +308,10 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     roomCreatedTitle: 'नया रूम',
     roomCreatedBody: (n, r) => `${n} ने एक रूम बनाया: ${r}`,
     roomCreatedAnonymousBody: (r) => `किसी मित्र ने एक रूम बनाया: ${r}`,
+    incomingCallTitle: 'इनकमिंग कॉल',
+    incomingCallBody: 'कोई आपके साथ गुमनाम कॉल शुरू करना चाहता है।',
+    directCallBody: (n) => `${n} आपको कॉल कर रहे हैं`,
+    directVideoCallBody: (n) => `${n} आपको वीडियो कॉल कर रहे हैं`,
   },
   pt: {
     messageRequestTitle: 'Nova solicitação de mensagem',
@@ -292,6 +336,10 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     roomCreatedTitle: 'Nova sala',
     roomCreatedBody: (n, r) => `${n} criou uma sala: ${r}`,
     roomCreatedAnonymousBody: (r) => `Um amigo criou uma sala: ${r}`,
+    incomingCallTitle: 'Chamada recebida',
+    incomingCallBody: 'Alguém quer iniciar uma chamada anônima com você.',
+    directCallBody: (n) => `${n} está te ligando`,
+    directVideoCallBody: (n) => `${n} está fazendo uma videochamada para você`,
   },
   zh: {
     messageRequestTitle: '新的消息请求',
@@ -316,6 +364,10 @@ const TEXTS: Record<Locale, NotificationTexts> = {
     roomCreatedTitle: '新房间',
     roomCreatedBody: (n, r) => `${n} 创建了房间：${r}`,
     roomCreatedAnonymousBody: (r) => `一位好友创建了房间：${r}`,
+    incomingCallTitle: '来电',
+    incomingCallBody: '有人想和你开始一次匿名通话。',
+    directCallBody: (n) => `${n} 正在呼叫你`,
+    directVideoCallBody: (n) => `${n} 正在与你视频通话`,
   },
 };
 
