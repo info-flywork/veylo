@@ -98,7 +98,11 @@
     "emptyThreadsSubtitle": "誰かと話し始めると、ここにチャットが表示されます。",
     "noSearchResults": "結果が見つかりません",
     "milestonePhotoUnlocked": "70%で解除済み",
-    "revealPeerWants": "{name}さんがプロフィールの公開を希望しています"
+    "revealPeerWants": "{name}さんがプロフィールの公開を希望しています",
+    "voiceCall": "音声通話",
+    "videoCall": "ビデオ通話",
+    "videoLocked": "ビデオ通話は、お互いにプロフィールを公開すると利用できます。",
+    "openSettings": "設定"
   },
   "profile": {
     "eyebrow": "プロフィール",
@@ -293,7 +297,19 @@
     "borderOwned": "購入済み",
     "borderEquipCta": "フレームを使う",
     "borderRemoveCta": "フレームを外す",
-    "followEmpty": "まだ誰もいません"
+    "followEmpty": "まだ誰もいません",
+    "zodiacAries": "おひつじ座",
+    "zodiacTaurus": "おうし座",
+    "zodiacGemini": "ふたご座",
+    "zodiacCancer": "かに座",
+    "zodiacLeo": "しし座",
+    "zodiacVirgo": "おとめ座",
+    "zodiacLibra": "てんびん座",
+    "zodiacScorpio": "さそり座",
+    "zodiacSagittarius": "いて座",
+    "zodiacCapricorn": "やぎ座",
+    "zodiacAquarius": "みずがめ座",
+    "zodiacPisces": "うお座"
   },
   "nav": {
     "discover": "発見",
@@ -314,7 +330,7 @@
     "nonBinary": "ノンバイナリー",
     "preferNotToSay": "答えたくない",
     "anonymousBadge": "🎙️ 匿名音声通話",
-    "stranger": "ストレンジャー",
+    "stranger": "匿名",
     "secondsLeft": "{n}秒",
     "timesUpTitle": "時間切れ！",
     "timesUpSubtitle": "もっと話したい？お互いがOKならチャットが解放されます。",
@@ -335,7 +351,11 @@
     "noMatchTitle": "今は話せる人がいません",
     "noMatchBody": "現在、話せる相手が見つかりませんでした。少し時間をおいてもう一度お試しください。",
     "noMatchOk": "OK",
-    "cameraDenied": "ビデオ通話にはカメラへのアクセスが必要です。設定から有効にできます。"
+    "cameraDenied": "ビデオ通話にはカメラへのアクセスが必要です。設定から有効にできます。",
+    "incomingBody": "誰かが匿名通話を始めたがっています。あなたが承諾した場合のみ始まります。",
+    "ringing": "呼び出し中…",
+    "noAnswer": "応答がありません。",
+    "callDeclined": "通話が拒否されました。"
   },
   "vibes": {
     "search": "検索",
@@ -550,7 +570,8 @@
       "unknownTrack": "不明",
       "downloaded": "ギャラリーに保存しました",
       "downloadFailed": "保存できませんでした",
-      "savedToDraft": "下書きに保存しました"
+      "savedToDraft": "下書きに保存しました",
+      "cameraDenied": "写真を撮るにはカメラへのアクセスが必要です。"
     },
     "highlight": {
       "title": "ハイライト",
@@ -731,7 +752,9 @@
     "roomPrivate": "このルームは非公開です。ホストに参加をリクエストしてください。",
     "roomFull": "このルームは満員です。",
     "alreadyCheckedIn": "今日の報酬はすでに受け取り済みです。",
-    "purchasesUnavailable": "現在、購入はご利用いただけません。"
+    "purchasesUnavailable": "現在、購入はご利用いただけません。",
+    "peerBusy": "相手は現在ほかの通話中です。しばらくしてからお試しください。",
+    "videoLocked": "ビデオ通話は、お互いにプロフィールを公開すると利用できます。"
   },
   "faq": {
     "q1": "このアプリはどう使うの？",

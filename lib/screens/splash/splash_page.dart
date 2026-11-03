@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/errors/error_messages.dart';
@@ -31,6 +32,19 @@ class _SplashPageState extends State<SplashPage> {
     _route();
   }
 
+  /// Açılış ekranı tam ekran (flutter_native_splash `fullscreen: true` iOS'ta durum
+  /// çubuğunu gizli başlatır); uygulamaya geçerken saat/şarj/wifi geri gelsin.
+  void _showStatusBar() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark,
+        statusBarBrightness: Brightness.light,
+      ),
+    );
+  }
+
   /// Açılış animasyonu süresince oturumu geri yükler, sonra doğru ekrana geçer.
   Future<void> _route() async {
     final results = await Future.wait<Object?>([
@@ -41,6 +55,7 @@ class _SplashPageState extends State<SplashPage> {
       ),
     ]);
     if (!mounted) return;
+    _showStatusBar();
     final outcome = results[1];
     if (outcome is SessionStatus) {
       await goForSession(context, outcome);

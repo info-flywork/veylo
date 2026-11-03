@@ -29,7 +29,8 @@ class VibesPage extends StatefulWidget {
 class _VibesPageState extends State<VibesPage> {
   final _searchCtrl = TextEditingController();
   final _store = VibeStore.instance;
-  bool _mapOpen = false;
+  /// Sayfa balonlu görünümle açılır; liste sağ üstteki düğmeyle.
+  bool _mapOpen = true;
 
   /// Başlıktaki sıralama butonu: en yeni (sunucu sırası) / en çok beğenilen.
   bool _popular = false;
@@ -102,7 +103,6 @@ class _VibesPageState extends State<VibesPage> {
     if (draft == null || !mounted) return;
     try {
       await _store.share(body: draft.body, anonymous: draft.anonymous);
-      if (mounted) setState(() => _mapOpen = false);
     } catch (e) {
       if (mounted) showErrorSnackBar(context, e);
     }
@@ -180,7 +180,8 @@ class _VibesPageState extends State<VibesPage> {
                     retryLabel: t.common.retry,
                     onRetry: _store.refresh,
                   )
-                : _mapOpen
+                // Hiç vibe yoksa balon alanı yerine boş durum.
+                : _mapOpen && items.isNotEmpty
                 ? VibesMapView(
                     posts: items,
                     onLongPress: _onPostLongPress,
@@ -283,7 +284,7 @@ class _VibesHeader extends StatelessWidget {
           onTap: onToggleSort,
           behavior: HitTestBehavior.opaque,
           child: SvgPicture.asset(
-            AppAssets.iconConvert,
+            AppAssets.iconVibesRefresh,
             width: 24,
             height: 24,
             colorFilter: ColorFilter.mode(
@@ -292,11 +293,12 @@ class _VibesHeader extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 16),
+        const SizedBox(width: 10),
         GestureDetector(
           onTap: onCreate,
           behavior: HitTestBehavior.opaque,
-          child: SvgPicture.asset(AppAssets.iconPlus, width: 24, height: 24),
+          // plus.svg 36'lık çerçevede ortada; 24'te artı küçük kalıyordu (Figma: diğer ikonlarla eş).
+          child: SvgPicture.asset(AppAssets.iconPlus, width: 36, height: 36),
         ),
       ],
     );

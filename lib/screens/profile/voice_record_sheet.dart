@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:veylo/core/permissions/mic_permission.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:record/record.dart';
 import 'package:veylo/core/errors/error_messages.dart';
@@ -80,15 +81,9 @@ class _VoiceRecordSheetState extends State<_VoiceRecordSheet> {
       await _stop();
       return;
     }
-    final allowed = await _recorder.hasPermission();
-      if (!allowed) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(Translations.of(context).chats.micNeeded)),
-        );
-      }
-      return;
-    }
+    // İzin yoksa sistem penceresini açar; reddedilmişse Ayarlar'a yönlendiren uyarı gösterir.
+    if (!await ensureMicPermission(context)) return;
+    if (!mounted) return;
     await _player.stop();
     final path =
         '${Directory.systemTemp.path}/veylo-voice-${DateTime.now().millisecondsSinceEpoch}.m4a';
@@ -212,9 +207,10 @@ class _VoiceRecordSheetState extends State<_VoiceRecordSheet> {
                 height: 72,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
+                  // Profil düzenleme sayfalarındaki siyah butonlarla aynı (#1A1714).
                   color: _recording
                       ? const Color(0xFFE24B4B)
-                      : AppColors.brandPurple,
+                      : AppColors.editSheetButton,
                 ),
                 child: Icon(
                   _recording ? Icons.stop_rounded : Icons.mic_rounded,

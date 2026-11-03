@@ -8,6 +8,7 @@ import 'package:veylo/core/widgets/profile_tappable_avatar.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/chat/chat_thread.dart';
 import 'package:veylo/screens/chat/chat_actions_sheet.dart';
+import 'package:veylo/screens/chat/widgets/chat_call_buttons.dart';
 import 'package:veylo/screens/chat/chat_sticker.dart';
 import 'package:veylo/screens/chat/conversation_controller.dart';
 import 'package:veylo/screens/chat/widgets/chat_composer.dart';
@@ -190,6 +191,10 @@ class _DirectChatPageState extends State<DirectChatPage> {
                         ),
                       ),
                       const SizedBox(width: 8),
+                      if (!thread.isGroup) ...[
+                        ChatCallButtons(thread: thread),
+                        const SizedBox(width: 8),
+                      ],
                       ChatHeaderMoreButton(
                         onPressed: () => showChatActionsMenu(context, _ctrl),
                       ),

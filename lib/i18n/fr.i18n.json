@@ -98,7 +98,11 @@
     "emptyThreadsSubtitle": "Quand tu commenceras à parler avec quelqu'un, tes discussions apparaîtront ici.",
     "noSearchResults": "Aucun résultat",
     "milestonePhotoUnlocked": "Débloqué à 70 %",
-    "revealPeerWants": "{name} veut dévoiler son profil"
+    "revealPeerWants": "{name} veut dévoiler son profil",
+    "voiceCall": "Appel vocal",
+    "videoCall": "Appel vidéo",
+    "videoLocked": "Les appels vidéo se débloquent une fois que vous avez tous les deux révélé vos profils.",
+    "openSettings": "Réglages"
   },
   "profile": {
     "eyebrow": "Profil",
@@ -293,7 +297,19 @@
     "borderOwned": "Acheté",
     "borderEquipCta": "Utiliser le cadre",
     "borderRemoveCta": "Retirer le cadre",
-    "followEmpty": "Personne ici pour l’instant"
+    "followEmpty": "Personne ici pour l’instant",
+    "zodiacAries": "Bélier",
+    "zodiacTaurus": "Taureau",
+    "zodiacGemini": "Gémeaux",
+    "zodiacCancer": "Cancer",
+    "zodiacLeo": "Lion",
+    "zodiacVirgo": "Vierge",
+    "zodiacLibra": "Balance",
+    "zodiacScorpio": "Scorpion",
+    "zodiacSagittarius": "Sagittaire",
+    "zodiacCapricorn": "Capricorne",
+    "zodiacAquarius": "Verseau",
+    "zodiacPisces": "Poissons"
   },
   "nav": {
     "discover": "Découvrir",
@@ -314,7 +330,7 @@
     "nonBinary": "Non-binaire",
     "preferNotToSay": "Je préfère ne pas le dire",
     "anonymousBadge": "🎙️ Appel vocal anonyme",
-    "stranger": "Inconnu",
+    "stranger": "Anonyme",
     "secondsLeft": "{n}s",
     "timesUpTitle": "Temps écoulé !",
     "timesUpSubtitle": "Envie de continuer ? Si vous dites oui tous les deux, le chat se débloque.",
@@ -335,7 +351,11 @@
     "noMatchTitle": "Personne n'est disponible pour l'instant",
     "noMatchBody": "Nous n'avons trouvé personne avec qui parler pour le moment. Réessaie un peu plus tard.",
     "noMatchOk": "OK",
-    "cameraDenied": "L'accès à la caméra est nécessaire pour les appels vidéo. Tu peux l'activer dans les Réglages."
+    "cameraDenied": "L'accès à la caméra est nécessaire pour les appels vidéo. Tu peux l'activer dans les Réglages.",
+    "incomingBody": "Quelqu’un veut lancer un appel anonyme. Il ne commence que si tu acceptes.",
+    "ringing": "Ça sonne…",
+    "noAnswer": "Pas de réponse.",
+    "callDeclined": "L’appel a été refusé."
   },
   "vibes": {
     "search": "Rechercher",
@@ -550,7 +570,8 @@
       "unknownTrack": "Inconnu",
       "downloaded": "Enregistré dans la galerie",
       "downloadFailed": "Échec de l'enregistrement",
-      "savedToDraft": "Enregistré dans les brouillons"
+      "savedToDraft": "Enregistré dans les brouillons",
+      "cameraDenied": "L’accès à l’appareil photo est nécessaire pour prendre des photos."
     },
     "highlight": {
       "title": "À la une",
@@ -731,7 +752,9 @@
     "roomPrivate": "Ce salon est privé. Demande à l'hôte pour le rejoindre.",
     "roomFull": "Ce salon est complet.",
     "alreadyCheckedIn": "Tu as déjà récupéré la récompense du jour.",
-    "purchasesUnavailable": "Les achats ne sont pas disponibles pour le moment."
+    "purchasesUnavailable": "Les achats ne sont pas disponibles pour le moment.",
+    "peerBusy": "Cette personne est déjà en appel. Réessaie plus tard.",
+    "videoLocked": "Les appels vidéo se débloquent une fois que vous avez tous les deux révélé vos profils."
   },
   "faq": {
     "q1": "Comment fonctionne l'app ?",

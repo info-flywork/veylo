@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
@@ -91,7 +92,8 @@ const _centerSpecs = <_BubbleSpec>[
   _BubbleSpec(54),
 ];
 
-List<_PlacedBubble> _pack(double width, double height) {
+/// [tiled]: döşenecek karo için; kenardan taşan balonlar konmaz (komşu karoya binmesin).
+List<_PlacedBubble> _pack(double width, double height, {bool tiled = false}) {
   final random = math.Random(7);
   final placed = <_PlacedBubble>[];
   final selfCx = width / 2;
@@ -108,10 +110,11 @@ List<_PlacedBubble> _pack(double width, double height) {
 
   bool tryPlace(_BubbleSpec spec, double cx, double cy, int postIndex) {
     final radius = spec.size / 2;
-    if (cx < radius - 8 ||
-        cy < radius - 8 ||
-        cx > width - radius + 8 ||
-        cy > height - radius + 8) {
+    final slack = tiled ? -_kGap / 2 : 8.0;
+    if (cx < radius - slack ||
+        cy < radius - slack ||
+        cx > width - radius + slack ||
+        cy > height - radius + slack) {
       return false;
     }
     if (overlapsAny(cx, cy, radius)) return false;
@@ -126,7 +129,7 @@ List<_PlacedBubble> _pack(double width, double height) {
     _BubbleSpec(90),
     _BubbleSpec(92),
   ];
-  if (width > 140 && height > 160) {
+  if (!tiled && width > 140 && height > 160) {
     tryPlace(
       edgeSpecs[0],
       edgeSpecs[0].size * 0.10,
@@ -256,8 +259,90 @@ class VibesMapView extends StatefulWidget {
   State<VibesMapView> createState() => _VibesMapViewState();
 }
 
-class _VibesMapViewState extends State<VibesMapView> {
+class _VibesMapViewState extends State<VibesMapView>
+    with SingleTickerProviderStateMixin {
   String? _selected;
+
+  /// Görünen balonun ekrandaki yeri (önizleme kartı için).
+  ({double cx, double cy, double size})? _selectedAt;
+
+  /// Sonsuz alanda kaydırma: içerik bu kadar kaydırılmış.
+  Offset _pan = Offset.zero;
+  late final AnimationController _fling = AnimationController.unbounded(
+    vsync: this,
+  );
+  FrictionSimulation? _flingX;
+  FrictionSimulation? _flingY;
+  Offset _flingStart = Offset.zero;
+
+  /// Karo yerleşimi boyut değişmedikçe bir kez hesaplanır.
+  List<_PlacedBubble> _tile = const [];
+  Size _tileSize = Size.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    _fling.addListener(_onFlingTick);
+  }
+
+  @override
+  void dispose() {
+    _fling.dispose();
+    super.dispose();
+  }
+
+  void _onFlingTick() {
+    final t = _fling.value;
+    final fx = _flingX, fy = _flingY;
+    if (fx == null || fy == null) return;
+    setState(() {
+      _pan = _flingStart + Offset(fx.x(t), fy.x(t));
+    });
+    if (fx.isDone(t) && fy.isDone(t)) _fling.stop();
+  }
+
+  void _onPanStart(DragStartDetails _) {
+    _fling.stop();
+    if (_selected != null) {
+      setState(() {
+        _selected = null;
+        _selectedAt = null;
+      });
+    }
+  }
+
+  void _onPanUpdate(DragUpdateDetails d) => setState(() => _pan += d.delta);
+
+  void _onPanEnd(DragEndDetails d) {
+    final v = d.velocity.pixelsPerSecond;
+    if (v.distance < 50) return;
+    _flingStart = _pan;
+    _flingX = FrictionSimulation(0.12, 0, v.dx);
+    _flingY = FrictionSimulation(0.12, 0, v.dy);
+    _fling.value = 0;
+    _fling.animateWith(_LinearTimeSimulation());
+  }
+
+  List<_PlacedBubble> _tileFor(Size size) {
+    if (size != _tileSize) {
+      _tileSize = size;
+      _tile = _pack(size.width, size.height, tiled: true)
+        ..sort((a, b) => b.spec.size.compareTo(a.spec.size));
+    }
+    return _tile;
+  }
+
+  /// Ekran kenarına yaklaştıkça küçülür (ortadakiler tam boy).
+  static double _edgeScale(double sx, double sy, double w, double h) {
+    final dx = (sx - w / 2) / (w / 2);
+    final dy = (sy - h / 2) / (h / 2);
+    final d = math.sqrt(dx * dx + dy * dy);
+    const start = 0.55, end = 1.2, minScale = 0.5;
+    if (d <= start) return 1;
+    final t = ((d - start) / (end - start)).clamp(0.0, 1.0);
+    final eased = t * t * (3 - 2 * t);
+    return 1 - (1 - minScale) * eased;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -269,101 +354,126 @@ class _VibesMapViewState extends State<VibesMapView> {
         final mapW = constraints.maxWidth;
         final mapH = constraints.maxHeight;
         final bottomGap = safeBottom + 12;
-        final usableH = (mapH - _kMapShift - bottomGap).clamp(0.0, mapH);
-        // Yerleşim aynı; vibe'lar büyükten küçüğe balonlara dağıtılır (en yeni en büyük).
-        final placed =
-            _pack(mapW, usableH)
-                .map(
-                  (b) => _PlacedBubble(
-                    b.cx,
-                    b.cy + _kMapShift,
-                    b.spec,
-                    b.postIndex,
-                  ),
-                )
-                .toList()
-              ..sort((a, b) => b.spec.size.compareTo(a.spec.size));
-        final bubbles = [
-          for (var i = 0; i < math.min(placed.length, posts.length); i++)
-            (bubble: placed[i], post: posts[i]),
-        ];
-        final selected = bubbles
-            .where((b) => b.post.id == _selected)
-            .firstOrNull;
+        final viewH = (mapH - bottomGap).clamp(1.0, mapH);
+        // Karo ekran genişliğinde, biraz uzun; her yöne tekrar eder.
+        final tileW = mapW;
+        final tileH = math.max(viewH, 560.0);
+        final tile = _tileFor(Size(tileW, tileH));
 
-        // Dalgalar taşsın diye clip yok; harita katmanı kendi alanında kalır.
-        return Stack(
-          clipBehavior: Clip.none,
-          children: [
-            const Positioned.fill(child: ColoredBox(color: Color(0xFFFFFFFF))),
-            Positioned(
-              top: _kMapShift,
-              left: 0,
-              right: 0,
-              bottom: -_kMapShift,
-              child: GestureDetector(
-                onTap: () => setState(() => _selected = null),
-                child: ClipRect(
-                  child: Opacity(
-                    opacity: 0.22,
-                    child: ColorFiltered(
-                      colorFilter: _kMapColor,
-                      child: Image.asset(
-                        AppAssets.vibesMap,
-                        fit: BoxFit.cover,
-                        alignment: Alignment.center,
+        // Görünen karolar (+1 kenar payı) ve içlerindeki balonlar.
+        final bubbles = <({double sx, double sy, double size, VibePost post})>[];
+        if (posts.isNotEmpty && tile.isNotEmpty) {
+          final col0 = ((-_pan.dx) / tileW).floor() - 1;
+          final row0 = ((-_pan.dy) / tileH).floor() - 1;
+          final cols = (mapW / tileW).ceil() + 2;
+          final rows = (viewH / tileH).ceil() + 2;
+          for (var r = row0; r < row0 + rows; r++) {
+            for (var c = col0; c < col0 + cols; c++) {
+              // Her karoda vibe sırası kayar: aynı kişi yan yana tekrar etmesin.
+              final shift = (r * 7 + c * 3) * tile.length;
+              for (var i = 0; i < tile.length; i++) {
+                final b = tile[i];
+                final sx = c * tileW + b.cx + _pan.dx;
+                final sy = r * tileH + b.cy + _pan.dy;
+                final half = b.spec.size / 2;
+                if (sx + half < 0 || sx - half > mapW) continue;
+                if (sy + half < 0 || sy - half > viewH) continue;
+                final scale = _edgeScale(sx, sy, mapW, viewH);
+                final post = posts[(i + shift) % posts.length];
+                bubbles.add((sx: sx, sy: sy, size: b.spec.size * scale, post: post));
+              }
+            }
+          }
+        }
+        final sel = _selectedAt;
+        final selectedPost = _selected == null
+            ? null
+            : posts.where((p) => p.id == _selected).firstOrNull;
+
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onPanStart: _onPanStart,
+          onPanUpdate: _onPanUpdate,
+          onPanEnd: _onPanEnd,
+          onTap: () => setState(() {
+            _selected = null;
+            _selectedAt = null;
+          }),
+          child: Stack(
+            clipBehavior: Clip.hardEdge,
+            children: [
+              const Positioned.fill(
+                child: ColoredBox(color: Color(0xFFFFFFFF)),
+              ),
+              Positioned(
+                top: _kMapShift,
+                left: 0,
+                right: 0,
+                bottom: -_kMapShift,
+                child: IgnorePointer(
+                  child: ClipRect(
+                    child: Opacity(
+                      opacity: 0.22,
+                      child: ColorFiltered(
+                        colorFilter: _kMapColor,
+                        child: Image.asset(
+                          AppAssets.vibesMap,
+                          fit: BoxFit.cover,
+                          alignment: Alignment.center,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            for (final (:bubble, :post) in bubbles)
-              Positioned(
-                left: bubble.cx - bubble.spec.size / 2,
-                top: bubble.cy - bubble.spec.size / 2,
-                width: bubble.spec.size,
-                height: bubble.spec.size,
-                child: GestureDetector(
-                  onTap: () => setState(() {
-                    _selected = _selected == post.id ? null : post.id;
-                  }),
-                  child: _PersonBubble(
-                    size: bubble.spec.size,
-                    url: post.avatarAsset,
-                    blurred: post.blurred,
+              for (final b in bubbles)
+                Positioned(
+                  left: b.sx - b.size / 2,
+                  top: b.sy - b.size / 2,
+                  width: b.size,
+                  height: b.size,
+                  child: GestureDetector(
+                    onTap: () => setState(() {
+                      final same = _selected == b.post.id &&
+                          _selectedAt?.cx == b.sx &&
+                          _selectedAt?.cy == b.sy;
+                      _selected = same ? null : b.post.id;
+                      _selectedAt = same
+                          ? null
+                          : (cx: b.sx, cy: b.sy, size: b.size);
+                    }),
+                    child: _PersonBubble(
+                      size: b.size,
+                      url: b.post.avatarAsset,
+                      blurred: b.post.blurred,
+                    ),
                   ),
                 ),
-              ),
-            if (selected != null)
-              Positioned(
-                left: _cardLeft(selected.bubble, mapW),
-                top: _cardTop(selected.bubble, mapH - bottomGap),
-                width: _cardWidth(mapW),
-                child: Builder(
-                  builder: (_) {
-                    final post = selected.post;
-                    return GestureDetector(
-                      onLongPress: widget.onLongPress == null
-                          ? null
-                          : () => widget.onLongPress!(post),
-                      child: _VibePreviewCard(
-                        post: post,
-                        liked: post.likedByMe,
-                        sendLabel: Translations.of(context).vibes.sendMessage,
-                        onLike: () => VibeStore.instance.toggleLike(post),
-                        onSend: post.isMine
-                            ? () {}
-                            : () => showVibeTalkSheet(context, post),
-                        onDelete: post.isMine && widget.onDelete != null
-                            ? () => widget.onDelete!(post)
-                            : null,
-                      ),
-                    );
-                  },
+              if (selectedPost != null && sel != null)
+                Positioned(
+                  left: _cardLeft(sel.cx, mapW),
+                  top: _cardTop(sel.cy, sel.size, viewH),
+                  width: _cardWidth(mapW),
+                  child: GestureDetector(
+                    onLongPress: widget.onLongPress == null
+                        ? null
+                        : () => widget.onLongPress!(selectedPost),
+                    child: _VibePreviewCard(
+                      post: selectedPost,
+                      liked: selectedPost.likedByMe,
+                      sendLabel: Translations.of(context).vibes.sendMessage,
+                      onLike: () => VibeStore.instance.toggleLike(selectedPost),
+                      onSend: selectedPost.isMine
+                          ? () {}
+                          : () => showVibeTalkSheet(context, selectedPost),
+                      onDelete: selectedPost.isMine && widget.onDelete != null
+                          ? () => widget.onDelete!(selectedPost)
+                          : null,
+                    ),
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         );
       },
     );
@@ -371,22 +481,34 @@ class _VibesMapViewState extends State<VibesMapView> {
 
   double _cardWidth(double mapW) => math.min(379, mapW - 32);
 
-  double _cardLeft(_PlacedBubble bubble, double mapW) {
+  double _cardLeft(double cx, double mapW) {
     final width = _cardWidth(mapW);
-    final left = bubble.cx - width / 2;
+    final left = cx - width / 2;
     return left.clamp(16.0, math.max(16.0, mapW - 16 - width));
   }
 
-  double _cardTop(_PlacedBubble bubble, double usableH) {
+  double _cardTop(double cy, double size, double usableH) {
     const cardH = 108.0;
     const gap = 8.0;
     // Öncelik: balonun hemen altı; sığmazsa üstüne düş.
-    final below = bubble.cy + bubble.spec.size / 2 + gap;
+    final below = cy + size / 2 + gap;
     if (below + cardH <= usableH) return below;
-    final above = bubble.cy - bubble.spec.size / 2 - gap - cardH;
+    final above = cy - size / 2 - gap - cardH;
     if (above >= 8) return above;
     return math.max(8.0, usableH - cardH);
   }
+}
+
+/// Fırlatma için zaman sayacı: değer = geçen saniye.
+class _LinearTimeSimulation extends Simulation {
+  @override
+  double x(double time) => time;
+
+  @override
+  double dx(double time) => 1;
+
+  @override
+  bool isDone(double time) => time > 4;
 }
 
 class _VibePreviewCard extends StatelessWidget {

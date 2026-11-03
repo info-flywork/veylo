@@ -181,6 +181,10 @@ class _Translations$chats$it extends Translations$chats$tr {
 	@override String get noSearchResults => 'Nessun risultato';
 	@override String get milestonePhotoUnlocked => 'Sbloccato al 70%';
 	@override String revealPeerWants({required Object name}) => '${name} vuole rivelare il suo profilo';
+	@override String get voiceCall => 'Chiamata vocale';
+	@override String get videoCall => 'Videochiamata';
+	@override String get videoLocked => 'Le videochiamate si sbloccano quando entrambi rivelate i vostri profili.';
+	@override String get openSettings => 'Impostazioni';
 }
 
 // Path: profile
@@ -383,6 +387,18 @@ class _Translations$profile$it extends Translations$profile$tr {
 	@override String get borderEquipCta => 'Usa cornice';
 	@override String get borderRemoveCta => 'Rimuovi cornice';
 	@override String get followEmpty => 'Ancora nessuno qui';
+	@override String get zodiacAries => 'Ariete';
+	@override String get zodiacTaurus => 'Toro';
+	@override String get zodiacGemini => 'Gemelli';
+	@override String get zodiacCancer => 'Cancro';
+	@override String get zodiacLeo => 'Leone';
+	@override String get zodiacVirgo => 'Vergine';
+	@override String get zodiacLibra => 'Bilancia';
+	@override String get zodiacScorpio => 'Scorpione';
+	@override String get zodiacSagittarius => 'Sagittario';
+	@override String get zodiacCapricorn => 'Capricorno';
+	@override String get zodiacAquarius => 'Acquario';
+	@override String get zodiacPisces => 'Pesci';
 }
 
 // Path: nav
@@ -417,7 +433,7 @@ class _Translations$call$it extends Translations$call$tr {
 	@override String get nonBinary => 'Non binario';
 	@override String get preferNotToSay => 'Preferisco non dirlo';
 	@override String get anonymousBadge => '🎙️ Chiamata vocale anonima';
-	@override String get stranger => 'Sconosciuto';
+	@override String get stranger => 'Anonimo';
 	@override String secondsLeft({required Object n}) => '${n}s';
 	@override String get timesUpTitle => 'Tempo scaduto!';
 	@override String get timesUpSubtitle => 'Vuoi continuare a parlare? Se dite sì entrambi, si sblocca la chat.';
@@ -439,6 +455,10 @@ class _Translations$call$it extends Translations$call$tr {
 	@override String get noMatchBody => 'Al momento non abbiamo trovato nessuno con cui parlare. Riprova tra un po\'.';
 	@override String get noMatchOk => 'OK';
 	@override String get cameraDenied => 'Per le videochiamate serve l\'accesso alla fotocamera. Puoi attivarlo nelle Impostazioni.';
+	@override String get incomingBody => 'Qualcuno vuole avviare una chiamata anonima. Inizia solo se accetti.';
+	@override String get ringing => 'Sta squillando…';
+	@override String get noAnswer => 'Nessuna risposta.';
+	@override String get callDeclined => 'Ha rifiutato la chiamata.';
 }
 
 // Path: vibes
@@ -686,6 +706,8 @@ class _Translations$errors$it extends Translations$errors$tr {
 	@override String get roomFull => 'Questa stanza è piena.';
 	@override String get alreadyCheckedIn => 'Hai già riscattato la ricompensa di oggi.';
 	@override String get purchasesUnavailable => 'Gli acquisti non sono disponibili al momento.';
+	@override String get peerBusy => 'È già in un’altra chiamata. Riprova più tardi.';
+	@override String get videoLocked => 'Le videochiamate si sbloccano quando entrambi rivelate i vostri profili.';
 }
 
 // Path: faq
@@ -1094,6 +1116,7 @@ class _Translations$discover$story$it extends Translations$discover$story$tr {
 	@override String get downloaded => 'Salvato in galleria';
 	@override String get downloadFailed => 'Impossibile salvare';
 	@override String get savedToDraft => 'Salvato nelle bozze';
+	@override String get cameraDenied => 'Serve l’accesso alla fotocamera per scattare foto.';
 }
 
 // Path: discover.highlight
@@ -1261,6 +1284,10 @@ extension on TranslationsIt {
 			'chats.noSearchResults' => 'Nessun risultato',
 			'chats.milestonePhotoUnlocked' => 'Sbloccato al 70%',
 			'chats.revealPeerWants' => ({required Object name}) => '${name} vuole rivelare il suo profilo',
+			'chats.voiceCall' => 'Chiamata vocale',
+			'chats.videoCall' => 'Videochiamata',
+			'chats.videoLocked' => 'Le videochiamate si sbloccano quando entrambi rivelate i vostri profili.',
+			'chats.openSettings' => 'Impostazioni',
 			'profile.eyebrow' => 'Profilo',
 			'profile.title' => 'Impostazioni',
 			'profile.editProfile' => 'Modifica profilo',
@@ -1454,6 +1481,18 @@ extension on TranslationsIt {
 			'profile.borderEquipCta' => 'Usa cornice',
 			'profile.borderRemoveCta' => 'Rimuovi cornice',
 			'profile.followEmpty' => 'Ancora nessuno qui',
+			'profile.zodiacAries' => 'Ariete',
+			'profile.zodiacTaurus' => 'Toro',
+			'profile.zodiacGemini' => 'Gemelli',
+			'profile.zodiacCancer' => 'Cancro',
+			'profile.zodiacLeo' => 'Leone',
+			'profile.zodiacVirgo' => 'Vergine',
+			'profile.zodiacLibra' => 'Bilancia',
+			'profile.zodiacScorpio' => 'Scorpione',
+			'profile.zodiacSagittarius' => 'Sagittario',
+			'profile.zodiacCapricorn' => 'Capricorno',
+			'profile.zodiacAquarius' => 'Acquario',
+			'profile.zodiacPisces' => 'Pesci',
 			'nav.discover' => 'Scopri',
 			'nav.chat' => 'Chat',
 			'nav.call' => 'Chiama',
@@ -1470,7 +1509,7 @@ extension on TranslationsIt {
 			'call.nonBinary' => 'Non binario',
 			'call.preferNotToSay' => 'Preferisco non dirlo',
 			'call.anonymousBadge' => '🎙️ Chiamata vocale anonima',
-			'call.stranger' => 'Sconosciuto',
+			'call.stranger' => 'Anonimo',
 			'call.secondsLeft' => ({required Object n}) => '${n}s',
 			'call.timesUpTitle' => 'Tempo scaduto!',
 			'call.timesUpSubtitle' => 'Vuoi continuare a parlare? Se dite sì entrambi, si sblocca la chat.',
@@ -1492,6 +1531,10 @@ extension on TranslationsIt {
 			'call.noMatchBody' => 'Al momento non abbiamo trovato nessuno con cui parlare. Riprova tra un po\'.',
 			'call.noMatchOk' => 'OK',
 			'call.cameraDenied' => 'Per le videochiamate serve l\'accesso alla fotocamera. Puoi attivarlo nelle Impostazioni.',
+			'call.incomingBody' => 'Qualcuno vuole avviare una chiamata anonima. Inizia solo se accetti.',
+			'call.ringing' => 'Sta squillando…',
+			'call.noAnswer' => 'Nessuna risposta.',
+			'call.callDeclined' => 'Ha rifiutato la chiamata.',
 			'vibes.search' => 'Cerca',
 			'vibes.sendMessage' => 'Invia messaggio',
 			'vibes.wantsToTalk' => 'Vuole parlarne proprio ora',
@@ -1658,6 +1701,8 @@ extension on TranslationsIt {
 			'discover.filters.showResult' => 'Mostra risultati',
 			'discover.post.follow' => 'Segui',
 			'discover.post.following' => 'Segui già',
+			_ => null,
+		} ?? switch (path) {
 			'discover.post.addComment' => 'Aggiungi un commento...',
 			'discover.post.commentsTitle' => 'Commenti',
 			'discover.post.sampleCaption' => 'Non c\'è niente di meglio di un caffè dopo una bella giornata. <3',
@@ -1678,10 +1723,9 @@ extension on TranslationsIt {
 			'discover.story.musicError' => 'Impossibile caricare la musica.',
 			'discover.story.unknownTrack' => 'Sconosciuto',
 			'discover.story.downloaded' => 'Salvato in galleria',
-			_ => null,
-		} ?? switch (path) {
 			'discover.story.downloadFailed' => 'Impossibile salvare',
 			'discover.story.savedToDraft' => 'Salvato nelle bozze',
+			'discover.story.cameraDenied' => 'Serve l’accesso alla fotocamera per scattare foto.',
 			'discover.highlight.title' => 'In evidenza',
 			'discover.highlight.view' => 'Vedi',
 			'discover.highlight.aiComments' => 'Commenti IA',
@@ -1844,6 +1888,8 @@ extension on TranslationsIt {
 			'errors.roomFull' => 'Questa stanza è piena.',
 			'errors.alreadyCheckedIn' => 'Hai già riscattato la ricompensa di oggi.',
 			'errors.purchasesUnavailable' => 'Gli acquisti non sono disponibili al momento.',
+			'errors.peerBusy' => 'È già in un’altra chiamata. Riprova più tardi.',
+			'errors.videoLocked' => 'Le videochiamate si sbloccano quando entrambi rivelate i vostri profili.',
 			'faq.q1' => 'Come funziona l\'app?',
 			'faq.q2' => 'Cos\'è la chat anonima?',
 			'faq.q3' => 'Cos\'è il Progresso connessione?',

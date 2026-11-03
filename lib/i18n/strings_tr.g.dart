@@ -373,6 +373,18 @@ class Translations$chats$tr {
 
 	/// tr: '{name} profilini açmak istiyor'
 	String revealPeerWants({required Object name}) => '${name} profilini açmak istiyor';
+
+	/// tr: 'Sesli arama'
+	String get voiceCall => 'Sesli arama';
+
+	/// tr: 'Görüntülü arama'
+	String get videoCall => 'Görüntülü arama';
+
+	/// tr: 'Görüntülü arama, ikiniz de profilinizi açtığınızda açılır.'
+	String get videoLocked => 'Görüntülü arama, ikiniz de profilinizi açtığınızda açılır.';
+
+	/// tr: 'Ayarlar'
+	String get openSettings => 'Ayarlar';
 }
 
 // Path: profile
@@ -961,6 +973,42 @@ class Translations$profile$tr {
 
 	/// tr: 'Burada henüz kimse yok'
 	String get followEmpty => 'Burada henüz kimse yok';
+
+	/// tr: 'Koç'
+	String get zodiacAries => 'Koç';
+
+	/// tr: 'Boğa'
+	String get zodiacTaurus => 'Boğa';
+
+	/// tr: 'İkizler'
+	String get zodiacGemini => 'İkizler';
+
+	/// tr: 'Yengeç'
+	String get zodiacCancer => 'Yengeç';
+
+	/// tr: 'Aslan'
+	String get zodiacLeo => 'Aslan';
+
+	/// tr: 'Başak'
+	String get zodiacVirgo => 'Başak';
+
+	/// tr: 'Terazi'
+	String get zodiacLibra => 'Terazi';
+
+	/// tr: 'Akrep'
+	String get zodiacScorpio => 'Akrep';
+
+	/// tr: 'Yay'
+	String get zodiacSagittarius => 'Yay';
+
+	/// tr: 'Oğlak'
+	String get zodiacCapricorn => 'Oğlak';
+
+	/// tr: 'Kova'
+	String get zodiacAquarius => 'Kova';
+
+	/// tr: 'Balık'
+	String get zodiacPisces => 'Balık';
 }
 
 // Path: nav
@@ -1007,8 +1055,8 @@ class Translations$call$tr {
 	/// tr: '60 saniye anonim konuşacaksın. Profil yok, isim yok.'
 	String get findingSubtitle => '60 saniye anonim konuşacaksın. Profil yok, isim yok.';
 
-	/// tr: 'Yabancıyı Ara - 10 Token'
-	String get callStranger => 'Yabancıyı Ara - 10 Token';
+	/// tr: 'Anonim Ara - 10 Token'
+	String get callStranger => 'Anonim Ara - 10 Token';
 
 	/// tr: 'İptal'
 	String get cancel => 'İptal';
@@ -1028,8 +1076,8 @@ class Translations$call$tr {
 	/// tr: '🎙️ Anonim sesli arama'
 	String get anonymousBadge => '🎙️ Anonim sesli arama';
 
-	/// tr: 'Yabancı'
-	String get stranger => 'Yabancı';
+	/// tr: 'Anonim'
+	String get stranger => 'Anonim';
 
 	/// tr: '{n} sn'
 	String secondsLeft({required Object n}) => '${n} sn';
@@ -1049,8 +1097,8 @@ class Translations$call$tr {
 	/// tr: 'Karşı taraf bekleniyor...'
 	String get waitingOther => 'Karşı taraf bekleniyor...';
 
-	/// tr: 'Yabancıyı Ara'
-	String get callStrangerFree => 'Yabancıyı Ara';
+	/// tr: 'Anonim Ara'
+	String get callStrangerFree => 'Anonim Ara';
 
 	/// tr: 'Karşı taraf aramayı bitirdi.'
 	String get peerLeft => 'Karşı taraf aramayı bitirdi.';
@@ -1093,6 +1141,18 @@ class Translations$call$tr {
 
 	/// tr: 'Görüntülü arama için kamera izni gerekli. Ayarlar'dan açabilirsin.'
 	String get cameraDenied => 'Görüntülü arama için kamera izni gerekli. Ayarlar\'dan açabilirsin.';
+
+	/// tr: 'Biri seninle anonim bir arama başlatmak istiyor. Arama ancak sen kabul edersen başlar.'
+	String get incomingBody => 'Biri seninle anonim bir arama başlatmak istiyor. Arama ancak sen kabul edersen başlar.';
+
+	/// tr: 'Çalıyor…'
+	String get ringing => 'Çalıyor…';
+
+	/// tr: 'Cevap yok.'
+	String get noAnswer => 'Cevap yok.';
+
+	/// tr: 'Arama reddedildi.'
+	String get callDeclined => 'Arama reddedildi.';
 }
 
 // Path: vibes
@@ -1663,6 +1723,12 @@ class Translations$errors$tr {
 
 	/// tr: 'Satın alma şu an kullanılamıyor.'
 	String get purchasesUnavailable => 'Satın alma şu an kullanılamıyor.';
+
+	/// tr: 'Kişi şu an başka bir görüşmede. Biraz sonra tekrar dene.'
+	String get peerBusy => 'Kişi şu an başka bir görüşmede. Biraz sonra tekrar dene.';
+
+	/// tr: 'Görüntülü arama, ikiniz de profilinizi açtığınızda açılır.'
+	String get videoLocked => 'Görüntülü arama, ikiniz de profilinizi açtığınızda açılır.';
 }
 
 // Path: faq
@@ -2569,6 +2635,9 @@ class Translations$discover$story$tr {
 
 	/// tr: 'Taslağa kaydedildi'
 	String get savedToDraft => 'Taslağa kaydedildi';
+
+	/// tr: 'Fotoğraf çekmek için kamera izni gerekli.'
+	String get cameraDenied => 'Fotoğraf çekmek için kamera izni gerekli.';
 }
 
 // Path: discover.highlight
@@ -2806,6 +2875,10 @@ extension on Translations {
 			'chats.noSearchResults' => 'Sonuç bulunamadı',
 			'chats.milestonePhotoUnlocked' => '%70\'te açıldı',
 			'chats.revealPeerWants' => ({required Object name}) => '${name} profilini açmak istiyor',
+			'chats.voiceCall' => 'Sesli arama',
+			'chats.videoCall' => 'Görüntülü arama',
+			'chats.videoLocked' => 'Görüntülü arama, ikiniz de profilinizi açtığınızda açılır.',
+			'chats.openSettings' => 'Ayarlar',
 			'profile.eyebrow' => 'Profil',
 			'profile.title' => 'Ayarlar',
 			'profile.editProfile' => 'Profili Düzenle',
@@ -2999,6 +3072,18 @@ extension on Translations {
 			'profile.borderEquipCta' => 'Çerçeveyi Tak',
 			'profile.borderRemoveCta' => 'Çerçeveyi Kaldır',
 			'profile.followEmpty' => 'Burada henüz kimse yok',
+			'profile.zodiacAries' => 'Koç',
+			'profile.zodiacTaurus' => 'Boğa',
+			'profile.zodiacGemini' => 'İkizler',
+			'profile.zodiacCancer' => 'Yengeç',
+			'profile.zodiacLeo' => 'Aslan',
+			'profile.zodiacVirgo' => 'Başak',
+			'profile.zodiacLibra' => 'Terazi',
+			'profile.zodiacScorpio' => 'Akrep',
+			'profile.zodiacSagittarius' => 'Yay',
+			'profile.zodiacCapricorn' => 'Oğlak',
+			'profile.zodiacAquarius' => 'Kova',
+			'profile.zodiacPisces' => 'Balık',
 			'nav.discover' => 'Keşfet',
 			'nav.chat' => 'Sohbet',
 			'nav.call' => 'Ara',
@@ -3008,21 +3093,21 @@ extension on Translations {
 			'call.subtitle' => 'Rastgele bir yabancıyla 60 saniye konuş — tamamen anonim. Profil yok, fotoğraf yok, isim yok. Sadece bir ses ve bir an.',
 			'call.findingTitle' => 'Bir yabancı aranıyor...',
 			'call.findingSubtitle' => '60 saniye anonim konuşacaksın. Profil yok, isim yok.',
-			'call.callStranger' => 'Yabancıyı Ara - 10 Token',
+			'call.callStranger' => 'Anonim Ara - 10 Token',
 			'call.cancel' => 'İptal',
 			'call.female' => 'Kadın',
 			'call.male' => 'Erkek',
 			'call.nonBinary' => 'İkili olmayan',
 			'call.preferNotToSay' => 'Fark etmez',
 			'call.anonymousBadge' => '🎙️ Anonim sesli arama',
-			'call.stranger' => 'Yabancı',
+			'call.stranger' => 'Anonim',
 			'call.secondsLeft' => ({required Object n}) => '${n} sn',
 			'call.timesUpTitle' => 'Süre doldu!',
 			'call.timesUpSubtitle' => 'Konuşmaya devam etmek ister misin? İkiniz de evet derseniz sohbet açılır.',
 			'call.keepTalking' => 'Konuşmaya Devam Et',
 			'call.endCall' => 'Aramayı Bitir',
 			'call.waitingOther' => 'Karşı taraf bekleniyor...',
-			'call.callStrangerFree' => 'Yabancıyı Ara',
+			'call.callStrangerFree' => 'Anonim Ara',
 			'call.peerLeft' => 'Karşı taraf aramayı bitirdi.',
 			'call.noKeep' => 'Bu sefer sohbet açılmadı.',
 			'call.videoWaiting' => 'Görüntülü aramayı kabul etmesi bekleniyor...',
@@ -3037,6 +3122,10 @@ extension on Translations {
 			'call.noMatchBody' => 'Şu anda konuşmaya müsait bir anonim kullanıcı bulamadık. Biraz sonra tekrar dene.',
 			'call.noMatchOk' => 'Tamam',
 			'call.cameraDenied' => 'Görüntülü arama için kamera izni gerekli. Ayarlar\'dan açabilirsin.',
+			'call.incomingBody' => 'Biri seninle anonim bir arama başlatmak istiyor. Arama ancak sen kabul edersen başlar.',
+			'call.ringing' => 'Çalıyor…',
+			'call.noAnswer' => 'Cevap yok.',
+			'call.callDeclined' => 'Arama reddedildi.',
 			'vibes.search' => 'Ara',
 			'vibes.sendMessage' => 'Mesaj Gönder',
 			'vibes.wantsToTalk' => 'Şu an bunun hakkında konuşmak istiyor',
@@ -3203,6 +3292,8 @@ extension on Translations {
 			'discover.filters.activeNow' => 'Şu an aktif',
 			'discover.filters.activeNowSubtitle' => 'Yalnızca şu an çevrimiçi olanları göster',
 			'discover.filters.showResult' => 'Sonuçları göster',
+			_ => null,
+		} ?? switch (path) {
 			'discover.post.follow' => 'Takip Et',
 			'discover.post.following' => 'Takipte',
 			'discover.post.addComment' => 'Yorum ekle...',
@@ -3223,12 +3314,11 @@ extension on Translations {
 			'discover.story.musicTitle' => 'Müzik',
 			'discover.story.musicEmpty' => 'Müzik bulunamadı.',
 			'discover.story.musicError' => 'Müzikler yüklenemedi.',
-			_ => null,
-		} ?? switch (path) {
 			'discover.story.unknownTrack' => 'Bilinmiyor',
 			'discover.story.downloaded' => 'Galeriye kaydedildi',
 			'discover.story.downloadFailed' => 'Kaydedilemedi',
 			'discover.story.savedToDraft' => 'Taslağa kaydedildi',
+			'discover.story.cameraDenied' => 'Fotoğraf çekmek için kamera izni gerekli.',
 			'discover.highlight.title' => 'Öne Çıkan',
 			'discover.highlight.view' => 'Görüntüle',
 			'discover.highlight.aiComments' => 'AI yorumlar',
@@ -3391,6 +3481,8 @@ extension on Translations {
 			'errors.roomFull' => 'Oda dolu.',
 			'errors.alreadyCheckedIn' => 'Bugünün ödülünü zaten topladın.',
 			'errors.purchasesUnavailable' => 'Satın alma şu an kullanılamıyor.',
+			'errors.peerBusy' => 'Kişi şu an başka bir görüşmede. Biraz sonra tekrar dene.',
+			'errors.videoLocked' => 'Görüntülü arama, ikiniz de profilinizi açtığınızda açılır.',
 			'faq.q1' => 'Bu uygulama nasıl çalışır?',
 			'faq.q2' => 'Anonim sohbet nedir?',
 			'faq.q3' => 'Bağlantı İlerlemesi ne işe yarar?',

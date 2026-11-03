@@ -98,7 +98,11 @@
     "emptyThreadsSubtitle": "当你开始和别人聊天时，聊天会显示在这里。",
     "noSearchResults": "未找到结果",
     "milestonePhotoUnlocked": "已在 70% 解锁",
-    "revealPeerWants": "{name} 想公开个人资料"
+    "revealPeerWants": "{name} 想公开个人资料",
+    "voiceCall": "语音通话",
+    "videoCall": "视频通话",
+    "videoLocked": "你们双方都公开资料后，即可使用视频通话。",
+    "openSettings": "设置"
   },
   "profile": {
     "eyebrow": "个人资料",
@@ -293,7 +297,19 @@
     "borderOwned": "已拥有",
     "borderEquipCta": "使用边框",
     "borderRemoveCta": "移除边框",
-    "followEmpty": "这里还没有人"
+    "followEmpty": "这里还没有人",
+    "zodiacAries": "白羊座",
+    "zodiacTaurus": "金牛座",
+    "zodiacGemini": "双子座",
+    "zodiacCancer": "巨蟹座",
+    "zodiacLeo": "狮子座",
+    "zodiacVirgo": "处女座",
+    "zodiacLibra": "天秤座",
+    "zodiacScorpio": "天蝎座",
+    "zodiacSagittarius": "射手座",
+    "zodiacCapricorn": "摩羯座",
+    "zodiacAquarius": "水瓶座",
+    "zodiacPisces": "双鱼座"
   },
   "nav": {
     "discover": "发现",
@@ -314,7 +330,7 @@
     "nonBinary": "非二元",
     "preferNotToSay": "不愿透露",
     "anonymousBadge": "🎙️ 匿名语音通话",
-    "stranger": "陌生人",
+    "stranger": "匿名",
     "secondsLeft": "{n}秒",
     "timesUpTitle": "时间到！",
     "timesUpSubtitle": "还想继续聊吗？双方都同意即可解锁聊天。",
@@ -335,7 +351,11 @@
     "noMatchTitle": "暂时没有可匹配的人",
     "noMatchBody": "目前没有找到可以聊天的人，请稍后再试。",
     "noMatchOk": "好的",
-    "cameraDenied": "视频通话需要相机权限，可在系统设置中开启。"
+    "cameraDenied": "视频通话需要相机权限，可在系统设置中开启。",
+    "incomingBody": "有人想发起一次匿名通话。只有你接受后才会开始。",
+    "ringing": "正在呼叫…",
+    "noAnswer": "无人接听。",
+    "callDeclined": "对方拒绝了通话。"
   },
   "vibes": {
     "search": "搜索",
@@ -550,7 +570,8 @@
       "unknownTrack": "未知",
       "downloaded": "已保存到相册",
       "downloadFailed": "保存失败",
-      "savedToDraft": "已保存到草稿"
+      "savedToDraft": "已保存到草稿",
+      "cameraDenied": "拍照需要相机权限。"
     },
     "highlight": {
       "title": "精选",
@@ -731,7 +752,9 @@
     "roomPrivate": "这是私密房间，请联系房主申请加入。",
     "roomFull": "该房间已满。",
     "alreadyCheckedIn": "你今天已经领取过奖励了。",
-    "purchasesUnavailable": "暂时无法购买。"
+    "purchasesUnavailable": "暂时无法购买。",
+    "peerBusy": "对方正在通话中，请稍后再试。",
+    "videoLocked": "你们双方都公开资料后，即可使用视频通话。"
   },
   "faq": {
     "q1": "这个应用怎么用？",

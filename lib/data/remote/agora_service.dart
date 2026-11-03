@@ -1,6 +1,6 @@
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/foundation.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:veylo/core/permissions/av_permissions.dart';
 
 /// Backend'in verdiği ses/görüntü kanalı bilgisi (`rtc`). Agora ayarlı değilse null gelir.
 class RtcCredentials {
@@ -115,11 +115,9 @@ class AgoraService {
   }
 
   /// Mikrofon iznini ister. Reddedilirse false.
-  Future<bool> requestMic() async =>
-      (await Permission.microphone.request()).isGranted;
+  Future<bool> requestMic() => AvPermissions.microphone();
 
-  Future<bool> requestCamera() async =>
-      (await Permission.camera.request()).isGranted;
+  Future<bool> requestCamera() => AvPermissions.camera();
 
   /// Kanala ses ile girer. [micOn] false ise dinleyici gibi (yayın kapalı) başlar.
   Future<bool> join(RtcCredentials? rtc, {bool micOn = true}) async {
@@ -172,12 +170,30 @@ class AgoraService {
     final engine = _engine;
     if (engine == null || _channel == null) return false;
     if (!await requestCamera()) return false;
+    // Önceki görüşmede kamera kapatıldıysa (setCamera false / sadece izleme) yeniden açılır.
+    await engine.enableLocalVideo(true);
+    await engine.muteLocalVideoStream(false);
     await engine.enableVideo();
     await engine.startPreview();
     await engine.updateChannelMediaOptions(
       const ChannelMediaOptions(publishCameraTrack: true),
     );
     return true;
+  }
+
+  /// Karşının görüntüsünü almaya hazırlanır; kendi kameramız kapalı kalır
+  /// (birebir aramada karşı taraf kamerasını açınca görünür).
+  Future<void> enableVideoReceive() async {
+    final engine = _engine;
+    if (engine == null || _channel == null) return;
+    await engine.enableLocalVideo(false);
+    await engine.enableVideo();
+    await engine.updateChannelMediaOptions(
+      const ChannelMediaOptions(
+        publishCameraTrack: false,
+        autoSubscribeVideo: true,
+      ),
+    );
   }
 
   Future<void> setCamera(bool on) async {

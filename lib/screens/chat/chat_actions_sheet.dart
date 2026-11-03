@@ -24,17 +24,24 @@ class ChatHeaderMoreButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: onPressed,
-      padding: EdgeInsets.zero,
-      constraints: const BoxConstraints(minWidth: 32, minHeight: 44),
-      icon: SvgPicture.asset(
-        AppAssets.iconMoreOptions,
+    // Simge boyutunda dokunma alanı: arama simgeleriyle arası tasarımdaki gibi 8 kalsın.
+    return GestureDetector(
+      onTap: onPressed,
+      behavior: HitTestBehavior.opaque,
+      // Sohbet ayarları (sessize al, şikayet, engelle, sil): ayarlar simgesi.
+      child: SizedBox(
+        height: 44,
+        child: Center(
+          child: SvgPicture.asset(
+        AppAssets.iconSettings,
         width: 24,
         height: 24,
+        // Arama simgeleriyle aynı renk (Figma #5F5F5F).
         colorFilter: const ColorFilter.mode(
-          AppColors.textOnLight,
+          Color(0xFF5F5F5F),
           BlendMode.srcIn,
+        ),
+          ),
         ),
       ),
     );

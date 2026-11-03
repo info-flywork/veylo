@@ -196,7 +196,16 @@ abstract final class AppAssets {
   static const String iconAddPeople = 'assets/icons/addPeople.svg';
   static const String iconBlock = 'assets/icons/block.svg';
   static const String iconPinned = 'assets/icons/pinned.svg';
-  static const String iconPinAction = 'assets/icons/pinAction.svg';
+  static const String iconPinAction = 'assets/icons/chatSwipeActionPin.svg';
+  static const String iconFollowUserPlus =
+      'assets/icons/discoverPostFollowUserPlus.svg';
+  static const String iconVibesRefresh = 'assets/icons/vibesHeaderRefresh.svg';
+
+  /// Sohbet başlığı: sesli arama (telefon) ve görüntülü arama (kamera) — Figma 28×28.
+  static const String iconChatHeaderVoiceCall =
+      'assets/icons/chatHeaderVoiceCallPhone.svg';
+  static const String iconChatHeaderVideoCall =
+      'assets/icons/chatHeaderVideoCallCamera.svg';
   static const String iconArrangement = 'assets/icons/arrangement.svg';
   static const String iconTrash = 'assets/icons/trash.svg';
   static const String iconStartGroup = 'assets/icons/startGroup.svg';

@@ -181,6 +181,10 @@ class _Translations$chats$ja extends Translations$chats$tr {
 	@override String get noSearchResults => '結果が見つかりません';
 	@override String get milestonePhotoUnlocked => '70%で解除済み';
 	@override String revealPeerWants({required Object name}) => '${name}さんがプロフィールの公開を希望しています';
+	@override String get voiceCall => '音声通話';
+	@override String get videoCall => 'ビデオ通話';
+	@override String get videoLocked => 'ビデオ通話は、お互いにプロフィールを公開すると利用できます。';
+	@override String get openSettings => '設定';
 }
 
 // Path: profile
@@ -383,6 +387,18 @@ class _Translations$profile$ja extends Translations$profile$tr {
 	@override String get borderEquipCta => 'フレームを使う';
 	@override String get borderRemoveCta => 'フレームを外す';
 	@override String get followEmpty => 'まだ誰もいません';
+	@override String get zodiacAries => 'おひつじ座';
+	@override String get zodiacTaurus => 'おうし座';
+	@override String get zodiacGemini => 'ふたご座';
+	@override String get zodiacCancer => 'かに座';
+	@override String get zodiacLeo => 'しし座';
+	@override String get zodiacVirgo => 'おとめ座';
+	@override String get zodiacLibra => 'てんびん座';
+	@override String get zodiacScorpio => 'さそり座';
+	@override String get zodiacSagittarius => 'いて座';
+	@override String get zodiacCapricorn => 'やぎ座';
+	@override String get zodiacAquarius => 'みずがめ座';
+	@override String get zodiacPisces => 'うお座';
 }
 
 // Path: nav
@@ -417,7 +433,7 @@ class _Translations$call$ja extends Translations$call$tr {
 	@override String get nonBinary => 'ノンバイナリー';
 	@override String get preferNotToSay => '答えたくない';
 	@override String get anonymousBadge => '🎙️ 匿名音声通話';
-	@override String get stranger => 'ストレンジャー';
+	@override String get stranger => '匿名';
 	@override String secondsLeft({required Object n}) => '${n}秒';
 	@override String get timesUpTitle => '時間切れ！';
 	@override String get timesUpSubtitle => 'もっと話したい？お互いがOKならチャットが解放されます。';
@@ -439,6 +455,10 @@ class _Translations$call$ja extends Translations$call$tr {
 	@override String get noMatchBody => '現在、話せる相手が見つかりませんでした。少し時間をおいてもう一度お試しください。';
 	@override String get noMatchOk => 'OK';
 	@override String get cameraDenied => 'ビデオ通話にはカメラへのアクセスが必要です。設定から有効にできます。';
+	@override String get incomingBody => '誰かが匿名通話を始めたがっています。あなたが承諾した場合のみ始まります。';
+	@override String get ringing => '呼び出し中…';
+	@override String get noAnswer => '応答がありません。';
+	@override String get callDeclined => '通話が拒否されました。';
 }
 
 // Path: vibes
@@ -686,6 +706,8 @@ class _Translations$errors$ja extends Translations$errors$tr {
 	@override String get roomFull => 'このルームは満員です。';
 	@override String get alreadyCheckedIn => '今日の報酬はすでに受け取り済みです。';
 	@override String get purchasesUnavailable => '現在、購入はご利用いただけません。';
+	@override String get peerBusy => '相手は現在ほかの通話中です。しばらくしてからお試しください。';
+	@override String get videoLocked => 'ビデオ通話は、お互いにプロフィールを公開すると利用できます。';
 }
 
 // Path: faq
@@ -1094,6 +1116,7 @@ class _Translations$discover$story$ja extends Translations$discover$story$tr {
 	@override String get downloaded => 'ギャラリーに保存しました';
 	@override String get downloadFailed => '保存できませんでした';
 	@override String get savedToDraft => '下書きに保存しました';
+	@override String get cameraDenied => '写真を撮るにはカメラへのアクセスが必要です。';
 }
 
 // Path: discover.highlight
@@ -1261,6 +1284,10 @@ extension on TranslationsJa {
 			'chats.noSearchResults' => '結果が見つかりません',
 			'chats.milestonePhotoUnlocked' => '70%で解除済み',
 			'chats.revealPeerWants' => ({required Object name}) => '${name}さんがプロフィールの公開を希望しています',
+			'chats.voiceCall' => '音声通話',
+			'chats.videoCall' => 'ビデオ通話',
+			'chats.videoLocked' => 'ビデオ通話は、お互いにプロフィールを公開すると利用できます。',
+			'chats.openSettings' => '設定',
 			'profile.eyebrow' => 'プロフィール',
 			'profile.title' => '設定',
 			'profile.editProfile' => 'プロフィールを編集',
@@ -1454,6 +1481,18 @@ extension on TranslationsJa {
 			'profile.borderEquipCta' => 'フレームを使う',
 			'profile.borderRemoveCta' => 'フレームを外す',
 			'profile.followEmpty' => 'まだ誰もいません',
+			'profile.zodiacAries' => 'おひつじ座',
+			'profile.zodiacTaurus' => 'おうし座',
+			'profile.zodiacGemini' => 'ふたご座',
+			'profile.zodiacCancer' => 'かに座',
+			'profile.zodiacLeo' => 'しし座',
+			'profile.zodiacVirgo' => 'おとめ座',
+			'profile.zodiacLibra' => 'てんびん座',
+			'profile.zodiacScorpio' => 'さそり座',
+			'profile.zodiacSagittarius' => 'いて座',
+			'profile.zodiacCapricorn' => 'やぎ座',
+			'profile.zodiacAquarius' => 'みずがめ座',
+			'profile.zodiacPisces' => 'うお座',
 			'nav.discover' => '発見',
 			'nav.chat' => 'チャット',
 			'nav.call' => '通話',
@@ -1470,7 +1509,7 @@ extension on TranslationsJa {
 			'call.nonBinary' => 'ノンバイナリー',
 			'call.preferNotToSay' => '答えたくない',
 			'call.anonymousBadge' => '🎙️ 匿名音声通話',
-			'call.stranger' => 'ストレンジャー',
+			'call.stranger' => '匿名',
 			'call.secondsLeft' => ({required Object n}) => '${n}秒',
 			'call.timesUpTitle' => '時間切れ！',
 			'call.timesUpSubtitle' => 'もっと話したい？お互いがOKならチャットが解放されます。',
@@ -1492,6 +1531,10 @@ extension on TranslationsJa {
 			'call.noMatchBody' => '現在、話せる相手が見つかりませんでした。少し時間をおいてもう一度お試しください。',
 			'call.noMatchOk' => 'OK',
 			'call.cameraDenied' => 'ビデオ通話にはカメラへのアクセスが必要です。設定から有効にできます。',
+			'call.incomingBody' => '誰かが匿名通話を始めたがっています。あなたが承諾した場合のみ始まります。',
+			'call.ringing' => '呼び出し中…',
+			'call.noAnswer' => '応答がありません。',
+			'call.callDeclined' => '通話が拒否されました。',
 			'vibes.search' => '検索',
 			'vibes.sendMessage' => 'メッセージを送る',
 			'vibes.wantsToTalk' => '今このことについて話したい',
@@ -1658,6 +1701,8 @@ extension on TranslationsJa {
 			'discover.filters.showResult' => '結果を表示',
 			'discover.post.follow' => 'フォロー',
 			'discover.post.following' => 'フォロー中',
+			_ => null,
+		} ?? switch (path) {
 			'discover.post.addComment' => 'コメントを追加...',
 			'discover.post.commentsTitle' => 'コメント',
 			'discover.post.sampleCaption' => '素敵な一日のあとに飲むコーヒーは格別。<3',
@@ -1678,10 +1723,9 @@ extension on TranslationsJa {
 			'discover.story.musicError' => '曲を読み込めませんでした。',
 			'discover.story.unknownTrack' => '不明',
 			'discover.story.downloaded' => 'ギャラリーに保存しました',
-			_ => null,
-		} ?? switch (path) {
 			'discover.story.downloadFailed' => '保存できませんでした',
 			'discover.story.savedToDraft' => '下書きに保存しました',
+			'discover.story.cameraDenied' => '写真を撮るにはカメラへのアクセスが必要です。',
 			'discover.highlight.title' => 'ハイライト',
 			'discover.highlight.view' => '表示',
 			'discover.highlight.aiComments' => 'AIコメント',
@@ -1844,6 +1888,8 @@ extension on TranslationsJa {
 			'errors.roomFull' => 'このルームは満員です。',
 			'errors.alreadyCheckedIn' => '今日の報酬はすでに受け取り済みです。',
 			'errors.purchasesUnavailable' => '現在、購入はご利用いただけません。',
+			'errors.peerBusy' => '相手は現在ほかの通話中です。しばらくしてからお試しください。',
+			'errors.videoLocked' => 'ビデオ通話は、お互いにプロフィールを公開すると利用できます。',
 			'faq.q1' => 'このアプリはどう使うの？',
 			'faq.q2' => '匿名チャットとは？',
 			'faq.q3' => 'つながり度とは？',

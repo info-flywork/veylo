@@ -230,24 +230,15 @@ class _CallNavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Figma: beyaz 98 disk + dış 82 (#976FEA→#5E35B4) + iç 76.
+    // Dış 82 (#976FEA→#5E35B4) + iç 76. Etrafındaki beyaz disk kaldırıldı;
+    // 98'lik alan yerleşim için duruyor, dokunma alanı da o kadar.
     return GestureDetector(
       onTap: onTap,
+      behavior: HitTestBehavior.opaque,
       child: Container(
         width: AppBottomNav.callBgSize,
         height: AppBottomNav.callBgSize,
         alignment: Alignment.center,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: AppColors.white,
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.selectionBorder.withValues(alpha: 0.18),
-              blurRadius: 16,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
         child: Container(
           width: AppBottomNav.callSize,
           height: AppBottomNav.callSize,

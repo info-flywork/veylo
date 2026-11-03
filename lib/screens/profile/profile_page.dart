@@ -795,21 +795,24 @@ class _StandOutBanner extends StatelessWidget {
   final String ctaLabel;
   final VoidCallback? onPressed;
 
+  // Figma Frame 1597878586: 398×160, radius 18, 2px border #7B2FFF→#BE99FF,
+  // dolgu #7B2FFF→#430F9D, padding 6; içeride koyu, içe gömük panel.
   static const _cardRadius = 18.0;
   static const _borderWidth = 2.0;
+  static const _framePadding = 6.0;
+  static const _height = 160.0;
 
   @override
   Widget build(BuildContext context) {
+    const innerRadius = _cardRadius - _borderWidth - _framePadding + 2;
     return Container(
+      height: _height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(_cardRadius),
         gradient: const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF7B2FFF),
-            Color(0xFF8E99FF),
-          ],
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [Color(0xFF7B2FFF), Color(0xFFBE99FF)],
         ),
         boxShadow: const [
           BoxShadow(
@@ -822,52 +825,73 @@ class _StandOutBanner extends StatelessWidget {
       ),
       padding: const EdgeInsets.all(_borderWidth),
       child: Container(
-        padding: const EdgeInsets.all(6),
+        padding: const EdgeInsets.all(_framePadding),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(_cardRadius - _borderWidth),
           gradient: const LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF7B2FFF),
-              Color(0xFF430F9D),
-            ],
+            colors: [Color(0xFF7B2FFF), Color(0xFF430F9D)],
           ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(
-                  AppAssets.iconRocket,
-                  width: 62,
-                  height: 62,
-                  fit: BoxFit.contain,
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      AppText(title, style: AppTextStyles.profilePromoTitle),
-                      const SizedBox(height: 4),
-                      AppText(
-                        subtitle,
-                        style: AppTextStyles.profilePromoSubtitle,
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(10, 8, 8, 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(innerRadius),
+            gradient: const LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF3B1F78), Color(0xFF6B44C8)],
+            ),
+          ),
+          // İçe gömük görünüm: kenarlarda koyu ince çizgi.
+          foregroundDecoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(innerRadius),
+            border: Border.all(
+              color: AppColors.black.withValues(alpha: 0.22),
+              width: 1.5,
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      AppAssets.iconRocket,
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.contain,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AppText(
+                            title,
+                            style: AppTextStyles.profilePromoTitle,
+                            maxLines: 1,
+                          ),
+                          const SizedBox(height: 4),
+                          AppText(
+                            subtitle,
+                            style: AppTextStyles.profilePromoSubtitle,
+                            maxLines: 1,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            _StandOutCta(
-              label: ctaLabel,
-              onPressed: onPressed,
-            ),
-          ],
+              ),
+              const SizedBox(height: 4),
+              _StandOutCta(label: ctaLabel, onPressed: onPressed),
+            ],
+          ),
         ),
       ),
     );

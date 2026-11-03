@@ -500,12 +500,16 @@ class _SettingsRow extends StatelessWidget {
               ),
               if (value != null) ...[
                 const SizedBox(width: 8),
+                // Kısa değer (ör. "Türkçe") satırın ortasında kalmasın: sağa yaslı.
                 Flexible(
-                  child: AppText(
-                    value!,
-                    style: AppTextStyles.editProfileFieldValue,
-                    maxLines: 1,
-                    textAlign: TextAlign.end,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: AppText(
+                      value!,
+                      style: AppTextStyles.editProfileFieldValue,
+                      maxLines: 1,
+                      textAlign: TextAlign.end,
+                    ),
                   ),
                 ),
               ],

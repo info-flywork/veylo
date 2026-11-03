@@ -23,6 +23,25 @@ enum ZodiacSign {
 
   final String symbol;
   final String label;
+
+  /// Uygulama dilinde burç adı.
+  String localized(BuildContext context) {
+    final t = Translations.of(context).profile;
+    return switch (this) {
+      aries => t.zodiacAries,
+      taurus => t.zodiacTaurus,
+      gemini => t.zodiacGemini,
+      cancer => t.zodiacCancer,
+      leo => t.zodiacLeo,
+      virgo => t.zodiacVirgo,
+      libra => t.zodiacLibra,
+      scorpio => t.zodiacScorpio,
+      sagittarius => t.zodiacSagittarius,
+      capricorn => t.zodiacCapricorn,
+      aquarius => t.zodiacAquarius,
+      pisces => t.zodiacPisces,
+    };
+  }
 }
 
 const _kItemExtent = 36.0;
@@ -129,7 +148,7 @@ class _ZodiacSheetState extends State<_ZodiacSheet> {
                               _ZodiacBadge(symbol: sign.symbol),
                               const SizedBox(width: 10),
                               AppText(
-                                sign.label,
+                                sign.localized(context),
                                 style: TextStyle(
                                   fontFamily: AppFonts.poppins,
                                   fontWeight: FontWeight.w500,

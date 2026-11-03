@@ -23,7 +23,8 @@ const _kSortSize = 44.0;
 const _kListGap = 12.0;
 const _kUnfollowBtnW = 89.0;
 const _kUnfollowBtnH = 36.0;
-const _kSwipeReveal = 109.0; // 10 pad + 89 button + 10 pad
+const _kUnfollowHPad = 16.0; // yazı ile buton kenarı arası
+const _kUnfollowEdge = 10.0; // buton ile satır kenarı arası
 const _kUnfollowPurple = Color(0xFF7C6CD6);
 /// #998FED @ 10% on white — opak tek renk (üst üste binince koyulaşmasın).
 const _kSwipeRowBg = Color(0xFFF4F3FD);
@@ -603,8 +604,24 @@ class _FollowRowState extends State<_FollowRow>
     super.dispose();
   }
 
+  /// Buton genişliği yazıya göre (TR "Takibi Bırak" 89'a sığmıyordu), en az Figma'daki 89.
+  double get _btnWidth {
+    final painter = TextPainter(
+      text: TextSpan(text: widget.unfollowLabel, style: AppTextStyles.followUnfollow),
+      textDirection: TextDirection.ltr,
+      textScaler: MediaQuery.textScalerOf(context),
+      maxLines: 1,
+    )..layout();
+    final w = painter.width + _kUnfollowHPad * 2;
+    painter.dispose();
+    return w < _kUnfollowBtnW ? _kUnfollowBtnW : w;
+  }
+
+  /// Kaydırınca açılan alan: kenar boşluğu + buton + içerikle arası.
+  double get _reveal => _kUnfollowEdge + _btnWidth + _kUnfollowEdge;
+
   void _onDragUpdate(DragUpdateDetails d) {
-    final delta = -d.primaryDelta! / _kSwipeReveal;
+    final delta = -d.primaryDelta! / _reveal;
     _ctrl.value = (_ctrl.value + delta).clamp(0.0, 1.0);
   }
 
@@ -635,7 +652,7 @@ class _FollowRowState extends State<_FollowRow>
             child: AnimatedBuilder(
               animation: _ctrl,
               builder: (context, _) {
-                final offset = -_ctrl.value * _kSwipeReveal;
+                final offset = -_ctrl.value * _reveal;
                 final openProgress = _ctrl.value;
                 final open = openProgress > 0.02;
                 // Rozet: swipe açıkken veya unfollow sonrası gizle
@@ -655,7 +672,7 @@ class _FollowRowState extends State<_FollowRow>
                       child: Align(
                         alignment: Alignment.centerRight,
                         child: Padding(
-                          padding: const EdgeInsets.only(right: 10),
+                          padding: const EdgeInsets.only(right: _kUnfollowEdge),
                           child: Opacity(
                             opacity: openProgress.clamp(0.0, 1.0),
                             child: GestureDetector(
@@ -663,7 +680,7 @@ class _FollowRowState extends State<_FollowRow>
                                   ? widget.onUnfollow
                                   : null,
                               child: Container(
-                                width: _kUnfollowBtnW,
+                                width: _btnWidth,
                                 height: _kUnfollowBtnH,
                                 alignment: Alignment.center,
                                 decoration: BoxDecoration(
@@ -673,6 +690,7 @@ class _FollowRowState extends State<_FollowRow>
                                 child: AppText(
                                   widget.unfollowLabel,
                                   style: AppTextStyles.followUnfollow,
+                                  maxLines: 1,
                                 ),
                               ),
                             ),

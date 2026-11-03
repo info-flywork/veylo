@@ -29,6 +29,8 @@ String errorMessage(BuildContext context, Object error) {
       'GROUP_FULL' => e.groupFull,
       'GROUP_CREATE_LIMIT' => e.groupCreateLimit,
       'ALREADY_IN_CALL' => e.alreadyInCall,
+      'PEER_BUSY' => e.peerBusy,
+      'VIDEO_LOCKED' => e.videoLocked,
       'ALREADY_CHECKED_IN' => e.alreadyCheckedIn,
       'TEST_PURCHASES_DISABLED' => e.purchasesUnavailable,
       'ROOM_PRIVATE' => e.roomPrivate,
@@ -38,7 +40,8 @@ String errorMessage(BuildContext context, Object error) {
       'CONVERSATION_NOT_FOUND' ||
       'REQUEST_NOT_FOUND' ||
       'ROOM_NOT_FOUND' ||
-      'CALL_NOT_FOUND' => e.notFound,
+      'CALL_NOT_FOUND' ||
+      'INVITE_NOT_FOUND' => e.notFound,
       _ => e.generic,
     };
   }

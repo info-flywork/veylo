@@ -8,6 +8,7 @@ import 'package:veylo/core/widgets/profile_tappable_avatar.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/chat/chat_thread.dart';
 import 'package:veylo/screens/chat/chat_actions_sheet.dart';
+import 'package:veylo/screens/chat/widgets/chat_call_buttons.dart';
 import 'package:veylo/screens/chat/chat_sticker.dart';
 import 'package:veylo/screens/chat/connection_progress_sheet.dart';
 import 'package:veylo/screens/chat/conversation_controller.dart';
@@ -232,18 +233,23 @@ class _AnonymousChatPageState extends State<AnonymousChatPage> {
                         ),
                       ),
                       const SizedBox(width: 8),
-                      _ConnectionPill(
-                        label: t.connection,
-                        percentLabel: t.connectionPercent(n: progress),
-                        progress: progress / 100,
-                        onTap: () => _onConnectionTap(thread, progress),
-                      ),
-                      const SizedBox(width: 4),
+                      ChatCallButtons(thread: thread),
+                      const SizedBox(width: 8),
                       ChatHeaderMoreButton(
                         onPressed: () => showChatActionsMenu(context, _ctrl),
                       ),
                     ],
                   ),
+                ),
+              ),
+              // Bağlantı ilerlemesi başlığın altında, tam genişlikte.
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                child: _ConnectionPill(
+                  label: t.connection,
+                  percentLabel: t.connectionPercent(n: progress),
+                  progress: progress / 100,
+                  onTap: () => _onConnectionTap(thread, progress),
                 ),
               ),
               Container(
@@ -330,7 +336,7 @@ class _ConnectionPill extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(8),
         child: Container(
-          width: 180,
+          width: double.infinity,
           padding: const EdgeInsets.all(10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

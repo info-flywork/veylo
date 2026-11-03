@@ -98,7 +98,11 @@
     "emptyThreadsSubtitle": "Sobald du mit jemandem schreibst, erscheinen deine Chats hier.",
     "noSearchResults": "Keine Ergebnisse gefunden",
     "milestonePhotoUnlocked": "Freigeschaltet bei 70%",
-    "revealPeerWants": "{name} möchte das Profil aufdecken"
+    "revealPeerWants": "{name} möchte das Profil aufdecken",
+    "voiceCall": "Sprachanruf",
+    "videoCall": "Videoanruf",
+    "videoLocked": "Videoanrufe werden freigeschaltet, sobald ihr beide eure Profile aufgedeckt habt.",
+    "openSettings": "Einstellungen"
   },
   "profile": {
     "eyebrow": "Profil",
@@ -293,7 +297,19 @@
     "borderOwned": "Gekauft",
     "borderEquipCta": "Rahmen verwenden",
     "borderRemoveCta": "Rahmen entfernen",
-    "followEmpty": "Hier ist noch niemand"
+    "followEmpty": "Hier ist noch niemand",
+    "zodiacAries": "Widder",
+    "zodiacTaurus": "Stier",
+    "zodiacGemini": "Zwillinge",
+    "zodiacCancer": "Krebs",
+    "zodiacLeo": "Löwe",
+    "zodiacVirgo": "Jungfrau",
+    "zodiacLibra": "Waage",
+    "zodiacScorpio": "Skorpion",
+    "zodiacSagittarius": "Schütze",
+    "zodiacCapricorn": "Steinbock",
+    "zodiacAquarius": "Wassermann",
+    "zodiacPisces": "Fische"
   },
   "nav": {
     "discover": "Entdecken",
@@ -314,7 +330,7 @@
     "nonBinary": "Nicht-binär",
     "preferNotToSay": "Keine Angabe",
     "anonymousBadge": "🎙️ Anonymer Sprachanruf",
-    "stranger": "Fremde Person",
+    "stranger": "Anonym",
     "secondsLeft": "{n} s",
     "timesUpTitle": "Die Zeit ist um!",
     "timesUpSubtitle": "Wollt ihr weiterreden? Wenn ihr beide Ja sagt, wird der Chat freigeschaltet.",
@@ -335,7 +351,11 @@
     "noMatchTitle": "Gerade ist niemand verfügbar",
     "noMatchBody": "Wir konnten gerade niemanden zum Reden finden. Versuch es etwas später noch einmal.",
     "noMatchOk": "OK",
-    "cameraDenied": "Für Videoanrufe brauchen wir Zugriff auf deine Kamera. Du kannst ihn in den Einstellungen erlauben."
+    "cameraDenied": "Für Videoanrufe brauchen wir Zugriff auf deine Kamera. Du kannst ihn in den Einstellungen erlauben.",
+    "incomingBody": "Jemand möchte einen anonymen Anruf starten. Er beginnt nur, wenn du annimmst.",
+    "ringing": "Klingelt…",
+    "noAnswer": "Keine Antwort.",
+    "callDeclined": "Der Anruf wurde abgelehnt."
   },
   "vibes": {
     "search": "Suchen",
@@ -550,7 +570,8 @@
       "unknownTrack": "Unbekannt",
       "downloaded": "In der Galerie gespeichert",
       "downloadFailed": "Speichern fehlgeschlagen",
-      "savedToDraft": "Als Entwurf gespeichert"
+      "savedToDraft": "Als Entwurf gespeichert",
+      "cameraDenied": "Für Fotos wird Kamerazugriff benötigt."
     },
     "highlight": {
       "title": "Highlight",
@@ -731,7 +752,9 @@
     "roomPrivate": "Dieser Raum ist privat. Frag den Host, ob du beitreten darfst.",
     "roomFull": "Dieser Raum ist voll.",
     "alreadyCheckedIn": "Du hast die heutige Belohnung schon abgeholt.",
-    "purchasesUnavailable": "Käufe sind gerade nicht verfügbar."
+    "purchasesUnavailable": "Käufe sind gerade nicht verfügbar.",
+    "peerBusy": "Die Person ist gerade in einem anderen Anruf. Versuch es später noch einmal.",
+    "videoLocked": "Videoanrufe werden freigeschaltet, sobald ihr beide eure Profile aufgedeckt habt."
   },
   "faq": {
     "q1": "Wie funktioniert die App?",

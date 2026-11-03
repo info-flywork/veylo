@@ -109,19 +109,18 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
   Future<void> _fetch() async {
     final unknown = Translations.of(context).discover.story.unknownTrack;
     try {
-      final response = await _dio.get<Map<String, dynamic>>(
-        'https://api.jamendo.com/v3.0/tracks/',
-        queryParameters: {
-          'client_id': 'f34b0064',
-          'format': 'json',
-          'limit': 20,
-          'tags': 'pop',
-        },
-      );
-      final results = response.data?['results'] as List<dynamic>? ?? [];
+      // `tags=pop` hiç sonuç döndürmüyordu ("müzik bulunamadı"). `fuzzytags` çalışıyor;
+      // Jamendo bazı parametre birleşimlerinde boş döndüğü için boşsa filtresiz dene.
+      var results = await _query({'fuzzytags': 'pop', 'include': 'musicinfo'});
+      if (results.isEmpty) results = await _query({'order': 'popularity_total'});
       final tracks = results.map((raw) {
         final m = raw as Map<String, dynamic>;
         final sec = (m['duration'] as num?)?.toInt() ?? 0;
+        final genres =
+            ((m['musicinfo'] as Map?)?['tags'] as Map?)?['genres'] as List?;
+        final genre = genres == null || genres.isEmpty
+            ? 'Pop'
+            : _capitalize(genres.first as String);
         return StoryMusicTrack(
           title: (m['name'] as String?) ?? unknown,
           artist: (m['artist_name'] as String?) ?? unknown,
@@ -129,9 +128,9 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
           durationLabel: _fmt(sec),
           imageUrl: m['image'] as String?,
           audioUrl: m['audio'] as String?,
-          genre: 'House',
+          genre: genre,
         );
-      }).toList();
+      }).where((t) => (t.audioUrl ?? '').isNotEmpty).toList();
       if (!mounted) return;
       setState(() {
         _tracks = tracks;
@@ -145,6 +144,23 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
       });
     }
   }
+
+  Future<List<dynamic>> _query(Map<String, Object> extra) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      'https://api.jamendo.com/v3.0/tracks/',
+      queryParameters: {
+        'client_id': 'f34b0064',
+        'format': 'json',
+        'limit': 30,
+        'audioformat': 'mp32',
+        ...extra,
+      },
+    );
+    return response.data?['results'] as List<dynamic>? ?? const [];
+  }
+
+  static String _capitalize(String s) =>
+      s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
 
   String _fmt(int seconds) {
     final m = seconds ~/ 60;

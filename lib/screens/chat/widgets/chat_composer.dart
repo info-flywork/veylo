@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:veylo/core/permissions/mic_permission.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:record/record.dart';
@@ -73,7 +74,13 @@ class _ChatComposerState extends State<ChatComposer> {
     if (send == null || _picking || _recording) return;
     setState(() => _picking = true);
     try {
-      final file = await _picker.pickImage(source: source, imageQuality: 85);
+      // Tam çözünürlüklü telefon fotoğrafı 10 MB yükleme sınırını aşıyordu.
+      final file = await _picker.pickImage(
+        source: source,
+        maxWidth: 2048,
+        maxHeight: 2048,
+        imageQuality: 85,
+      );
       if (file != null) await send('image', file.path);
     } catch (e) {
       if (mounted) showErrorSnackBar(context, e);
@@ -89,15 +96,9 @@ class _ChatComposerState extends State<ChatComposer> {
       await _finishRecord(send);
       return;
     }
-    final allowed = await _recorder.hasPermission();
-    if (!allowed) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(Translations.of(context).chats.micNeeded)),
-        );
-      }
-      return;
-    }
+    // İzin yoksa sistem penceresini açar; reddedilmişse Ayarlar'a yönlendiren uyarı gösterir.
+    if (!await ensureMicPermission(context)) return;
+    if (!mounted) return;
     final path =
         '${Directory.systemTemp.path}/veylo-chat-${DateTime.now().millisecondsSinceEpoch}.m4a';
     try {

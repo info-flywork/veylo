@@ -181,6 +181,10 @@ class _Translations$chats$ru extends Translations$chats$tr {
 	@override String get noSearchResults => 'Ничего не найдено';
 	@override String get milestonePhotoUnlocked => 'Открыто на 70%';
 	@override String revealPeerWants({required Object name}) => '${name} хочет открыть свой профиль';
+	@override String get voiceCall => 'Аудиозвонок';
+	@override String get videoCall => 'Видеозвонок';
+	@override String get videoLocked => 'Видеозвонки станут доступны, когда вы оба откроете профили.';
+	@override String get openSettings => 'Настройки';
 }
 
 // Path: profile
@@ -383,6 +387,18 @@ class _Translations$profile$ru extends Translations$profile$tr {
 	@override String get borderEquipCta => 'Надеть рамку';
 	@override String get borderRemoveCta => 'Снять рамку';
 	@override String get followEmpty => 'Здесь пока никого нет';
+	@override String get zodiacAries => 'Овен';
+	@override String get zodiacTaurus => 'Телец';
+	@override String get zodiacGemini => 'Близнецы';
+	@override String get zodiacCancer => 'Рак';
+	@override String get zodiacLeo => 'Лев';
+	@override String get zodiacVirgo => 'Дева';
+	@override String get zodiacLibra => 'Весы';
+	@override String get zodiacScorpio => 'Скорпион';
+	@override String get zodiacSagittarius => 'Стрелец';
+	@override String get zodiacCapricorn => 'Козерог';
+	@override String get zodiacAquarius => 'Водолей';
+	@override String get zodiacPisces => 'Рыбы';
 }
 
 // Path: nav
@@ -417,7 +433,7 @@ class _Translations$call$ru extends Translations$call$tr {
 	@override String get nonBinary => 'Небинарный';
 	@override String get preferNotToSay => 'Не скажу';
 	@override String get anonymousBadge => '🎙️ Анонимный звонок';
-	@override String get stranger => 'Незнакомец';
+	@override String get stranger => 'Аноним';
 	@override String secondsLeft({required Object n}) => '${n} с';
 	@override String get timesUpTitle => 'Время вышло!';
 	@override String get timesUpSubtitle => 'Хотите продолжить? Если оба согласны, откроется чат.';
@@ -439,6 +455,10 @@ class _Translations$call$ru extends Translations$call$tr {
 	@override String get noMatchBody => 'Сейчас не удалось найти собеседника. Попробуй ещё раз чуть позже.';
 	@override String get noMatchOk => 'ОК';
 	@override String get cameraDenied => 'Для видеозвонков нужен доступ к камере. Включи его в настройках.';
+	@override String get incomingBody => 'Кто-то хочет начать анонимный звонок. Он начнётся, только если ты примешь.';
+	@override String get ringing => 'Идёт вызов…';
+	@override String get noAnswer => 'Нет ответа.';
+	@override String get callDeclined => 'Звонок отклонён.';
 }
 
 // Path: vibes
@@ -686,6 +706,8 @@ class _Translations$errors$ru extends Translations$errors$tr {
 	@override String get roomFull => 'Комната заполнена.';
 	@override String get alreadyCheckedIn => 'Ты уже забрал сегодняшнюю награду.';
 	@override String get purchasesUnavailable => 'Покупки сейчас недоступны.';
+	@override String get peerBusy => 'Собеседник сейчас на другом звонке. Попробуй позже.';
+	@override String get videoLocked => 'Видеозвонки станут доступны, когда вы оба откроете профили.';
 }
 
 // Path: faq
@@ -1094,6 +1116,7 @@ class _Translations$discover$story$ru extends Translations$discover$story$tr {
 	@override String get downloaded => 'Сохранено в галерею';
 	@override String get downloadFailed => 'Не удалось сохранить';
 	@override String get savedToDraft => 'Сохранено в черновики';
+	@override String get cameraDenied => 'Чтобы делать фото, нужен доступ к камере.';
 }
 
 // Path: discover.highlight
@@ -1261,6 +1284,10 @@ extension on TranslationsRu {
 			'chats.noSearchResults' => 'Ничего не найдено',
 			'chats.milestonePhotoUnlocked' => 'Открыто на 70%',
 			'chats.revealPeerWants' => ({required Object name}) => '${name} хочет открыть свой профиль',
+			'chats.voiceCall' => 'Аудиозвонок',
+			'chats.videoCall' => 'Видеозвонок',
+			'chats.videoLocked' => 'Видеозвонки станут доступны, когда вы оба откроете профили.',
+			'chats.openSettings' => 'Настройки',
 			'profile.eyebrow' => 'Профиль',
 			'profile.title' => 'Настройки',
 			'profile.editProfile' => 'Изменить профиль',
@@ -1454,6 +1481,18 @@ extension on TranslationsRu {
 			'profile.borderEquipCta' => 'Надеть рамку',
 			'profile.borderRemoveCta' => 'Снять рамку',
 			'profile.followEmpty' => 'Здесь пока никого нет',
+			'profile.zodiacAries' => 'Овен',
+			'profile.zodiacTaurus' => 'Телец',
+			'profile.zodiacGemini' => 'Близнецы',
+			'profile.zodiacCancer' => 'Рак',
+			'profile.zodiacLeo' => 'Лев',
+			'profile.zodiacVirgo' => 'Дева',
+			'profile.zodiacLibra' => 'Весы',
+			'profile.zodiacScorpio' => 'Скорпион',
+			'profile.zodiacSagittarius' => 'Стрелец',
+			'profile.zodiacCapricorn' => 'Козерог',
+			'profile.zodiacAquarius' => 'Водолей',
+			'profile.zodiacPisces' => 'Рыбы',
 			'nav.discover' => 'Обзор',
 			'nav.chat' => 'Чат',
 			'nav.call' => 'Звонок',
@@ -1470,7 +1509,7 @@ extension on TranslationsRu {
 			'call.nonBinary' => 'Небинарный',
 			'call.preferNotToSay' => 'Не скажу',
 			'call.anonymousBadge' => '🎙️ Анонимный звонок',
-			'call.stranger' => 'Незнакомец',
+			'call.stranger' => 'Аноним',
 			'call.secondsLeft' => ({required Object n}) => '${n} с',
 			'call.timesUpTitle' => 'Время вышло!',
 			'call.timesUpSubtitle' => 'Хотите продолжить? Если оба согласны, откроется чат.',
@@ -1492,6 +1531,10 @@ extension on TranslationsRu {
 			'call.noMatchBody' => 'Сейчас не удалось найти собеседника. Попробуй ещё раз чуть позже.',
 			'call.noMatchOk' => 'ОК',
 			'call.cameraDenied' => 'Для видеозвонков нужен доступ к камере. Включи его в настройках.',
+			'call.incomingBody' => 'Кто-то хочет начать анонимный звонок. Он начнётся, только если ты примешь.',
+			'call.ringing' => 'Идёт вызов…',
+			'call.noAnswer' => 'Нет ответа.',
+			'call.callDeclined' => 'Звонок отклонён.',
 			'vibes.search' => 'Поиск',
 			'vibes.sendMessage' => 'Написать',
 			'vibes.wantsToTalk' => 'Хочет обсудить это прямо сейчас',
@@ -1658,6 +1701,8 @@ extension on TranslationsRu {
 			'discover.filters.showResult' => 'Показать',
 			'discover.post.follow' => 'Подписаться',
 			'discover.post.following' => 'Подписки',
+			_ => null,
+		} ?? switch (path) {
 			'discover.post.addComment' => 'Комментарий...',
 			'discover.post.commentsTitle' => 'Комментарии',
 			'discover.post.sampleCaption' => 'Нет ничего лучше чашки кофе после прекрасного дня. <3',
@@ -1678,10 +1723,9 @@ extension on TranslationsRu {
 			'discover.story.musicError' => 'Не удалось загрузить музыку.',
 			'discover.story.unknownTrack' => 'Неизвестно',
 			'discover.story.downloaded' => 'Сохранено в галерею',
-			_ => null,
-		} ?? switch (path) {
 			'discover.story.downloadFailed' => 'Не удалось сохранить',
 			'discover.story.savedToDraft' => 'Сохранено в черновики',
+			'discover.story.cameraDenied' => 'Чтобы делать фото, нужен доступ к камере.',
 			'discover.highlight.title' => 'Актуальное',
 			'discover.highlight.view' => 'Смотреть',
 			'discover.highlight.aiComments' => 'Комментарии ИИ',
@@ -1844,6 +1888,8 @@ extension on TranslationsRu {
 			'errors.roomFull' => 'Комната заполнена.',
 			'errors.alreadyCheckedIn' => 'Ты уже забрал сегодняшнюю награду.',
 			'errors.purchasesUnavailable' => 'Покупки сейчас недоступны.',
+			'errors.peerBusy' => 'Собеседник сейчас на другом звонке. Попробуй позже.',
+			'errors.videoLocked' => 'Видеозвонки станут доступны, когда вы оба откроете профили.',
 			'faq.q1' => 'Как работает приложение?',
 			'faq.q2' => 'Что такое анонимный чат?',
 			'faq.q3' => 'Что такое прогресс связи?',

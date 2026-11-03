@@ -1,3 +1,4 @@
+import AVFoundation
 import Flutter
 import UIKit
 import UserNotifications
@@ -25,5 +26,43 @@ import UserNotifications
 
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "VeyloAvPermissions") {
+      VeyloAvPermissions.register(with: registrar)
+    }
+  }
+}
+
+/// Mikrofon / kamera izni doğrudan iOS API'siyle. permission_handler'ın Swift Package
+/// sürümü Xcode'dan derlenince izinleri derleme dışı bırakıp sormadan "reddedildi" diyor;
+/// bu kanal derleme yönteminden bağımsız olarak sistem iznini sorar.
+final class VeyloAvPermissions: NSObject, FlutterPlugin {
+  static func register(with registrar: FlutterPluginRegistrar) {
+    let channel = FlutterMethodChannel(
+      name: "veylo/av_permissions", binaryMessenger: registrar.messenger())
+    registrar.addMethodCallDelegate(VeyloAvPermissions(), channel: channel)
+  }
+
+  func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+    let kind = (call.arguments as? String) ?? "microphone"
+    let media: AVMediaType = kind == "camera" ? .video : .audio
+    switch call.method {
+    case "status":
+      switch AVCaptureDevice.authorizationStatus(for: media) {
+      case .authorized: result("granted")
+      case .notDetermined: result("undetermined")
+      default: result("denied")
+      }
+    case "request":
+      AVCaptureDevice.requestAccess(for: media) { granted in
+        DispatchQueue.main.async { result(granted) }
+      }
+    case "openSettings":
+      if let url = URL(string: UIApplication.openSettingsURLString) {
+        UIApplication.shared.open(url)
+      }
+      result(nil)
+    default:
+      result(FlutterMethodNotImplemented)
+    }
   }
 }

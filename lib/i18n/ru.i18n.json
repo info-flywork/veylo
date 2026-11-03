@@ -98,7 +98,11 @@
     "emptyThreadsSubtitle": "Когда вы начнёте с кем-то общаться, чаты появятся здесь.",
     "noSearchResults": "Ничего не найдено",
     "milestonePhotoUnlocked": "Открыто на 70%",
-    "revealPeerWants": "{name} хочет открыть свой профиль"
+    "revealPeerWants": "{name} хочет открыть свой профиль",
+    "voiceCall": "Аудиозвонок",
+    "videoCall": "Видеозвонок",
+    "videoLocked": "Видеозвонки станут доступны, когда вы оба откроете профили.",
+    "openSettings": "Настройки"
   },
   "profile": {
     "eyebrow": "Профиль",
@@ -293,7 +297,19 @@
     "borderOwned": "Куплено",
     "borderEquipCta": "Надеть рамку",
     "borderRemoveCta": "Снять рамку",
-    "followEmpty": "Здесь пока никого нет"
+    "followEmpty": "Здесь пока никого нет",
+    "zodiacAries": "Овен",
+    "zodiacTaurus": "Телец",
+    "zodiacGemini": "Близнецы",
+    "zodiacCancer": "Рак",
+    "zodiacLeo": "Лев",
+    "zodiacVirgo": "Дева",
+    "zodiacLibra": "Весы",
+    "zodiacScorpio": "Скорпион",
+    "zodiacSagittarius": "Стрелец",
+    "zodiacCapricorn": "Козерог",
+    "zodiacAquarius": "Водолей",
+    "zodiacPisces": "Рыбы"
   },
   "nav": {
     "discover": "Обзор",
@@ -314,7 +330,7 @@
     "nonBinary": "Небинарный",
     "preferNotToSay": "Не скажу",
     "anonymousBadge": "🎙️ Анонимный звонок",
-    "stranger": "Незнакомец",
+    "stranger": "Аноним",
     "secondsLeft": "{n} с",
     "timesUpTitle": "Время вышло!",
     "timesUpSubtitle": "Хотите продолжить? Если оба согласны, откроется чат.",
@@ -335,7 +351,11 @@
     "noMatchTitle": "Сейчас никого нет",
     "noMatchBody": "Сейчас не удалось найти собеседника. Попробуй ещё раз чуть позже.",
     "noMatchOk": "ОК",
-    "cameraDenied": "Для видеозвонков нужен доступ к камере. Включи его в настройках."
+    "cameraDenied": "Для видеозвонков нужен доступ к камере. Включи его в настройках.",
+    "incomingBody": "Кто-то хочет начать анонимный звонок. Он начнётся, только если ты примешь.",
+    "ringing": "Идёт вызов…",
+    "noAnswer": "Нет ответа.",
+    "callDeclined": "Звонок отклонён."
   },
   "vibes": {
     "search": "Поиск",
@@ -550,7 +570,8 @@
       "unknownTrack": "Неизвестно",
       "downloaded": "Сохранено в галерею",
       "downloadFailed": "Не удалось сохранить",
-      "savedToDraft": "Сохранено в черновики"
+      "savedToDraft": "Сохранено в черновики",
+      "cameraDenied": "Чтобы делать фото, нужен доступ к камере."
     },
     "highlight": {
       "title": "Актуальное",
@@ -731,7 +752,9 @@
     "roomPrivate": "Комната закрытая. Попроси ведущего впустить тебя.",
     "roomFull": "Комната заполнена.",
     "alreadyCheckedIn": "Ты уже забрал сегодняшнюю награду.",
-    "purchasesUnavailable": "Покупки сейчас недоступны."
+    "purchasesUnavailable": "Покупки сейчас недоступны.",
+    "peerBusy": "Собеседник сейчас на другом звонке. Попробуй позже.",
+    "videoLocked": "Видеозвонки станут доступны, когда вы оба откроете профили."
   },
   "faq": {
     "q1": "Как работает приложение?",

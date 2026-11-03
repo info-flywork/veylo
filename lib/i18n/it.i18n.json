@@ -98,7 +98,11 @@
     "emptyThreadsSubtitle": "Quando inizierai a parlare con qualcuno, le tue chat appariranno qui.",
     "noSearchResults": "Nessun risultato",
     "milestonePhotoUnlocked": "Sbloccato al 70%",
-    "revealPeerWants": "{name} vuole rivelare il suo profilo"
+    "revealPeerWants": "{name} vuole rivelare il suo profilo",
+    "voiceCall": "Chiamata vocale",
+    "videoCall": "Videochiamata",
+    "videoLocked": "Le videochiamate si sbloccano quando entrambi rivelate i vostri profili.",
+    "openSettings": "Impostazioni"
   },
   "profile": {
     "eyebrow": "Profilo",
@@ -293,7 +297,19 @@
     "borderOwned": "Acquistata",
     "borderEquipCta": "Usa cornice",
     "borderRemoveCta": "Rimuovi cornice",
-    "followEmpty": "Ancora nessuno qui"
+    "followEmpty": "Ancora nessuno qui",
+    "zodiacAries": "Ariete",
+    "zodiacTaurus": "Toro",
+    "zodiacGemini": "Gemelli",
+    "zodiacCancer": "Cancro",
+    "zodiacLeo": "Leone",
+    "zodiacVirgo": "Vergine",
+    "zodiacLibra": "Bilancia",
+    "zodiacScorpio": "Scorpione",
+    "zodiacSagittarius": "Sagittario",
+    "zodiacCapricorn": "Capricorno",
+    "zodiacAquarius": "Acquario",
+    "zodiacPisces": "Pesci"
   },
   "nav": {
     "discover": "Scopri",
@@ -314,7 +330,7 @@
     "nonBinary": "Non binario",
     "preferNotToSay": "Preferisco non dirlo",
     "anonymousBadge": "🎙️ Chiamata vocale anonima",
-    "stranger": "Sconosciuto",
+    "stranger": "Anonimo",
     "secondsLeft": "{n}s",
     "timesUpTitle": "Tempo scaduto!",
     "timesUpSubtitle": "Vuoi continuare a parlare? Se dite sì entrambi, si sblocca la chat.",
@@ -335,7 +351,11 @@
     "noMatchTitle": "Nessuno è disponibile al momento",
     "noMatchBody": "Al momento non abbiamo trovato nessuno con cui parlare. Riprova tra un po'.",
     "noMatchOk": "OK",
-    "cameraDenied": "Per le videochiamate serve l'accesso alla fotocamera. Puoi attivarlo nelle Impostazioni."
+    "cameraDenied": "Per le videochiamate serve l'accesso alla fotocamera. Puoi attivarlo nelle Impostazioni.",
+    "incomingBody": "Qualcuno vuole avviare una chiamata anonima. Inizia solo se accetti.",
+    "ringing": "Sta squillando…",
+    "noAnswer": "Nessuna risposta.",
+    "callDeclined": "Ha rifiutato la chiamata."
   },
   "vibes": {
     "search": "Cerca",
@@ -550,7 +570,8 @@
       "unknownTrack": "Sconosciuto",
       "downloaded": "Salvato in galleria",
       "downloadFailed": "Impossibile salvare",
-      "savedToDraft": "Salvato nelle bozze"
+      "savedToDraft": "Salvato nelle bozze",
+      "cameraDenied": "Serve l’accesso alla fotocamera per scattare foto."
     },
     "highlight": {
       "title": "In evidenza",
@@ -731,7 +752,9 @@
     "roomPrivate": "Questa stanza è privata. Chiedi all'host di entrare.",
     "roomFull": "Questa stanza è piena.",
     "alreadyCheckedIn": "Hai già riscattato la ricompensa di oggi.",
-    "purchasesUnavailable": "Gli acquisti non sono disponibili al momento."
+    "purchasesUnavailable": "Gli acquisti non sono disponibili al momento.",
+    "peerBusy": "È già in un’altra chiamata. Riprova più tardi.",
+    "videoLocked": "Le videochiamate si sbloccano quando entrambi rivelate i vostri profili."
   },
   "faq": {
     "q1": "Come funziona l'app?",

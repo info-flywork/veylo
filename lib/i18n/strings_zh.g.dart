@@ -181,6 +181,10 @@ class _Translations$chats$zh extends Translations$chats$tr {
 	@override String get noSearchResults => '未找到结果';
 	@override String get milestonePhotoUnlocked => '已在 70% 解锁';
 	@override String revealPeerWants({required Object name}) => '${name} 想公开个人资料';
+	@override String get voiceCall => '语音通话';
+	@override String get videoCall => '视频通话';
+	@override String get videoLocked => '你们双方都公开资料后，即可使用视频通话。';
+	@override String get openSettings => '设置';
 }
 
 // Path: profile
@@ -383,6 +387,18 @@ class _Translations$profile$zh extends Translations$profile$tr {
 	@override String get borderEquipCta => '使用边框';
 	@override String get borderRemoveCta => '移除边框';
 	@override String get followEmpty => '这里还没有人';
+	@override String get zodiacAries => '白羊座';
+	@override String get zodiacTaurus => '金牛座';
+	@override String get zodiacGemini => '双子座';
+	@override String get zodiacCancer => '巨蟹座';
+	@override String get zodiacLeo => '狮子座';
+	@override String get zodiacVirgo => '处女座';
+	@override String get zodiacLibra => '天秤座';
+	@override String get zodiacScorpio => '天蝎座';
+	@override String get zodiacSagittarius => '射手座';
+	@override String get zodiacCapricorn => '摩羯座';
+	@override String get zodiacAquarius => '水瓶座';
+	@override String get zodiacPisces => '双鱼座';
 }
 
 // Path: nav
@@ -417,7 +433,7 @@ class _Translations$call$zh extends Translations$call$tr {
 	@override String get nonBinary => '非二元';
 	@override String get preferNotToSay => '不愿透露';
 	@override String get anonymousBadge => '🎙️ 匿名语音通话';
-	@override String get stranger => '陌生人';
+	@override String get stranger => '匿名';
 	@override String secondsLeft({required Object n}) => '${n}秒';
 	@override String get timesUpTitle => '时间到！';
 	@override String get timesUpSubtitle => '还想继续聊吗？双方都同意即可解锁聊天。';
@@ -439,6 +455,10 @@ class _Translations$call$zh extends Translations$call$tr {
 	@override String get noMatchBody => '目前没有找到可以聊天的人，请稍后再试。';
 	@override String get noMatchOk => '好的';
 	@override String get cameraDenied => '视频通话需要相机权限，可在系统设置中开启。';
+	@override String get incomingBody => '有人想发起一次匿名通话。只有你接受后才会开始。';
+	@override String get ringing => '正在呼叫…';
+	@override String get noAnswer => '无人接听。';
+	@override String get callDeclined => '对方拒绝了通话。';
 }
 
 // Path: vibes
@@ -686,6 +706,8 @@ class _Translations$errors$zh extends Translations$errors$tr {
 	@override String get roomFull => '该房间已满。';
 	@override String get alreadyCheckedIn => '你今天已经领取过奖励了。';
 	@override String get purchasesUnavailable => '暂时无法购买。';
+	@override String get peerBusy => '对方正在通话中，请稍后再试。';
+	@override String get videoLocked => '你们双方都公开资料后，即可使用视频通话。';
 }
 
 // Path: faq
@@ -1094,6 +1116,7 @@ class _Translations$discover$story$zh extends Translations$discover$story$tr {
 	@override String get downloaded => '已保存到相册';
 	@override String get downloadFailed => '保存失败';
 	@override String get savedToDraft => '已保存到草稿';
+	@override String get cameraDenied => '拍照需要相机权限。';
 }
 
 // Path: discover.highlight
@@ -1261,6 +1284,10 @@ extension on TranslationsZh {
 			'chats.noSearchResults' => '未找到结果',
 			'chats.milestonePhotoUnlocked' => '已在 70% 解锁',
 			'chats.revealPeerWants' => ({required Object name}) => '${name} 想公开个人资料',
+			'chats.voiceCall' => '语音通话',
+			'chats.videoCall' => '视频通话',
+			'chats.videoLocked' => '你们双方都公开资料后，即可使用视频通话。',
+			'chats.openSettings' => '设置',
 			'profile.eyebrow' => '个人资料',
 			'profile.title' => '设置',
 			'profile.editProfile' => '编辑资料',
@@ -1454,6 +1481,18 @@ extension on TranslationsZh {
 			'profile.borderEquipCta' => '使用边框',
 			'profile.borderRemoveCta' => '移除边框',
 			'profile.followEmpty' => '这里还没有人',
+			'profile.zodiacAries' => '白羊座',
+			'profile.zodiacTaurus' => '金牛座',
+			'profile.zodiacGemini' => '双子座',
+			'profile.zodiacCancer' => '巨蟹座',
+			'profile.zodiacLeo' => '狮子座',
+			'profile.zodiacVirgo' => '处女座',
+			'profile.zodiacLibra' => '天秤座',
+			'profile.zodiacScorpio' => '天蝎座',
+			'profile.zodiacSagittarius' => '射手座',
+			'profile.zodiacCapricorn' => '摩羯座',
+			'profile.zodiacAquarius' => '水瓶座',
+			'profile.zodiacPisces' => '双鱼座',
 			'nav.discover' => '发现',
 			'nav.chat' => '聊天',
 			'nav.call' => '通话',
@@ -1470,7 +1509,7 @@ extension on TranslationsZh {
 			'call.nonBinary' => '非二元',
 			'call.preferNotToSay' => '不愿透露',
 			'call.anonymousBadge' => '🎙️ 匿名语音通话',
-			'call.stranger' => '陌生人',
+			'call.stranger' => '匿名',
 			'call.secondsLeft' => ({required Object n}) => '${n}秒',
 			'call.timesUpTitle' => '时间到！',
 			'call.timesUpSubtitle' => '还想继续聊吗？双方都同意即可解锁聊天。',
@@ -1492,6 +1531,10 @@ extension on TranslationsZh {
 			'call.noMatchBody' => '目前没有找到可以聊天的人，请稍后再试。',
 			'call.noMatchOk' => '好的',
 			'call.cameraDenied' => '视频通话需要相机权限，可在系统设置中开启。',
+			'call.incomingBody' => '有人想发起一次匿名通话。只有你接受后才会开始。',
+			'call.ringing' => '正在呼叫…',
+			'call.noAnswer' => '无人接听。',
+			'call.callDeclined' => '对方拒绝了通话。',
 			'vibes.search' => '搜索',
 			'vibes.sendMessage' => '发消息',
 			'vibes.wantsToTalk' => '现在就想聊这个',
@@ -1658,6 +1701,8 @@ extension on TranslationsZh {
 			'discover.filters.showResult' => '查看结果',
 			'discover.post.follow' => '关注',
 			'discover.post.following' => '已关注',
+			_ => null,
+		} ?? switch (path) {
 			'discover.post.addComment' => '添加评论...',
 			'discover.post.commentsTitle' => '评论',
 			'discover.post.sampleCaption' => '美好的一天过后来杯咖啡，真是再惬意不过了。<3',
@@ -1678,10 +1723,9 @@ extension on TranslationsZh {
 			'discover.story.musicError' => '无法加载音乐。',
 			'discover.story.unknownTrack' => '未知',
 			'discover.story.downloaded' => '已保存到相册',
-			_ => null,
-		} ?? switch (path) {
 			'discover.story.downloadFailed' => '保存失败',
 			'discover.story.savedToDraft' => '已保存到草稿',
+			'discover.story.cameraDenied' => '拍照需要相机权限。',
 			'discover.highlight.title' => '精选',
 			'discover.highlight.view' => '查看',
 			'discover.highlight.aiComments' => 'AI 评论',
@@ -1844,6 +1888,8 @@ extension on TranslationsZh {
 			'errors.roomFull' => '该房间已满。',
 			'errors.alreadyCheckedIn' => '你今天已经领取过奖励了。',
 			'errors.purchasesUnavailable' => '暂时无法购买。',
+			'errors.peerBusy' => '对方正在通话中，请稍后再试。',
+			'errors.videoLocked' => '你们双方都公开资料后，即可使用视频通话。',
 			'faq.q1' => '这个应用怎么用？',
 			'faq.q2' => '什么是匿名聊天？',
 			'faq.q3' => '什么是亲密度进度？',
