@@ -1,7 +1,7 @@
 import type { Socket } from 'socket.io';
 import { z } from 'zod';
 import { callService } from '../../services/call.service';
-import { callIdBody, inviteIdBody, joinQueueBody, videoRespondBody } from '../../validators/call.validator';
+import { callIdBody, directCallBody, inviteIdBody, joinQueueBody, videoRespondBody } from '../../validators/call.validator';
 import { on } from './socket-utils';
 
 /** Rastgele arama: sıra, devam oyu, görüntülü geçiş, kapatma. Sonuçlar `call:*` olaylarıyla gelir. */
@@ -15,6 +15,12 @@ export function registerCallHandlers(socket: Socket) {
     callService.leaveQueue(userId);
     return { cancelled: true };
   });
+
+  /** Sohbetten birebir arama: call:direct { conversationId, video } → { inviteId, ringSeconds } */
+  on(socket, 'call:direct', directCallBody, ({ conversationId, video }) =>
+    callService.startDirect(userId, conversationId, video),
+  );
+  on(socket, 'call:direct_cancel', inviteIdBody, ({ inviteId }) => callService.cancelDirect(userId, inviteId));
 
   on(socket, 'call:accept', inviteIdBody, ({ inviteId }) => callService.acceptInvite(userId, inviteId));
   on(socket, 'call:decline', inviteIdBody, ({ inviteId }) => callService.declineInvite(userId, inviteId));

@@ -5,3 +5,4 @@ export const joinQueueBody = z.object({ target: z.enum(CALL_TARGETS).default('an
 export const callIdBody = z.object({ callId: z.uuid() });
 export const inviteIdBody = z.object({ inviteId: z.uuid() });
 export const videoRespondBody = callIdBody.extend({ accept: z.boolean() });
+export const directCallBody = z.object({ conversationId: z.uuid(), video: z.boolean().default(false) });

@@ -202,13 +202,16 @@ interface SendInput {
  */
 async function send(viewerId: string, conversationId: string, input: SendInput, asSystem = false) {
   // Tekrar gönderim: aynı clientMsgId'li mesaj zaten yazıldıysa onu döndür.
-  const dup = await prisma.message.findUnique({
-    where: { senderId_clientMsgId: { senderId: viewerId, clientMsgId: input.clientMsgId } },
-    include: { conversation: { select: { type: true, revealedAt: true } } },
-  });
+  // İki okuma birbirinden bağımsız: uzak veritabanında sırayla değil aynı anda.
+  const [dup, c] = await Promise.all([
+    prisma.message.findUnique({
+      where: { senderId_clientMsgId: { senderId: viewerId, clientMsgId: input.clientMsgId } },
+      include: { conversation: { select: { type: true, revealedAt: true } } },
+    }),
+    loadForMember(conversationId, viewerId),
+  ]);
   if (dup) return { message: serializeMessage(dup, dup.conversation, viewerId), duplicate: true };
 
-  const c = await loadForMember(conversationId, viewerId);
   await assertCanSend(c, viewerId);
   const media =
     input.type !== 'TEXT' && input.mediaId
@@ -267,8 +270,9 @@ async function send(viewerId: string, conversationId: string, input: SendInput, 
   }
 
   // Kilit dışında ve kritik değil: mesaj zaten kaydedildi, bunlar başarısız olsa da gönderim geçerli.
+  // Arka planda: gönderen ve alıcı bu güncellemeleri beklemez (iletim bellekteki halle yapılır).
   // Kendi mesajım okunmuş sayılır (tek satır, birincil anahtarla).
-  await prisma.conversationMember
+  void prisma.conversationMember
     .updateMany({
       where: { conversationId: c.id, userId: viewerId, lastReadSeq: { lt: message.seq } },
       data: { lastReadSeq: message.seq },
@@ -277,7 +281,7 @@ async function send(viewerId: string, conversationId: string, input: SendInput, 
   // Sohbeti silmiş üye varsa yeni mesajla tekrar görünür olur.
   const hiddenIds = c.members.filter((m) => m.hidden).map((m) => m.userId);
   if (hiddenIds.length) {
-    await prisma.conversationMember
+    void prisma.conversationMember
       .updateMany({ where: { conversationId: c.id, userId: { in: hiddenIds } }, data: { hidden: false } })
       .catch((err) => logger.warn({ err }, 'Sohbet görünür yapılamadı'));
   }
