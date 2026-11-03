@@ -47,6 +47,7 @@ export function serializePublicProfile(
 
 /** Kullanıcının kendi profili: her şey. */
 export function serializeMe(u: User, extra: { followerCount: number; followingCount: number; likeCount?: number }) {
+  const boostActive = Boolean(u.boostedUntil && u.boostedUntil > new Date());
   return {
     id: u.id,
     email: u.email,
@@ -72,6 +73,9 @@ export function serializeMe(u: User, extra: { followerCount: number; followingCo
     profileVisible: u.profileVisible,
     onboardingCompleted: u.onboardingCompleted,
     tokenBalance: u.tokenBalance,
+    /** Aktif profil boost bitişi; süresi dolmuşsa null. */
+    boostedUntil: boostActive ? u.boostedUntil : null,
+    boostLevel: boostActive ? u.boostLevel : 0,
     status: u.status,
     stats: { likeCount: extra.likeCount ?? 0, followerCount: extra.followerCount, followingCount: extra.followingCount },
     createdAt: u.createdAt,

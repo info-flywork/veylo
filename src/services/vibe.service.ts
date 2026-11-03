@@ -140,14 +140,17 @@ async function setLiked(viewerId: string, vibeId: string, liked: boolean, locale
 }
 
 /**
- * Vibe'a cevap: yazarla anonim sohbet açılır (vibe metni alıntı olarak) ve cevap ilk mesaj
- * olarak gider. Yazar onaylayana kadar mesaj isteği olarak bekler.
+ * Vibe'a cevap: vibe metni alıntı olarak sohbete yazılır, cevap ilk mesaj olur.
+ * Anonim vibe → anonim sohbet (onaya kadar istek).
+ * Açık vibe → direkt sohbet (kimlik görünür; takip yoksa yine istek).
  */
 async function reply(viewerId: string, vibeId: string, input: { body: string; clientMsgId: string }, locale: string) {
   const v = await loadActive(vibeId);
   if (v.authorId === viewerId) throw AppError.badRequest('CANNOT_REPLY_OWN_VIBE');
   const quote = (v.author.isPersona ? personaVibeBody(v.body, locale, v.id, v.author.username) : v.body).slice(0, 160);
-  const conversation = await conversationService.createAnonymous(viewerId, v.authorId, quote);
+  const conversation = v.anonymous
+    ? await conversationService.createAnonymous(viewerId, v.authorId, quote)
+    : await conversationService.createDirect(viewerId, v.authorId, quote);
   await conversationService.send(viewerId, conversation.id, {
     clientMsgId: input.clientMsgId,
     type: 'TEXT',

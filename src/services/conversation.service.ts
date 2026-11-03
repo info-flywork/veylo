@@ -183,7 +183,8 @@ async function openPair(
   }
 }
 
-const createDirect = (viewerId: string, targetId: string) => openPair(viewerId, targetId, 'DIRECT');
+const createDirect = (viewerId: string, targetId: string, contextQuote?: string) =>
+  openPair(viewerId, targetId, 'DIRECT', contextQuote);
 const createAnonymous = (viewerId: string, targetId: string, contextQuote?: string) =>
   openPair(viewerId, targetId, 'ANONYMOUS', contextQuote);
 
