@@ -23,19 +23,17 @@ const _kVisibleItems = 6;
 Future<PickedValue<PetsPreference>?> showPetsSheet(
   BuildContext context, {
   PetsPreference initial = PetsPreference.haveDog,
-  bool canClear = false,
 }) {
   return showAppEditSheet<PickedValue<PetsPreference>>(
     context: context,
-    builder: (_) => _PetsSheet(initial: initial, canClear: canClear),
+    builder: (_) => _PetsSheet(initial: initial),
   );
 }
 
 class _PetsSheet extends StatefulWidget {
-  const _PetsSheet({required this.initial, this.canClear = false});
+  const _PetsSheet({required this.initial});
 
   final PetsPreference initial;
-  final bool canClear;
 
   @override
   State<_PetsSheet> createState() => _PetsSheetState();
@@ -149,11 +147,6 @@ class _PetsSheetState extends State<_PetsSheet> {
               ),
             ),
           ),
-          if (widget.canClear)
-            PickerClearAction(
-              onTap: () =>
-                  Navigator.of(context).pop(PickedValue<PetsPreference>(null)),
-            ),
         ],
       ),
     );

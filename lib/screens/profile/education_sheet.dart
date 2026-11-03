@@ -21,19 +21,17 @@ const _kVisibleItems = 5;
 Future<PickedValue<EducationLevel>?> showEducationSheet(
   BuildContext context, {
   EducationLevel initial = EducationLevel.bachelors,
-  bool canClear = false,
 }) {
   return showAppEditSheet<PickedValue<EducationLevel>>(
     context: context,
-    builder: (_) => _EducationSheet(initial: initial, canClear: canClear),
+    builder: (_) => _EducationSheet(initial: initial),
   );
 }
 
 class _EducationSheet extends StatefulWidget {
-  const _EducationSheet({required this.initial, this.canClear = false});
+  const _EducationSheet({required this.initial});
 
   final EducationLevel initial;
-  final bool canClear;
 
   @override
   State<_EducationSheet> createState() => _EducationSheetState();
@@ -137,11 +135,6 @@ class _EducationSheetState extends State<_EducationSheet> {
               ),
             ),
           ),
-          if (widget.canClear)
-            PickerClearAction(
-              onTap: () =>
-                  Navigator.of(context).pop(PickedValue<EducationLevel>(null)),
-            ),
         ],
       ),
     );

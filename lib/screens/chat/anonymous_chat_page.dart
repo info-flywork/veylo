@@ -14,6 +14,7 @@ import 'package:veylo/screens/chat/chat_sticker.dart';
 import 'package:veylo/screens/chat/connection_progress_sheet.dart';
 import 'package:veylo/screens/chat/conversation_controller.dart';
 import 'package:veylo/screens/chat/direct_chat_page.dart';
+import 'package:veylo/screens/chat/message_forward_sheet.dart';
 import 'package:veylo/screens/chat/reveal_profile_sheet.dart';
 import 'package:veylo/screens/chat/widgets/chat_composer.dart';
 import 'package:veylo/screens/chat/widgets/chat_composer_context.dart';
@@ -264,12 +265,18 @@ class _AnonymousChatPageState extends State<AnonymousChatPage> {
                   messages: messages,
                   peerLastReadSeq: thread.peerLastReadSeq,
                   seenLabel: t.seen,
+                  sendingLabel: t.messageSending,
                   onRetry: _ctrl.retry,
                   onUnlockDecision: _ctrl.respondUnlock,
                   onLoadOlder: _ctrl.loadOlder,
                   skipFirstIncoming: firstIncoming != null,
                   peerAvatarUrl: thread.avatarUrl,
                   onReply: _ctrl.setReplyTarget,
+                  onForward: (m) => showMessageForwardSheet(
+                    context,
+                    controller: _ctrl,
+                    message: m,
+                  ),
                   onEdit: (m) {
                     _ctrl.setEditing(m);
                     _input.text = m.body ?? '';
@@ -323,6 +330,7 @@ class _AnonymousChatPageState extends State<AnonymousChatPage> {
                   onSend: _send,
                   onSticker: (asset) => _ctrl.send(ChatSticker.encode(asset)),
                   onMedia: (kind, path) => _ctrl.sendMedia(kind, path),
+                  onImages: _ctrl.sendImages,
                 ),
               ),
             ],

@@ -249,7 +249,7 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                   ),
                   const SizedBox(height: 8),
                   _SettingsRow(
-                    iconAsset: AppAssets.iconNotificationBing,
+                    iconAsset: AppAssets.iconSettingsNotifications,
                     label: t.notifications,
                     trailing: CupertinoSwitch(
                       value: _notificationsEnabled,
@@ -260,13 +260,13 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                   ),
                   const SizedBox(height: 8),
                   _SettingsRow(
-                    iconAsset: AppAssets.iconPrivateLock,
+                    iconAsset: AppAssets.iconSettingsPassword,
                     label: t.password,
                     onTap: _openPassword,
                   ),
                   const SizedBox(height: 8),
                   _SettingsRow(
-                    iconAsset: AppAssets.iconEmail,
+                    iconAsset: AppAssets.iconSettingsEmail,
                     label: t.email,
                     value: _email,
                     onTap: _openEmail,

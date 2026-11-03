@@ -240,11 +240,26 @@ class ConversationController extends ChangeNotifier {
     _notify();
   }
 
+  ChatReplyPreview? _consumeReplyPreview() {
+    final reply = _replyTarget;
+    _replyTarget = null;
+    if (reply == null) return null;
+    return ChatReplyPreview(
+      id: reply.id!,
+      type: reply.type,
+      body: reply.type == 'TEXT'
+          ? (reply.body?.startsWith('sticker:') == true
+                ? '🎭 Sticker'
+                : reply.body)
+          : reply.displayText,
+      isMine: reply.isMine,
+    );
+  }
+
   /// Fotoğraf veya ses: önce dosya yüklenir, sonra mesaj gider.
   Future<void> sendMedia(String kind, String path) async {
     if (_thread.isLocalOnly || path.isEmpty) return;
-    final reply = _replyTarget;
-    _replyTarget = null;
+    final replyTo = _consumeReplyPreview();
     final pending = ChatMessage(
       clientMsgId: _uuid.v4(),
       isMine: true,
@@ -252,23 +267,85 @@ class ConversationController extends ChangeNotifier {
       mediaUrl: path,
       createdAt: DateTime.now(),
       status: ChatMessageStatus.sending,
-      replyToId: reply?.id,
-      replyTo: reply == null
-          ? null
-          : ChatReplyPreview(
-              id: reply.id!,
-              type: reply.type,
-              body: reply.type == 'TEXT'
-                  ? (reply.body?.startsWith('sticker:') == true
-                        ? '🎭 Sticker'
-                        : reply.body)
-                  : reply.displayText,
-              isMine: reply.isMine,
-            ),
+      replyToId: replyTo?.id,
+      replyTo: replyTo,
     );
     _messages = [..._messages, pending];
     _notify();
     await _deliver(pending);
+  }
+
+  /// Birden fazla fotoğrafı anında balon olarak ekler, sonra sırayla yükler.
+  Future<void> sendImages(List<String> paths) async {
+    if (_thread.isLocalOnly || paths.isEmpty) return;
+    final replyTo = _consumeReplyPreview();
+    final pending = <ChatMessage>[
+      for (var i = 0; i < paths.length; i++)
+        ChatMessage(
+          clientMsgId: _uuid.v4(),
+          isMine: true,
+          type: 'IMAGE',
+          mediaUrl: paths[i],
+          createdAt: DateTime.now().add(Duration(milliseconds: i)),
+          status: ChatMessageStatus.sending,
+          replyToId: i == 0 ? replyTo?.id : null,
+          replyTo: i == 0 ? replyTo : null,
+        ),
+    ];
+    _messages = [..._messages, ...pending];
+    _notify();
+    for (final msg in pending) {
+      await _deliver(msg);
+    }
+  }
+
+  /// Başka sohbete ilet (metin veya mevcut medya id / yerel dosya).
+  Future<void> forwardTo(ChatThread target, ChatMessage message) async {
+    if (target.isLocalOnly || target.id.isEmpty) return;
+    final payload = <String, dynamic>{
+      'conversationId': target.id,
+      'clientMsgId': _uuid.v4(),
+      'type': message.type == 'VOICE'
+          ? 'VOICE'
+          : message.type == 'IMAGE'
+          ? 'IMAGE'
+          : 'TEXT',
+    };
+    if (payload['type'] == 'TEXT') {
+      final body = message.body?.trim() ?? '';
+      if (body.isEmpty) return;
+      payload['body'] = body;
+    } else {
+      var mediaId = message.mediaId;
+      if (mediaId == null || mediaId.isEmpty) {
+        final url = message.mediaUrl;
+        if (url == null || url.isEmpty) return;
+        final kind = message.type == 'VOICE' ? 'voice' : 'image';
+        final uploaded = await ApiClient.instance.upload(
+          '/media/chat',
+          url,
+          query: {'kind': kind},
+        );
+        mediaId = Map<String, dynamic>.from(uploaded as Map)['mediaId'] as String?;
+        if (mediaId == null || mediaId.isEmpty) return;
+      }
+      payload['mediaId'] = mediaId;
+    }
+    if (_socket.connected.value) {
+      await _socket.request('message:send', payload);
+    } else {
+      await ApiClient.instance.post(
+        '/conversations/${target.id}/messages',
+        body: {
+          'clientMsgId': payload['clientMsgId'],
+          'type': payload['type'],
+          if (payload['body'] != null) 'body': payload['body'],
+          if (payload['mediaId'] != null) 'mediaId': payload['mediaId'],
+        },
+      );
+    }
+    // Hedef sohbet listede taze önizleme alsın.
+    unawaited(ChatStore.instance.refresh());
   }
 
   /// Mesaj hemen ekranda görünür ("gönderiliyor"), sunucu onaylayınca kesinleşir.
@@ -282,27 +359,15 @@ class ConversationController extends ChangeNotifier {
       await editMessage(editing, body);
       return;
     }
-    final reply = _replyTarget;
-    _replyTarget = null;
+    final replyTo = _consumeReplyPreview();
     final pending = ChatMessage(
       clientMsgId: _uuid.v4(),
       isMine: true,
       body: body,
       createdAt: DateTime.now(),
       status: ChatMessageStatus.sending,
-      replyToId: reply?.id,
-      replyTo: reply == null
-          ? null
-          : ChatReplyPreview(
-              id: reply.id!,
-              type: reply.type,
-              body: reply.type == 'TEXT'
-                  ? (reply.body?.startsWith('sticker:') == true
-                        ? '🎭 Sticker'
-                        : reply.body)
-                  : reply.displayText,
-              isMine: reply.isMine,
-            ),
+      replyToId: replyTo?.id,
+      replyTo: replyTo,
     );
     _messages = [..._messages, pending];
     _notify();

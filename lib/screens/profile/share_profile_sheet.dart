@@ -126,40 +126,46 @@ class ShareProfileSheet extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
+                  // Figma: 44h, padding 10, radius 10, #998FED @ 5%.
                   Material(
                     color: const Color(0x0D998FED),
                     borderRadius: BorderRadius.circular(10),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: GestureDetector(
-                              onTap: () => _copy(context),
-                              behavior: HitTestBehavior.opaque,
-                              child: AppText(
-                                profileLink,
-                                style: AppTextStyles.shareProfileLink,
-                                maxLines: 1,
+                    child: SizedBox(
+                      height: 44,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () => _copy(context),
+                                behavior: HitTestBehavior.opaque,
+                                child: AppText(
+                                  profileLink,
+                                  style: AppTextStyles.shareProfileLink,
+                                  maxLines: 1,
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 10),
-                          IconButton(
-                            onPressed: () => _copy(context),
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(
-                              minWidth: 40,
-                              minHeight: 40,
+                            const SizedBox(width: 10),
+                            GestureDetector(
+                              onTap: () => _copy(context),
+                              behavior: HitTestBehavior.opaque,
+                              child: Tooltip(
+                                message: t.shareLinkCopied,
+                                child: SvgPicture.asset(
+                                  AppAssets.iconCopy,
+                                  width: 24,
+                                  height: 24,
+                                  colorFilter: const ColorFilter.mode(
+                                    AppColors.black,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                              ),
                             ),
-                            icon: const Icon(
-                              Icons.copy_rounded,
-                              size: 22,
-                              color: Color(0xFF7E8896),
-                            ),
-                            tooltip: t.shareLinkCopied,
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),

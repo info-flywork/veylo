@@ -166,6 +166,11 @@ class _Translations$chats$hi extends Translations$chats$tr {
 	@override String get stickerEmpty => 'कोई हाल का स्टिकर नहीं';
 	@override String get messageCopied => 'संदेश कॉपी हो गया';
 	@override String get messageReply => 'जवाब दें';
+	@override String get messageSending => 'भेजा जा रहा है…';
+	@override String get messageForward => 'फ़ॉरवर्ड';
+	@override String get forwardTitle => 'चैट पर फ़ॉरवर्ड करें';
+	@override String get forwardEmpty => 'फ़ॉरवर्ड करने के लिए कोई चैट नहीं';
+	@override String get forwardSent => 'फ़ॉरवर्ड किया गया';
 	@override String get messageCopy => 'कॉपी';
 	@override String get messageEdit => 'संपादित करें';
 	@override String get messageDelete => 'हटाएँ';
@@ -239,6 +244,7 @@ class _Translations$profile$hi extends Translations$profile$tr {
 	@override String get deleteAllBody => 'पुष्टि करने पर सभी संदेश डिलीट हो जाएँगे';
 	@override String get deleteAllAction => 'डिलीट';
 	@override String get faqHelp => 'FAQ और सहायता';
+	@override String get contactUs => 'हमसे संपर्क करें';
 	@override String get restorePurchases => 'खरीदारी रीस्टोर करें';
 	@override String get termsOfService => 'सेवा की शर्तें';
 	@override String get privacyPolicy => 'प्राइवेसी पॉलिसी';
@@ -408,6 +414,9 @@ class _Translations$profile$hi extends Translations$profile$tr {
 	@override String get zodiacCapricorn => 'मकर';
 	@override String get zodiacAquarius => 'कुंभ';
 	@override String get zodiacPisces => 'मीन';
+	@override String get boostActiveTitle => 'You\'re standing out!';
+	@override String boostRemaining({required Object time}) => '${time} left';
+	@override String get boostExtend => 'Extend';
 }
 
 // Path: nav
@@ -431,11 +440,11 @@ class _Translations$call$hi extends Translations$call$tr {
 	final TranslationsHi _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => '60 सेकंड स्ट्रेंजर';
-	@override String get subtitle => 'किसी अनजान व्यक्ति से 60 सेकंड बात करें — पूरी तरह गुमनाम। न प्रोफ़ाइल, न फ़ोटो, न नाम। बस एक आवाज़ और एक पल।';
-	@override String get findingTitle => 'स्ट्रेंजर ढूँढ रहे हैं...';
+	@override String get title => '60 सेकंड अनाम';
+	@override String get subtitle => 'किसी रैंडम अनाम व्यक्ति से 60 सेकंड बात करें — पूरी तरह गुमनाम। न प्रोफ़ाइल, न फ़ोटो, न नाम। बस एक आवाज़ और एक पल।';
+	@override String get findingTitle => 'अनाम व्यक्ति खोजा जा रहा है...';
 	@override String get findingSubtitle => 'आप 60 सेकंड तक गुमनाम बात करेंगे। न प्रोफ़ाइल, न नाम।';
-	@override String get callStranger => 'स्ट्रेंजर को कॉल करें - 10 टोकन';
+	@override String get callStranger => 'अनाम कॉल करें - 10 टोकन';
 	@override String get cancel => 'रद्द करें';
 	@override String get female => 'महिला';
 	@override String get male => 'पुरुष';
@@ -449,7 +458,7 @@ class _Translations$call$hi extends Translations$call$tr {
 	@override String get keepTalking => 'बात जारी रखें';
 	@override String get endCall => 'कॉल खत्म करें';
 	@override String get waitingOther => 'दूसरे व्यक्ति का इंतज़ार...';
-	@override String get callStrangerFree => 'स्ट्रेंजर को कॉल करें';
+	@override String get callStrangerFree => 'अनाम कॉल करें';
 	@override String get peerLeft => 'दूसरे व्यक्ति ने कॉल खत्म कर दी।';
 	@override String get noKeep => 'इस बार चैट अनलॉक नहीं हुई।';
 	@override String get videoWaiting => 'वीडियो कॉल स्वीकार होने का इंतज़ार...';
@@ -730,7 +739,7 @@ class _Translations$faq$hi extends Translations$faq$tr {
 	@override String get q2 => 'गुमनाम चैट क्या है?';
 	@override String get q3 => 'कनेक्शन प्रोग्रेस क्या है?';
 	@override String get q4 => 'मैं अपनी प्रोफ़ाइल कैसे दिखाऊँ?';
-	@override String get q5 => '60 सेकंड स्ट्रेंजर क्या है?';
+	@override String get q5 => '60 सेकंड अनाम क्या है?';
 	@override String get q6 => 'Vibes क्या हैं?';
 	@override String get q7 => 'मैं अपनी प्रोफ़ाइल कैसे एडिट करूँ?';
 	@override String get q8 => 'मैं नोटिफ़िकेशन कैसे मैनेज करूँ?';
@@ -1015,6 +1024,13 @@ class _Translations$discover$liveRoom$hi extends Translations$discover$liveRoom$
 	@override String get remove => 'रूम से हटाएं';
 	@override String get removed => 'आपको रूम से हटा दिया गया।';
 	@override String get seeProfile => 'प्रोफ़ाइल देखने का अनुरोध करें';
+	@override String get closeConfirmTitle => 'Are you sure you want to close the room?';
+	@override String get closeConfirmSubtitle => 'The room will end for everyone.';
+	@override String get closeConfirm => 'Close';
+	@override String get leaveConfirmTitle => 'Are you sure you want to leave the room?';
+	@override String get leaveConfirmSubtitle => 'You will leave while the conversation continues.';
+	@override String get leaveConfirm => 'Leave';
+	@override String get cancel => 'Cancel';
 }
 
 // Path: discover.groupChat
@@ -1278,6 +1294,11 @@ extension on TranslationsHi {
 			'chats.stickerEmpty' => 'कोई हाल का स्टिकर नहीं',
 			'chats.messageCopied' => 'संदेश कॉपी हो गया',
 			'chats.messageReply' => 'जवाब दें',
+			'chats.messageSending' => 'भेजा जा रहा है…',
+			'chats.messageForward' => 'फ़ॉरवर्ड',
+			'chats.forwardTitle' => 'चैट पर फ़ॉरवर्ड करें',
+			'chats.forwardEmpty' => 'फ़ॉरवर्ड करने के लिए कोई चैट नहीं',
+			'chats.forwardSent' => 'फ़ॉरवर्ड किया गया',
 			'chats.messageCopy' => 'कॉपी',
 			'chats.messageEdit' => 'संपादित करें',
 			'chats.messageDelete' => 'हटाएँ',
@@ -1342,6 +1363,7 @@ extension on TranslationsHi {
 			'profile.deleteAllBody' => 'पुष्टि करने पर सभी संदेश डिलीट हो जाएँगे',
 			'profile.deleteAllAction' => 'डिलीट',
 			'profile.faqHelp' => 'FAQ और सहायता',
+			'profile.contactUs' => 'हमसे संपर्क करें',
 			'profile.restorePurchases' => 'खरीदारी रीस्टोर करें',
 			'profile.termsOfService' => 'सेवा की शर्तें',
 			'profile.privacyPolicy' => 'प्राइवेसी पॉलिसी',
@@ -1511,16 +1533,19 @@ extension on TranslationsHi {
 			'profile.zodiacCapricorn' => 'मकर',
 			'profile.zodiacAquarius' => 'कुंभ',
 			'profile.zodiacPisces' => 'मीन',
+			'profile.boostActiveTitle' => 'You\'re standing out!',
+			'profile.boostRemaining' => ({required Object time}) => '${time} left',
+			'profile.boostExtend' => 'Extend',
 			'nav.discover' => 'डिस्कवर',
 			'nav.chat' => 'चैट',
 			'nav.call' => 'कॉल',
 			'nav.vibes' => 'वाइब्स',
 			'nav.profile' => 'प्रोफ़ाइल',
-			'call.title' => '60 सेकंड स्ट्रेंजर',
-			'call.subtitle' => 'किसी अनजान व्यक्ति से 60 सेकंड बात करें — पूरी तरह गुमनाम। न प्रोफ़ाइल, न फ़ोटो, न नाम। बस एक आवाज़ और एक पल।',
-			'call.findingTitle' => 'स्ट्रेंजर ढूँढ रहे हैं...',
+			'call.title' => '60 सेकंड अनाम',
+			'call.subtitle' => 'किसी रैंडम अनाम व्यक्ति से 60 सेकंड बात करें — पूरी तरह गुमनाम। न प्रोफ़ाइल, न फ़ोटो, न नाम। बस एक आवाज़ और एक पल।',
+			'call.findingTitle' => 'अनाम व्यक्ति खोजा जा रहा है...',
 			'call.findingSubtitle' => 'आप 60 सेकंड तक गुमनाम बात करेंगे। न प्रोफ़ाइल, न नाम।',
-			'call.callStranger' => 'स्ट्रेंजर को कॉल करें - 10 टोकन',
+			'call.callStranger' => 'अनाम कॉल करें - 10 टोकन',
 			'call.cancel' => 'रद्द करें',
 			'call.female' => 'महिला',
 			'call.male' => 'पुरुष',
@@ -1534,7 +1559,7 @@ extension on TranslationsHi {
 			'call.keepTalking' => 'बात जारी रखें',
 			'call.endCall' => 'कॉल खत्म करें',
 			'call.waitingOther' => 'दूसरे व्यक्ति का इंतज़ार...',
-			'call.callStrangerFree' => 'स्ट्रेंजर को कॉल करें',
+			'call.callStrangerFree' => 'अनाम कॉल करें',
 			'call.peerLeft' => 'दूसरे व्यक्ति ने कॉल खत्म कर दी।',
 			'call.noKeep' => 'इस बार चैट अनलॉक नहीं हुई।',
 			'call.videoWaiting' => 'वीडियो कॉल स्वीकार होने का इंतज़ार...',
@@ -1676,6 +1701,13 @@ extension on TranslationsHi {
 			'discover.liveRoom.remove' => 'रूम से हटाएं',
 			'discover.liveRoom.removed' => 'आपको रूम से हटा दिया गया।',
 			'discover.liveRoom.seeProfile' => 'प्रोफ़ाइल देखने का अनुरोध करें',
+			'discover.liveRoom.closeConfirmTitle' => 'Are you sure you want to close the room?',
+			'discover.liveRoom.closeConfirmSubtitle' => 'The room will end for everyone.',
+			'discover.liveRoom.closeConfirm' => 'Close',
+			'discover.liveRoom.leaveConfirmTitle' => 'Are you sure you want to leave the room?',
+			'discover.liveRoom.leaveConfirmSubtitle' => 'You will leave while the conversation continues.',
+			'discover.liveRoom.leaveConfirm' => 'Leave',
+			'discover.liveRoom.cancel' => 'Cancel',
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} यूज़र',
 			'discover.groupChat.sampleVictoria' => 'मैं बहुत बोर हो रही हूँ। दोस्तों, कुछ करें?',
 			'discover.groupChat.sampleSona' => 'क्या करें? आपके मन में क्या है?',
@@ -1694,6 +1726,8 @@ extension on TranslationsHi {
 			'discover.groupInfo.requests' => 'जॉइन रिक्वेस्ट',
 			'discover.groupInfo.approve' => 'स्वीकार करें',
 			'discover.groupInfo.reject' => 'अस्वीकार करें',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupInfo.addPeopleEmpty' => 'लोगों को ग्रुप में जोड़ने के लिए पहले उन्हें फ़ॉलो करें।',
 			'discover.groupInfo.add' => 'जोड़ें',
 			'discover.groupInfo.makeAdmin' => 'एडमिन बनाएँ',
@@ -1710,8 +1744,6 @@ extension on TranslationsHi {
 			'discover.filters.distance' => 'दूरी',
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} किमी',
 			'discover.filters.showMe' => 'मुझे दिखाएँ',
-			_ => null,
-		} ?? switch (path) {
 			'discover.filters.everyone' => 'सभी',
 			'discover.filters.women' => 'महिलाएँ',
 			'discover.filters.men' => 'पुरुष',
@@ -1912,7 +1944,7 @@ extension on TranslationsHi {
 			'faq.q2' => 'गुमनाम चैट क्या है?',
 			'faq.q3' => 'कनेक्शन प्रोग्रेस क्या है?',
 			'faq.q4' => 'मैं अपनी प्रोफ़ाइल कैसे दिखाऊँ?',
-			'faq.q5' => '60 सेकंड स्ट्रेंजर क्या है?',
+			'faq.q5' => '60 सेकंड अनाम क्या है?',
 			'faq.q6' => 'Vibes क्या हैं?',
 			'faq.q7' => 'मैं अपनी प्रोफ़ाइल कैसे एडिट करूँ?',
 			'faq.q8' => 'मैं नोटिफ़िकेशन कैसे मैनेज करूँ?',

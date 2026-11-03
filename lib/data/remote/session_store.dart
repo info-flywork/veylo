@@ -246,6 +246,16 @@ class SessionStore extends ChangeNotifier {
     setMe(_me!.copyWith(tokenBalance: balance));
   }
 
+  /// Boost satın alındıktan sonra profil countdown'u hemen görünsün.
+  void updateBoostedUntil(DateTime? until) {
+    if (_me == null) return;
+    setMe(
+      until == null
+          ? _me!.copyWith(clearBoost: true)
+          : _me!.copyWith(boostedUntil: until),
+    );
+  }
+
   Future<void> signOut() async {
     // Cihaz kaydı silinirken hâlâ oturum token'ı gerekiyor.
     await PushService.instance.stop();

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
@@ -371,9 +373,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 const SizedBox(height: 18),
                 _StandOutBanner(
+                  boostUntil: profile.boostedUntil,
                   title: t.promoTitle,
                   subtitle: t.promoSubtitle,
+                  activeTitle: t.boostActiveTitle,
+                  remainingLabel: t.boostRemaining,
                   ctaLabel: t.standOut,
+                  extendLabel: t.boostExtend,
                   onPressed: widget.onStandOutTap,
                 ),
                 const SizedBox(height: 18),
@@ -781,19 +787,35 @@ class _EditProfileButton extends StatelessWidget {
   }
 }
 
-/// Figma Stand Out kartı — linear #7B2FFF→#430F9D, 2px glow border, rocket + CTA.
-class _StandOutBanner extends StatelessWidget {
+/// Figma Stand Out kartı — boost aktifken canlı countdown gösterir.
+class _StandOutBanner extends StatefulWidget {
   const _StandOutBanner({
     required this.title,
     required this.subtitle,
+    required this.activeTitle,
+    required this.remainingLabel,
     required this.ctaLabel,
+    required this.extendLabel,
+    this.boostUntil,
     this.onPressed,
   });
 
+  final DateTime? boostUntil;
   final String title;
   final String subtitle;
+  final String Function({required Object time}) remainingLabel;
+  final String activeTitle;
   final String ctaLabel;
+  final String extendLabel;
   final VoidCallback? onPressed;
+
+  @override
+  State<_StandOutBanner> createState() => _StandOutBannerState();
+}
+
+class _StandOutBannerState extends State<_StandOutBanner> {
+  Timer? _tick;
+  Duration _left = Duration.zero;
 
   // Figma Frame 1597878586: 398×160, radius 18, 2px border #7B2FFF→#BE99FF,
   // dolgu #7B2FFF→#430F9D, padding 6; içeride koyu, içe gömük panel.
@@ -802,8 +824,63 @@ class _StandOutBanner extends StatelessWidget {
   static const _framePadding = 6.0;
   static const _height = 160.0;
 
+  bool get _active =>
+      widget.boostUntil != null && widget.boostUntil!.isAfter(DateTime.now());
+
+  @override
+  void initState() {
+    super.initState();
+    _sync();
+  }
+
+  @override
+  void didUpdateWidget(covariant _StandOutBanner oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.boostUntil != widget.boostUntil) _sync();
+  }
+
+  @override
+  void dispose() {
+    _tick?.cancel();
+    super.dispose();
+  }
+
+  void _sync() {
+    _tick?.cancel();
+    _tick = null;
+    _recompute();
+    if (!_active) return;
+    _tick = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+      _recompute();
+      if (!_active) {
+        _tick?.cancel();
+        _tick = null;
+        // Süre bitince Me'den temizle; banner promo haline dönsün.
+        SessionStore.instance.updateBoostedUntil(null);
+      }
+    });
+  }
+
+  void _recompute() {
+    final until = widget.boostUntil;
+    final left = until == null
+        ? Duration.zero
+        : until.difference(DateTime.now());
+    setState(() => _left = left.isNegative ? Duration.zero : left);
+  }
+
+  String _format(Duration d) {
+    final h = d.inHours;
+    final m = d.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final s = d.inSeconds.remainder(60).toString().padLeft(2, '0');
+    if (h > 0) return '$h:$m:$s';
+    return '$m:$s';
+  }
+
   @override
   Widget build(BuildContext context) {
+    final active = _active && _left > Duration.zero;
     const innerRadius = _cardRadius - _borderWidth - _framePadding + 2;
     return Container(
       height: _height,
@@ -844,7 +921,6 @@ class _StandOutBanner extends StatelessWidget {
               colors: [Color(0xFF3B1F78), Color(0xFF6B44C8)],
             ),
           ),
-          // İçe gömük görünüm: kenarlarda koyu ince çizgi.
           foregroundDecoration: BoxDecoration(
             borderRadius: BorderRadius.circular(innerRadius),
             border: Border.all(
@@ -872,14 +948,21 @@ class _StandOutBanner extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AppText(
-                            title,
+                            active ? widget.activeTitle : widget.title,
                             style: AppTextStyles.profilePromoTitle,
                             maxLines: 1,
                           ),
                           const SizedBox(height: 4),
                           AppText(
-                            subtitle,
-                            style: AppTextStyles.profilePromoSubtitle,
+                            active
+                                ? widget.remainingLabel(time: _format(_left))
+                                : widget.subtitle,
+                            style: active
+                                ? AppTextStyles.profilePromoTitle.copyWith(
+                                    fontSize: 22,
+                                    height: 1.1,
+                                  )
+                                : AppTextStyles.profilePromoSubtitle,
                             maxLines: 1,
                           ),
                         ],
@@ -889,7 +972,10 @@ class _StandOutBanner extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              _StandOutCta(label: ctaLabel, onPressed: onPressed),
+              _StandOutCta(
+                label: active ? widget.extendLabel : widget.ctaLabel,
+                onPressed: widget.onPressed,
+              ),
             ],
           ),
         ),

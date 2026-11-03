@@ -12,22 +12,26 @@ import 'package:veylo/data/remote/vibe_repository.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/vibes/vibe_post.dart';
 import 'package:veylo/screens/chat/anonymous_chat_page.dart';
+import 'package:veylo/screens/chat/direct_chat_page.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 import 'package:veylo/screens/vibes/vibe_share_sheet.dart';
 
-/// Vibe kartı → Mesaj Gönder → Vibe'a Cevap Ver → anonim sohbet.
-/// Cevap yazara mesaj isteği olarak gider; onaylarsa sohbet devam eder.
+/// Vibe kartı → Mesaj Gönder → Vibe'a Cevap Ver.
+/// Anonim vibe → anonim sohbet; açık vibe → direkt sohbet (isim/foto görünür).
 Future<void> showVibeTalkSheet(BuildContext context, VibePost post) async {
   final wantsReply = await showModalBottomSheet<bool>(
     context: context,
     backgroundColor: Colors.transparent,
-    barrierColor: Colors.white,
+    barrierColor: Colors.transparent,
     isScrollControlled: true,
     useSafeArea: false,
-    builder: (sheetContext) => _VibeTalkSheet(
-      post: post,
-      onSend: () => Navigator.of(sheetContext).pop(true),
-      onClose: () => Navigator.of(sheetContext).pop(false),
+    builder: (sheetContext) => vibeSheetWithScrim(
+      onBarrierTap: () => Navigator.of(sheetContext).pop(false),
+      sheet: _VibeTalkSheet(
+        post: post,
+        onSend: () => Navigator.of(sheetContext).pop(true),
+        onClose: () => Navigator.of(sheetContext).pop(false),
+      ),
     ),
   );
   if (wantsReply != true || !context.mounted) return;
@@ -47,7 +51,11 @@ Future<void> showVibeTalkSheet(BuildContext context, VibePost post) async {
     ChatStore.instance.replace(thread);
     navigator.pop();
     if (!context.mounted) return;
-    await AnonymousChatPage.open(context, thread);
+    if (thread.isAnonymous) {
+      await AnonymousChatPage.open(context, thread);
+    } else {
+      await DirectChatPage.open(context, thread);
+    }
   } catch (e) {
     navigator.pop();
     if (context.mounted) showErrorSnackBar(context, e);

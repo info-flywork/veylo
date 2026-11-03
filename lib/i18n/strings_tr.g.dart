@@ -329,6 +329,21 @@ class Translations$chats$tr {
 	/// tr: 'Yanıtla'
 	String get messageReply => 'Yanıtla';
 
+	/// tr: 'Gönderiliyor…'
+	String get messageSending => 'Gönderiliyor…';
+
+	/// tr: 'İlet'
+	String get messageForward => 'İlet';
+
+	/// tr: 'Sohbete ilet'
+	String get forwardTitle => 'Sohbete ilet';
+
+	/// tr: 'İletilecek sohbet yok'
+	String get forwardEmpty => 'İletilecek sohbet yok';
+
+	/// tr: 'İletildi'
+	String get forwardSent => 'İletildi';
+
 	/// tr: 'Kopyala'
 	String get messageCopy => 'Kopyala';
 
@@ -529,6 +544,9 @@ class Translations$profile$tr {
 
 	/// tr: 'SSS ve Yardım'
 	String get faqHelp => 'SSS ve Yardım';
+
+	/// tr: 'Bize Ulaşın'
+	String get contactUs => 'Bize Ulaşın';
 
 	/// tr: 'Satın Alımları Geri Yükle'
 	String get restorePurchases => 'Satın Alımları Geri Yükle';
@@ -1036,6 +1054,15 @@ class Translations$profile$tr {
 
 	/// tr: 'Balık'
 	String get zodiacPisces => 'Balık';
+
+	/// tr: 'Öne çıkarıldın!'
+	String get boostActiveTitle => 'Öne çıkarıldın!';
+
+	/// tr: '{time} kaldı'
+	String boostRemaining({required Object time}) => '${time} kaldı';
+
+	/// tr: 'Uzat'
+	String get boostExtend => 'Uzat';
 }
 
 // Path: nav
@@ -1070,14 +1097,14 @@ class Translations$call$tr {
 
 	// Translations
 
-	/// tr: '60 Saniyelik Yabancı'
-	String get title => '60 Saniyelik Yabancı';
+	/// tr: '60 Saniyelik Anonim'
+	String get title => '60 Saniyelik Anonim';
 
-	/// tr: 'Rastgele bir yabancıyla 60 saniye konuş — tamamen anonim. Profil yok, fotoğraf yok, isim yok. Sadece bir ses ve bir an.'
-	String get subtitle => 'Rastgele bir yabancıyla 60 saniye konuş — tamamen anonim. Profil yok, fotoğraf yok, isim yok. Sadece bir ses ve bir an.';
+	/// tr: 'Rastgele bir anonimle 60 saniye konuş — tamamen anonim. Profil yok, fotoğraf yok, isim yok. Sadece bir ses ve bir an.'
+	String get subtitle => 'Rastgele bir anonimle 60 saniye konuş — tamamen anonim. Profil yok, fotoğraf yok, isim yok. Sadece bir ses ve bir an.';
 
-	/// tr: 'Bir yabancı aranıyor...'
-	String get findingTitle => 'Bir yabancı aranıyor...';
+	/// tr: 'Bir anonim aranıyor...'
+	String get findingTitle => 'Bir anonim aranıyor...';
 
 	/// tr: '60 saniye anonim konuşacaksın. Profil yok, isim yok.'
 	String get findingSubtitle => '60 saniye anonim konuşacaksın. Profil yok, isim yok.';
@@ -1778,8 +1805,8 @@ class Translations$faq$tr {
 	/// tr: 'Profilimi nasıl açarım?'
 	String get q4 => 'Profilimi nasıl açarım?';
 
-	/// tr: '60 Saniyelik Yabancı nedir?'
-	String get q5 => '60 Saniyelik Yabancı nedir?';
+	/// tr: '60 Saniyelik Anonim nedir?'
+	String get q5 => '60 Saniyelik Anonim nedir?';
 
 	/// tr: 'Vibeler nedir?'
 	String get q6 => 'Vibeler nedir?';
@@ -2422,6 +2449,27 @@ class Translations$discover$liveRoom$tr {
 
 	/// tr: 'Bekleyen istek yok.'
 	String get noRequests => 'Bekleyen istek yok.';
+
+	/// tr: 'Odayı kapatmak istediğine emin misin?'
+	String get closeConfirmTitle => 'Odayı kapatmak istediğine emin misin?';
+
+	/// tr: 'Oda herkes için kapanacak.'
+	String get closeConfirmSubtitle => 'Oda herkes için kapanacak.';
+
+	/// tr: 'Kapat'
+	String get closeConfirm => 'Kapat';
+
+	/// tr: 'Odadan ayrılmak istediğine emin misin?'
+	String get leaveConfirmTitle => 'Odadan ayrılmak istediğine emin misin?';
+
+	/// tr: 'Konuşma devam ederken odadan çıkacaksın.'
+	String get leaveConfirmSubtitle => 'Konuşma devam ederken odadan çıkacaksın.';
+
+	/// tr: 'Ayrıl'
+	String get leaveConfirm => 'Ayrıl';
+
+	/// tr: 'İptal'
+	String get cancel => 'İptal';
 }
 
 // Path: discover.groupChat
@@ -2887,6 +2935,11 @@ extension on Translations {
 			'chats.stickerEmpty' => 'Son kullanılan çıkartma yok',
 			'chats.messageCopied' => 'Mesaj kopyalandı',
 			'chats.messageReply' => 'Yanıtla',
+			'chats.messageSending' => 'Gönderiliyor…',
+			'chats.messageForward' => 'İlet',
+			'chats.forwardTitle' => 'Sohbete ilet',
+			'chats.forwardEmpty' => 'İletilecek sohbet yok',
+			'chats.forwardSent' => 'İletildi',
 			'chats.messageCopy' => 'Kopyala',
 			'chats.messageEdit' => 'Düzenle',
 			'chats.messageDelete' => 'Sil',
@@ -2951,6 +3004,7 @@ extension on Translations {
 			'profile.deleteAllBody' => 'Onaylarsan tüm mesajlar silinir',
 			'profile.deleteAllAction' => 'Sil',
 			'profile.faqHelp' => 'SSS ve Yardım',
+			'profile.contactUs' => 'Bize Ulaşın',
 			'profile.restorePurchases' => 'Satın Alımları Geri Yükle',
 			'profile.termsOfService' => 'Hizmet Şartları',
 			'profile.privacyPolicy' => 'Gizlilik Politikası',
@@ -3120,14 +3174,17 @@ extension on Translations {
 			'profile.zodiacCapricorn' => 'Oğlak',
 			'profile.zodiacAquarius' => 'Kova',
 			'profile.zodiacPisces' => 'Balık',
+			'profile.boostActiveTitle' => 'Öne çıkarıldın!',
+			'profile.boostRemaining' => ({required Object time}) => '${time} kaldı',
+			'profile.boostExtend' => 'Uzat',
 			'nav.discover' => 'Keşfet',
 			'nav.chat' => 'Sohbet',
 			'nav.call' => 'Ara',
 			'nav.vibes' => 'Vibeler',
 			'nav.profile' => 'Profil',
-			'call.title' => '60 Saniyelik Yabancı',
-			'call.subtitle' => 'Rastgele bir yabancıyla 60 saniye konuş — tamamen anonim. Profil yok, fotoğraf yok, isim yok. Sadece bir ses ve bir an.',
-			'call.findingTitle' => 'Bir yabancı aranıyor...',
+			'call.title' => '60 Saniyelik Anonim',
+			'call.subtitle' => 'Rastgele bir anonimle 60 saniye konuş — tamamen anonim. Profil yok, fotoğraf yok, isim yok. Sadece bir ses ve bir an.',
+			'call.findingTitle' => 'Bir anonim aranıyor...',
 			'call.findingSubtitle' => '60 saniye anonim konuşacaksın. Profil yok, isim yok.',
 			'call.callStranger' => 'Anonim Ara - 10 Token',
 			'call.cancel' => 'İptal',
@@ -3287,6 +3344,13 @@ extension on Translations {
 			'discover.liveRoom.reject' => 'Reddet',
 			'discover.liveRoom.pendingRequests' => 'Katılma istekleri',
 			'discover.liveRoom.noRequests' => 'Bekleyen istek yok.',
+			'discover.liveRoom.closeConfirmTitle' => 'Odayı kapatmak istediğine emin misin?',
+			'discover.liveRoom.closeConfirmSubtitle' => 'Oda herkes için kapanacak.',
+			'discover.liveRoom.closeConfirm' => 'Kapat',
+			'discover.liveRoom.leaveConfirmTitle' => 'Odadan ayrılmak istediğine emin misin?',
+			'discover.liveRoom.leaveConfirmSubtitle' => 'Konuşma devam ederken odadan çıkacaksın.',
+			'discover.liveRoom.leaveConfirm' => 'Ayrıl',
+			'discover.liveRoom.cancel' => 'İptal',
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} Kullanıcı',
 			'discover.groupChat.sampleVictoria' => 'Çok sıkıldım. Bir şeyler yapalım mı?',
 			'discover.groupChat.sampleSona' => 'Ne yapabiliriz? Aklında ne var?',
@@ -3303,6 +3367,8 @@ extension on Translations {
 			'discover.groupInfo.admin' => 'Yönetici',
 			'discover.groupInfo.leaveGroup' => 'Gruptan ayrıl',
 			'discover.groupInfo.requests' => 'Katılma istekleri',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupInfo.approve' => 'Onayla',
 			'discover.groupInfo.reject' => 'Reddet',
 			'discover.groupInfo.addPeopleEmpty' => 'Gruba eklemek için önce birilerini takip et.',
@@ -3319,8 +3385,6 @@ extension on Translations {
 			'discover.filters.ageRange' => 'Yaş aralığı',
 			'discover.filters.ageRangeValue' => ({required Object min, required Object max}) => '${min}-${max}',
 			'discover.filters.distance' => 'Mesafe',
-			_ => null,
-		} ?? switch (path) {
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} km',
 			'discover.filters.showMe' => 'Göster',
 			'discover.filters.everyone' => 'Herkes',
@@ -3523,7 +3587,7 @@ extension on Translations {
 			'faq.q2' => 'Anonim sohbet nedir?',
 			'faq.q3' => 'Bağlantı İlerlemesi ne işe yarar?',
 			'faq.q4' => 'Profilimi nasıl açarım?',
-			'faq.q5' => '60 Saniyelik Yabancı nedir?',
+			'faq.q5' => '60 Saniyelik Anonim nedir?',
 			'faq.q6' => 'Vibeler nedir?',
 			'faq.q7' => 'Profilimi nasıl düzenlerim?',
 			'faq.q8' => 'Bildirimleri nasıl yönetirim?',

@@ -166,6 +166,11 @@ class _Translations$chats$de extends Translations$chats$tr {
 	@override String get stickerEmpty => 'Keine letzten Sticker';
 	@override String get messageCopied => 'Nachricht kopiert';
 	@override String get messageReply => 'Antworten';
+	@override String get messageSending => 'Wird gesendet…';
+	@override String get messageForward => 'Weiterleiten';
+	@override String get forwardTitle => 'An Chat weiterleiten';
+	@override String get forwardEmpty => 'Keine Chats zum Weiterleiten';
+	@override String get forwardSent => 'Weitergeleitet';
 	@override String get messageCopy => 'Kopieren';
 	@override String get messageEdit => 'Bearbeiten';
 	@override String get messageDelete => 'Löschen';
@@ -239,6 +244,7 @@ class _Translations$profile$de extends Translations$profile$tr {
 	@override String get deleteAllBody => 'Wenn du bestätigst, werden alle Nachrichten gelöscht';
 	@override String get deleteAllAction => 'Löschen';
 	@override String get faqHelp => 'FAQ & Hilfe';
+	@override String get contactUs => 'Kontaktiere uns';
 	@override String get restorePurchases => 'Käufe wiederherstellen';
 	@override String get termsOfService => 'Nutzungsbedingungen';
 	@override String get privacyPolicy => 'Datenschutzerklärung';
@@ -408,6 +414,9 @@ class _Translations$profile$de extends Translations$profile$tr {
 	@override String get zodiacCapricorn => 'Steinbock';
 	@override String get zodiacAquarius => 'Wassermann';
 	@override String get zodiacPisces => 'Fische';
+	@override String get boostActiveTitle => 'You\'re standing out!';
+	@override String boostRemaining({required Object time}) => '${time} left';
+	@override String get boostExtend => 'Extend';
 }
 
 // Path: nav
@@ -431,11 +440,11 @@ class _Translations$call$de extends Translations$call$tr {
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => '60-Sekunden-Fremde';
-	@override String get subtitle => 'Sprich 60 Sekunden lang mit einer zufälligen fremden Person – komplett anonym. Kein Profil, kein Foto, kein Name. Nur eine Stimme und ein Moment.';
-	@override String get findingTitle => 'Suche nach jemandem...';
+	@override String get title => '60 Sekunden Anonym';
+	@override String get subtitle => 'Sprich 60 Sekunden lang mit einer zufälligen anonymen Person – komplett anonym. Kein Profil, kein Foto, kein Name. Nur eine Stimme und ein Moment.';
+	@override String get findingTitle => 'Anonyme Person wird gesucht...';
 	@override String get findingSubtitle => 'Ihr sprecht 60 Sekunden lang anonym. Keine Profile, keine Namen.';
-	@override String get callStranger => 'Fremde anrufen - 10 Token';
+	@override String get callStranger => 'Anonym anrufen - 10 Token';
 	@override String get cancel => 'Abbrechen';
 	@override String get female => 'Weiblich';
 	@override String get male => 'Männlich';
@@ -449,7 +458,7 @@ class _Translations$call$de extends Translations$call$tr {
 	@override String get keepTalking => 'Weiterreden';
 	@override String get endCall => 'Auflegen';
 	@override String get waitingOther => 'Warte auf die andere Person...';
-	@override String get callStrangerFree => 'Fremde anrufen';
+	@override String get callStrangerFree => 'Anonym anrufen';
 	@override String get peerLeft => 'Die andere Person hat aufgelegt.';
 	@override String get noKeep => 'Der Chat wurde diesmal nicht freigeschaltet.';
 	@override String get videoWaiting => 'Warte, bis der Videoanruf angenommen wird...';
@@ -730,7 +739,7 @@ class _Translations$faq$de extends Translations$faq$tr {
 	@override String get q2 => 'Was ist ein anonymer Chat?';
 	@override String get q3 => 'Was ist der Verbindungsfortschritt?';
 	@override String get q4 => 'Wie zeige ich mein Profil?';
-	@override String get q5 => 'Was ist 60-Sekunden-Fremde?';
+	@override String get q5 => 'Was ist 60 Sekunden Anonym?';
 	@override String get q6 => 'Was sind Vibes?';
 	@override String get q7 => 'Wie bearbeite ich mein Profil?';
 	@override String get q8 => 'Wie verwalte ich Benachrichtigungen?';
@@ -1015,6 +1024,13 @@ class _Translations$discover$liveRoom$de extends Translations$discover$liveRoom$
 	@override String get remove => 'Aus dem Raum entfernen';
 	@override String get removed => 'Du wurdest aus dem Raum entfernt.';
 	@override String get seeProfile => 'Profil ansehen anfragen';
+	@override String get closeConfirmTitle => 'Are you sure you want to close the room?';
+	@override String get closeConfirmSubtitle => 'The room will end for everyone.';
+	@override String get closeConfirm => 'Close';
+	@override String get leaveConfirmTitle => 'Are you sure you want to leave the room?';
+	@override String get leaveConfirmSubtitle => 'You will leave while the conversation continues.';
+	@override String get leaveConfirm => 'Leave';
+	@override String get cancel => 'Cancel';
 }
 
 // Path: discover.groupChat
@@ -1278,6 +1294,11 @@ extension on TranslationsDe {
 			'chats.stickerEmpty' => 'Keine letzten Sticker',
 			'chats.messageCopied' => 'Nachricht kopiert',
 			'chats.messageReply' => 'Antworten',
+			'chats.messageSending' => 'Wird gesendet…',
+			'chats.messageForward' => 'Weiterleiten',
+			'chats.forwardTitle' => 'An Chat weiterleiten',
+			'chats.forwardEmpty' => 'Keine Chats zum Weiterleiten',
+			'chats.forwardSent' => 'Weitergeleitet',
 			'chats.messageCopy' => 'Kopieren',
 			'chats.messageEdit' => 'Bearbeiten',
 			'chats.messageDelete' => 'Löschen',
@@ -1342,6 +1363,7 @@ extension on TranslationsDe {
 			'profile.deleteAllBody' => 'Wenn du bestätigst, werden alle Nachrichten gelöscht',
 			'profile.deleteAllAction' => 'Löschen',
 			'profile.faqHelp' => 'FAQ & Hilfe',
+			'profile.contactUs' => 'Kontaktiere uns',
 			'profile.restorePurchases' => 'Käufe wiederherstellen',
 			'profile.termsOfService' => 'Nutzungsbedingungen',
 			'profile.privacyPolicy' => 'Datenschutzerklärung',
@@ -1511,16 +1533,19 @@ extension on TranslationsDe {
 			'profile.zodiacCapricorn' => 'Steinbock',
 			'profile.zodiacAquarius' => 'Wassermann',
 			'profile.zodiacPisces' => 'Fische',
+			'profile.boostActiveTitle' => 'You\'re standing out!',
+			'profile.boostRemaining' => ({required Object time}) => '${time} left',
+			'profile.boostExtend' => 'Extend',
 			'nav.discover' => 'Entdecken',
 			'nav.chat' => 'Chat',
 			'nav.call' => 'Anruf',
 			'nav.vibes' => 'Stimmung',
 			'nav.profile' => 'Profil',
-			'call.title' => '60-Sekunden-Fremde',
-			'call.subtitle' => 'Sprich 60 Sekunden lang mit einer zufälligen fremden Person – komplett anonym. Kein Profil, kein Foto, kein Name. Nur eine Stimme und ein Moment.',
-			'call.findingTitle' => 'Suche nach jemandem...',
+			'call.title' => '60 Sekunden Anonym',
+			'call.subtitle' => 'Sprich 60 Sekunden lang mit einer zufälligen anonymen Person – komplett anonym. Kein Profil, kein Foto, kein Name. Nur eine Stimme und ein Moment.',
+			'call.findingTitle' => 'Anonyme Person wird gesucht...',
 			'call.findingSubtitle' => 'Ihr sprecht 60 Sekunden lang anonym. Keine Profile, keine Namen.',
-			'call.callStranger' => 'Fremde anrufen - 10 Token',
+			'call.callStranger' => 'Anonym anrufen - 10 Token',
 			'call.cancel' => 'Abbrechen',
 			'call.female' => 'Weiblich',
 			'call.male' => 'Männlich',
@@ -1534,7 +1559,7 @@ extension on TranslationsDe {
 			'call.keepTalking' => 'Weiterreden',
 			'call.endCall' => 'Auflegen',
 			'call.waitingOther' => 'Warte auf die andere Person...',
-			'call.callStrangerFree' => 'Fremde anrufen',
+			'call.callStrangerFree' => 'Anonym anrufen',
 			'call.peerLeft' => 'Die andere Person hat aufgelegt.',
 			'call.noKeep' => 'Der Chat wurde diesmal nicht freigeschaltet.',
 			'call.videoWaiting' => 'Warte, bis der Videoanruf angenommen wird...',
@@ -1676,6 +1701,13 @@ extension on TranslationsDe {
 			'discover.liveRoom.remove' => 'Aus dem Raum entfernen',
 			'discover.liveRoom.removed' => 'Du wurdest aus dem Raum entfernt.',
 			'discover.liveRoom.seeProfile' => 'Profil ansehen anfragen',
+			'discover.liveRoom.closeConfirmTitle' => 'Are you sure you want to close the room?',
+			'discover.liveRoom.closeConfirmSubtitle' => 'The room will end for everyone.',
+			'discover.liveRoom.closeConfirm' => 'Close',
+			'discover.liveRoom.leaveConfirmTitle' => 'Are you sure you want to leave the room?',
+			'discover.liveRoom.leaveConfirmSubtitle' => 'You will leave while the conversation continues.',
+			'discover.liveRoom.leaveConfirm' => 'Leave',
+			'discover.liveRoom.cancel' => 'Cancel',
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} Nutzer',
 			'discover.groupChat.sampleVictoria' => 'Mir ist so langweilig. Wollen wir was machen, Leute?',
 			'discover.groupChat.sampleSona' => 'Was können wir machen? Was hast du im Kopf?',
@@ -1694,6 +1726,8 @@ extension on TranslationsDe {
 			'discover.groupInfo.requests' => 'Beitrittsanfragen',
 			'discover.groupInfo.approve' => 'Annehmen',
 			'discover.groupInfo.reject' => 'Ablehnen',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupInfo.addPeopleEmpty' => 'Folge Leuten, um sie zur Gruppe hinzuzufügen.',
 			'discover.groupInfo.add' => 'Hinzufügen',
 			'discover.groupInfo.makeAdmin' => 'Zum Admin machen',
@@ -1710,8 +1744,6 @@ extension on TranslationsDe {
 			'discover.filters.distance' => 'Entfernung',
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} km',
 			'discover.filters.showMe' => 'Zeig mir',
-			_ => null,
-		} ?? switch (path) {
 			'discover.filters.everyone' => 'Alle',
 			'discover.filters.women' => 'Frauen',
 			'discover.filters.men' => 'Männer',
@@ -1912,7 +1944,7 @@ extension on TranslationsDe {
 			'faq.q2' => 'Was ist ein anonymer Chat?',
 			'faq.q3' => 'Was ist der Verbindungsfortschritt?',
 			'faq.q4' => 'Wie zeige ich mein Profil?',
-			'faq.q5' => 'Was ist 60-Sekunden-Fremde?',
+			'faq.q5' => 'Was ist 60 Sekunden Anonym?',
 			'faq.q6' => 'Was sind Vibes?',
 			'faq.q7' => 'Wie bearbeite ich mein Profil?',
 			'faq.q8' => 'Wie verwalte ich Benachrichtigungen?',

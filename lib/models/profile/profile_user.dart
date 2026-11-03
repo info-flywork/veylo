@@ -17,6 +17,7 @@ class ProfileUser {
     this.isAi = false,
     this.loaded = false,
     this.voiceIntroUrl,
+    this.boostedUntil,
   });
 
   /// `GET /users/:id` cevabı.
@@ -59,6 +60,7 @@ class ProfileUser {
     isAi: isAi,
     loaded: loaded,
     voiceIntroUrl: voiceIntroUrl,
+    boostedUntil: boostedUntil,
   );
 
   final String id;
@@ -88,4 +90,10 @@ class ProfileUser {
 
   /// Profilde paylaşılan ses kaydı. Yoksa profilde gösterilmez.
   final String? voiceIntroUrl;
+
+  /// Aktif profil boost bitişi (yalnız kendi profilinde dolu olur).
+  final DateTime? boostedUntil;
+
+  bool get boostActive =>
+      boostedUntil != null && boostedUntil!.isAfter(DateTime.now());
 }

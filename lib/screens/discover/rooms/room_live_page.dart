@@ -9,6 +9,7 @@ import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/data/remote/agora_service.dart';
+import 'package:veylo/data/remote/room_pip_store.dart';
 import 'package:veylo/data/remote/room_repository.dart';
 import 'package:veylo/data/remote/room_store.dart';
 import 'package:veylo/data/remote/socket_service.dart';
@@ -16,6 +17,8 @@ import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/room/live_room.dart';
 import 'package:veylo/screens/chat/chat_sticker.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
+import 'package:veylo/screens/discover/discover_page.dart';
+import 'package:veylo/screens/discover/rooms/room_close_confirm_sheet.dart';
 import 'package:veylo/screens/discover/story_editor/story_sticker_sheet.dart';
 
 /// Odaya girince açılan canlı oda ekranı (katılımcılar + mikrofon + sohbet).
@@ -71,6 +74,11 @@ class _RoomLivePageState extends State<RoomLivePage> {
   bool _joined = false;
   bool _left = false;
   bool _canLeave = false;
+  /// Küçültülüyor: dispose odayı terk etmez.
+  bool _minimizing = false;
+  /// Kapatılıyor / oda bitti: ended ekranı + rooms listesine dönüş.
+  bool _closing = false;
+  bool _showEnded = false;
 
   /// Sahip: gizli odaya bekleyen katılma istekleri.
   List<RoomJoinRequest> _requests = const [];
@@ -116,7 +124,7 @@ class _RoomLivePageState extends State<RoomLivePage> {
     _socket.reconnects.removeListener(_rejoin);
     _input.dispose();
     _scroll.dispose();
-    if (!_left) {
+    if (!_left && !_minimizing) {
       _repo.leave(widget.roomId).ignore();
       _agora.leave();
     }
@@ -291,26 +299,96 @@ class _RoomLivePageState extends State<RoomLivePage> {
     }
   }
 
-  Future<void> _leave() async {
+  /// Odada kal, ekranı küçült (YouTube PiP).
+  void _minimize() {
+    if (_left || _minimizing || _closing) return;
+    RoomPipStore.instance.show(
+      roomId: widget.roomId,
+      title: _title,
+      isHost: _isHost,
+      anonymous: widget.anonymous,
+    );
+    _minimizing = true;
+    _canLeave = true;
+    if (mounted) Navigator.of(context).pop();
+  }
+
+  Future<void> _leave({bool toRooms = false}) async {
     if (_left && _canLeave) return;
     _left = true;
+    RoomPipStore.instance.hideBubble();
     _repo.leave(widget.roomId).ignore();
     await _agora.leave();
     if (!mounted) return;
     setState(() => _canLeave = true);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) Navigator.of(context).pop();
+      if (!mounted) return;
+      if (toRooms) {
+        Navigator.of(context).popUntil((r) => r.isFirst);
+        DiscoverShell.showRooms();
+        RoomStore.instance.refresh();
+      } else {
+        Navigator.of(context).pop();
+      }
     });
   }
 
+  /// Çarpı: emin misin → (sahipse room ended + herkesi at) → rooms listesi.
+  Future<void> _confirmClose() async {
+    if (_left || _closing || _minimizing) return;
+    final ok = await showRoomCloseConfirmSheet(context, isHost: _isHost);
+    if (!ok || !mounted) return;
+    if (_isHost) {
+      await _endRoomForEveryone();
+    } else {
+      await _leave(toRooms: true);
+    }
+  }
+
+  /// Sahip kapatır: önce ended ekranı, sonra herkesi at, rooms listesine dön.
+  Future<void> _endRoomForEveryone() async {
+    if (_closing || _left) return;
+    _closing = true;
+    if (mounted) setState(() => _showEnded = true);
+    await Future<void>.delayed(const Duration(milliseconds: 1400));
+    if (!mounted) return;
+    _left = true;
+    RoomPipStore.instance.hideBubble();
+    try {
+      await _repo.end(widget.roomId);
+    } catch (_) {}
+    await _agora.leave();
+    if (!mounted) return;
+    setState(() => _canLeave = true);
+    Navigator.of(context).popUntil((r) => r.isFirst);
+    DiscoverShell.showRooms();
+    RoomStore.instance.refresh();
+  }
+
+  Future<void> _showEndedThenExit() async {
+    if (_closing || _left) return;
+    _closing = true;
+    if (mounted) setState(() => _showEnded = true);
+    await Future<void>.delayed(const Duration(milliseconds: 1400));
+    if (!mounted) return;
+    _left = true;
+    RoomPipStore.instance.hideBubble();
+    await _agora.leave();
+    if (!mounted) return;
+    setState(() => _canLeave = true);
+    Navigator.of(context).popUntil((r) => r.isFirst);
+    DiscoverShell.showRooms();
+    RoomStore.instance.refresh();
+  }
+
   void _onKicked() {
-    if (!mounted || _left) return;
+    if (!mounted || _left || _closing) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(Translations.of(context).discover.liveRoom.removed),
       ),
     );
-    _leave();
+    _leave(toRooms: true);
   }
 
   /// Üç nokta: profil isteği. Adminse yanında çıkarma ve mikrofon kilidi.
@@ -378,13 +456,8 @@ class _RoomLivePageState extends State<RoomLivePage> {
   }
 
   void _onEnded() {
-    if (!mounted || _left) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(Translations.of(context).discover.liveRoom.roomEnded),
-      ),
-    );
-    _leave();
+    if (!mounted || _left || _closing) return;
+    _showEndedThenExit();
   }
 
   /// Sahibim: gizli odama katılma isteği. Kaçırılırsa başlıktaki rozetten açılır.
@@ -432,13 +505,15 @@ class _RoomLivePageState extends State<RoomLivePage> {
     return PopScope(
       canPop: _canLeave,
       onPopInvokedWithResult: (didPop, _) {
-        if (!didPop) _leave();
+        if (!didPop) _minimize();
       },
       child: Scaffold(
         backgroundColor: AppColors.white,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        body: Stack(
           children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
             ColoredBox(
               color: AppColors.white,
               child: Padding(
@@ -448,13 +523,13 @@ class _RoomLivePageState extends State<RoomLivePage> {
                     Row(
                       children: [
                         GestureDetector(
-                          onTap: _leave,
+                          onTap: _minimize,
                           behavior: HitTestBehavior.opaque,
                           child: const Padding(
                             padding: EdgeInsets.only(right: 8),
                             child: Icon(
-                              Icons.arrow_back_ios_new_rounded,
-                              size: 18,
+                              Icons.check_rounded,
+                              size: 26,
                               color: AppColors.black,
                             ),
                           ),
@@ -466,19 +541,31 @@ class _RoomLivePageState extends State<RoomLivePage> {
                           ),
                         ),
                         if (_isHost && _requests.isNotEmpty)
-                          GestureDetector(
-                            onTap: _openRequests,
-                            behavior: HitTestBehavior.opaque,
-                            child: Badge(
-                              label: Text('${_requests.length}'),
-                              backgroundColor: AppColors.selectionBorder,
-                              child: const Icon(
-                                Icons.person_add_alt_1_rounded,
-                                size: 24,
-                                color: AppColors.black,
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: GestureDetector(
+                              onTap: _openRequests,
+                              behavior: HitTestBehavior.opaque,
+                              child: Badge(
+                                label: Text('${_requests.length}'),
+                                backgroundColor: AppColors.selectionBorder,
+                                child: const Icon(
+                                  Icons.person_add_alt_1_rounded,
+                                  size: 24,
+                                  color: AppColors.black,
+                                ),
                               ),
                             ),
                           ),
+                        GestureDetector(
+                          onTap: _confirmClose,
+                          behavior: HitTestBehavior.opaque,
+                          child: SvgPicture.asset(
+                            AppAssets.iconCloseButton,
+                            width: 32,
+                            height: 32,
+                          ),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -652,6 +739,29 @@ class _RoomLivePageState extends State<RoomLivePage> {
                 ),
               ),
             ),
+          ],
+            ),
+            if (_showEnded)
+              Positioned.fill(
+                child: ColoredBox(
+                  color: AppColors.black.withValues(alpha: 0.55),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: AppText(
+                        t.roomEnded,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontFamily: AppFonts.poppins,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

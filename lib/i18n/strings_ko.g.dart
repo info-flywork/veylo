@@ -166,6 +166,11 @@ class _Translations$chats$ko extends Translations$chats$tr {
 	@override String get stickerEmpty => '최근 스티커 없음';
 	@override String get messageCopied => '메시지를 복사했어요';
 	@override String get messageReply => '답장';
+	@override String get messageSending => '전송 중…';
+	@override String get messageForward => '전달';
+	@override String get forwardTitle => '채팅으로 전달';
+	@override String get forwardEmpty => '전달할 채팅이 없습니다';
+	@override String get forwardSent => '전달됨';
 	@override String get messageCopy => '복사';
 	@override String get messageEdit => '수정';
 	@override String get messageDelete => '삭제';
@@ -239,6 +244,7 @@ class _Translations$profile$ko extends Translations$profile$tr {
 	@override String get deleteAllBody => '확인하면 모든 메시지가 삭제돼요';
 	@override String get deleteAllAction => '삭제';
 	@override String get faqHelp => 'FAQ 및 도움말';
+	@override String get contactUs => '문의하기';
 	@override String get restorePurchases => '구매 복원';
 	@override String get termsOfService => '서비스 약관';
 	@override String get privacyPolicy => '개인정보 처리방침';
@@ -408,6 +414,9 @@ class _Translations$profile$ko extends Translations$profile$tr {
 	@override String get zodiacCapricorn => '염소자리';
 	@override String get zodiacAquarius => '물병자리';
 	@override String get zodiacPisces => '물고기자리';
+	@override String get boostActiveTitle => 'You\'re standing out!';
+	@override String boostRemaining({required Object time}) => '${time} left';
+	@override String get boostExtend => 'Extend';
 }
 
 // Path: nav
@@ -431,11 +440,11 @@ class _Translations$call$ko extends Translations$call$tr {
 	final TranslationsKo _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => '60초 낯선 사람';
-	@override String get subtitle => '무작위 낯선 사람과 60초 동안 대화해요 — 완전히 익명으로. 프로필도, 사진도, 이름도 없어요. 오직 목소리와 한순간뿐.';
-	@override String get findingTitle => '낯선 사람을 찾는 중...';
+	@override String get title => '60초 익명';
+	@override String get subtitle => '무작위 익명 상대와 60초 동안 대화해요 — 완전히 익명으로. 프로필도, 사진도, 이름도 없어요. 오직 목소리와 한순간뿐.';
+	@override String get findingTitle => '익명 상대를 찾는 중...';
 	@override String get findingSubtitle => '60초 동안 익명으로 대화해요. 프로필도, 이름도 없어요.';
-	@override String get callStranger => '낯선 사람에게 전화 - 10 토큰';
+	@override String get callStranger => '익명 전화 - 10 토큰';
 	@override String get cancel => '취소';
 	@override String get female => '여성';
 	@override String get male => '남성';
@@ -449,7 +458,7 @@ class _Translations$call$ko extends Translations$call$tr {
 	@override String get keepTalking => '계속 대화하기';
 	@override String get endCall => '통화 종료';
 	@override String get waitingOther => '상대방을 기다리는 중...';
-	@override String get callStrangerFree => '낯선 사람에게 전화';
+	@override String get callStrangerFree => '익명 전화';
 	@override String get peerLeft => '상대방이 통화를 종료했어요.';
 	@override String get noKeep => '이번에는 채팅이 열리지 않았어요.';
 	@override String get videoWaiting => '상대방이 영상 통화를 수락하길 기다리는 중...';
@@ -730,7 +739,7 @@ class _Translations$faq$ko extends Translations$faq$tr {
 	@override String get q2 => '익명 채팅이란 무엇인가요?';
 	@override String get q3 => '연결 진행도란 무엇인가요?';
 	@override String get q4 => '내 프로필은 어떻게 공개하나요?';
-	@override String get q5 => '60초 낯선 사람이란 무엇인가요?';
+	@override String get q5 => '60초 익명이란 무엇인가요?';
 	@override String get q6 => 'Vibes란 무엇인가요?';
 	@override String get q7 => '프로필은 어떻게 편집하나요?';
 	@override String get q8 => '알림은 어떻게 관리하나요?';
@@ -1015,6 +1024,13 @@ class _Translations$discover$liveRoom$ko extends Translations$discover$liveRoom$
 	@override String get remove => '방에서 내보내기';
 	@override String get removed => '방에서 내보내졌습니다.';
 	@override String get seeProfile => '프로필 보기 요청';
+	@override String get closeConfirmTitle => 'Are you sure you want to close the room?';
+	@override String get closeConfirmSubtitle => 'The room will end for everyone.';
+	@override String get closeConfirm => 'Close';
+	@override String get leaveConfirmTitle => 'Are you sure you want to leave the room?';
+	@override String get leaveConfirmSubtitle => 'You will leave while the conversation continues.';
+	@override String get leaveConfirm => 'Leave';
+	@override String get cancel => 'Cancel';
 }
 
 // Path: discover.groupChat
@@ -1278,6 +1294,11 @@ extension on TranslationsKo {
 			'chats.stickerEmpty' => '최근 스티커 없음',
 			'chats.messageCopied' => '메시지를 복사했어요',
 			'chats.messageReply' => '답장',
+			'chats.messageSending' => '전송 중…',
+			'chats.messageForward' => '전달',
+			'chats.forwardTitle' => '채팅으로 전달',
+			'chats.forwardEmpty' => '전달할 채팅이 없습니다',
+			'chats.forwardSent' => '전달됨',
 			'chats.messageCopy' => '복사',
 			'chats.messageEdit' => '수정',
 			'chats.messageDelete' => '삭제',
@@ -1342,6 +1363,7 @@ extension on TranslationsKo {
 			'profile.deleteAllBody' => '확인하면 모든 메시지가 삭제돼요',
 			'profile.deleteAllAction' => '삭제',
 			'profile.faqHelp' => 'FAQ 및 도움말',
+			'profile.contactUs' => '문의하기',
 			'profile.restorePurchases' => '구매 복원',
 			'profile.termsOfService' => '서비스 약관',
 			'profile.privacyPolicy' => '개인정보 처리방침',
@@ -1511,16 +1533,19 @@ extension on TranslationsKo {
 			'profile.zodiacCapricorn' => '염소자리',
 			'profile.zodiacAquarius' => '물병자리',
 			'profile.zodiacPisces' => '물고기자리',
+			'profile.boostActiveTitle' => 'You\'re standing out!',
+			'profile.boostRemaining' => ({required Object time}) => '${time} left',
+			'profile.boostExtend' => 'Extend',
 			'nav.discover' => '탐색',
 			'nav.chat' => '채팅',
 			'nav.call' => '통화',
 			'nav.vibes' => '바이브',
 			'nav.profile' => '프로필',
-			'call.title' => '60초 낯선 사람',
-			'call.subtitle' => '무작위 낯선 사람과 60초 동안 대화해요 — 완전히 익명으로. 프로필도, 사진도, 이름도 없어요. 오직 목소리와 한순간뿐.',
-			'call.findingTitle' => '낯선 사람을 찾는 중...',
+			'call.title' => '60초 익명',
+			'call.subtitle' => '무작위 익명 상대와 60초 동안 대화해요 — 완전히 익명으로. 프로필도, 사진도, 이름도 없어요. 오직 목소리와 한순간뿐.',
+			'call.findingTitle' => '익명 상대를 찾는 중...',
 			'call.findingSubtitle' => '60초 동안 익명으로 대화해요. 프로필도, 이름도 없어요.',
-			'call.callStranger' => '낯선 사람에게 전화 - 10 토큰',
+			'call.callStranger' => '익명 전화 - 10 토큰',
 			'call.cancel' => '취소',
 			'call.female' => '여성',
 			'call.male' => '남성',
@@ -1534,7 +1559,7 @@ extension on TranslationsKo {
 			'call.keepTalking' => '계속 대화하기',
 			'call.endCall' => '통화 종료',
 			'call.waitingOther' => '상대방을 기다리는 중...',
-			'call.callStrangerFree' => '낯선 사람에게 전화',
+			'call.callStrangerFree' => '익명 전화',
 			'call.peerLeft' => '상대방이 통화를 종료했어요.',
 			'call.noKeep' => '이번에는 채팅이 열리지 않았어요.',
 			'call.videoWaiting' => '상대방이 영상 통화를 수락하길 기다리는 중...',
@@ -1676,6 +1701,13 @@ extension on TranslationsKo {
 			'discover.liveRoom.remove' => '방에서 내보내기',
 			'discover.liveRoom.removed' => '방에서 내보내졌습니다.',
 			'discover.liveRoom.seeProfile' => '프로필 보기 요청',
+			'discover.liveRoom.closeConfirmTitle' => 'Are you sure you want to close the room?',
+			'discover.liveRoom.closeConfirmSubtitle' => 'The room will end for everyone.',
+			'discover.liveRoom.closeConfirm' => 'Close',
+			'discover.liveRoom.leaveConfirmTitle' => 'Are you sure you want to leave the room?',
+			'discover.liveRoom.leaveConfirmSubtitle' => 'You will leave while the conversation continues.',
+			'discover.liveRoom.leaveConfirm' => 'Leave',
+			'discover.liveRoom.cancel' => 'Cancel',
 			'discover.groupChat.usersCount' => ({required Object count}) => '사용자 ${count}명',
 			'discover.groupChat.sampleVictoria' => '너무 심심해요. 우리 뭐라도 할까요?',
 			'discover.groupChat.sampleSona' => '뭐 할까요? 생각해 둔 거 있어요?',
@@ -1694,6 +1726,8 @@ extension on TranslationsKo {
 			'discover.groupInfo.requests' => '참여 요청',
 			'discover.groupInfo.approve' => '수락',
 			'discover.groupInfo.reject' => '거절',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupInfo.addPeopleEmpty' => '그룹에 추가하려면 먼저 팔로우하세요.',
 			'discover.groupInfo.add' => '추가',
 			'discover.groupInfo.makeAdmin' => '관리자로 지정',
@@ -1710,8 +1744,6 @@ extension on TranslationsKo {
 			'discover.filters.distance' => '거리',
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} km',
 			'discover.filters.showMe' => '표시 대상',
-			_ => null,
-		} ?? switch (path) {
 			'discover.filters.everyone' => '모두',
 			'discover.filters.women' => '여성',
 			'discover.filters.men' => '남성',
@@ -1912,7 +1944,7 @@ extension on TranslationsKo {
 			'faq.q2' => '익명 채팅이란 무엇인가요?',
 			'faq.q3' => '연결 진행도란 무엇인가요?',
 			'faq.q4' => '내 프로필은 어떻게 공개하나요?',
-			'faq.q5' => '60초 낯선 사람이란 무엇인가요?',
+			'faq.q5' => '60초 익명이란 무엇인가요?',
 			'faq.q6' => 'Vibes란 무엇인가요?',
 			'faq.q7' => '프로필은 어떻게 편집하나요?',
 			'faq.q8' => '알림은 어떻게 관리하나요?',

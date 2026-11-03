@@ -166,6 +166,11 @@ class _Translations$chats$zh extends Translations$chats$tr {
 	@override String get stickerEmpty => '没有最近使用的贴纸';
 	@override String get messageCopied => '消息已复制';
 	@override String get messageReply => '回复';
+	@override String get messageSending => '发送中…';
+	@override String get messageForward => '转发';
+	@override String get forwardTitle => '转发到聊天';
+	@override String get forwardEmpty => '没有可转发的聊天';
+	@override String get forwardSent => '已转发';
 	@override String get messageCopy => '复制';
 	@override String get messageEdit => '编辑';
 	@override String get messageDelete => '删除';
@@ -239,6 +244,7 @@ class _Translations$profile$zh extends Translations$profile$tr {
 	@override String get deleteAllBody => '确认后，所有消息都会被删除';
 	@override String get deleteAllAction => '删除';
 	@override String get faqHelp => '常见问题与帮助';
+	@override String get contactUs => '联系我们';
 	@override String get restorePurchases => '恢复购买';
 	@override String get termsOfService => '服务条款';
 	@override String get privacyPolicy => '隐私政策';
@@ -408,6 +414,9 @@ class _Translations$profile$zh extends Translations$profile$tr {
 	@override String get zodiacCapricorn => '摩羯座';
 	@override String get zodiacAquarius => '水瓶座';
 	@override String get zodiacPisces => '双鱼座';
+	@override String get boostActiveTitle => 'You\'re standing out!';
+	@override String boostRemaining({required Object time}) => '${time} left';
+	@override String get boostExtend => 'Extend';
 }
 
 // Path: nav
@@ -431,11 +440,11 @@ class _Translations$call$zh extends Translations$call$tr {
 	final TranslationsZh _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => '60秒陌生人';
-	@override String get subtitle => '和随机陌生人聊 60 秒——完全匿名。没有资料，没有照片，没有名字。只有声音和这一刻。';
-	@override String get findingTitle => '正在寻找陌生人...';
+	@override String get title => '60秒匿名';
+	@override String get subtitle => '和随机匿名用户聊 60 秒——完全匿名。没有资料，没有照片，没有名字。只有声音和这一刻。';
+	@override String get findingTitle => '正在寻找匿名用户...';
 	@override String get findingSubtitle => '你们将匿名聊 60 秒。没有资料，没有名字。';
-	@override String get callStranger => '呼叫陌生人 - 10 代币';
+	@override String get callStranger => '匿名通话 - 10 代币';
 	@override String get cancel => '取消';
 	@override String get female => '女';
 	@override String get male => '男';
@@ -449,7 +458,7 @@ class _Translations$call$zh extends Translations$call$tr {
 	@override String get keepTalking => '继续聊';
 	@override String get endCall => '结束通话';
 	@override String get waitingOther => '等待对方...';
-	@override String get callStrangerFree => '呼叫陌生人';
+	@override String get callStrangerFree => '匿名通话';
 	@override String get peerLeft => '对方已结束通话。';
 	@override String get noKeep => '这次未能解锁聊天。';
 	@override String get videoWaiting => '等待对方接受视频通话...';
@@ -730,7 +739,7 @@ class _Translations$faq$zh extends Translations$faq$tr {
 	@override String get q2 => '什么是匿名聊天？';
 	@override String get q3 => '什么是亲密度进度？';
 	@override String get q4 => '如何公开我的资料？';
-	@override String get q5 => '什么是60秒陌生人？';
+	@override String get q5 => '什么是60秒匿名？';
 	@override String get q6 => '什么是 Vibes？';
 	@override String get q7 => '如何编辑我的资料？';
 	@override String get q8 => '如何管理通知？';
@@ -744,7 +753,7 @@ class _Translations$faq$zh extends Translations$faq$tr {
 	@override String get a2 => '匿名聊天中，你的身份和照片都会被隐藏。随着亲密度提升，你可以解锁名字首字母和模糊照片等信息。达到 100% 时，需双方都同意才能公开完整资料。';
 	@override String get a3 => '聊得越多，亲密度百分比越高。达到特定里程碑后，你可以解锁名字首字母、模糊照片和完整资料。点击“亲密度”标签即可查看详情。';
 	@override String get a4 => '亲密度达到 100% 时，点击“公开我的资料”。如果对方也同意，双方的完整资料都会显示。';
-	@override String get a5 => '在“通话”页，你可以快速随机匹配一位陌生人。时间到后，你可以选择继续聊或结束通话。';
+	@override String get a5 => '在“通话”页，你可以快速随机匹配一位匿名用户。时间到后，你可以选择继续聊或结束通话。';
 	@override String get a6 => '通过 Vibes，你可以在地图/列表视图中发现附近或身边的人，并和感兴趣的人开始聊天。';
 	@override String get a7 => '打开“我的”页面，进入“编辑资料”即可更新姓名、照片、简介和兴趣。保存后更改即会生效。';
 	@override String get a8 => '在“设置”中打开“通知”，即可开启或关闭消息、匹配及其他提醒。';
@@ -1015,6 +1024,13 @@ class _Translations$discover$liveRoom$zh extends Translations$discover$liveRoom$
 	@override String get remove => '移出房间';
 	@override String get removed => '你已被移出房间。';
 	@override String get seeProfile => '请求查看资料';
+	@override String get closeConfirmTitle => 'Are you sure you want to close the room?';
+	@override String get closeConfirmSubtitle => 'The room will end for everyone.';
+	@override String get closeConfirm => 'Close';
+	@override String get leaveConfirmTitle => 'Are you sure you want to leave the room?';
+	@override String get leaveConfirmSubtitle => 'You will leave while the conversation continues.';
+	@override String get leaveConfirm => 'Leave';
+	@override String get cancel => 'Cancel';
 }
 
 // Path: discover.groupChat
@@ -1278,6 +1294,11 @@ extension on TranslationsZh {
 			'chats.stickerEmpty' => '没有最近使用的贴纸',
 			'chats.messageCopied' => '消息已复制',
 			'chats.messageReply' => '回复',
+			'chats.messageSending' => '发送中…',
+			'chats.messageForward' => '转发',
+			'chats.forwardTitle' => '转发到聊天',
+			'chats.forwardEmpty' => '没有可转发的聊天',
+			'chats.forwardSent' => '已转发',
 			'chats.messageCopy' => '复制',
 			'chats.messageEdit' => '编辑',
 			'chats.messageDelete' => '删除',
@@ -1342,6 +1363,7 @@ extension on TranslationsZh {
 			'profile.deleteAllBody' => '确认后，所有消息都会被删除',
 			'profile.deleteAllAction' => '删除',
 			'profile.faqHelp' => '常见问题与帮助',
+			'profile.contactUs' => '联系我们',
 			'profile.restorePurchases' => '恢复购买',
 			'profile.termsOfService' => '服务条款',
 			'profile.privacyPolicy' => '隐私政策',
@@ -1511,16 +1533,19 @@ extension on TranslationsZh {
 			'profile.zodiacCapricorn' => '摩羯座',
 			'profile.zodiacAquarius' => '水瓶座',
 			'profile.zodiacPisces' => '双鱼座',
+			'profile.boostActiveTitle' => 'You\'re standing out!',
+			'profile.boostRemaining' => ({required Object time}) => '${time} left',
+			'profile.boostExtend' => 'Extend',
 			'nav.discover' => '发现',
 			'nav.chat' => '聊天',
 			'nav.call' => '通话',
 			'nav.vibes' => '氛围',
 			'nav.profile' => '我的',
-			'call.title' => '60秒陌生人',
-			'call.subtitle' => '和随机陌生人聊 60 秒——完全匿名。没有资料，没有照片，没有名字。只有声音和这一刻。',
-			'call.findingTitle' => '正在寻找陌生人...',
+			'call.title' => '60秒匿名',
+			'call.subtitle' => '和随机匿名用户聊 60 秒——完全匿名。没有资料，没有照片，没有名字。只有声音和这一刻。',
+			'call.findingTitle' => '正在寻找匿名用户...',
 			'call.findingSubtitle' => '你们将匿名聊 60 秒。没有资料，没有名字。',
-			'call.callStranger' => '呼叫陌生人 - 10 代币',
+			'call.callStranger' => '匿名通话 - 10 代币',
 			'call.cancel' => '取消',
 			'call.female' => '女',
 			'call.male' => '男',
@@ -1534,7 +1559,7 @@ extension on TranslationsZh {
 			'call.keepTalking' => '继续聊',
 			'call.endCall' => '结束通话',
 			'call.waitingOther' => '等待对方...',
-			'call.callStrangerFree' => '呼叫陌生人',
+			'call.callStrangerFree' => '匿名通话',
 			'call.peerLeft' => '对方已结束通话。',
 			'call.noKeep' => '这次未能解锁聊天。',
 			'call.videoWaiting' => '等待对方接受视频通话...',
@@ -1676,6 +1701,13 @@ extension on TranslationsZh {
 			'discover.liveRoom.remove' => '移出房间',
 			'discover.liveRoom.removed' => '你已被移出房间。',
 			'discover.liveRoom.seeProfile' => '请求查看资料',
+			'discover.liveRoom.closeConfirmTitle' => 'Are you sure you want to close the room?',
+			'discover.liveRoom.closeConfirmSubtitle' => 'The room will end for everyone.',
+			'discover.liveRoom.closeConfirm' => 'Close',
+			'discover.liveRoom.leaveConfirmTitle' => 'Are you sure you want to leave the room?',
+			'discover.liveRoom.leaveConfirmSubtitle' => 'You will leave while the conversation continues.',
+			'discover.liveRoom.leaveConfirm' => 'Leave',
+			'discover.liveRoom.cancel' => 'Cancel',
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} 位用户',
 			'discover.groupChat.sampleVictoria' => '好无聊啊，大家要不要一起做点什么？',
 			'discover.groupChat.sampleSona' => '我们能做点什么？你有什么想法？',
@@ -1694,6 +1726,8 @@ extension on TranslationsZh {
 			'discover.groupInfo.requests' => '加入申请',
 			'discover.groupInfo.approve' => '同意',
 			'discover.groupInfo.reject' => '拒绝',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupInfo.addPeopleEmpty' => '关注他人后即可将其加入群组。',
 			'discover.groupInfo.add' => '添加',
 			'discover.groupInfo.makeAdmin' => '设为管理员',
@@ -1710,8 +1744,6 @@ extension on TranslationsZh {
 			'discover.filters.distance' => '距离',
 			'discover.filters.distanceValue' => ({required Object km}) => '${km} 公里',
 			'discover.filters.showMe' => '显示',
-			_ => null,
-		} ?? switch (path) {
 			'discover.filters.everyone' => '所有人',
 			'discover.filters.women' => '女性',
 			'discover.filters.men' => '男性',
@@ -1912,7 +1944,7 @@ extension on TranslationsZh {
 			'faq.q2' => '什么是匿名聊天？',
 			'faq.q3' => '什么是亲密度进度？',
 			'faq.q4' => '如何公开我的资料？',
-			'faq.q5' => '什么是60秒陌生人？',
+			'faq.q5' => '什么是60秒匿名？',
 			'faq.q6' => '什么是 Vibes？',
 			'faq.q7' => '如何编辑我的资料？',
 			'faq.q8' => '如何管理通知？',
@@ -1926,7 +1958,7 @@ extension on TranslationsZh {
 			'faq.a2' => '匿名聊天中，你的身份和照片都会被隐藏。随着亲密度提升，你可以解锁名字首字母和模糊照片等信息。达到 100% 时，需双方都同意才能公开完整资料。',
 			'faq.a3' => '聊得越多，亲密度百分比越高。达到特定里程碑后，你可以解锁名字首字母、模糊照片和完整资料。点击“亲密度”标签即可查看详情。',
 			'faq.a4' => '亲密度达到 100% 时，点击“公开我的资料”。如果对方也同意，双方的完整资料都会显示。',
-			'faq.a5' => '在“通话”页，你可以快速随机匹配一位陌生人。时间到后，你可以选择继续聊或结束通话。',
+			'faq.a5' => '在“通话”页，你可以快速随机匹配一位匿名用户。时间到后，你可以选择继续聊或结束通话。',
 			'faq.a6' => '通过 Vibes，你可以在地图/列表视图中发现附近或身边的人，并和感兴趣的人开始聊天。',
 			'faq.a7' => '打开“我的”页面，进入“编辑资料”即可更新姓名、照片、简介和兴趣。保存后更改即会生效。',
 			'faq.a8' => '在“设置”中打开“通知”，即可开启或关闭消息、匹配及其他提醒。',

@@ -50,6 +50,7 @@ class LocalProfileStore extends ChangeNotifier {
       isSelf: base.isSelf,
       borderId: base.isSelf ? (_borderId ?? base.borderId) : base.borderId,
       voiceIntroUrl: base.voiceIntroUrl,
+      boostedUntil: base.boostedUntil,
     );
   }
 

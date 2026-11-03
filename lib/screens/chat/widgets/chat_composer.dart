@@ -24,6 +24,7 @@ class ChatComposer extends StatefulWidget {
     required this.onSend,
     this.onChanged,
     this.onMedia,
+    this.onImages,
     this.onSticker,
   });
 
@@ -34,6 +35,9 @@ class ChatComposer extends StatefulWidget {
 
   /// `image` veya `voice` ve dosya yolu.
   final Future<void> Function(String kind, String path)? onMedia;
+
+  /// Birden fazla galeri fotoğrafı — hepsi birden ekrana düşer.
+  final Future<void> Function(List<String> paths)? onImages;
 
   /// Seçilen çıkartmanın asset yolu.
   final ValueChanged<String>? onSticker;
@@ -50,7 +54,6 @@ class _ChatComposerState extends State<ChatComposer> {
   Timer? _ticker;
   bool _recording = false;
   bool _picking = false;
-  bool _sending = false;
   bool _stickers = false;
   int _seconds = 0;
   final List<String> _pendingImages = [];
@@ -74,20 +77,19 @@ class _ChatComposerState extends State<ChatComposer> {
   }
 
   Future<void> _pick(ImageSource source) async {
-    if (widget.onMedia == null || _picking || _recording || _sending) return;
+    if ((widget.onMedia == null && widget.onImages == null) ||
+        _picking ||
+        _recording) {
+      return;
+    }
     final room = _maxImages - _pendingImages.length;
     if (room <= 0) return;
     setState(() => _picking = true);
     try {
-      // Önce inputta önizleme; gönder’e basınca yollanır.
-      // Tam çözünürlüklü telefon fotoğrafı 10 MB yükleme sınırını aşıyordu.
+      // Sıkıştırmayı seçicide yapma — 6 foto anında önizlemeye düşsün.
+      // Yüklemede sunucu / istemci boyutu yönetir.
       if (source == ImageSource.gallery) {
-        final files = await _picker.pickMultiImage(
-          maxWidth: 2048,
-          maxHeight: 2048,
-          imageQuality: 85,
-          limit: room,
-        );
+        final files = await _picker.pickMultiImage(limit: room);
         if (files.isEmpty || !mounted) return;
         setState(() {
           for (final f in files) {
@@ -97,12 +99,7 @@ class _ChatComposerState extends State<ChatComposer> {
           _stickers = false;
         });
       } else {
-        final file = await _picker.pickImage(
-          source: source,
-          maxWidth: 2048,
-          maxHeight: 2048,
-          imageQuality: 85,
-        );
+        final file = await _picker.pickImage(source: source);
         if (file == null || !mounted) return;
         setState(() {
           if (_pendingImages.length < _maxImages &&
@@ -125,26 +122,35 @@ class _ChatComposerState extends State<ChatComposer> {
   }
 
   Future<void> _submit() async {
-    if (_sending || _recording || _picking) return;
+    if (_recording || _picking) return;
     final sendMedia = widget.onMedia;
+    final sendImages = widget.onImages;
     final images = List<String>.of(_pendingImages);
     final hasText = widget.controller.text.trim().isNotEmpty;
     if (images.isEmpty && !hasText) return;
 
-    setState(() {
-      _sending = true;
-      _pendingImages.clear();
-    });
-    try {
-      for (final path in images) {
-        await sendMedia?.call('image', path);
+    // Önizleme ve input hemen temizlensin; buton loading'de kalmasın.
+    setState(() => _pendingImages.clear());
+    if (hasText) widget.onSend();
+
+    if (images.isEmpty) return;
+
+    // Yükleme arka planda; balonlarda "Gönderiliyor…" görünür.
+    Future<void> upload() async {
+      if (sendImages != null) {
+        await sendImages(images);
+      } else {
+        for (final path in images) {
+          await sendMedia?.call('image', path);
+        }
       }
-      if (hasText) widget.onSend();
-    } catch (e) {
-      if (mounted) showErrorSnackBar(context, e);
-    } finally {
-      if (mounted) setState(() => _sending = false);
     }
+
+    unawaited(
+      upload().catchError((Object e) {
+        if (mounted) showErrorSnackBar(context, e);
+      }),
+    );
   }
 
   Future<void> _toggleRecord() async {
@@ -286,6 +292,15 @@ class _ChatComposerState extends State<ChatComposer> {
           ),
           const SizedBox(height: 8),
         ],
+        if (_picking)
+          const Padding(
+            padding: EdgeInsets.only(bottom: 8),
+            child: LinearProgressIndicator(
+              minHeight: 2,
+              color: AppColors.selectionBorder,
+              backgroundColor: Color(0x22998FED),
+            ),
+          ),
         if (_pendingImages.isNotEmpty) ...[
           _imagePreview(),
           const SizedBox(height: 8),
@@ -427,7 +442,7 @@ class _ChatComposerState extends State<ChatComposer> {
               _roundIcon(AppAssets.iconMicrophone, onTap: _toggleRecord)
             else
               GestureDetector(
-                onTap: _sending ? null : _submit,
+                onTap: _submit,
                 child: Container(
                   width: 28,
                   height: 28,
@@ -436,16 +451,11 @@ class _ChatComposerState extends State<ChatComposer> {
                     color: AppColors.selectionBorder,
                   ),
                   alignment: Alignment.center,
-                  child: _sending
-                      ? const SizedBox(
-                          width: 14,
-                          height: 14,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: AppColors.white,
-                          ),
-                        )
-                      : const Icon(Icons.send_rounded, size: 15, color: AppColors.white),
+                  child: const Icon(
+                    Icons.send_rounded,
+                    size: 15,
+                    color: AppColors.white,
+                  ),
                 ),
               ),
           ],
