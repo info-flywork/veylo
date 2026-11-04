@@ -64,22 +64,56 @@ class PostRepository {
   }
 
   /// Görseli yükler (tam boy + önizleme) ve gönderiyi oluşturur.
+  /// [sourcePath]: yazı/çıkartma işlenmeden önceki fotoğraf; sonradan düzenlemek için saklanır.
   Future<Post> create({
     required String imagePath,
+    String? sourcePath,
+    Map<String, Object?>? editorState,
     String? caption,
     Map<String, Object?>? music,
     bool draft = false,
   }) async {
-    final media = await _api.upload('/media/post', imagePath) as Map;
+    final uploads = await Future.wait([
+      _api.upload('/media/post', imagePath),
+      if (sourcePath != null) _api.upload('/media/post', sourcePath),
+    ]);
+    final media = uploads.first as Map;
+    final source = uploads.length > 1 ? uploads[1] as Map : null;
     return _post(
       await _api.post(
         '/posts',
         body: {
           'mediaId': media['mediaId'],
           'thumbId': media['thumbId'],
+          if (source != null) 'sourceId': source['mediaId'],
+          'editorState': ?editorState,
           if (caption != null && caption.isNotEmpty) 'caption': caption,
           'music': ?music,
           'draft': draft,
+        },
+      ),
+    );
+  }
+
+  /// Editörde yeniden düzenlenen gönderiyi kaydeder (yeni görsel + katmanlar + müzik).
+  /// [publish]: taslaksa aynı anda yayınlanır.
+  Future<Post> saveEdit(
+    String id, {
+    required String imagePath,
+    required Map<String, Object?> editorState,
+    Map<String, Object?>? music,
+    bool publish = false,
+  }) async {
+    final media = await _api.upload('/media/post', imagePath) as Map;
+    return _post(
+      await _api.patch(
+        '/posts/$id',
+        body: {
+          'mediaId': media['mediaId'],
+          'thumbId': media['thumbId'],
+          'editorState': editorState,
+          'music': music,
+          if (publish) 'publish': true,
         },
       ),
     );

@@ -16,7 +16,9 @@ import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/data/remote/discover_store.dart';
 import 'package:veylo/data/remote/post_repository.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/models/discover/post.dart';
 import 'package:veylo/screens/discover/story_editor/story_draft_sheet.dart';
+import 'package:veylo/screens/discover/story_editor/story_editor_state.dart';
 import 'package:veylo/screens/discover/story_editor/story_music_sheet.dart';
 import 'package:veylo/screens/discover/story_editor/story_sticker_sheet.dart';
 import 'package:veylo/screens/discover/story_editor/story_text_tools_sheet.dart';
@@ -29,12 +31,57 @@ class StoryEditorPage extends StatefulWidget {
     super.key,
     required this.file,
     this.saveAsDraft = false,
+    this.editing,
   });
 
   final File file;
 
   /// Kamerada TASLAK seçiliyse ana buton gönderiyi taslak olarak kaydeder.
   final bool saveAsDraft;
+
+  /// Düzenlenen gönderi/taslak: [file] onun yazısız orijinali, katmanlar geri yüklenir.
+  final Post? editing;
+
+  /// Kendi gönderimi editörde açar; kaydedilirse güncel gönderiyi döner.
+  static Future<Post?> edit(BuildContext context, Post initial) async {
+    final navigator = Navigator.of(context);
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(child: CircularProgressIndicator()),
+    );
+    File file;
+    Post post;
+    try {
+      // Listeden gelen kopyada katmanlar eksik olabilir; güncelini al.
+      post = await PostRepository.instance.get(initial.id);
+      file = await _download(post.sourceUrl ?? post.mediaUrl);
+    } catch (e) {
+      navigator.pop();
+      if (context.mounted) showErrorSnackBar(context, e);
+      return null;
+    }
+    navigator.pop();
+    return navigator.push<Post>(
+      MaterialPageRoute<Post>(
+        builder: (_) => StoryEditorPage(file: file, editing: post),
+      ),
+    );
+  }
+
+  static Future<File> _download(String url) async {
+    final client = HttpClient();
+    try {
+      final res = await (await client.getUrl(Uri.parse(url))).close();
+      if (res.statusCode != 200) throw HttpException('HTTP ${res.statusCode}');
+      final dir = await Directory.systemTemp.createTemp('veylo_edit');
+      final file = File('${dir.path}/source');
+      await res.pipe(file.openWrite());
+      return file;
+    } finally {
+      client.close();
+    }
+  }
 
   @override
   State<StoryEditorPage> createState() => _StoryEditorPageState();
@@ -64,12 +111,62 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
 
   bool get _hasOverlay => _textDraft.hasContent || _stickers.isNotEmpty;
 
+  bool _restored = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final post = widget.editing;
+    if (_restored || post == null) return;
+    _restored = true;
+    final layers = StoryEditorLayers.fromPost(post, MediaQuery.sizeOf(context));
+    if (layers == null) return;
+    _textDraft = layers.text;
+    _textOffset = layers.textOffset;
+    _textScale = layers.textScale;
+    _textRotation = layers.textRotation;
+    _stickers.addAll(layers.stickers);
+    final music = layers.music;
+    if (music != null) {
+      _music = music;
+      unawaited(_playTrack(music));
+    }
+  }
+
+  Map<String, Object?> _layersJson() => StoryEditorLayers(
+    screen: MediaQuery.sizeOf(context),
+    text: _textDraft,
+    textOffset: _textOffset,
+    textScale: _textScale,
+    textRotation: _textRotation,
+    stickers: List.of(_stickers),
+    music: _music,
+  ).toJson();
+
+  Map<String, Object?>? _musicJson() {
+    final music = _music;
+    if (music == null) return null;
+    return {
+      'title': music.title,
+      if (music.artist.isNotEmpty) 'artist': music.artist,
+      if (music.imageUrl != null && music.imageUrl!.isNotEmpty)
+        'coverUrl': music.imageUrl,
+      if (music.audioUrl != null && music.audioUrl!.isNotEmpty)
+        'audioUrl': music.audioUrl,
+      'clipStartSec': music.clipStartSec,
+      'clipEndSec': music.clipEndSec,
+    };
+  }
+
   /// Görsel + yazı katmanı: paylaşırken tek görsele çevrilir.
   final _canvasKey = GlobalKey();
 
   /// Çekim sırasında "buraya yaz" ipucu görsele girmesin.
   bool _capturing = false;
   bool _busy = false;
+
+  /// Düzenleme kaydedildiyse sunucudan dönen güncel gönderi (çağırana iletilir).
+  Post? _saved;
 
   @override
   void dispose() {
@@ -79,12 +176,18 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
   }
 
   Future<void> _onClose() async {
+    final editing = widget.editing;
+    // Yayınlanmış gönderiyi düzenlerken çıkmak değişiklikleri bırakır.
+    if (editing != null && !editing.isDraft) {
+      Navigator.of(context).pop();
+      return;
+    }
     final result = await showStoryDraftSheet(context);
     if (!mounted) return;
     if (result == true) {
       // Taslak: sunucuya taslak olarak kaydedilir (akışta görünmez).
       final ok = await _publish(draft: true);
-      if (ok && mounted) Navigator.of(context).pop();
+      if (ok && mounted) Navigator.of(context).pop(_saved);
     } else if (result == false) {
       Navigator.of(context).pop();
     }
@@ -128,26 +231,32 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
     );
     try {
       final file = _hasOverlay ? await _renderCanvas() : widget.file;
-      final music = _music;
-      final post = await PostRepository.instance.create(
-        imagePath: file.path,
-        draft: draft,
-        music: music == null
-            ? null
-            : {
-                'title': music.title,
-                if (music.artist.isNotEmpty) 'artist': music.artist,
-                if (music.imageUrl != null && music.imageUrl!.isNotEmpty)
-                  'coverUrl': music.imageUrl,
-                if (music.audioUrl != null && music.audioUrl!.isNotEmpty)
-                  'audioUrl': music.audioUrl,
-                'clipStartSec': music.clipStartSec,
-                'clipEndSec': music.clipEndSec,
-              },
-      );
+      final editing = widget.editing;
+      final Post post;
+      if (editing != null) {
+        // Düzenleme: aynı gönderi güncellenir; taslak paylaşılırsa yayına alınır.
+        post = await PostRepository.instance.saveEdit(
+          editing.id,
+          imagePath: file.path,
+          editorState: _layersJson(),
+          music: _musicJson(),
+          publish: editing.isDraft && !draft,
+        );
+        _saved = post;
+      } else {
+        post = await PostRepository.instance.create(
+          imagePath: file.path,
+          // Katman yoksa görsel zaten orijinal; ikinci kez yüklenmez.
+          sourcePath: _hasOverlay ? widget.file.path : null,
+          editorState: _layersJson(),
+          draft: draft,
+          music: _musicJson(),
+        );
+      }
       navigator.pop(); // yükleniyor
-      if (!draft) {
+      if (!post.isDraft) {
         DiscoverHighlight.instance.set(file.path, postId: post.id);
+        if (editing != null) DiscoverStore.instance.replace(post);
         DiscoverStore.instance.refresh();
       }
       return true;
@@ -214,12 +323,22 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
       unawaited(_audio.play());
       return;
     }
+    await _playTrack(track);
+  }
+
+  /// Seçilen bölümü döngüde çalar (editör önizlemesi).
+  Future<void> _playTrack(StoryMusicTrack track) async {
     final url = track.audioUrl;
     if (url == null || url.isEmpty) return;
     try {
       await _audio.setUrl(url);
-      final total = track.durationSec;
-      final startSec = track.clipStartSec.clamp(0, total);
+      // Eski gönderiden gelen parçada süre bilinmeyebilir (0).
+      final total = track.durationSec > 0
+          ? track.durationSec
+          : (_audio.duration?.inSeconds ?? 0);
+      final startSec = total > 0
+          ? track.clipStartSec.clamp(0, total)
+          : track.clipStartSec;
       final endSec = track.clipEndSec > startSec ? track.clipEndSec : total;
       await _musicPosSub?.cancel();
       await _audio.setLoopMode(LoopMode.off);
@@ -260,6 +379,13 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
   }
 
   Future<void> _share() async {
+    if (widget.editing != null) {
+      await _audio.pause();
+      // Düzenleme: yayınlanmış gönderi kaydedilir, taslak paylaşılır.
+      final ok = await _publish(draft: false);
+      if (ok && mounted) Navigator.of(context).pop(_saved);
+      return;
+    }
     final draft = widget.saveAsDraft;
     final messenger = ScaffoldMessenger.of(context);
     final savedText = Translations.of(context).discover.story.savedToDraft;
@@ -606,7 +732,11 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
                                         ),
                                         const SizedBox(width: 8),
                                         AppText(
-                                          widget.saveAsDraft
+                                          widget.editing != null
+                                              ? (widget.editing!.isDraft
+                                                    ? t.share
+                                                    : t.save)
+                                              : widget.saveAsDraft
                                               ? t.saveToDraft
                                               : t.share,
                                           style: AppTextStyles.storyShare,
