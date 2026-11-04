@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -11,6 +12,7 @@ import 'package:veylo/data/remote/discover_store.dart';
 import 'package:veylo/data/remote/post_repository.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/discover/post.dart';
+import 'package:veylo/screens/discover/story_editor/story_editor_page.dart';
 
 /// Kamera → TASLAK: kayıtlı taslaklar galeri gibi; dokununca önizle, paylaş/sil.
 class StoryDraftsPage extends StatefulWidget {
@@ -49,12 +51,16 @@ class _StoryDraftsPageState extends State<StoryDraftsPage> {
     final gone = await Navigator.of(context).push<bool>(
       MaterialPageRoute<bool>(builder: (_) => _DraftPreviewPage(draft: draft)),
     );
+    if (!mounted) return;
     // Paylaşıldı ya da silindi: listeden çıkar.
-    if (gone == true && mounted) {
+    if (gone == true) {
       setState(() => _drafts = [
         for (final d in _drafts ?? const <Post>[])
           if (d.id != draft.id) d,
       ]);
+    } else {
+      // Düzenlenmiş olabilir: küçük görseller tazelensin.
+      unawaited(_load());
     }
   }
 
@@ -148,6 +154,26 @@ class _DraftPreviewPage extends StatefulWidget {
 
 class _DraftPreviewPageState extends State<_DraftPreviewPage> {
   bool _busy = false;
+  late Post _draft = widget.draft;
+
+  /// Oluşturma editöründe aç; orada paylaşılırsa taslak listeden çıkar.
+  Future<void> _edit() async {
+    if (_busy) return;
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    final publishedText = Translations.of(context).discover.story.published;
+    final p = await StoryEditorPage.edit(context, _draft);
+    if (p == null || !mounted) return;
+    if (!p.isDraft) {
+      DiscoverStore.instance.refresh();
+      navigator.pop(true);
+      messenger.showSnackBar(
+        SnackBar(content: Text(publishedText), behavior: SnackBarBehavior.floating),
+      );
+      return;
+    }
+    setState(() => _draft = p);
+  }
 
   Future<void> _run(Future<void> Function() action, [String? doneText]) async {
     if (_busy) return;
@@ -172,7 +198,7 @@ class _DraftPreviewPageState extends State<_DraftPreviewPage> {
   Future<void> _share() {
     final t = Translations.of(context).discover.story;
     return _run(() async {
-      await PostRepository.instance.publish(widget.draft.id);
+      await PostRepository.instance.publish(_draft.id);
       DiscoverStore.instance.refresh();
     }, t.published);
   }
@@ -196,7 +222,7 @@ class _DraftPreviewPageState extends State<_DraftPreviewPage> {
       ),
     );
     if (ok != true || !mounted) return;
-    await _run(() => PostRepository.instance.delete(widget.draft.id));
+    await _run(() => PostRepository.instance.delete(_draft.id));
   }
 
   @override
@@ -204,7 +230,7 @@ class _DraftPreviewPageState extends State<_DraftPreviewPage> {
     final t = Translations.of(context).discover.story;
     final top = MediaQuery.paddingOf(context).top;
     final bottom = MediaQuery.paddingOf(context).bottom;
-    final d = widget.draft;
+    final d = _draft;
 
     return Scaffold(
       backgroundColor: AppColors.black,
@@ -264,6 +290,11 @@ class _DraftPreviewPageState extends State<_DraftPreviewPage> {
                             ),
                           ),
                         ),
+                      ),
+                      const SizedBox(width: 10),
+                      _RoundIconButton(
+                        asset: AppAssets.iconEditProfile,
+                        onTap: _busy ? null : _edit,
                       ),
                       const SizedBox(width: 10),
                       Expanded(
@@ -351,6 +382,37 @@ class _DraftPreviewPageState extends State<_DraftPreviewPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Alt çubuktaki yuvarlak ikon düğme (sil / düzenle).
+class _RoundIconButton extends StatelessWidget {
+  const _RoundIconButton({required this.asset, required this.onTap});
+
+  final String asset;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: AppColors.black.withValues(alpha: 0.50),
+        ),
+        alignment: Alignment.center,
+        child: SvgPicture.asset(
+          asset,
+          width: 22,
+          height: 22,
+          colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
+        ),
       ),
     );
   }

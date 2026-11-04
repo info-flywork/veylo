@@ -1716,10 +1716,17 @@ class _TimesUpBody extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
-        AppText(
-          t.waitingOther,
-          style: AppTextStyles.callWaiting,
-          textAlign: TextAlign.center,
+        // Sadece "Konuşmaya devam" basıldıktan sonra; yeri korunur, düzen kaymaz.
+        Visibility(
+          visible: waitingOther,
+          maintainSize: true,
+          maintainAnimation: true,
+          maintainState: true,
+          child: AppText(
+            t.waitingOther,
+            style: AppTextStyles.callWaiting,
+            textAlign: TextAlign.center,
+          ),
         ),
         const Spacer(flex: 3),
       ],

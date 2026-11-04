@@ -19,6 +19,7 @@ import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/discover/post.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 import 'package:veylo/screens/discover/comments_sheet.dart';
+import 'package:veylo/screens/discover/story_editor/story_editor_page.dart';
 import 'package:veylo/screens/discover/post_owner_sheet.dart';
 import 'package:veylo/screens/profile/profile_navigation.dart';
 
@@ -392,7 +393,7 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
     }
   }
 
-  /// Kendi gönderim: ⋯ → açıklamayı düzenle ya da sil.
+  /// Kendi gönderim: ⋯ → editörde düzenle, açıklamayı düzenle ya da sil.
   Future<void> _openOwnerMenu() async {
     final post = _post;
     if (post == null) return;
@@ -400,10 +401,26 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
     if (!mounted || action == null) return;
     switch (action) {
       case PostOwnerAction.edit:
+        await _editInEditor(post);
+      case PostOwnerAction.editCaption:
         await _editCaption(post);
       case PostOwnerAction.delete:
         await _deletePost(post);
     }
+  }
+
+  /// Oluşturma editörü katmanlarıyla açılır; kaydedilirse görsel ve müzik yenilenir.
+  Future<void> _editInEditor(Post post) async {
+    // Editör kendi önizlemesini çalar; buradaki müzik üst üste binmesin.
+    await _audio.pause();
+    if (!mounted) return;
+    final p = await StoryEditorPage.edit(context, post);
+    if (!mounted) return;
+    if (p != null) {
+      setState(() => _post = p);
+      DiscoverStore.instance.replace(p, edited: true);
+    }
+    unawaited(_syncAudio());
   }
 
   Future<void> _editCaption(Post post) async {

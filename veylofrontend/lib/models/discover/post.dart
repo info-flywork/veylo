@@ -55,6 +55,8 @@ class Post {
     this.boosted = false,
     this.boostedUntil,
     this.isDraft = false,
+    this.sourceUrl,
+    this.editorState,
   });
 
   final String id;
@@ -85,6 +87,10 @@ class Post {
   final bool isDraft;
   final DateTime createdAt;
 
+  /// Sadece kendi gönderimde: yazısız orijinal ve editör katmanları (düzenleme için).
+  final String? sourceUrl;
+  final Map<String, dynamic>? editorState;
+
   /// Kartta gösterilen kullanıcı adı.
   String get handle => authorUsername ?? authorName;
 
@@ -114,6 +120,10 @@ class Post {
       boosted: j['boosted'] as bool? ?? false,
       boostedUntil: DateTime.tryParse(j['boostedUntil'] as String? ?? '')?.toLocal(),
       isDraft: j['status'] == 'DRAFT',
+      sourceUrl: j['sourceUrl'] as String?,
+      editorState: j['editorState'] is Map
+          ? Map<String, dynamic>.from(j['editorState'] as Map)
+          : null,
       createdAt:
           DateTime.tryParse(j['createdAt'] as String? ?? '')?.toLocal() ??
           DateTime.now(),

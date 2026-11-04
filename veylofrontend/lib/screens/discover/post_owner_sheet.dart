@@ -4,7 +4,7 @@ import 'package:veylo/core/widgets/app_edit_sheet.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
 
-enum PostOwnerAction { edit, delete }
+enum PostOwnerAction { edit, editCaption, delete }
 
 /// Kendi gönderim — Düzenle / Sil menüsü (profil işlem menüsüyle aynı yapı).
 Future<PostOwnerAction?> showPostOwnerActionsSheet(BuildContext context) {
@@ -25,6 +25,11 @@ Future<PostOwnerAction?> showPostOwnerActionsSheet(BuildContext context) {
             _ActionItem(
               label: tr.discover.post.edit,
               onTap: () => Navigator.of(context).pop(PostOwnerAction.edit),
+            ),
+            _ActionItem(
+              label: tr.discover.post.editCaption,
+              onTap: () =>
+                  Navigator.of(context).pop(PostOwnerAction.editCaption),
             ),
             _ActionItem(
               label: tr.discover.post.delete,
