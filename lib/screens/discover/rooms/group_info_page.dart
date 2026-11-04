@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
@@ -928,7 +929,7 @@ class _GroupGalleryPageState extends State<_GroupGalleryPage> {
       barrierColor: AppColors.black.withValues(alpha: 0.9),
       builder: (context) => GestureDetector(
         onTap: () => Navigator.of(context).pop(),
-        child: InteractiveViewer(child: Center(child: Image.network(url))),
+        child: InteractiveViewer(child: Center(child: Image(image: CachedNetworkImageProvider(url)))),
       ),
     );
   }
@@ -992,8 +993,8 @@ class _GroupGalleryPageState extends State<_GroupGalleryPage> {
                         onTap: () => _open(url),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8),
-                          child: Image.network(
-                            url,
+                          child: Image(
+                            image: CachedNetworkImageProvider(url),
                             fit: BoxFit.cover,
                             errorBuilder: (_, _, _) =>
                                 const ColoredBox(color: AppColors.inputFill),

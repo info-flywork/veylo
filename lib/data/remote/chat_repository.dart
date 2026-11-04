@@ -12,12 +12,26 @@ class ChatRepository {
 
   /// box: inbox | requests
   Future<List<ChatThread>> list({String box = 'inbox'}) async {
-    final res = await _api.get('/conversations', query: {'box': box}) as Map;
-    return [
-      for (final j in (res['items'] as List).cast<Map>())
-        ChatThread.fromApi(Map<String, dynamic>.from(j)),
-    ];
+    final res =
+        await _api.get('/conversations', query: {'box': box}, cache: true)
+            as Map;
+    return _threads(res);
   }
+
+  /// Diskteki son liste (açılışta anında göstermek için).
+  Future<List<ChatThread>?> cachedList({String box = 'inbox'}) async {
+    try {
+      final res = await _api.cached('/conversations', query: {'box': box});
+      return res is Map ? _threads(res) : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  List<ChatThread> _threads(Map res) => [
+    for (final j in (res['items'] as List).cast<Map>())
+      ChatThread.fromApi(Map<String, dynamic>.from(j)),
+  ];
 
   Future<ChatThread> get(String id) async => ChatThread.fromApi(
     Map<String, dynamic>.from(await _api.get('/conversations/$id') as Map),
@@ -38,8 +52,27 @@ class ChatRepository {
                 if (beforeSeq != null) 'beforeSeq': '$beforeSeq',
                 if (afterSeq != null) 'afterSeq': '$afterSeq',
               },
+              // Son sayfa diske: sohbet açılınca mesajlar beklemeden görünür.
+              cache: beforeSeq == null && afterSeq == null,
             )
             as Map;
+    return _messagePage(res);
+  }
+
+  /// Diskteki son mesaj sayfası.
+  Future<List<ChatMessage>?> cachedMessages(String id, {int limit = 30}) async {
+    try {
+      final res = await _api.cached(
+        '/conversations/$id/messages',
+        query: {'limit': '$limit'},
+      );
+      return res is Map ? _messagePage(res).items : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  ({List<ChatMessage> items, bool hasMore}) _messagePage(Map res) {
     return (
       items: [
         for (final j in (res['items'] as List).cast<Map>())

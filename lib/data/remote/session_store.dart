@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:veylo/data/local/response_cache.dart';
 import 'package:veylo/core/config/app_config.dart';
 import 'package:veylo/data/local/local_profile_store.dart';
 import 'package:veylo/data/remote/api_client.dart';
@@ -220,8 +223,9 @@ class SessionStore extends ChangeNotifier {
     final res = await _api.post('/auth/session') as Map<String, dynamic>;
     final me = Me.fromJson(res['user'] as Map<String, dynamic>);
     setMe(me);
-    // RevenueCat webhook bakiyeyi bizim user id ile eşleştirsin.
-    await PurchaseService.instance.logIn(me.id);
+    // RevenueCat webhook bakiyeyi bizim user id ile eşleştirsin. Açılışı bekletmez;
+    // satın alma öncesinde zaten tekrar logIn yapılır.
+    unawaited(PurchaseService.instance.logIn(me.id).catchError((_) {}));
   }
 
   Future<void> refreshMe() async {
@@ -230,6 +234,7 @@ class SessionStore extends ChangeNotifier {
 
   void setMe(Me? me) {
     _me = me;
+    ResponseCache.instance.userId = me?.id;
     notifyListeners();
   }
 
@@ -280,6 +285,7 @@ class SessionStore extends ChangeNotifier {
       await (await SharedPreferences.getInstance()).remove(_kDevUser);
     }
     await LocalProfileStore.instance.clear();
+    await ResponseCache.instance.clear();
     notifyListeners();
   }
 

@@ -109,6 +109,17 @@ class ConversationController extends ChangeNotifier {
       _messages = cached;
       _loading = false;
       _notify();
+    } else if (!_thread.isLocalOnly) {
+      // Bellekte yoksa (uygulama yeni açıldı) diskteki son sayfayı göster.
+      unawaited(
+        _repo.cachedMessages(_thread.id).then((disk) {
+          if (_disposed || disk == null || disk.isEmpty) return;
+          if (_messages.isNotEmpty) return;
+          _messages = disk;
+          _loading = false;
+          _notify();
+        }),
+      );
     }
 
     // Ağ + gizli mesaj listesi paralel; get mesajları bloklamasın.

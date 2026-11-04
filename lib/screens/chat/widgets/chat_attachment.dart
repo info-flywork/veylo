@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:veylo/core/theme/theme.dart';
@@ -86,8 +87,8 @@ class _ChatImage extends StatelessWidget {
     if (!url.startsWith('http')) {
       return Image.file(File(url), fit: fit, errorBuilder: _error);
     }
-    return Image.network(
-      url,
+    return Image(
+      image: CachedNetworkImageProvider(url),
       fit: fit,
       errorBuilder: _error,
       loadingBuilder: (context, child, progress) => progress == null

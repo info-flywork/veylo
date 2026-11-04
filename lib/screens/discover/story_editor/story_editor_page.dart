@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -133,8 +134,10 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
             : {
                 'title': music.title,
                 if (music.artist.isNotEmpty) 'artist': music.artist,
-                'coverUrl': ?music.imageUrl,
-                'audioUrl': ?music.audioUrl,
+                if (music.imageUrl != null && music.imageUrl!.isNotEmpty)
+                  'coverUrl': music.imageUrl,
+                if (music.audioUrl != null && music.audioUrl!.isNotEmpty)
+                  'audioUrl': music.audioUrl,
                 'clipStartSec': music.clipStartSec,
                 'clipEndSec': music.clipEndSec,
               },
@@ -642,8 +645,8 @@ class _MusicChip extends StatelessWidget {
                   width: 28,
                   height: 28,
                   child: track.imageUrl != null && track.imageUrl!.isNotEmpty
-                      ? Image.network(
-                          track.imageUrl!,
+                      ? Image(
+                          image: CachedNetworkImageProvider(track.imageUrl!),
                           fit: BoxFit.cover,
                           errorBuilder: (_, _, _) => ColoredBox(
                             color: AppColors.black.withValues(alpha: 0.4),

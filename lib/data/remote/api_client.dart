@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:veylo/data/local/response_cache.dart';
 import 'package:veylo/core/config/app_config.dart';
 import 'package:veylo/i18n/strings.g.dart';
 
@@ -59,13 +62,38 @@ class ApiClient {
 
   late final Dio _dio;
 
-  Future<dynamic> get(String path, {Map<String, dynamic>? query}) => _send(
-    (extra) => _dio.get(
-      path,
-      queryParameters: query,
-      options: Options(extra: extra),
-    ),
-  );
+  /// [cache] true ise cevap diske yazılır; açılışta [cached] ile anında okunur.
+  Future<dynamic> get(
+    String path, {
+    Map<String, dynamic>? query,
+    bool cache = false,
+  }) async {
+    final data = await _send(
+      (extra) => _dio.get(
+        path,
+        queryParameters: query,
+        options: Options(extra: extra),
+      ),
+    );
+    if (cache) {
+      unawaited(ResponseCache.instance.write(_cacheKey(path, query), data));
+    }
+    return data;
+  }
+
+  /// Aynı isteğin diskteki son cevabı (yoksa null).
+  Future<dynamic> cached(String path, {Map<String, dynamic>? query}) =>
+      ResponseCache.instance.read(_cacheKey(path, query));
+
+  static String _cacheKey(String path, Map<String, dynamic>? query) {
+    final params = <String, String>{
+      for (final e in (query ?? const <String, dynamic>{}).entries)
+        if (e.value != null) e.key: '${e.value}',
+    };
+    if (params.isEmpty) return path;
+    final keys = params.keys.toList()..sort();
+    return '$path?${Uri(queryParameters: {for (final k in keys) k: params[k]}).query}';
+  }
 
   Future<dynamic> post(String path, {Object? body}) => _send(
     (extra) => _dio.post(

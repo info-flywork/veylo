@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
@@ -1261,8 +1262,8 @@ class _ProfilePostGrid extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(
                                   _kPostRadius,
                                 ),
-                                child: Image.network(
-                                  posts[row * 3 + i].thumbUrl,
+                                child: Image(
+                                  image: CachedNetworkImageProvider(posts[row * 3 + i].thumbUrl),
                                   fit: BoxFit.cover,
                                   width: double.infinity,
                                   height: _kPostHeight,

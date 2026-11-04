@@ -24,6 +24,16 @@ class PostRepository {
 
   Post _post(dynamic res) => Post.fromJson(Map<String, dynamic>.from(res as Map));
 
+  Map<String, dynamic> _feedQuery(
+    String? cursor,
+    String? query,
+    DiscoverFilters filters,
+  ) => {
+    'cursor': ?cursor,
+    if (query != null && query.isNotEmpty) 'q': query,
+    ...filters.toQuery(),
+  };
+
   Future<PostPage> feed({
     String? cursor,
     String? query,
@@ -31,13 +41,27 @@ class PostRepository {
   }) async => _page(
     await _api.get(
       '/posts/feed',
-      query: {
-        'cursor': ?cursor,
-        if (query != null && query.isNotEmpty) 'q': query,
-        ...filters.toQuery(),
-      },
+      query: _feedQuery(cursor, query, filters),
+      // İlk sayfa diske yazılır: uygulama açılınca akış anında dolu gelir.
+      cache: cursor == null,
     ),
   );
+
+  /// Aynı arama/filtre için diskteki son ilk sayfa.
+  Future<PostPage?> cachedFeed({
+    String? query,
+    DiscoverFilters filters = const DiscoverFilters(),
+  }) async {
+    try {
+      final res = await _api.cached(
+        '/posts/feed',
+        query: _feedQuery(null, query, filters),
+      );
+      return res == null ? null : _page(res);
+    } catch (_) {
+      return null;
+    }
+  }
 
   /// Görseli yükler (tam boy + önizleme) ve gönderiyi oluşturur.
   Future<Post> create({

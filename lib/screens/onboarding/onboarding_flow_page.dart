@@ -170,7 +170,9 @@ class _OnboardingFlowPageState extends State<OnboardingFlowPage> {
                 itemBuilder: (context, i) {
                   return OnboardingSlideView(
                     slide: slides[i],
-                    pageIndex: _index,
+                    // Her slayt kendi sırasıyla çizilir; aktif sayfayı verirsek geçiş
+                    // bitince boşluklar değişip içerik zıplıyordu.
+                    pageIndex: i,
                     pageCount: slides.length,
                     onGetStarted: _goRegister,
                     onLogin: _goLogin,
