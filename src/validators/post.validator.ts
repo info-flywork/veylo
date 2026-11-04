@@ -28,8 +28,9 @@ export const feedQuery = z.object({
 const music = z.object({
   title: z.string().trim().min(1).max(120),
   artist: z.string().trim().max(120).optional(),
-  coverUrl: z.url().max(512).optional(),
-  audioUrl: z.url().max(512).optional(),
+  // Jamendo signed URL'leri 512'yi aşabiliyor.
+  coverUrl: z.url().max(2048).optional(),
+  audioUrl: z.url().max(2048).optional(),
   clipStartSec: z.number().min(0).max(3600).optional(),
   clipEndSec: z.number().min(0).max(3600).optional(),
 });
