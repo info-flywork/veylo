@@ -58,6 +58,8 @@ export const VIBE = {
 
 export const POST = {
   captionMaxLength: 500,
+  /** Editör katmanları (JSON) için üst sınır. */
+  editorStateMaxBytes: 32_000,
   commentMaxLength: 500,
   imageMaxPx: 1600,
   /** Discover ızgarası ve profil sekmeleri için küçük görsel. */

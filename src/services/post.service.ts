@@ -44,6 +44,9 @@ function serializePost(
     height: p.height,
     caption: p.caption,
     music: p.music,
+    // Düzenleme verisi sadece sahibine: orijinal fotoğraf yazısız haldir.
+    sourceUrl: isMine ? p.sourceUrl : null,
+    editorState: isMine ? p.editorState : null,
     likeCount: p.likeCount,
     commentCount: p.commentCount,
     // Görüntülenme sadece sahibine (istatistik ekranı).
@@ -158,13 +161,22 @@ async function feed(viewerId: string, q: FeedQuery) {
 
 async function create(
   viewerId: string,
-  input: { mediaId: string; thumbId: string; caption?: string; music?: MusicInput; draft: boolean },
+  input: {
+    mediaId: string;
+    thumbId: string;
+    sourceId?: string;
+    editorState?: Record<string, unknown>;
+    caption?: string;
+    music?: MusicInput;
+    draft: boolean;
+  },
 ) {
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
   const recent = await prisma.post.count({ where: { authorId: viewerId, createdAt: { gte: since } } });
   if (recent >= POST.dailyLimit) throw AppError.forbidden('POST_DAILY_LIMIT');
 
   const { media, thumb } = await mediaService.resolveForPost(viewerId, input.mediaId, input.thumbId);
+  const source = input.sourceId ? await mediaService.resolvePostSource(viewerId, input.sourceId) : null;
   const p = await prisma.post.create({
     data: {
       authorId: viewerId,
@@ -175,6 +187,8 @@ async function create(
       height: media.height,
       caption: input.caption || null,
       music: input.music ? (input.music as unknown as Prisma.InputJsonValue) : undefined,
+      sourceUrl: source?.url ?? null,
+      editorState: input.editorState ? (input.editorState as Prisma.InputJsonValue) : undefined,
     },
     include: { author: true },
   });
@@ -191,14 +205,46 @@ async function get(viewerId: string, postId: string) {
   return serializePost(p, viewerId, { liked: Boolean(liked), saved: Boolean(saved), iFollowAuthor: Boolean(follows) });
 }
 
-/** Taslağı yayınla ve/veya açıklamayı değiştir. */
-async function update(viewerId: string, postId: string, data: { caption?: string | null; publish?: boolean }) {
-  await loadMine(postId, viewerId);
+/**
+ * Taslağı yayınla, açıklamayı değiştir veya editörde yeniden düzenlenmiş halini kaydet.
+ * Fotoğrafın kendisi değişmez: yeni görsel aynı orijinalin üstüne katmanlarla işlenmiş haldir.
+ */
+async function update(
+  viewerId: string,
+  postId: string,
+  data: {
+    caption?: string | null;
+    publish?: boolean;
+    mediaId?: string;
+    thumbId?: string;
+    music?: MusicInput | null;
+    editorState?: Record<string, unknown> | null;
+  },
+) {
+  const post = await loadMine(postId, viewerId);
+  const rendered =
+    data.mediaId && data.thumbId ? await mediaService.resolveForPost(viewerId, data.mediaId, data.thumbId) : null;
   await prisma.post.update({
     where: { id: postId },
     data: {
       ...(data.caption !== undefined ? { caption: data.caption || null } : {}),
       ...(data.publish ? { status: 'PUBLISHED', createdAt: new Date() } : {}),
+      ...(rendered
+        ? {
+            mediaUrl: rendered.media.url,
+            thumbUrl: rendered.thumb.url,
+            width: rendered.media.width,
+            height: rendered.media.height,
+            // Orijinali olmayan eski gönderi: ilk düzenlemede eski görsel taban olur.
+            ...(post.sourceUrl ? {} : { sourceUrl: post.mediaUrl }),
+          }
+        : {}),
+      ...(data.music !== undefined
+        ? { music: data.music ? (data.music as unknown as Prisma.InputJsonValue) : Prisma.DbNull }
+        : {}),
+      ...(data.editorState !== undefined
+        ? { editorState: data.editorState ? (data.editorState as Prisma.InputJsonValue) : Prisma.DbNull }
+        : {}),
     },
   });
   return get(viewerId, postId);

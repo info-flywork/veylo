@@ -544,6 +544,10 @@ model Post {
   caption      String?    @db.VarChar(500)
   /// Seçilen müzik: { title, artist, coverUrl, audioUrl, clipStartSec, clipEndSec }
   music        Json?
+  /// Yazı/çıkartma işlenmeden önceki fotoğraf; sadece sahibin düzenlemesi için.
+  sourceUrl    String?    @map("source_url") @db.VarChar(512)
+  /// Editör katmanları (yazı, çıkartma, konum/ölçek); istemcinin biçimi, sunucu saklar.
+  editorState  Json?      @map("editor_state")
   likeCount    Int        @default(0) @map("like_count")
   commentCount Int        @default(0) @map("comment_count")
   viewCount    Int        @default(0) @map("view_count")

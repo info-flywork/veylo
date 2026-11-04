@@ -18,7 +18,7 @@ export const CALL = {
   /** Anonim sesli görüşme süresi (testte kısaltılabilir). */
   anonSeconds: !env.isProd && env.CALL_ANON_SECONDS ? env.CALL_ANON_SECONDS : 60,
   /** Süre dolunca "devam" oyları için bekleme. */
-  voteSeconds: 20,
+  voteSeconds: 10,
   /** Uygulama arkadayken de yetişilsin diye çalma süresi. */
   ringSeconds: 45,
   /** Sohbetten başlatılan birebir aramanın çalma süresi. */
