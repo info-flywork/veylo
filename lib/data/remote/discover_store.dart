@@ -17,6 +17,7 @@ class DiscoverStore extends ChangeNotifier {
   bool _loaded = false;
   bool _loadingMore = false;
   int _savedEpoch = 0;
+  int _postsEpoch = 0;
   String _query = '';
   DiscoverFilters _filters = const DiscoverFilters();
   Timer? _debounce;
@@ -31,6 +32,9 @@ class DiscoverStore extends ChangeNotifier {
 
   /// Kaydet / kaydı kaldır. Profildeki Saved sekmesi bunu dinler.
   int get savedEpoch => _savedEpoch;
+
+  /// Kendi gönderim düzenlendi / silindi. Profildeki Gönderiler sekmesi bunu dinler.
+  int get postsEpoch => _postsEpoch;
 
   Future<void> refresh() async {
     final gen = ++_generation;
@@ -92,18 +96,20 @@ class DiscoverStore extends ChangeNotifier {
   }
 
   /// Detay ekranında beğeni/kaydetme değişince ızgaradaki kopya da güncellenir.
-  void replace(Post post) {
+  void replace(Post post, {bool edited = false}) {
     Post? prev;
     for (final p in _posts) {
       if (p.id == post.id) prev = p;
     }
     _posts = [for (final p in _posts) p.id == post.id ? post : p];
     if (prev?.savedByMe != post.savedByMe) _savedEpoch++;
+    if (edited) _postsEpoch++;
     notifyListeners();
   }
 
   void remove(String id) {
     _posts = _posts.where((p) => p.id != id).toList();
+    _postsEpoch++;
     notifyListeners();
   }
 

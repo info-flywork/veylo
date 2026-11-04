@@ -89,6 +89,7 @@ class _ProfilePageState extends State<ProfilePage> {
   List<Post>? _posts;
   List<Post>? _saved;
   int _savedEpoch = 0;
+  int _postsEpoch = 0;
   bool _mediaLoading = false;
   Object? _mediaError;
 
@@ -133,9 +134,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
   /// Gönderi kaydedilince Saved sekmesi uygulama açılışındaki listeye takılı kalmasın.
   void _onSavedChanged() {
-    final epoch = DiscoverStore.instance.savedEpoch;
-    if (epoch == _savedEpoch) return;
-    _savedEpoch = epoch;
+    // Gönderi düzenlenip silinince de Gönderiler sekmesi yenilenir.
+    final store = DiscoverStore.instance;
+    if (store.savedEpoch == _savedEpoch && store.postsEpoch == _postsEpoch) {
+      return;
+    }
+    _savedEpoch = store.savedEpoch;
+    _postsEpoch = store.postsEpoch;
     _loadMedia();
   }
 

@@ -1117,6 +1117,11 @@ class _Translations$discover$post$it extends Translations$discover$post$tr {
 	@override String minutesAgo({required Object minutes}) => '${minutes}m';
 	@override String daysAgo({required Object days}) => '${days}g';
 	@override String get deleteCommentTitle => 'Eliminare questo commento?';
+	@override String get edit => 'Modifica';
+	@override String get delete => 'Elimina';
+	@override String get editCaption => 'Modifica didascalia';
+	@override String get deletePostTitle => 'Eliminare questo post?';
+	@override String get captionHint => 'Scrivi una didascalia...';
 }
 
 // Path: discover.story
@@ -1142,6 +1147,12 @@ class _Translations$discover$story$it extends Translations$discover$story$tr {
 	@override String get downloadFailed => 'Impossibile salvare';
 	@override String get savedToDraft => 'Salvato nelle bozze';
 	@override String get cameraDenied => 'Serve l’accesso alla fotocamera per scattare foto.';
+	@override String get drafts => 'Bozze';
+	@override String get draftsEmpty => 'Non hai ancora bozze.';
+	@override String get delete => 'Elimina';
+	@override String get deleteDraftPrompt => 'Eliminare questa bozza?';
+	@override String get published => 'Condiviso';
+	@override String get draftsError => 'Impossibile caricare le bozze.';
 }
 
 // Path: discover.highlight
@@ -1760,6 +1771,11 @@ extension on TranslationsIt {
 			'discover.post.minutesAgo' => ({required Object minutes}) => '${minutes}m',
 			'discover.post.daysAgo' => ({required Object days}) => '${days}g',
 			'discover.post.deleteCommentTitle' => 'Eliminare questo commento?',
+			'discover.post.edit' => 'Modifica',
+			'discover.post.delete' => 'Elimina',
+			'discover.post.editCaption' => 'Modifica didascalia',
+			'discover.post.deletePostTitle' => 'Eliminare questo post?',
+			'discover.post.captionHint' => 'Scrivi una didascalia...',
 			'discover.story.draft' => 'BOZZA',
 			'discover.story.story' => 'STORIA',
 			'discover.story.share' => 'Condividi',
@@ -1776,6 +1792,12 @@ extension on TranslationsIt {
 			'discover.story.downloadFailed' => 'Impossibile salvare',
 			'discover.story.savedToDraft' => 'Salvato nelle bozze',
 			'discover.story.cameraDenied' => 'Serve l’accesso alla fotocamera per scattare foto.',
+			'discover.story.drafts' => 'Bozze',
+			'discover.story.draftsEmpty' => 'Non hai ancora bozze.',
+			'discover.story.delete' => 'Elimina',
+			'discover.story.deleteDraftPrompt' => 'Eliminare questa bozza?',
+			'discover.story.published' => 'Condiviso',
+			'discover.story.draftsError' => 'Impossibile caricare le bozze.',
 			'discover.highlight.title' => 'In evidenza',
 			'discover.highlight.view' => 'Vedi',
 			'discover.highlight.aiComments' => 'Commenti IA',

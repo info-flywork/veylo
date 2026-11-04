@@ -578,7 +578,12 @@
       "hoursAgo": "{hours}小时",
       "minutesAgo": "{minutes}分钟",
       "daysAgo": "{days}天",
-      "deleteCommentTitle": "删除这条评论？"
+      "deleteCommentTitle": "删除这条评论？",
+      "edit": "编辑",
+      "delete": "删除",
+      "editCaption": "编辑说明",
+      "deletePostTitle": "删除这条帖子？",
+      "captionHint": "写点说明..."
     },
     "story": {
       "draft": "草稿",
@@ -596,7 +601,13 @@
       "downloaded": "已保存到相册",
       "downloadFailed": "保存失败",
       "savedToDraft": "已保存到草稿",
-      "cameraDenied": "拍照需要相机权限。"
+      "cameraDenied": "拍照需要相机权限。",
+      "drafts": "草稿",
+      "draftsEmpty": "你还没有草稿。",
+      "delete": "删除",
+      "deleteDraftPrompt": "删除这条草稿？",
+      "published": "已分享",
+      "draftsError": "无法加载草稿。"
     },
     "highlight": {
       "title": "精选",

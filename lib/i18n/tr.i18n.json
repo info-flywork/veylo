@@ -580,7 +580,12 @@
       "hoursAgo": "{hours}s",
       "minutesAgo": "{minutes}dk",
       "daysAgo": "{days}g",
-      "deleteCommentTitle": "Bu yorum silinsin mi?"
+      "deleteCommentTitle": "Bu yorum silinsin mi?",
+      "edit": "Düzenle",
+      "delete": "Sil",
+      "editCaption": "Açıklamayı düzenle",
+      "deletePostTitle": "Bu gönderi silinsin mi?",
+      "captionHint": "Açıklama yaz..."
     },
     "story": {
       "draft": "TASLAK",
@@ -598,7 +603,13 @@
       "downloaded": "Galeriye kaydedildi",
       "downloadFailed": "Kaydedilemedi",
       "savedToDraft": "Taslağa kaydedildi",
-      "cameraDenied": "Fotoğraf çekmek için kamera izni gerekli."
+      "cameraDenied": "Fotoğraf çekmek için kamera izni gerekli.",
+      "drafts": "Taslaklar",
+      "draftsEmpty": "Henüz taslağın yok.",
+      "delete": "Sil",
+      "deleteDraftPrompt": "Taslak silinsin mi?",
+      "published": "Paylaşıldı",
+      "draftsError": "Taslaklar yüklenemedi."
     },
     "highlight": {
       "title": "Öne Çıkan",

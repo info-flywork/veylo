@@ -578,7 +578,12 @@
       "hoursAgo": "{hours} h",
       "minutesAgo": "{minutes} min",
       "daysAgo": "{days} j",
-      "deleteCommentTitle": "Supprimer ce commentaire ?"
+      "deleteCommentTitle": "Supprimer ce commentaire ?",
+      "edit": "Modifier",
+      "delete": "Supprimer",
+      "editCaption": "Modifier la légende",
+      "deletePostTitle": "Supprimer cette publication ?",
+      "captionHint": "Écris une légende..."
     },
     "story": {
       "draft": "BROUILLON",
@@ -596,7 +601,13 @@
       "downloaded": "Enregistré dans la galerie",
       "downloadFailed": "Échec de l'enregistrement",
       "savedToDraft": "Enregistré dans les brouillons",
-      "cameraDenied": "L’accès à l’appareil photo est nécessaire pour prendre des photos."
+      "cameraDenied": "L’accès à l’appareil photo est nécessaire pour prendre des photos.",
+      "drafts": "Brouillons",
+      "draftsEmpty": "Tu n'as pas encore de brouillons.",
+      "delete": "Supprimer",
+      "deleteDraftPrompt": "Supprimer ce brouillon ?",
+      "published": "Partagé",
+      "draftsError": "Impossible de charger les brouillons."
     },
     "highlight": {
       "title": "À la une",

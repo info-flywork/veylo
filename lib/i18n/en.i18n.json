@@ -580,7 +580,12 @@
       "hoursAgo": "{hours}h",
       "minutesAgo": "{minutes}m",
       "daysAgo": "{days}d",
-      "deleteCommentTitle": "Delete this comment?"
+      "deleteCommentTitle": "Delete this comment?",
+      "edit": "Edit",
+      "delete": "Delete",
+      "editCaption": "Edit caption",
+      "deletePostTitle": "Delete this post?",
+      "captionHint": "Write a caption..."
     },
     "story": {
       "draft": "DRAFT",
@@ -598,7 +603,13 @@
       "downloaded": "Saved to gallery",
       "downloadFailed": "Could not save",
       "savedToDraft": "Saved to drafts",
-      "cameraDenied": "Camera access is needed to take photos."
+      "cameraDenied": "Camera access is needed to take photos.",
+      "drafts": "Drafts",
+      "draftsEmpty": "You have no drafts yet.",
+      "delete": "Delete",
+      "deleteDraftPrompt": "Delete this draft?",
+      "published": "Shared",
+      "draftsError": "Couldn't load drafts."
     },
     "highlight": {
       "title": "Highlight",

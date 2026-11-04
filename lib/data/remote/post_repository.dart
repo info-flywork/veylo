@@ -92,6 +92,10 @@ class PostRepository {
 
   Future<void> delete(String id) => _api.delete('/posts/$id');
 
+  /// Açıklamayı değiştirir; null açıklamayı kaldırır.
+  Future<Post> updateCaption(String id, String? caption) async =>
+      _post(await _api.patch('/posts/$id', body: {'caption': caption}));
+
   Future<Post> setLiked(String id, bool liked) async => _post(
     await (liked ? _api.post('/posts/$id/like') : _api.delete('/posts/$id/like')),
   );
@@ -149,6 +153,10 @@ class PostRepository {
 
   Future<PostPage> byUser(String userId, {String? cursor}) async =>
       _page(await _api.get('/posts/user/$userId', query: {'cursor': ?cursor}));
+
+  /// Kendi taslaklarım (en yeni önce).
+  Future<List<Post>> drafts() async =>
+      _page(await _api.get('/posts/drafts')).items;
 
   Future<PostPage> saved({String? cursor}) async =>
       _page(await _api.get('/posts/saved', query: {'cursor': ?cursor}));

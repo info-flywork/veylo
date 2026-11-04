@@ -1117,6 +1117,11 @@ class _Translations$discover$post$ru extends Translations$discover$post$tr {
 	@override String minutesAgo({required Object minutes}) => '${minutes} мин';
 	@override String daysAgo({required Object days}) => '${days} д';
 	@override String get deleteCommentTitle => 'Удалить комментарий?';
+	@override String get edit => 'Изменить';
+	@override String get delete => 'Удалить';
+	@override String get editCaption => 'Изменить подпись';
+	@override String get deletePostTitle => 'Удалить эту публикацию?';
+	@override String get captionHint => 'Напиши подпись...';
 }
 
 // Path: discover.story
@@ -1142,6 +1147,12 @@ class _Translations$discover$story$ru extends Translations$discover$story$tr {
 	@override String get downloadFailed => 'Не удалось сохранить';
 	@override String get savedToDraft => 'Сохранено в черновики';
 	@override String get cameraDenied => 'Чтобы делать фото, нужен доступ к камере.';
+	@override String get drafts => 'Черновики';
+	@override String get draftsEmpty => 'У тебя пока нет черновиков.';
+	@override String get delete => 'Удалить';
+	@override String get deleteDraftPrompt => 'Удалить этот черновик?';
+	@override String get published => 'Опубликовано';
+	@override String get draftsError => 'Не удалось загрузить черновики.';
 }
 
 // Path: discover.highlight
@@ -1760,6 +1771,11 @@ extension on TranslationsRu {
 			'discover.post.minutesAgo' => ({required Object minutes}) => '${minutes} мин',
 			'discover.post.daysAgo' => ({required Object days}) => '${days} д',
 			'discover.post.deleteCommentTitle' => 'Удалить комментарий?',
+			'discover.post.edit' => 'Изменить',
+			'discover.post.delete' => 'Удалить',
+			'discover.post.editCaption' => 'Изменить подпись',
+			'discover.post.deletePostTitle' => 'Удалить эту публикацию?',
+			'discover.post.captionHint' => 'Напиши подпись...',
 			'discover.story.draft' => 'ЧЕРНОВИК',
 			'discover.story.story' => 'ИСТОРИЯ',
 			'discover.story.share' => 'Опубликовать',
@@ -1776,6 +1792,12 @@ extension on TranslationsRu {
 			'discover.story.downloadFailed' => 'Не удалось сохранить',
 			'discover.story.savedToDraft' => 'Сохранено в черновики',
 			'discover.story.cameraDenied' => 'Чтобы делать фото, нужен доступ к камере.',
+			'discover.story.drafts' => 'Черновики',
+			'discover.story.draftsEmpty' => 'У тебя пока нет черновиков.',
+			'discover.story.delete' => 'Удалить',
+			'discover.story.deleteDraftPrompt' => 'Удалить этот черновик?',
+			'discover.story.published' => 'Опубликовано',
+			'discover.story.draftsError' => 'Не удалось загрузить черновики.',
 			'discover.highlight.title' => 'Актуальное',
 			'discover.highlight.view' => 'Смотреть',
 			'discover.highlight.aiComments' => 'Комментарии ИИ',

@@ -689,6 +689,9 @@ class _RoomLivePageState extends State<RoomLivePage> {
                                   !_handledNotices.contains(m.id);
                               return _ChatBubble(
                                 message: m,
+                                // Kendi yazdığım (sahip olsam da) sağda durur.
+                                mine: m.kind == null &&
+                                    m.sender.uid == _me?.uid,
                                 notice: _notice(m),
                                 actions: askMic
                                     ? (
@@ -1012,9 +1015,15 @@ typedef _NoticeActions = ({
 });
 
 class _ChatBubble extends StatelessWidget {
-  const _ChatBubble({required this.message, this.notice, this.actions});
+  const _ChatBubble({
+    required this.message,
+    this.mine = false,
+    this.notice,
+    this.actions,
+  });
 
   final RoomChatLine message;
+  final bool mine;
   final String? notice;
 
   /// Mikrofon isteği (sahip): izin ver / reddet.
@@ -1023,10 +1032,7 @@ class _ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sticker = notice == null ? ChatSticker.assetOf(message.body) : null;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ClipOval(
+    final avatar = ClipOval(
           child: message.sender.blurred
               ? ImageFiltered(
                   imageFilter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
@@ -1036,8 +1042,12 @@ class _ChatBubble extends StatelessWidget {
                   ),
                 )
               : ChatAvatarImage(url: message.sender.avatarUrl, size: 30),
-        ),
-        const SizedBox(width: 10),
+    );
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: mine ? MainAxisAlignment.end : MainAxisAlignment.start,
+      children: [
+        if (!mine) ...[avatar, const SizedBox(width: 10)],
         Flexible(
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -1050,11 +1060,13 @@ class _ChatBubble extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AppText(
-                        message.sender.displayName,
-                        style: AppTextStyles.liveRoomChatName,
-                      ),
-                      const SizedBox(height: 4),
+                      if (!mine) ...[
+                        AppText(
+                          message.sender.displayName,
+                          style: AppTextStyles.liveRoomChatName,
+                        ),
+                        const SizedBox(height: 4),
+                      ],
                       ChatStickerImage(asset: sticker),
                     ],
                   )
@@ -1065,7 +1077,7 @@ class _ChatBubble extends StatelessWidget {
                       Text.rich(
                         TextSpan(
                           children: [
-                            if (notice == null)
+                            if (notice == null && !mine)
                               TextSpan(
                                 text: '${message.sender.displayName}: ',
                                 style: AppTextStyles.liveRoomChatName,
@@ -1098,6 +1110,7 @@ class _ChatBubble extends StatelessWidget {
                   ),
           ),
         ),
+        if (mine) ...[const SizedBox(width: 10), avatar],
       ],
     );
   }

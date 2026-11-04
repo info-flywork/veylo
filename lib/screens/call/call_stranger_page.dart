@@ -17,7 +17,6 @@ import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/data/remote/socket_service.dart';
 import 'package:veylo/i18n/strings.g.dart';
-import 'package:veylo/screens/tokens/boost_page.dart';
 import 'package:veylo/screens/tokens/token_packs_sheet.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 
@@ -301,6 +300,10 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
   void _onTimesUp(Map<String, dynamic> e) {
     if (!mounted || !_isMine(e) || _phase == _CallPhase.incoming) return;
     _callTimer?.cancel();
+    // 60 sn doldu: oylama sürerken konuşma kesilir. İkisi de "devam" derse
+    // isimli arama ekranında kabul edilince ses yeniden açılır.
+    _agora.setMic(false);
+    _agora.setPlayback(false);
     setState(() {
       _secondsLeft = 0;
       _waitingOther = false;
@@ -395,9 +398,8 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
     if (!mounted || _phase != _CallPhase.finding) return;
     _searchTimer?.cancel();
     setState(() => _phase = _CallPhase.setup);
-    _toast(
-      errorMessage(context, ApiException(code: e['code'] as String? ?? '')),
-    );
+    // Eşleşme anında bakiye yetmediyse paketler açılır.
+    _showError(ApiException(code: e['code'] as String? ?? ''));
   }
 
   // ───────────── görüntülü ─────────────
@@ -594,17 +596,11 @@ class _CallStrangerPageState extends State<CallStrangerPage> {
                       free: _target == 'any',
                       gender: _gender,
                       onGender: (g) => setState(() => _gender = g),
+                      // Cinsiyet seçiliyse de doğrudan aranır; 10 token eşleşince
+                      // sunucuda düşer, bakiye yetmezse token paketleri açılır.
                       onPrimary: _phase == _CallPhase.finding
                           ? _cancelFinding
-                          : (_target == 'any'
-                              ? _startFinding
-                              : () async {
-                                  final start = await BoostPage.open(
-                                    context,
-                                    startCallAfter: true,
-                                  );
-                                  if (start && mounted) await _startFinding();
-                                }),
+                          : _startFinding,
                       t: t,
                     ),
                   ),

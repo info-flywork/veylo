@@ -578,7 +578,12 @@
       "hoursAgo": "{hours} घं.",
       "minutesAgo": "{minutes} मि.",
       "daysAgo": "{days} दि.",
-      "deleteCommentTitle": "यह कमेंट डिलीट करें?"
+      "deleteCommentTitle": "यह कमेंट डिलीट करें?",
+      "edit": "संपादित करें",
+      "delete": "हटाएँ",
+      "editCaption": "कैप्शन संपादित करें",
+      "deletePostTitle": "यह पोस्ट हटाएँ?",
+      "captionHint": "कैप्शन लिखें..."
     },
     "story": {
       "draft": "ड्राफ़्ट",
@@ -596,7 +601,13 @@
       "downloaded": "गैलरी में सेव हो गया",
       "downloadFailed": "सेव नहीं हो सका",
       "savedToDraft": "ड्राफ़्ट में सेव हो गया",
-      "cameraDenied": "फ़ोटो लेने के लिए कैमरा अनुमति ज़रूरी है।"
+      "cameraDenied": "फ़ोटो लेने के लिए कैमरा अनुमति ज़रूरी है।",
+      "drafts": "ड्राफ़्ट",
+      "draftsEmpty": "अभी तक कोई ड्राफ़्ट नहीं है।",
+      "delete": "हटाएँ",
+      "deleteDraftPrompt": "यह ड्राफ़्ट हटाएँ?",
+      "published": "शेयर किया गया",
+      "draftsError": "ड्राफ़्ट लोड नहीं हो सके।"
     },
     "highlight": {
       "title": "हाइलाइट",

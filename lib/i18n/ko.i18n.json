@@ -578,7 +578,12 @@
       "hoursAgo": "{hours}시간",
       "minutesAgo": "{minutes}분",
       "daysAgo": "{days}일",
-      "deleteCommentTitle": "이 댓글을 삭제할까요?"
+      "deleteCommentTitle": "이 댓글을 삭제할까요?",
+      "edit": "수정",
+      "delete": "삭제",
+      "editCaption": "캡션 수정",
+      "deletePostTitle": "이 게시물을 삭제할까요?",
+      "captionHint": "캡션을 입력하세요..."
     },
     "story": {
       "draft": "임시저장",
@@ -596,7 +601,13 @@
       "downloaded": "갤러리에 저장됐어요",
       "downloadFailed": "저장할 수 없어요",
       "savedToDraft": "임시 저장했어요",
-      "cameraDenied": "사진을 찍으려면 카메라 접근 권한이 필요해요."
+      "cameraDenied": "사진을 찍으려면 카메라 접근 권한이 필요해요.",
+      "drafts": "임시저장",
+      "draftsEmpty": "아직 임시저장한 게시물이 없어요.",
+      "delete": "삭제",
+      "deleteDraftPrompt": "이 임시저장을 삭제할까요?",
+      "published": "공유됨",
+      "draftsError": "임시저장을 불러오지 못했어요."
     },
     "highlight": {
       "title": "하이라이트",

@@ -578,7 +578,12 @@
       "hoursAgo": "{hours}h",
       "minutesAgo": "{minutes}min",
       "daysAgo": "{days}d",
-      "deleteCommentTitle": "Excluir este comentário?"
+      "deleteCommentTitle": "Excluir este comentário?",
+      "edit": "Editar",
+      "delete": "Excluir",
+      "editCaption": "Editar legenda",
+      "deletePostTitle": "Excluir esta publicação?",
+      "captionHint": "Escreva uma legenda..."
     },
     "story": {
       "draft": "RASCUNHO",
@@ -596,7 +601,13 @@
       "downloaded": "Salvo na galeria",
       "downloadFailed": "Não foi possível salvar",
       "savedToDraft": "Salvo nos rascunhos",
-      "cameraDenied": "É preciso acesso à câmera para tirar fotos."
+      "cameraDenied": "É preciso acesso à câmera para tirar fotos.",
+      "drafts": "Rascunhos",
+      "draftsEmpty": "Você ainda não tem rascunhos.",
+      "delete": "Excluir",
+      "deleteDraftPrompt": "Excluir este rascunho?",
+      "published": "Compartilhado",
+      "draftsError": "Não foi possível carregar os rascunhos."
     },
     "highlight": {
       "title": "Destaque",

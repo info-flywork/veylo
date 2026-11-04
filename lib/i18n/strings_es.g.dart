@@ -1117,6 +1117,11 @@ class _Translations$discover$post$es extends Translations$discover$post$tr {
 	@override String minutesAgo({required Object minutes}) => '${minutes} min';
 	@override String daysAgo({required Object days}) => '${days} d';
 	@override String get deleteCommentTitle => '¿Eliminar este comentario?';
+	@override String get edit => 'Editar';
+	@override String get delete => 'Eliminar';
+	@override String get editCaption => 'Editar descripción';
+	@override String get deletePostTitle => '¿Eliminar esta publicación?';
+	@override String get captionHint => 'Escribe una descripción...';
 }
 
 // Path: discover.story
@@ -1142,6 +1147,12 @@ class _Translations$discover$story$es extends Translations$discover$story$tr {
 	@override String get downloadFailed => 'No se pudo guardar';
 	@override String get savedToDraft => 'Guardado en borradores';
 	@override String get cameraDenied => 'Se necesita acceso a la cámara para hacer fotos.';
+	@override String get drafts => 'Borradores';
+	@override String get draftsEmpty => 'Aún no tienes borradores.';
+	@override String get delete => 'Eliminar';
+	@override String get deleteDraftPrompt => '¿Eliminar este borrador?';
+	@override String get published => 'Compartido';
+	@override String get draftsError => 'No se pudieron cargar los borradores.';
 }
 
 // Path: discover.highlight
@@ -1760,6 +1771,11 @@ extension on TranslationsEs {
 			'discover.post.minutesAgo' => ({required Object minutes}) => '${minutes} min',
 			'discover.post.daysAgo' => ({required Object days}) => '${days} d',
 			'discover.post.deleteCommentTitle' => '¿Eliminar este comentario?',
+			'discover.post.edit' => 'Editar',
+			'discover.post.delete' => 'Eliminar',
+			'discover.post.editCaption' => 'Editar descripción',
+			'discover.post.deletePostTitle' => '¿Eliminar esta publicación?',
+			'discover.post.captionHint' => 'Escribe una descripción...',
 			'discover.story.draft' => 'BORRADOR',
 			'discover.story.story' => 'HISTORIA',
 			'discover.story.share' => 'Compartir',
@@ -1776,6 +1792,12 @@ extension on TranslationsEs {
 			'discover.story.downloadFailed' => 'No se pudo guardar',
 			'discover.story.savedToDraft' => 'Guardado en borradores',
 			'discover.story.cameraDenied' => 'Se necesita acceso a la cámara para hacer fotos.',
+			'discover.story.drafts' => 'Borradores',
+			'discover.story.draftsEmpty' => 'Aún no tienes borradores.',
+			'discover.story.delete' => 'Eliminar',
+			'discover.story.deleteDraftPrompt' => '¿Eliminar este borrador?',
+			'discover.story.published' => 'Compartido',
+			'discover.story.draftsError' => 'No se pudieron cargar los borradores.',
 			'discover.highlight.title' => 'Destacado',
 			'discover.highlight.view' => 'Ver',
 			'discover.highlight.aiComments' => 'Comentarios de IA',

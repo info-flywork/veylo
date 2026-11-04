@@ -289,6 +289,12 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                   ),
                   const SizedBox(height: 8),
                   _SettingsRow(
+                    label: t.contactUs,
+                    value: kSupportEmail,
+                    onTap: () => openSupportMail(context),
+                  ),
+                  const SizedBox(height: 8),
+                  _SettingsRow(
                     label: t.restorePurchases,
                     onTap: _restorePurchases,
                   ),

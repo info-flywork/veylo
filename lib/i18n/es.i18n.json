@@ -578,7 +578,12 @@
       "hoursAgo": "{hours} h",
       "minutesAgo": "{minutes} min",
       "daysAgo": "{days} d",
-      "deleteCommentTitle": "¿Eliminar este comentario?"
+      "deleteCommentTitle": "¿Eliminar este comentario?",
+      "edit": "Editar",
+      "delete": "Eliminar",
+      "editCaption": "Editar descripción",
+      "deletePostTitle": "¿Eliminar esta publicación?",
+      "captionHint": "Escribe una descripción..."
     },
     "story": {
       "draft": "BORRADOR",
@@ -596,7 +601,13 @@
       "downloaded": "Guardado en la galería",
       "downloadFailed": "No se pudo guardar",
       "savedToDraft": "Guardado en borradores",
-      "cameraDenied": "Se necesita acceso a la cámara para hacer fotos."
+      "cameraDenied": "Se necesita acceso a la cámara para hacer fotos.",
+      "drafts": "Borradores",
+      "draftsEmpty": "Aún no tienes borradores.",
+      "delete": "Eliminar",
+      "deleteDraftPrompt": "¿Eliminar este borrador?",
+      "published": "Compartido",
+      "draftsError": "No se pudieron cargar los borradores."
     },
     "highlight": {
       "title": "Destacado",

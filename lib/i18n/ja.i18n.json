@@ -578,7 +578,12 @@
       "hoursAgo": "{hours}時間",
       "minutesAgo": "{minutes}分",
       "daysAgo": "{days}日",
-      "deleteCommentTitle": "このコメントを削除しますか？"
+      "deleteCommentTitle": "このコメントを削除しますか？",
+      "edit": "編集",
+      "delete": "削除",
+      "editCaption": "キャプションを編集",
+      "deletePostTitle": "この投稿を削除しますか？",
+      "captionHint": "キャプションを書く..."
     },
     "story": {
       "draft": "下書き",
@@ -596,7 +601,13 @@
       "downloaded": "ギャラリーに保存しました",
       "downloadFailed": "保存できませんでした",
       "savedToDraft": "下書きに保存しました",
-      "cameraDenied": "写真を撮るにはカメラへのアクセスが必要です。"
+      "cameraDenied": "写真を撮るにはカメラへのアクセスが必要です。",
+      "drafts": "下書き",
+      "draftsEmpty": "下書きはまだありません。",
+      "delete": "削除",
+      "deleteDraftPrompt": "この下書きを削除しますか？",
+      "published": "シェアしました",
+      "draftsError": "下書きを読み込めませんでした。"
     },
     "highlight": {
       "title": "ハイライト",

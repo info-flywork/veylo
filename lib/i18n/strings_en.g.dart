@@ -1119,6 +1119,11 @@ class _Translations$discover$post$en extends Translations$discover$post$tr {
 	@override String minutesAgo({required Object minutes}) => '${minutes}m';
 	@override String daysAgo({required Object days}) => '${days}d';
 	@override String get deleteCommentTitle => 'Delete this comment?';
+	@override String get edit => 'Edit';
+	@override String get delete => 'Delete';
+	@override String get editCaption => 'Edit caption';
+	@override String get deletePostTitle => 'Delete this post?';
+	@override String get captionHint => 'Write a caption...';
 }
 
 // Path: discover.story
@@ -1144,6 +1149,12 @@ class _Translations$discover$story$en extends Translations$discover$story$tr {
 	@override String get downloadFailed => 'Could not save';
 	@override String get savedToDraft => 'Saved to drafts';
 	@override String get cameraDenied => 'Camera access is needed to take photos.';
+	@override String get drafts => 'Drafts';
+	@override String get draftsEmpty => 'You have no drafts yet.';
+	@override String get delete => 'Delete';
+	@override String get deleteDraftPrompt => 'Delete this draft?';
+	@override String get published => 'Shared';
+	@override String get draftsError => 'Couldn\'t load drafts.';
 }
 
 // Path: discover.highlight
@@ -1764,6 +1775,11 @@ extension on TranslationsEn {
 			'discover.post.minutesAgo' => ({required Object minutes}) => '${minutes}m',
 			'discover.post.daysAgo' => ({required Object days}) => '${days}d',
 			'discover.post.deleteCommentTitle' => 'Delete this comment?',
+			'discover.post.edit' => 'Edit',
+			'discover.post.delete' => 'Delete',
+			'discover.post.editCaption' => 'Edit caption',
+			'discover.post.deletePostTitle' => 'Delete this post?',
+			'discover.post.captionHint' => 'Write a caption...',
 			'discover.story.draft' => 'DRAFT',
 			'discover.story.story' => 'STORY',
 			'discover.story.share' => 'Share',
@@ -1780,6 +1796,12 @@ extension on TranslationsEn {
 			'discover.story.downloadFailed' => 'Could not save',
 			'discover.story.savedToDraft' => 'Saved to drafts',
 			'discover.story.cameraDenied' => 'Camera access is needed to take photos.',
+			'discover.story.drafts' => 'Drafts',
+			'discover.story.draftsEmpty' => 'You have no drafts yet.',
+			'discover.story.delete' => 'Delete',
+			'discover.story.deleteDraftPrompt' => 'Delete this draft?',
+			'discover.story.published' => 'Shared',
+			'discover.story.draftsError' => 'Couldn\'t load drafts.',
 			'discover.highlight.title' => 'Highlight',
 			'discover.highlight.view' => 'View',
 			'discover.highlight.aiComments' => 'AI comments',

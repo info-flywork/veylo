@@ -1117,6 +1117,11 @@ class _Translations$discover$post$zh extends Translations$discover$post$tr {
 	@override String minutesAgo({required Object minutes}) => '${minutes}分钟';
 	@override String daysAgo({required Object days}) => '${days}天';
 	@override String get deleteCommentTitle => '删除这条评论？';
+	@override String get edit => '编辑';
+	@override String get delete => '删除';
+	@override String get editCaption => '编辑说明';
+	@override String get deletePostTitle => '删除这条帖子？';
+	@override String get captionHint => '写点说明...';
 }
 
 // Path: discover.story
@@ -1142,6 +1147,12 @@ class _Translations$discover$story$zh extends Translations$discover$story$tr {
 	@override String get downloadFailed => '保存失败';
 	@override String get savedToDraft => '已保存到草稿';
 	@override String get cameraDenied => '拍照需要相机权限。';
+	@override String get drafts => '草稿';
+	@override String get draftsEmpty => '你还没有草稿。';
+	@override String get delete => '删除';
+	@override String get deleteDraftPrompt => '删除这条草稿？';
+	@override String get published => '已分享';
+	@override String get draftsError => '无法加载草稿。';
 }
 
 // Path: discover.highlight
@@ -1760,6 +1771,11 @@ extension on TranslationsZh {
 			'discover.post.minutesAgo' => ({required Object minutes}) => '${minutes}分钟',
 			'discover.post.daysAgo' => ({required Object days}) => '${days}天',
 			'discover.post.deleteCommentTitle' => '删除这条评论？',
+			'discover.post.edit' => '编辑',
+			'discover.post.delete' => '删除',
+			'discover.post.editCaption' => '编辑说明',
+			'discover.post.deletePostTitle' => '删除这条帖子？',
+			'discover.post.captionHint' => '写点说明...',
 			'discover.story.draft' => '草稿',
 			'discover.story.story' => '快拍',
 			'discover.story.share' => '分享',
@@ -1776,6 +1792,12 @@ extension on TranslationsZh {
 			'discover.story.downloadFailed' => '保存失败',
 			'discover.story.savedToDraft' => '已保存到草稿',
 			'discover.story.cameraDenied' => '拍照需要相机权限。',
+			'discover.story.drafts' => '草稿',
+			'discover.story.draftsEmpty' => '你还没有草稿。',
+			'discover.story.delete' => '删除',
+			'discover.story.deleteDraftPrompt' => '删除这条草稿？',
+			'discover.story.published' => '已分享',
+			'discover.story.draftsError' => '无法加载草稿。',
 			'discover.highlight.title' => '精选',
 			'discover.highlight.view' => '查看',
 			'discover.highlight.aiComments' => 'AI 评论',

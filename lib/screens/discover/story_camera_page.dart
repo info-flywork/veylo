@@ -11,6 +11,7 @@ import 'package:veylo/core/permissions/av_permissions.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/screens/discover/story_drafts_page.dart';
 import 'package:veylo/screens/discover/story_editor/story_editor_page.dart';
 
 /// Discover (+) → Story / Draft camera.
@@ -194,7 +195,9 @@ class _StoryCameraPageState extends State<StoryCameraPage>
       mode: _mode,
       galleryThumb: _galleryThumb,
       onClose: () => Navigator.of(context).pop(),
-      onModeChanged: (m) => setState(() => _mode = m),
+      // TASLAK: Instagram gibi kayıtlı taslakların galerisini açar.
+      onModeChanged: (m) =>
+          m == 0 ? StoryDraftsPage.open(context) : setState(() => _mode = m),
       onFlip: _flip,
       onCapture: _capture,
       onGallery: _pickGallery,

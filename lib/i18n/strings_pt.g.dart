@@ -1117,6 +1117,11 @@ class _Translations$discover$post$pt extends Translations$discover$post$tr {
 	@override String minutesAgo({required Object minutes}) => '${minutes}min';
 	@override String daysAgo({required Object days}) => '${days}d';
 	@override String get deleteCommentTitle => 'Excluir este comentário?';
+	@override String get edit => 'Editar';
+	@override String get delete => 'Excluir';
+	@override String get editCaption => 'Editar legenda';
+	@override String get deletePostTitle => 'Excluir esta publicação?';
+	@override String get captionHint => 'Escreva uma legenda...';
 }
 
 // Path: discover.story
@@ -1142,6 +1147,12 @@ class _Translations$discover$story$pt extends Translations$discover$story$tr {
 	@override String get downloadFailed => 'Não foi possível salvar';
 	@override String get savedToDraft => 'Salvo nos rascunhos';
 	@override String get cameraDenied => 'É preciso acesso à câmera para tirar fotos.';
+	@override String get drafts => 'Rascunhos';
+	@override String get draftsEmpty => 'Você ainda não tem rascunhos.';
+	@override String get delete => 'Excluir';
+	@override String get deleteDraftPrompt => 'Excluir este rascunho?';
+	@override String get published => 'Compartilhado';
+	@override String get draftsError => 'Não foi possível carregar os rascunhos.';
 }
 
 // Path: discover.highlight
@@ -1760,6 +1771,11 @@ extension on TranslationsPt {
 			'discover.post.minutesAgo' => ({required Object minutes}) => '${minutes}min',
 			'discover.post.daysAgo' => ({required Object days}) => '${days}d',
 			'discover.post.deleteCommentTitle' => 'Excluir este comentário?',
+			'discover.post.edit' => 'Editar',
+			'discover.post.delete' => 'Excluir',
+			'discover.post.editCaption' => 'Editar legenda',
+			'discover.post.deletePostTitle' => 'Excluir esta publicação?',
+			'discover.post.captionHint' => 'Escreva uma legenda...',
 			'discover.story.draft' => 'RASCUNHO',
 			'discover.story.story' => 'STORY',
 			'discover.story.share' => 'Compartilhar',
@@ -1776,6 +1792,12 @@ extension on TranslationsPt {
 			'discover.story.downloadFailed' => 'Não foi possível salvar',
 			'discover.story.savedToDraft' => 'Salvo nos rascunhos',
 			'discover.story.cameraDenied' => 'É preciso acesso à câmera para tirar fotos.',
+			'discover.story.drafts' => 'Rascunhos',
+			'discover.story.draftsEmpty' => 'Você ainda não tem rascunhos.',
+			'discover.story.delete' => 'Excluir',
+			'discover.story.deleteDraftPrompt' => 'Excluir este rascunho?',
+			'discover.story.published' => 'Compartilhado',
+			'discover.story.draftsError' => 'Não foi possível carregar os rascunhos.',
 			'discover.highlight.title' => 'Destaque',
 			'discover.highlight.view' => 'Ver',
 			'discover.highlight.aiComments' => 'Comentários da IA',

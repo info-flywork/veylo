@@ -1117,6 +1117,11 @@ class _Translations$discover$post$de extends Translations$discover$post$tr {
 	@override String minutesAgo({required Object minutes}) => '${minutes} Min.';
 	@override String daysAgo({required Object days}) => '${days} T.';
 	@override String get deleteCommentTitle => 'Diesen Kommentar löschen?';
+	@override String get edit => 'Bearbeiten';
+	@override String get delete => 'Löschen';
+	@override String get editCaption => 'Beschreibung bearbeiten';
+	@override String get deletePostTitle => 'Diesen Beitrag löschen?';
+	@override String get captionHint => 'Beschreibung schreiben...';
 }
 
 // Path: discover.story
@@ -1142,6 +1147,12 @@ class _Translations$discover$story$de extends Translations$discover$story$tr {
 	@override String get downloadFailed => 'Speichern fehlgeschlagen';
 	@override String get savedToDraft => 'Als Entwurf gespeichert';
 	@override String get cameraDenied => 'Für Fotos wird Kamerazugriff benötigt.';
+	@override String get drafts => 'Entwürfe';
+	@override String get draftsEmpty => 'Du hast noch keine Entwürfe.';
+	@override String get delete => 'Löschen';
+	@override String get deleteDraftPrompt => 'Diesen Entwurf löschen?';
+	@override String get published => 'Geteilt';
+	@override String get draftsError => 'Entwürfe konnten nicht geladen werden.';
 }
 
 // Path: discover.highlight
@@ -1760,6 +1771,11 @@ extension on TranslationsDe {
 			'discover.post.minutesAgo' => ({required Object minutes}) => '${minutes} Min.',
 			'discover.post.daysAgo' => ({required Object days}) => '${days} T.',
 			'discover.post.deleteCommentTitle' => 'Diesen Kommentar löschen?',
+			'discover.post.edit' => 'Bearbeiten',
+			'discover.post.delete' => 'Löschen',
+			'discover.post.editCaption' => 'Beschreibung bearbeiten',
+			'discover.post.deletePostTitle' => 'Diesen Beitrag löschen?',
+			'discover.post.captionHint' => 'Beschreibung schreiben...',
 			'discover.story.draft' => 'ENTWURF',
 			'discover.story.story' => 'STORY',
 			'discover.story.share' => 'Teilen',
@@ -1776,6 +1792,12 @@ extension on TranslationsDe {
 			'discover.story.downloadFailed' => 'Speichern fehlgeschlagen',
 			'discover.story.savedToDraft' => 'Als Entwurf gespeichert',
 			'discover.story.cameraDenied' => 'Für Fotos wird Kamerazugriff benötigt.',
+			'discover.story.drafts' => 'Entwürfe',
+			'discover.story.draftsEmpty' => 'Du hast noch keine Entwürfe.',
+			'discover.story.delete' => 'Löschen',
+			'discover.story.deleteDraftPrompt' => 'Diesen Entwurf löschen?',
+			'discover.story.published' => 'Geteilt',
+			'discover.story.draftsError' => 'Entwürfe konnten nicht geladen werden.',
 			'discover.highlight.title' => 'Highlight',
 			'discover.highlight.view' => 'Ansehen',
 			'discover.highlight.aiComments' => 'KI-Kommentare',

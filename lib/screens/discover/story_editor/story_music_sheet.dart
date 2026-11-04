@@ -59,19 +59,29 @@ class StoryMusicTrack {
   }
 }
 
-Future<StoryMusicTrack?> showStoryMusicSheet(BuildContext context) {
-  return showModalBottomSheet<StoryMusicTrack>(
+/// Seçim sheet'i kapatmaz: her Kaydet'te [onSelected] çağrılır, kullanıcı
+/// sheet'i kendisi kapatır.
+Future<void> showStoryMusicSheet(
+  BuildContext context, {
+  StoryMusicTrack? initial,
+  required ValueChanged<StoryMusicTrack> onSelected,
+}) {
+  return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     barrierColor: Colors.black26,
-    builder: (context) => const StoryMusicSheet(),
+    builder: (context) =>
+        StoryMusicSheet(initial: initial, onSelected: onSelected),
   );
 }
 
-/// Jamendo müzik listesi + Zovi tarzı trim sheet.
+/// Jamendo müzik listesi (arama, tür, sonsuz kaydırma) + Zovi tarzı trim sheet.
 class StoryMusicSheet extends StatefulWidget {
-  const StoryMusicSheet({super.key});
+  const StoryMusicSheet({super.key, this.initial, required this.onSelected});
+
+  final StoryMusicTrack? initial;
+  final ValueChanged<StoryMusicTrack> onSelected;
 
   @override
   State<StoryMusicSheet> createState() => _StoryMusicSheetState();
@@ -83,6 +93,26 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
   bool _loading = true;
   String? _error;
   StoryMusicTrack? _selected;
+
+  /// Kaydedilmiş (editöre gönderilmiş) parça; listede işaretli görünür.
+  StoryMusicTrack? _picked;
+
+  // Katalog: arama ya da tür; sayfa sayfa yüklenir.
+  static const _pageSize = 30;
+  static const _genres = [
+    'pop', 'rock', 'electronic', 'hiphop', 'dance', 'jazz', 'acoustic',
+    'chillout', 'lounge', 'ambient', 'classical', 'soundtrack', 'rnb',
+    'reggae', 'latin', 'folk', 'metal', 'world',
+  ];
+  String _genre = 'pop';
+  String _search = '';
+  int _offset = 0;
+  bool _hasMore = true;
+  bool _loadingMore = false;
+  int _gen = 0;
+  Timer? _searchDebounce;
+  final _searchCtl = TextEditingController();
+  ScrollController _scroll = ScrollController();
   AudioPlayer? _player;
 
   // Trim durumu — seçimin başlangıç/bitiş oranı (0–1).
@@ -100,63 +130,152 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
   @override
   void initState() {
     super.initState();
+    _picked = widget.initial;
     // Translations.of(context) initState sırasında InheritedWidget'a bağlanamaz;
     // ilk frame'den sonra Jamendo listesini çek.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) unawaited(_fetch());
+      if (mounted) unawaited(_reload());
     });
   }
 
   @override
   void dispose() {
     _rangeDebounce?.cancel();
+    _searchDebounce?.cancel();
+    _searchCtl.dispose();
+    _scroll.dispose();
     _posSub?.cancel();
     _player?.dispose();
     super.dispose();
   }
 
-  Future<void> _fetch() async {
+  /// Arama varsa ada/sanatçıya göre, yoksa seçili türün en popülerleri.
+  Map<String, Object> get _params => _search.isNotEmpty
+      ? {'search': _search, 'include': 'musicinfo'}
+      : {
+          'fuzzytags': _genre,
+          'order': 'popularity_total',
+          'include': 'musicinfo',
+        };
+
+  /// Jamendo (paylaşılan istemci) aynı isteğe bazen boş liste dönüyor;
+  /// boş gelirse birkaç kez tekrar dener.
+  Future<List<StoryMusicTrack>> _fetchPage(int offset) async {
+    Object? lastError;
+    for (var attempt = 0; attempt < 4; attempt++) {
+      if (attempt > 0) {
+        await Future<void>.delayed(Duration(milliseconds: 300 * attempt));
+      }
+      try {
+        final results = await _query({..._params, 'offset': offset});
+        final tracks = results.map(_track)
+            .where((track) => (track.audioUrl ?? '').isNotEmpty)
+            .toList();
+        if (tracks.isNotEmpty) return tracks;
+        lastError = null;
+      } catch (e) {
+        lastError = e;
+      }
+    }
+    if (lastError != null) throw lastError;
+    return const [];
+  }
+
+  StoryMusicTrack _track(dynamic raw) {
     // Context'siz global çeviri — init/async güvenli.
     final unknown = t.discover.story.unknownTrack;
+    final m = Map<String, dynamic>.from(raw as Map);
+    final sec = (m['duration'] as num?)?.toInt() ?? 0;
+    final genres =
+        ((m['musicinfo'] as Map?)?['tags'] as Map?)?['genres'] as List?;
+    String genre = _capitalize(_genre);
+    if (genres != null && genres.isNotEmpty) {
+      final first = genres.first;
+      if (first is String && first.isNotEmpty) {
+        genre = _capitalize(first);
+      }
+    }
+    return StoryMusicTrack(
+      title: (m['name'] as String?) ?? unknown,
+      artist: (m['artist_name'] as String?) ?? unknown,
+      durationSec: sec,
+      durationLabel: _fmt(sec),
+      imageUrl: m['image'] as String?,
+      audioUrl: m['audio'] as String?,
+      genre: genre,
+    );
+  }
+
+  /// İlk sayfa (arama/tür değişince).
+  Future<void> _reload() async {
+    final gen = ++_gen;
+    setState(() {
+      _loading = true;
+      _error = null;
+      _tracks = [];
+      _offset = 0;
+      _hasMore = true;
+    });
+    if (_scroll.hasClients) _scroll.jumpTo(0);
     try {
-      // `tags=pop` hiç sonuç döndürmüyordu ("müzik bulunamadı"). `fuzzytags` çalışıyor;
-      // Jamendo bazı parametre birleşimlerinde boş döndüğü için boşsa filtresiz dene.
-      var results = await _query({'fuzzytags': 'pop', 'include': 'musicinfo'});
-      if (results.isEmpty) results = await _query({'order': 'popularity_total'});
-      final tracks = results.map((raw) {
-        final m = Map<String, dynamic>.from(raw as Map);
-        final sec = (m['duration'] as num?)?.toInt() ?? 0;
-        final genres =
-            ((m['musicinfo'] as Map?)?['tags'] as Map?)?['genres'] as List?;
-        String genre = 'Pop';
-        if (genres != null && genres.isNotEmpty) {
-          final first = genres.first;
-          if (first is String && first.isNotEmpty) {
-            genre = _capitalize(first);
-          }
-        }
-        return StoryMusicTrack(
-          title: (m['name'] as String?) ?? unknown,
-          artist: (m['artist_name'] as String?) ?? unknown,
-          durationSec: sec,
-          durationLabel: _fmt(sec),
-          imageUrl: m['image'] as String?,
-          audioUrl: m['audio'] as String?,
-          genre: genre,
-        );
-      }).where((track) => (track.audioUrl ?? '').isNotEmpty).toList();
-      if (!mounted) return;
+      final tracks = await _fetchPage(0);
+      if (!mounted || gen != _gen) return;
       setState(() {
         _tracks = tracks;
+        _offset = _pageSize;
+        _hasMore = tracks.isNotEmpty;
         _loading = false;
       });
     } catch (_) {
-      if (!mounted) return;
+      if (!mounted || gen != _gen) return;
       setState(() {
         _loading = false;
         _error = t.discover.story.musicError;
       });
     }
+  }
+
+  /// Listenin sonuna gelince sonraki sayfa.
+  Future<void> _loadMore() async {
+    if (_loading || _loadingMore || !_hasMore) return;
+    final gen = _gen;
+    setState(() => _loadingMore = true);
+    try {
+      final page = await _fetchPage(_offset);
+      if (!mounted || gen != _gen) return;
+      final seen = {for (final tr in _tracks) tr.audioUrl};
+      setState(() {
+        _tracks = [
+          ..._tracks,
+          ...page.where((tr) => !seen.contains(tr.audioUrl)),
+        ];
+        _offset += _pageSize;
+        _hasMore = page.isNotEmpty;
+      });
+    } catch (_) {
+      // Ağ hatası: tekrar kaydırınca yeniden dener.
+    } finally {
+      if (mounted && gen == _gen) setState(() => _loadingMore = false);
+    }
+  }
+
+  void _onSearchChanged(String value) {
+    _searchDebounce?.cancel();
+    _searchDebounce = Timer(const Duration(milliseconds: 400), () {
+      final q = value.trim();
+      if (q == _search || !mounted) return;
+      _search = q;
+      unawaited(_reload());
+    });
+  }
+
+  void _pickGenre(String genre) {
+    if (genre == _genre && _search.isEmpty) return;
+    _searchDebounce?.cancel();
+    _searchCtl.clear();
+    _search = '';
+    _genre = genre;
+    unawaited(_reload());
   }
 
   Future<List<dynamic>> _query(Map<String, Object> extra) async {
@@ -165,7 +284,7 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
       queryParameters: {
         'client_id': 'f34b0064',
         'format': 'json',
-        'limit': 30,
+        'limit': _pageSize,
         'audioformat': 'mp32',
         ...extra,
       },
@@ -200,6 +319,12 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
     const preferred = 30;
     final clip = math.min(preferred, total);
     final start = total <= 0 ? 0 : ((total - clip) / 2).round();
+    // Trim'den dönünce liste aynı yerden devam etsin.
+    final old = _scroll;
+    _scroll = ScrollController(
+      initialScrollOffset: old.hasClients ? old.offset : 0,
+    );
+    WidgetsBinding.instance.addPostFrameCallback((_) => old.dispose());
     setState(() {
       _selected = track;
       _startNorm = total == 0 ? 0 : start / total;
@@ -276,19 +401,17 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
     if (mounted) setState(() => _selected = null);
   }
 
+  /// Seçimi editöre bildirir ve listeye döner; sheet açık kalır.
   Future<void> _save() async {
     final track = _selected;
     if (track == null) return;
-    try {
-      await _player?.stop();
-    } catch (_) {}
-    if (!mounted) return;
-    Navigator.of(context).pop(
-      track.copyWith(
-        clipStartSec: _clipStart.inSeconds,
-        clipEndSec: _clipEnd.inSeconds,
-      ),
+    final picked = track.copyWith(
+      clipStartSec: _clipStart.inSeconds,
+      clipEndSec: _clipEnd.inSeconds,
     );
+    widget.onSelected(picked);
+    setState(() => _picked = picked);
+    await _back();
   }
 
   @override
@@ -313,6 +436,10 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
             children: [
               _handle(),
               const SizedBox(height: 12),
+              _searchField(),
+              const SizedBox(height: 10),
+              _genreChips(),
+              const SizedBox(height: 12),
               Expanded(child: _buildList()),
             ],
           ),
@@ -330,6 +457,87 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
           color: AppColors.white.withValues(alpha: 0.25),
           borderRadius: BorderRadius.circular(999),
         ),
+      ),
+    );
+  }
+
+  Widget _searchField() {
+    return Container(
+      height: 40,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: AppColors.white.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.search,
+            size: 20,
+            color: AppColors.white.withValues(alpha: 0.6),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: TextField(
+              controller: _searchCtl,
+              onChanged: _onSearchChanged,
+              textInputAction: TextInputAction.search,
+              cursorColor: AppColors.white,
+              style: const TextStyle(
+                fontFamily: AppFonts.poppins,
+                fontSize: 14,
+                color: AppColors.white,
+              ),
+              decoration: InputDecoration(
+                isCollapsed: true,
+                border: InputBorder.none,
+                hintText: Translations.of(context).discover.searchHint,
+                hintStyle: TextStyle(
+                  fontFamily: AppFonts.poppins,
+                  fontSize: 14,
+                  color: AppColors.white.withValues(alpha: 0.45),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _genreChips() {
+    return SizedBox(
+      height: 32,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: _genres.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
+        itemBuilder: (context, i) {
+          final genre = _genres[i];
+          final active = _search.isEmpty && genre == _genre;
+          return GestureDetector(
+            onTap: () => _pickGenre(genre),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: active
+                    ? AppColors.white
+                    : AppColors.white.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Text(
+                _capitalize(genre),
+                style: TextStyle(
+                  fontFamily: AppFonts.poppins,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                  color: active ? AppColors.black : AppColors.white,
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -358,11 +566,34 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
       );
     }
 
-    return ListView.separated(
-      itemCount: _tracks.length,
+    return NotificationListener<ScrollNotification>(
+      onNotification: (n) {
+        if (n.metrics.extentAfter < 500) unawaited(_loadMore());
+        return false;
+      },
+      child: ListView.separated(
+      controller: _scroll,
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      itemCount: _tracks.length + (_loadingMore ? 1 : 0),
       separatorBuilder: (_, _) => const SizedBox(height: 14),
       itemBuilder: (context, index) {
+        if (index >= _tracks.length) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: Center(
+              child: SizedBox(
+                width: 22,
+                height: 22,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: AppColors.white,
+                ),
+              ),
+            ),
+          );
+        }
         final track = _tracks[index];
+        final picked = _picked?.audioUrl == track.audioUrl;
         return GestureDetector(
           onTap: () => _select(track),
           behavior: HitTestBehavior.opaque,
@@ -409,10 +640,19 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
                   ],
                 ),
               ),
+              if (picked) ...[
+                const SizedBox(width: 8),
+                const Icon(
+                  Icons.check_circle,
+                  size: 22,
+                  color: AppColors.white,
+                ),
+              ],
             ],
           ),
         );
       },
+      ),
     );
   }
 
