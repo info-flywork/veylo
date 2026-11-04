@@ -15,7 +15,27 @@ class VibeRepository {
   Future<({List<VibePost> items, String? nextCursor})> feed({
     String? cursor,
   }) async {
-    final res = await _api.get('/vibes', query: {'cursor': ?cursor}) as Map;
+    final res =
+        await _api.get(
+              '/vibes',
+              query: {'cursor': ?cursor},
+              cache: cursor == null,
+            )
+            as Map;
+    return _vibePage(res);
+  }
+
+  /// Diskteki son ilk sayfa (açılışta anında göstermek için).
+  Future<({List<VibePost> items, String? nextCursor})?> cachedFeed() async {
+    try {
+      final res = await _api.cached('/vibes');
+      return res is Map ? _vibePage(res) : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  ({List<VibePost> items, String? nextCursor}) _vibePage(Map res) {
     return (
       items: [
         for (final j in (res['items'] as List).cast<Map>())

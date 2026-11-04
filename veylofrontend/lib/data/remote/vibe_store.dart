@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:veylo/data/remote/vibe_repository.dart';
 import 'package:veylo/models/vibes/vibe_post.dart';
@@ -24,10 +26,22 @@ class VibeStore extends ChangeNotifier {
   Object? get error => _error;
 
   Future<void> refresh() async {
+    final net = _repo.feed();
+    // Disk okunurken ağ hata verirse yakalanmamış hata sayılmasın; aşağıda await edilir.
+    unawaited(net.then((_) {}, onError: (_) {}));
+    if (_posts.isEmpty) {
+      // Ağı beklerken diskteki son vibe'lar hemen görünsün.
+      final cached = await _repo.cachedFeed();
+      if (cached != null && _posts.isEmpty) {
+        _posts = cached.items;
+        _nextCursor = cached.nextCursor;
+        _loaded = true;
+      }
+    }
     _loading = _posts.isEmpty;
     notifyListeners();
     try {
-      final page = await _repo.feed();
+      final page = await net;
       _posts = page.items;
       _nextCursor = page.nextCursor;
       _error = null;

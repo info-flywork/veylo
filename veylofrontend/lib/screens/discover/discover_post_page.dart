@@ -1,7 +1,11 @@
+import 'dart:async';
 import 'dart:io';
+import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/errors/error_messages.dart';
@@ -77,6 +81,7 @@ class DiscoverPostPage extends StatefulWidget {
 class _DiscoverPostPageState extends State<DiscoverPostPage> {
   final _store = DiscoverStore.instance;
   PageController? _pages;
+  late int _pageIndex = widget.initialIndex;
 
   List<Post> get _posts {
     if (widget.liveFeed) return _store.posts;
@@ -89,6 +94,7 @@ class _DiscoverPostPageState extends State<DiscoverPostPage> {
     if (_posts.isEmpty) return;
     final last = _posts.length - 1;
     final initial = widget.initialIndex.clamp(0, last);
+    _pageIndex = initial;
     _pages = PageController(initialPage: initial);
     if (widget.liveFeed) {
       _store.addListener(_onStore);
@@ -119,15 +125,23 @@ class _DiscoverPostPageState extends State<DiscoverPostPage> {
             username: widget.username,
             caption: widget.caption,
             imageFilePath: widget.imageFilePath,
+            active: true,
           )
         : PageView.builder(
             controller: pages,
             scrollDirection: Axis.vertical,
+            // Sonraki gönderi önceden kurulur: fotoğrafı ve müziği kaydırmadan hazır olur.
+            allowImplicitScrolling: true,
             itemCount: posts.length,
             onPageChanged: (i) {
+              setState(() => _pageIndex = i);
               if (widget.liveFeed && i >= posts.length - 4) _store.loadMore();
             },
-            itemBuilder: (_, i) => _FeedPostSlide(post: posts[i]),
+            itemBuilder: (_, i) => _FeedPostSlide(
+              key: ValueKey(posts[i].id),
+              post: posts[i],
+              active: i == _pageIndex,
+            ),
           );
 
     return Scaffold(
@@ -172,11 +186,13 @@ class _CloseMark extends StatelessWidget {
 
 class _FeedPostSlide extends StatefulWidget {
   const _FeedPostSlide({
+    super.key,
     this.post,
     this.avatar = '',
     this.username = '',
     this.caption,
     this.imageFilePath,
+    this.active = false,
   });
 
   final Post? post;
@@ -184,6 +200,7 @@ class _FeedPostSlide extends StatefulWidget {
   final String username;
   final String? caption;
   final String? imageFilePath;
+  final bool active;
 
   @override
   State<_FeedPostSlide> createState() => _FeedPostSlideState();
@@ -195,30 +212,134 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
   bool _saved = false;
   late Post? _post = widget.post;
   final _repo = PostRepository.instance;
+  // iOS varsayılanı çalmadan önce fazladan tampon bekliyor; yeterli veri gelince hemen başlasın.
+  final _audio = AudioPlayer(
+    audioLoadConfiguration: const AudioLoadConfiguration(
+      darwinLoadControl: DarwinLoadControl(
+        automaticallyWaitsToMinimizeStalling: false,
+      ),
+    ),
+  );
+  StreamSubscription<Duration>? _musicPosSub;
+  String? _loadedAudioUrl;
+  // Üst üste gelen _syncAudio çağrılarında yalnızca sonuncusu çalar.
+  int _audioGen = 0;
+  bool _viewCounted = false;
+
+  // Önceden kurulan (henüz ekranda olmayan) gönderi görüntülenme saymaz.
+  void _countView() {
+    final post = _post;
+    if (_viewCounted || !widget.active || post == null) return;
+    _viewCounted = true;
+    _repo.view(post.id).catchError((_) {});
+  }
 
   @override
   void initState() {
     super.initState();
     final post = _post;
-    if (post == null) return;
+    if (post == null) {
+      unawaited(_syncAudio());
+      return;
+    }
     _liked = post.likedByMe;
     _saved = post.savedByMe;
     // Görüntülenme sayılır; tam detayla takip durumu gelir.
-    _repo.view(post.id).catchError((_) {});
+    _countView();
     _repo
         .get(post.id)
         .then((p) {
           if (!mounted) return;
+          final musicChanged =
+              p.music?.audioUrl?.trim() != _post?.music?.audioUrl?.trim();
           setState(() {
             _post = p;
             _following = p.iFollowAuthor ?? false;
             _liked = p.likedByMe;
             _saved = p.savedByMe;
           });
+          // Akıştaki gönderide müzik zaten var; aynıysa çalanı kesip baştan yükleme.
+          if (musicChanged) unawaited(_syncAudio());
         })
         .catchError((Object e) {
           if (mounted) showErrorSnackBar(context, e);
         });
+    unawaited(_syncAudio());
+  }
+
+  @override
+  void didUpdateWidget(covariant _FeedPostSlide oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.active != widget.active ||
+        oldWidget.post?.id != widget.post?.id ||
+        oldWidget.post?.music?.audioUrl != widget.post?.music?.audioUrl) {
+      if (oldWidget.post?.id != widget.post?.id) {
+        _post = widget.post;
+        _viewCounted = false;
+      }
+      _countView();
+      unawaited(_syncAudio());
+    }
+  }
+
+  @override
+  void dispose() {
+    unawaited(_musicPosSub?.cancel());
+    _musicPosSub = null;
+    unawaited(_audio.dispose());
+    super.dispose();
+  }
+
+  Future<void> _syncAudio() async {
+    final gen = ++_audioGen;
+    final music = _post?.music;
+    final url = music?.audioUrl?.trim();
+    if (url == null || url.isEmpty) {
+      await _musicPosSub?.cancel();
+      _musicPosSub = null;
+      try {
+        await _audio.stop();
+      } catch (_) {}
+      return;
+    }
+    if (!widget.active) {
+      // Ekranda değil: çalma, ama klip başından yükleyip hazır beklet.
+      await _musicPosSub?.cancel();
+      _musicPosSub = null;
+      final start = Duration(seconds: music!.clipStartSec.clamp(0, 3600));
+      try {
+        await _audio.pause();
+        if (_loadedAudioUrl != url) {
+          await _audio.setUrl(url, initialPosition: start);
+          _loadedAudioUrl = url;
+        } else {
+          await _audio.seek(start);
+        }
+      } catch (_) {}
+      return;
+    }
+    try {
+      final start = music!.clipStartSec.clamp(0, 3600);
+      if (_loadedAudioUrl != url) {
+        // Doğrudan klip başından yükle: ayrı seek ikinci kez tamponlatıp gecikme yapıyordu.
+        await _audio.setUrl(url, initialPosition: Duration(seconds: start));
+        _loadedAudioUrl = url;
+      } else {
+        await _audio.seek(Duration(seconds: start));
+      }
+      if (gen != _audioGen || !mounted) return;
+      await _musicPosSub?.cancel();
+      final end = music.clipEndSec;
+      if (end != null && end > start) {
+        _musicPosSub = _audio.positionStream.listen((pos) {
+          if (pos.inSeconds >= end) {
+            unawaited(_audio.seek(Duration(seconds: start)));
+          }
+        });
+      }
+      // play() çalma bitene kadar dönmez; beklemeden başlat.
+      unawaited(_audio.play());
+    } catch (_) {}
   }
 
   void _apply(Post p) {
@@ -287,15 +408,28 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
     );
   }
 
+  Widget _thumb(Post post) => post.thumbUrl.isEmpty
+      ? const ColoredBox(color: AppColors.black)
+      : Image(
+          image: CachedNetworkImageProvider(post.thumbUrl),
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
+          errorBuilder: (_, _, _) => const ColoredBox(color: AppColors.black),
+        );
+
   Widget _background() {
     final post = _post;
     if (post != null) {
-      return Image.network(
-        post.mediaUrl,
+      return Image(
+        image: CachedNetworkImageProvider(post.mediaUrl),
         fit: BoxFit.cover,
         alignment: Alignment.center,
         filterQuality: FilterQuality.high,
-        errorBuilder: (_, _, _) => const ColoredBox(color: AppColors.black),
+        // Büyük fotoğraf inene kadar akışta zaten yüklenmiş küçük görsel gösterilir (siyah ekran yok).
+        frameBuilder: (_, child, frame, sync) => sync || frame != null
+            ? child
+            : _thumb(post),
+        errorBuilder: (_, _, _) => _thumb(post),
       );
     }
     final path = widget.imageFilePath;
@@ -330,8 +464,10 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
   @override
   Widget build(BuildContext context) {
     final t = Translations.of(context).discover.post;
+    final top = MediaQuery.paddingOf(context).top;
     final bottom = MediaQuery.paddingOf(context).bottom;
     final post = _post;
+    final music = post?.music;
     final caption = post != null
         ? (post.caption ?? '')
         : (widget.caption ?? t.sampleCaption);
@@ -358,6 +494,16 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
               ),
             ),
           ),
+          if (music != null && music.title.isNotEmpty)
+            Positioned(
+              top: top + 56,
+              left: 16,
+              right: 16,
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: _PostMusicChip(music: music),
+              ),
+            ),
           Positioned(
             left: 0,
             right: 0,
@@ -570,6 +716,100 @@ class _ActionIcon extends StatelessWidget {
                     BlendMode.srcIn,
                   )
                 : null,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PostMusicChip extends StatelessWidget {
+  const _PostMusicChip({required this.music});
+
+  final PostMusic music;
+
+  @override
+  Widget build(BuildContext context) {
+    final cover = music.coverUrl;
+    final subtitle = music.subtitle;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(999),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+        child: Container(
+          height: 36,
+          constraints: const BoxConstraints(maxWidth: 220),
+          padding: const EdgeInsets.fromLTRB(4, 4, 10, 4),
+          decoration: BoxDecoration(
+            color: AppColors.white.withValues(alpha: 0.20),
+            borderRadius: BorderRadius.circular(999),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ClipOval(
+                child: SizedBox(
+                  width: 28,
+                  height: 28,
+                  child: cover != null && cover.isNotEmpty
+                      ? Image(
+                          image: CachedNetworkImageProvider(cover),
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, _, _) => ColoredBox(
+                            color: AppColors.black.withValues(alpha: 0.4),
+                            child: const Icon(
+                              Icons.music_note,
+                              color: AppColors.white,
+                              size: 16,
+                            ),
+                          ),
+                        )
+                      : ColoredBox(
+                          color: AppColors.black.withValues(alpha: 0.4),
+                          child: const Icon(
+                            Icons.music_note,
+                            color: AppColors.white,
+                            size: 16,
+                          ),
+                        ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      music.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontFamily: AppFonts.poppins,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                        height: 16 / 14,
+                        color: AppColors.white,
+                      ),
+                    ),
+                    if (subtitle.isNotEmpty)
+                      Text(
+                        subtitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontFamily: AppFonts.poppins,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w500,
+                          height: 12 / 10,
+                          color: Color(0xFFB3B3B3),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

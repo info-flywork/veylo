@@ -307,6 +307,7 @@ class _RoomLivePageState extends State<RoomLivePage> {
       title: _title,
       isHost: _isHost,
       anonymous: widget.anonymous,
+      participants: _people,
     );
     _minimizing = true;
     _canLeave = true;
@@ -528,8 +529,8 @@ class _RoomLivePageState extends State<RoomLivePage> {
                           child: const Padding(
                             padding: EdgeInsets.only(right: 8),
                             child: Icon(
-                              Icons.check_rounded,
-                              size: 26,
+                              Icons.arrow_back_ios_new_rounded,
+                              size: 22,
                               color: AppColors.black,
                             ),
                           ),

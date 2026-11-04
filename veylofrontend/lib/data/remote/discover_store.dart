@@ -34,8 +34,21 @@ class DiscoverStore extends ChangeNotifier {
 
   Future<void> refresh() async {
     final gen = ++_generation;
+    final net = _repo.feed(query: _query, filters: _filters);
+    // Disk okunurken ağ hata verirse yakalanmamış hata sayılmasın; aşağıda await edilir.
+    unawaited(net.then((_) {}, onError: (_) {}));
+    // Liste boşsa ağı beklerken diskteki son akışı hemen göster.
+    if (_posts.isEmpty) {
+      final cached = await _repo.cachedFeed(query: _query, filters: _filters);
+      if (cached != null && gen == _generation && _posts.isEmpty) {
+        _posts = cached.items;
+        _nextCursor = cached.nextCursor;
+        _loaded = true;
+        notifyListeners();
+      }
+    }
     try {
-      final page = await _repo.feed(query: _query, filters: _filters);
+      final page = await net;
       // Yazarken eski istek sonradan dönerse yeni sonucu ezmesin.
       if (gen != _generation) return;
       _posts = page.items;

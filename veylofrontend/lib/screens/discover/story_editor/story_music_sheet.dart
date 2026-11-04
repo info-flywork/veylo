@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:dio/dio.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:veylo/core/theme/theme.dart';
@@ -422,8 +423,8 @@ class _StoryMusicSheetState extends State<StoryMusicSheet> {
         width: size,
         height: size,
         child: track.imageUrl != null
-            ? Image.network(
-                track.imageUrl!,
+            ? Image(
+                image: CachedNetworkImageProvider(track.imageUrl!),
                 fit: BoxFit.cover,
                 errorBuilder: (_, _, _) => ColoredBox(
                   color: AppColors.white.withValues(alpha: 0.1),

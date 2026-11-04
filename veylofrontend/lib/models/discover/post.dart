@@ -1,3 +1,36 @@
+/// Gönderiye eklenen müzik (Jamendo clip).
+class PostMusic {
+  const PostMusic({
+    required this.title,
+    this.artist,
+    this.coverUrl,
+    this.audioUrl,
+    this.clipStartSec = 0,
+    this.clipEndSec,
+  });
+
+  final String title;
+  final String? artist;
+  final String? coverUrl;
+  final String? audioUrl;
+  final int clipStartSec;
+  final int? clipEndSec;
+
+  String get subtitle {
+    final a = artist?.trim();
+    return (a != null && a.isNotEmpty) ? a : '';
+  }
+
+  factory PostMusic.fromJson(Map<String, dynamic> j) => PostMusic(
+    title: j['title'] as String? ?? '',
+    artist: j['artist'] as String?,
+    coverUrl: j['coverUrl'] as String?,
+    audioUrl: j['audioUrl'] as String?,
+    clipStartSec: (j['clipStartSec'] as num?)?.toInt() ?? 0,
+    clipEndSec: (j['clipEndSec'] as num?)?.toInt(),
+  );
+}
+
 /// Discover gönderisi (`/posts`).
 class Post {
   const Post({
@@ -12,6 +45,7 @@ class Post {
     this.authorIsAi = false,
     this.iFollowAuthor,
     this.caption,
+    this.music,
     this.likeCount = 0,
     this.commentCount = 0,
     this.viewCount,
@@ -37,6 +71,7 @@ class Post {
   /// Sadece gönderi detayında gelir.
   final bool? iFollowAuthor;
   final String? caption;
+  final PostMusic? music;
   final int likeCount;
   final int commentCount;
 
@@ -55,6 +90,7 @@ class Post {
 
   factory Post.fromJson(Map<String, dynamic> j) {
     final a = j['author'] as Map<String, dynamic>? ?? const {};
+    final rawMusic = j['music'];
     return Post(
       id: j['id'] as String,
       mediaUrl: j['mediaUrl'] as String? ?? '',
@@ -66,6 +102,9 @@ class Post {
       authorIsAi: a['isAi'] as bool? ?? false,
       iFollowAuthor: a['iFollow'] as bool?,
       caption: j['caption'] as String?,
+      music: rawMusic is Map
+          ? PostMusic.fromJson(Map<String, dynamic>.from(rawMusic))
+          : null,
       likeCount: (j['likeCount'] as num?)?.toInt() ?? 0,
       commentCount: (j['commentCount'] as num?)?.toInt() ?? 0,
       viewCount: (j['viewCount'] as num?)?.toInt(),

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
@@ -127,8 +128,14 @@ class ChatAvatarImage extends StatelessWidget {
     if (url.startsWith('assets/')) {
       return Image.asset(url, width: size, height: size, fit: fit);
     }
-    return Image.network(
-      url,
+    return Image(
+      // Küçük avatarı tam çözünürlükte açmak listeyi yavaşlatıyordu; ekran boyutunda çöz.
+      image: ResizeImage.resizeIfNeeded(
+        (size * MediaQuery.devicePixelRatioOf(context)).round(),
+        null,
+        CachedNetworkImageProvider(url),
+      ),
+      gaplessPlayback: true,
       width: size,
       height: size,
       fit: fit,

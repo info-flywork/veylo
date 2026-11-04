@@ -175,13 +175,24 @@ class ChatStore extends ChangeNotifier {
   }
 
   Future<void> refresh() async {
+    final net = Future.wait([_repo.list(), _repo.list(box: 'requests')]);
+    // Disk okunurken ağ hata verirse yakalanmamış hata sayılmasın; aşağıda await edilir.
+    unawaited(net.then((_) {}, onError: (_) {}));
+    if (_inbox.isEmpty && _requests.isEmpty) {
+      // Ağı beklerken diskteki son sohbet listesi hemen görünsün.
+      final cached = await Future.wait([
+        _repo.cachedList(),
+        _repo.cachedList(box: 'requests'),
+      ]);
+      if (_inbox.isEmpty && _requests.isEmpty) {
+        _inbox = _sorted(cached[0] ?? const []);
+        _requests = _sorted(cached[1] ?? const []);
+      }
+    }
     _loading = _inbox.isEmpty;
     notifyListeners();
     try {
-      final results = await Future.wait([
-        _repo.list(),
-        _repo.list(box: 'requests'),
-      ]);
+      final results = await net;
       _inbox = _sorted(results[0]);
       _requests = _sorted(results[1]);
       _error = null;
