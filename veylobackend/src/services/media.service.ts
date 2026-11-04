@@ -205,6 +205,15 @@ async function resolveForPost(userId: string, mediaId: string, thumbId: string) 
   return { media, thumb };
 }
 
+/** Gönderinin yazısız orijinali: bu kullanıcıya ait gönderi görseli mi? */
+async function resolvePostSource(userId: string, sourceId: string) {
+  const media = await prisma.media.findUnique({ where: { id: sourceId } });
+  if (!media || media.ownerId !== userId || media.kind !== 'POST_IMAGE') {
+    throw AppError.badRequest('INVALID_MEDIA', 'Orijinal görsel bulunamadı');
+  }
+  return media;
+}
+
 /** Mesajdaki mediaId gönderene ait ve mesaj türüyle uyumlu mu? */
 async function resolveForMessage(userId: string, mediaId: string, type: 'IMAGE' | 'VOICE') {
   const media = await prisma.media.findUnique({ where: { id: mediaId } });
@@ -224,4 +233,5 @@ export const mediaService = {
   resolveForMessage,
   uploadPostImage,
   resolveForPost,
+  resolvePostSource,
 };
