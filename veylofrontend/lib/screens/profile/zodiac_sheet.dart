@@ -143,7 +143,12 @@ class _ZodiacSheetState extends State<_ZodiacSheet> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              _ZodiacBadge(symbol: sign.symbol),
+                              _ZodiacBadge(
+                                symbol: sign.symbol,
+                                color: selected
+                                    ? AppColors.black
+                                    : const Color(0x40000000),
+                              ),
                               const SizedBox(width: 10),
                               AppText(
                                 sign.localized(context),
@@ -176,29 +181,30 @@ class _ZodiacSheetState extends State<_ZodiacSheet> {
   }
 }
 
-/// Figma: mor rounded kare + beyaz burç sembolü.
+/// Burç sembolü, arkasında kutu olmadan yazıyla aynı renkte.
+/// ♈–♓ iOS'ta varsayılan olarak mor kareli emoji çizilir; \uFE0E + sembol
+/// fontu düz glif (metin) hâlini seçer.
 class _ZodiacBadge extends StatelessWidget {
-  const _ZodiacBadge({required this.symbol});
+  const _ZodiacBadge({required this.symbol, required this.color});
 
   final String symbol;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: _kBadgeSize,
       height: _kBadgeSize,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: AppColors.linkGradientStart,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        symbol,
-        style: const TextStyle(
-          fontSize: 15,
-          height: 1,
-          color: AppColors.white,
-          fontWeight: FontWeight.w600,
+      child: Center(
+        child: Text(
+          '$symbol\uFE0E',
+          style: TextStyle(
+            fontFamily: 'Apple Symbols',
+            fontFamilyFallback: const ['Noto Sans Symbols', 'Noto Sans Symbols 2'],
+            fontSize: 20,
+            height: 1,
+            color: color,
+          ),
         ),
       ),
     );

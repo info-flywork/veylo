@@ -108,6 +108,7 @@ abstract final class AppAssets {
   static const String iconCloseWithoutBorder =
       'assets/icons/closedWithoutBorder.svg';
   static const String iconHeart = 'assets/icons/heart.svg';
+  static const String iconHeartFilled = 'assets/icons/heart_filled.svg';
   static const String iconSave = 'assets/icons/save.svg';
   static const String iconComment = 'assets/icons/comment.svg';
   static const String iconClickCamera = 'assets/icons/clickCamera.svg';

@@ -53,6 +53,9 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
   double _textRotation = 0;
   double _gestureStartScale = 1;
   double _gestureStartRotation = 0;
+  /// Hareket yazının üstünde (ya da iki parmakla) başladıysa yazıyı taşır.
+  bool _movingText = false;
+  final _textKey = GlobalKey();
   StoryMusicTrack? _music;
 
   /// Görsele eklenen çıkartmalar (asset + ekran konumu, merkez).
@@ -195,9 +198,22 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
       await _audio.pause();
     } catch (_) {}
     if (!mounted) return;
-    final track = await showStoryMusicSheet(context);
+    final before = _music;
+    // Sheet seçimde kapanmaz; her Kaydet'te müzik güncellenir.
+    await showStoryMusicSheet(
+      context,
+      initial: before,
+      onSelected: (track) {
+        if (mounted) setState(() => _music = track);
+      },
+    );
+    final track = _music;
     if (track == null || !mounted) return;
-    setState(() => _music = track);
+    if (identical(track, before)) {
+      // Değişmedi: durdurduğumuz önizlemeye devam et.
+      unawaited(_audio.play());
+      return;
+    }
     final url = track.audioUrl;
     if (url == null || url.isEmpty) return;
     try {
@@ -264,32 +280,15 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
   }
 
   /// Yazı katmanı: editörde ve görsele işlenirken aynı konum/ölçek/açı.
-  Widget _textLayer(String text, Color color, {bool gestures = false}) {
+  /// Hareketleri ekran boyu [_textGestures] yakalar; burası sadece çizer.
+  Widget _textLayer(String text, Color color, {bool editing = false}) {
     Widget label = Text(
       text,
       textAlign: _textDraft.align,
       style: _textDraft.textStyle.copyWith(color: color),
     );
-    if (gestures) {
-      label = GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => _openTextTools(),
-        onScaleStart: (_) {
-          _gestureStartScale = _textScale;
-          _gestureStartRotation = _textRotation;
-        },
-        onScaleUpdate: (d) => setState(() {
-          _textOffset += d.focalPointDelta;
-          if (d.pointerCount > 1) {
-            _textScale = (_gestureStartScale * d.scale).clamp(0.4, 5.0);
-            _textRotation = _gestureStartRotation + d.rotation;
-          }
-        }),
-        child: label,
-      );
-    }
+    if (editing) label = KeyedSubtree(key: _textKey, child: label);
     return IgnorePointer(
-      ignoring: !gestures,
       child: Center(
         child: Transform.translate(
           offset: _textOffset,
@@ -305,6 +304,42 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
           ),
         ),
       ),
+    );
+  }
+
+  /// Parmak yazının üstünde mi (döndürülmüş/büyütülmüş hâliyle, biraz pay bırakarak).
+  bool _hitsText(Offset global) {
+    final box = _textKey.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null || !box.hasSize) return false;
+    final local = box.globalToLocal(global);
+    return (Offset.zero & box.size).inflate(32 / _textScale).contains(local);
+  }
+
+  /// Ekran boyu: tek parmak yazıyı tutunca taşır; iki parmak ekranın her
+  /// yerinde büyütür/küçültür/döndürür. Dokunuş ekran koordinatında ölçülür,
+  /// böylece döndürülmüş yazı yukarı çekilince yana kaymaz.
+  Widget _textGestures() {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTapUp: (d) {
+        if (_hitsText(d.globalPosition)) _openTextTools();
+      },
+      onScaleStart: (d) {
+        _gestureStartScale = _textScale;
+        _gestureStartRotation = _textRotation;
+        _movingText = d.pointerCount > 1 || _hitsText(d.focalPoint);
+      },
+      onScaleUpdate: (d) {
+        if (!_movingText) return;
+        setState(() {
+          _textOffset += d.focalPointDelta;
+          if (d.pointerCount > 1) {
+            _textScale = (_gestureStartScale * d.scale).clamp(0.4, 5.0);
+            _textRotation = _gestureStartRotation + d.rotation;
+          }
+        });
+      },
+      onScaleEnd: (_) => _movingText = false,
     );
   }
 
@@ -334,6 +369,10 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
                   fit: BoxFit.cover,
                   filterQuality: FilterQuality.high,
                 ),
+                // Yazı hareketleri: görselin üstünde, çıkartmaların altında
+                // (çıkartmaya dokununca o taşınır). Çizim yapmaz, görsele girmez.
+                if (!_textEditorOpen && !_capturing && hasText)
+                  Positioned.fill(child: _textGestures()),
                 // Çıkartmalar: sürükle taşı, basılı tut kaldır.
                 for (var i = 0; i < _stickers.length; i++)
                   Positioned(
@@ -472,7 +511,7 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
               child: _textLayer(
                 displayText,
                 _textDraft.color,
-                gestures: true,
+                editing: true,
               ),
             ),
 

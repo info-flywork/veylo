@@ -1117,6 +1117,11 @@ class _Translations$discover$post$fr extends Translations$discover$post$tr {
 	@override String minutesAgo({required Object minutes}) => '${minutes} min';
 	@override String daysAgo({required Object days}) => '${days} j';
 	@override String get deleteCommentTitle => 'Supprimer ce commentaire ?';
+	@override String get edit => 'Modifier';
+	@override String get delete => 'Supprimer';
+	@override String get editCaption => 'Modifier la légende';
+	@override String get deletePostTitle => 'Supprimer cette publication ?';
+	@override String get captionHint => 'Écris une légende...';
 }
 
 // Path: discover.story
@@ -1142,6 +1147,12 @@ class _Translations$discover$story$fr extends Translations$discover$story$tr {
 	@override String get downloadFailed => 'Échec de l\'enregistrement';
 	@override String get savedToDraft => 'Enregistré dans les brouillons';
 	@override String get cameraDenied => 'L’accès à l’appareil photo est nécessaire pour prendre des photos.';
+	@override String get drafts => 'Brouillons';
+	@override String get draftsEmpty => 'Tu n\'as pas encore de brouillons.';
+	@override String get delete => 'Supprimer';
+	@override String get deleteDraftPrompt => 'Supprimer ce brouillon ?';
+	@override String get published => 'Partagé';
+	@override String get draftsError => 'Impossible de charger les brouillons.';
 }
 
 // Path: discover.highlight
@@ -1760,6 +1771,11 @@ extension on TranslationsFr {
 			'discover.post.minutesAgo' => ({required Object minutes}) => '${minutes} min',
 			'discover.post.daysAgo' => ({required Object days}) => '${days} j',
 			'discover.post.deleteCommentTitle' => 'Supprimer ce commentaire ?',
+			'discover.post.edit' => 'Modifier',
+			'discover.post.delete' => 'Supprimer',
+			'discover.post.editCaption' => 'Modifier la légende',
+			'discover.post.deletePostTitle' => 'Supprimer cette publication ?',
+			'discover.post.captionHint' => 'Écris une légende...',
 			'discover.story.draft' => 'BROUILLON',
 			'discover.story.story' => 'STORY',
 			'discover.story.share' => 'Partager',
@@ -1776,6 +1792,12 @@ extension on TranslationsFr {
 			'discover.story.downloadFailed' => 'Échec de l\'enregistrement',
 			'discover.story.savedToDraft' => 'Enregistré dans les brouillons',
 			'discover.story.cameraDenied' => 'L’accès à l’appareil photo est nécessaire pour prendre des photos.',
+			'discover.story.drafts' => 'Brouillons',
+			'discover.story.draftsEmpty' => 'Tu n\'as pas encore de brouillons.',
+			'discover.story.delete' => 'Supprimer',
+			'discover.story.deleteDraftPrompt' => 'Supprimer ce brouillon ?',
+			'discover.story.published' => 'Partagé',
+			'discover.story.draftsError' => 'Impossible de charger les brouillons.',
 			'discover.highlight.title' => 'À la une',
 			'discover.highlight.view' => 'Voir',
 			'discover.highlight.aiComments' => 'Commentaires IA',

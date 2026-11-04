@@ -1117,6 +1117,11 @@ class _Translations$discover$post$hi extends Translations$discover$post$tr {
 	@override String minutesAgo({required Object minutes}) => '${minutes} मि.';
 	@override String daysAgo({required Object days}) => '${days} दि.';
 	@override String get deleteCommentTitle => 'यह कमेंट डिलीट करें?';
+	@override String get edit => 'संपादित करें';
+	@override String get delete => 'हटाएँ';
+	@override String get editCaption => 'कैप्शन संपादित करें';
+	@override String get deletePostTitle => 'यह पोस्ट हटाएँ?';
+	@override String get captionHint => 'कैप्शन लिखें...';
 }
 
 // Path: discover.story
@@ -1142,6 +1147,12 @@ class _Translations$discover$story$hi extends Translations$discover$story$tr {
 	@override String get downloadFailed => 'सेव नहीं हो सका';
 	@override String get savedToDraft => 'ड्राफ़्ट में सेव हो गया';
 	@override String get cameraDenied => 'फ़ोटो लेने के लिए कैमरा अनुमति ज़रूरी है।';
+	@override String get drafts => 'ड्राफ़्ट';
+	@override String get draftsEmpty => 'अभी तक कोई ड्राफ़्ट नहीं है।';
+	@override String get delete => 'हटाएँ';
+	@override String get deleteDraftPrompt => 'यह ड्राफ़्ट हटाएँ?';
+	@override String get published => 'शेयर किया गया';
+	@override String get draftsError => 'ड्राफ़्ट लोड नहीं हो सके।';
 }
 
 // Path: discover.highlight
@@ -1760,6 +1771,11 @@ extension on TranslationsHi {
 			'discover.post.minutesAgo' => ({required Object minutes}) => '${minutes} मि.',
 			'discover.post.daysAgo' => ({required Object days}) => '${days} दि.',
 			'discover.post.deleteCommentTitle' => 'यह कमेंट डिलीट करें?',
+			'discover.post.edit' => 'संपादित करें',
+			'discover.post.delete' => 'हटाएँ',
+			'discover.post.editCaption' => 'कैप्शन संपादित करें',
+			'discover.post.deletePostTitle' => 'यह पोस्ट हटाएँ?',
+			'discover.post.captionHint' => 'कैप्शन लिखें...',
 			'discover.story.draft' => 'ड्राफ़्ट',
 			'discover.story.story' => 'स्टोरी',
 			'discover.story.share' => 'शेयर करें',
@@ -1776,6 +1792,12 @@ extension on TranslationsHi {
 			'discover.story.downloadFailed' => 'सेव नहीं हो सका',
 			'discover.story.savedToDraft' => 'ड्राफ़्ट में सेव हो गया',
 			'discover.story.cameraDenied' => 'फ़ोटो लेने के लिए कैमरा अनुमति ज़रूरी है।',
+			'discover.story.drafts' => 'ड्राफ़्ट',
+			'discover.story.draftsEmpty' => 'अभी तक कोई ड्राफ़्ट नहीं है।',
+			'discover.story.delete' => 'हटाएँ',
+			'discover.story.deleteDraftPrompt' => 'यह ड्राफ़्ट हटाएँ?',
+			'discover.story.published' => 'शेयर किया गया',
+			'discover.story.draftsError' => 'ड्राफ़्ट लोड नहीं हो सके।',
 			'discover.highlight.title' => 'हाइलाइट',
 			'discover.highlight.view' => 'देखें',
 			'discover.highlight.aiComments' => 'AI कमेंट',

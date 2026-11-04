@@ -471,13 +471,14 @@ final class _StoryTextEditorOverlayState extends State<StoryTextEditorOverlay> {
                                 switchOutCurve: Curves.easeInCubic,
                                 layoutBuilder:
                                     (currentChild, previousChildren) {
+                                      // Eski panel çizilmez (iki panelin
+                                      // kartları üst üste binmesin); yeni
+                                      // panel yerinde belirir. Kaydırılan
+                                      // içerik de sekme çubuğuna taşmaz.
                                       return Stack(
                                         alignment: Alignment.topCenter,
-                                        clipBehavior: Clip.none,
-                                        children: [
-                                          ...previousChildren,
-                                          ?currentChild,
-                                        ],
+                                        clipBehavior: Clip.hardEdge,
+                                        children: [?currentChild],
                                       );
                                     },
                                 child: KeyedSubtree(
@@ -572,7 +573,6 @@ final class _FontsPanel extends StatelessWidget {
     return GridView.builder(
       shrinkWrap: true,
       physics: const ClampingScrollPhysics(),
-      clipBehavior: Clip.none,
       padding: const EdgeInsets.only(bottom: 10, right: 4),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,

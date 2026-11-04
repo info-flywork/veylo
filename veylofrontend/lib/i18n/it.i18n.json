@@ -578,7 +578,12 @@
       "hoursAgo": "{hours}h",
       "minutesAgo": "{minutes}m",
       "daysAgo": "{days}g",
-      "deleteCommentTitle": "Eliminare questo commento?"
+      "deleteCommentTitle": "Eliminare questo commento?",
+      "edit": "Modifica",
+      "delete": "Elimina",
+      "editCaption": "Modifica didascalia",
+      "deletePostTitle": "Eliminare questo post?",
+      "captionHint": "Scrivi una didascalia..."
     },
     "story": {
       "draft": "BOZZA",
@@ -596,7 +601,13 @@
       "downloaded": "Salvato in galleria",
       "downloadFailed": "Impossibile salvare",
       "savedToDraft": "Salvato nelle bozze",
-      "cameraDenied": "Serve l’accesso alla fotocamera per scattare foto."
+      "cameraDenied": "Serve l’accesso alla fotocamera per scattare foto.",
+      "drafts": "Bozze",
+      "draftsEmpty": "Non hai ancora bozze.",
+      "delete": "Elimina",
+      "deleteDraftPrompt": "Eliminare questa bozza?",
+      "published": "Condiviso",
+      "draftsError": "Impossibile caricare le bozze."
     },
     "highlight": {
       "title": "In evidenza",

@@ -96,9 +96,8 @@ class _VibeTalkSheet extends StatelessWidget {
     final t = Translations.of(context);
     final bottom = MediaQuery.viewPaddingOf(context).bottom;
 
-    return Padding(
-      padding: EdgeInsets.only(bottom: bottom),
-      child: Stack(
+    // Beyaz kart ekranın altına kadar iner; güvenli alan kartın içinde kalır.
+    return Stack(
         clipBehavior: Clip.none,
         alignment: Alignment.topCenter,
         children: [
@@ -109,7 +108,7 @@ class _VibeTalkSheet extends StatelessWidget {
               color: AppColors.white,
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
-            padding: const EdgeInsets.fromLTRB(16, 62, 16, 16),
+            padding: EdgeInsets.fromLTRB(16, 62, 16, 16 + bottom),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -152,7 +151,6 @@ class _VibeTalkSheet extends StatelessWidget {
             child: _SheetAvatar(asset: post.avatarAsset, blurred: post.blurred),
           ),
         ],
-      ),
     );
   }
 }

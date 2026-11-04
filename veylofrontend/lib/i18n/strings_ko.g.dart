@@ -1117,6 +1117,11 @@ class _Translations$discover$post$ko extends Translations$discover$post$tr {
 	@override String minutesAgo({required Object minutes}) => '${minutes}분';
 	@override String daysAgo({required Object days}) => '${days}일';
 	@override String get deleteCommentTitle => '이 댓글을 삭제할까요?';
+	@override String get edit => '수정';
+	@override String get delete => '삭제';
+	@override String get editCaption => '캡션 수정';
+	@override String get deletePostTitle => '이 게시물을 삭제할까요?';
+	@override String get captionHint => '캡션을 입력하세요...';
 }
 
 // Path: discover.story
@@ -1142,6 +1147,12 @@ class _Translations$discover$story$ko extends Translations$discover$story$tr {
 	@override String get downloadFailed => '저장할 수 없어요';
 	@override String get savedToDraft => '임시 저장했어요';
 	@override String get cameraDenied => '사진을 찍으려면 카메라 접근 권한이 필요해요.';
+	@override String get drafts => '임시저장';
+	@override String get draftsEmpty => '아직 임시저장한 게시물이 없어요.';
+	@override String get delete => '삭제';
+	@override String get deleteDraftPrompt => '이 임시저장을 삭제할까요?';
+	@override String get published => '공유됨';
+	@override String get draftsError => '임시저장을 불러오지 못했어요.';
 }
 
 // Path: discover.highlight
@@ -1760,6 +1771,11 @@ extension on TranslationsKo {
 			'discover.post.minutesAgo' => ({required Object minutes}) => '${minutes}분',
 			'discover.post.daysAgo' => ({required Object days}) => '${days}일',
 			'discover.post.deleteCommentTitle' => '이 댓글을 삭제할까요?',
+			'discover.post.edit' => '수정',
+			'discover.post.delete' => '삭제',
+			'discover.post.editCaption' => '캡션 수정',
+			'discover.post.deletePostTitle' => '이 게시물을 삭제할까요?',
+			'discover.post.captionHint' => '캡션을 입력하세요...',
 			'discover.story.draft' => '임시저장',
 			'discover.story.story' => '스토리',
 			'discover.story.share' => '공유',
@@ -1776,6 +1792,12 @@ extension on TranslationsKo {
 			'discover.story.downloadFailed' => '저장할 수 없어요',
 			'discover.story.savedToDraft' => '임시 저장했어요',
 			'discover.story.cameraDenied' => '사진을 찍으려면 카메라 접근 권한이 필요해요.',
+			'discover.story.drafts' => '임시저장',
+			'discover.story.draftsEmpty' => '아직 임시저장한 게시물이 없어요.',
+			'discover.story.delete' => '삭제',
+			'discover.story.deleteDraftPrompt' => '이 임시저장을 삭제할까요?',
+			'discover.story.published' => '공유됨',
+			'discover.story.draftsError' => '임시저장을 불러오지 못했어요.',
 			'discover.highlight.title' => '하이라이트',
 			'discover.highlight.view' => '보기',
 			'discover.highlight.aiComments' => 'AI 댓글',

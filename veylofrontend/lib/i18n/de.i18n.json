@@ -578,7 +578,12 @@
       "hoursAgo": "{hours} Std.",
       "minutesAgo": "{minutes} Min.",
       "daysAgo": "{days} T.",
-      "deleteCommentTitle": "Diesen Kommentar löschen?"
+      "deleteCommentTitle": "Diesen Kommentar löschen?",
+      "edit": "Bearbeiten",
+      "delete": "Löschen",
+      "editCaption": "Beschreibung bearbeiten",
+      "deletePostTitle": "Diesen Beitrag löschen?",
+      "captionHint": "Beschreibung schreiben..."
     },
     "story": {
       "draft": "ENTWURF",
@@ -596,7 +601,13 @@
       "downloaded": "In der Galerie gespeichert",
       "downloadFailed": "Speichern fehlgeschlagen",
       "savedToDraft": "Als Entwurf gespeichert",
-      "cameraDenied": "Für Fotos wird Kamerazugriff benötigt."
+      "cameraDenied": "Für Fotos wird Kamerazugriff benötigt.",
+      "drafts": "Entwürfe",
+      "draftsEmpty": "Du hast noch keine Entwürfe.",
+      "delete": "Löschen",
+      "deleteDraftPrompt": "Diesen Entwurf löschen?",
+      "published": "Geteilt",
+      "draftsError": "Entwürfe konnten nicht geladen werden."
     },
     "highlight": {
       "title": "Highlight",

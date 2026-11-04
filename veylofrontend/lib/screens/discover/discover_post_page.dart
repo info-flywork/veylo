@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -18,6 +19,7 @@ import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/discover/post.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 import 'package:veylo/screens/discover/comments_sheet.dart';
+import 'package:veylo/screens/discover/post_owner_sheet.dart';
 import 'package:veylo/screens/profile/profile_navigation.dart';
 
 /// Discover grid’den açılan full-screen post.
@@ -390,6 +392,64 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
     }
   }
 
+  /// Kendi gönderim: ⋯ → açıklamayı düzenle ya da sil.
+  Future<void> _openOwnerMenu() async {
+    final post = _post;
+    if (post == null) return;
+    final action = await showPostOwnerActionsSheet(context);
+    if (!mounted || action == null) return;
+    switch (action) {
+      case PostOwnerAction.edit:
+        await _editCaption(post);
+      case PostOwnerAction.delete:
+        await _deletePost(post);
+    }
+  }
+
+  Future<void> _editCaption(Post post) async {
+    final old = post.caption ?? '';
+    final text = await showEditCaptionSheet(context, initial: old);
+    if (text == null || text == old.trim() || !mounted) return;
+    try {
+      final p = await _repo.updateCaption(post.id, text.isEmpty ? null : text);
+      if (!mounted) return;
+      setState(() => _post = p);
+      DiscoverStore.instance.replace(p, edited: true);
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    }
+  }
+
+  Future<void> _deletePost(Post post) async {
+    final tr = Translations.of(context);
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(tr.discover.post.deletePostTitle),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(tr.vibes.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(tr.discover.post.delete),
+          ),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) return;
+    final navigator = Navigator.of(context);
+    try {
+      await _repo.delete(post.id);
+      await _audio.stop();
+      DiscoverStore.instance.remove(post.id);
+      navigator.pop();
+    } catch (e) {
+      if (mounted) showErrorSnackBar(context, e);
+    }
+  }
+
   void _openComments() => showCommentsSheet(
     context,
     postId: _post?.id,
@@ -494,6 +554,26 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
               ),
             ),
           ),
+          if (post?.isMine ?? false)
+            Positioned(
+              top: top + 8,
+              right: 8,
+              child: GestureDetector(
+                onTap: _openOwnerMenu,
+                behavior: HitTestBehavior.opaque,
+                child: const SizedBox(
+                  width: 44,
+                  height: 44,
+                  child: Center(
+                    child: Icon(
+                      Icons.more_horiz,
+                      size: 30,
+                      color: AppColors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           if (music != null && music.title.isNotEmpty)
             Positioned(
               top: top + 56,
@@ -604,7 +684,10 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
                         ),
                       ),
                       const SizedBox(width: 12),
-                      Column(
+                      // Alttaki beğeni düğmesiyle (50) aynı eksende dursun.
+                      SizedBox(
+                        width: 50,
+                        child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           _ActionIcon(
@@ -624,6 +707,7 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
                             ),
                           ),
                         ],
+                      ),
                       ),
                     ],
                   ),
@@ -649,29 +733,7 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
                         ),
                       ),
                       const SizedBox(width: 10),
-                      GestureDetector(
-                        onTap: _toggleLike,
-                        child: Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: AppColors.black.withValues(alpha: 0.4),
-                            shape: BoxShape.circle,
-                          ),
-                          alignment: Alignment.center,
-                          child: SvgPicture.asset(
-                            AppAssets.iconHeart,
-                            width: 28,
-                            height: 28,
-                            colorFilter: ColorFilter.mode(
-                              _liked
-                                  ? AppColors.selectionBorder
-                                  : AppColors.white,
-                              BlendMode.srcIn,
-                            ),
-                          ),
-                        ),
-                      ),
+                      _LikeButton(liked: _liked, onTap: _toggleLike),
                     ],
                   ),
                 ],
@@ -682,6 +744,135 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
       ),
     );
   }
+}
+
+/// Beğeni: dolu mor kalp, beğenince büyüyüp oturur ve etrafa nokta saçar.
+class _LikeButton extends StatefulWidget {
+  const _LikeButton({required this.liked, required this.onTap});
+
+  final bool liked;
+  final VoidCallback onTap;
+
+  @override
+  State<_LikeButton> createState() => _LikeButtonState();
+}
+
+class _LikeButtonState extends State<_LikeButton>
+    with SingleTickerProviderStateMixin {
+  late final _c = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 550),
+  );
+  late final _scale = TweenSequence<double>([
+    TweenSequenceItem(
+      tween: Tween(begin: 1.0, end: 0.7).chain(CurveTween(curve: Curves.easeIn)),
+      weight: 15,
+    ),
+    TweenSequenceItem(
+      tween: Tween(begin: 0.7, end: 1.25).chain(CurveTween(curve: Curves.easeOut)),
+      weight: 35,
+    ),
+    TweenSequenceItem(
+      tween: Tween(begin: 1.25, end: 1.0).chain(CurveTween(curve: Curves.easeInOut)),
+      weight: 50,
+    ),
+  ]).animate(_c);
+
+  @override
+  void didUpdateWidget(_LikeButton old) {
+    super.didUpdateWidget(old);
+    if (widget.liked && !old.liked) {
+      _c.forward(from: 0);
+    } else if (!widget.liked) {
+      _c.value = 0;
+    }
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final liked = widget.liked;
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: Container(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+          color: AppColors.black.withValues(alpha: 0.4),
+          shape: BoxShape.circle,
+        ),
+        alignment: Alignment.center,
+        child: AnimatedBuilder(
+          animation: _c,
+          builder: (_, child) => CustomPaint(
+            painter: _LikeBurstPainter(_c.value),
+            child: Transform.scale(scale: _scale.value, child: child),
+          ),
+          child: SvgPicture.asset(
+            liked ? AppAssets.iconHeartFilled : AppAssets.iconHeart,
+            width: 28,
+            height: 28,
+            colorFilter: ColorFilter.mode(
+              liked ? AppColors.selectionBorder : AppColors.white,
+              BlendMode.srcIn,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Kalbin etrafında açılan halka + dışa saçılan noktalar.
+class _LikeBurstPainter extends CustomPainter {
+  _LikeBurstPainter(this.t);
+
+  final double t;
+
+  static const _dots = 8;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (t <= 0 || t >= 1) return;
+    final center = size.center(Offset.zero);
+    final color = AppColors.selectionBorder;
+
+    // Halka: hızla genişler, incelerek kaybolur.
+    final ring = (t / 0.45).clamp(0.0, 1.0);
+    if (ring < 1) {
+      canvas.drawCircle(
+        center,
+        8 + 14 * Curves.easeOut.transform(ring),
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 3 * (1 - ring)
+          ..color = color.withValues(alpha: 1 - ring),
+      );
+    }
+
+    // Noktalar: halka açılırken dışarı uçar.
+    final p = ((t - 0.15) / 0.85).clamp(0.0, 1.0);
+    if (p <= 0) return;
+    final dist = 14 + 12 * Curves.easeOut.transform(p);
+    final r = 2.4 * (1 - p);
+    final paint = Paint()..color = color.withValues(alpha: 1 - p);
+    for (var i = 0; i < _dots; i++) {
+      final a = -pi / 2 + i * 2 * pi / _dots;
+      canvas.drawCircle(
+        center + Offset(cos(a), sin(a)) * dist,
+        r,
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_LikeBurstPainter old) => old.t != t;
 }
 
 class _ActionIcon extends StatelessWidget {

@@ -2656,6 +2656,21 @@ class Translations$discover$post$tr {
 
 	/// tr: 'Bu yorum silinsin mi?'
 	String get deleteCommentTitle => 'Bu yorum silinsin mi?';
+
+	/// tr: 'Düzenle'
+	String get edit => 'Düzenle';
+
+	/// tr: 'Sil'
+	String get delete => 'Sil';
+
+	/// tr: 'Açıklamayı düzenle'
+	String get editCaption => 'Açıklamayı düzenle';
+
+	/// tr: 'Bu gönderi silinsin mi?'
+	String get deletePostTitle => 'Bu gönderi silinsin mi?';
+
+	/// tr: 'Açıklama yaz...'
+	String get captionHint => 'Açıklama yaz...';
 }
 
 // Path: discover.story
@@ -2713,6 +2728,24 @@ class Translations$discover$story$tr {
 
 	/// tr: 'Fotoğraf çekmek için kamera izni gerekli.'
 	String get cameraDenied => 'Fotoğraf çekmek için kamera izni gerekli.';
+
+	/// tr: 'Taslaklar'
+	String get drafts => 'Taslaklar';
+
+	/// tr: 'Henüz taslağın yok.'
+	String get draftsEmpty => 'Henüz taslağın yok.';
+
+	/// tr: 'Sil'
+	String get delete => 'Sil';
+
+	/// tr: 'Taslak silinsin mi?'
+	String get deleteDraftPrompt => 'Taslak silinsin mi?';
+
+	/// tr: 'Paylaşıldı'
+	String get published => 'Paylaşıldı';
+
+	/// tr: 'Taslaklar yüklenemedi.'
+	String get draftsError => 'Taslaklar yüklenemedi.';
 }
 
 // Path: discover.highlight
@@ -3403,6 +3436,11 @@ extension on Translations {
 			'discover.post.minutesAgo' => ({required Object minutes}) => '${minutes}dk',
 			'discover.post.daysAgo' => ({required Object days}) => '${days}g',
 			'discover.post.deleteCommentTitle' => 'Bu yorum silinsin mi?',
+			'discover.post.edit' => 'Düzenle',
+			'discover.post.delete' => 'Sil',
+			'discover.post.editCaption' => 'Açıklamayı düzenle',
+			'discover.post.deletePostTitle' => 'Bu gönderi silinsin mi?',
+			'discover.post.captionHint' => 'Açıklama yaz...',
 			'discover.story.draft' => 'TASLAK',
 			'discover.story.story' => 'HİKÂYE',
 			'discover.story.share' => 'Paylaş',
@@ -3419,6 +3457,12 @@ extension on Translations {
 			'discover.story.downloadFailed' => 'Kaydedilemedi',
 			'discover.story.savedToDraft' => 'Taslağa kaydedildi',
 			'discover.story.cameraDenied' => 'Fotoğraf çekmek için kamera izni gerekli.',
+			'discover.story.drafts' => 'Taslaklar',
+			'discover.story.draftsEmpty' => 'Henüz taslağın yok.',
+			'discover.story.delete' => 'Sil',
+			'discover.story.deleteDraftPrompt' => 'Taslak silinsin mi?',
+			'discover.story.published' => 'Paylaşıldı',
+			'discover.story.draftsError' => 'Taslaklar yüklenemedi.',
 			'discover.highlight.title' => 'Öne Çıkan',
 			'discover.highlight.view' => 'Görüntüle',
 			'discover.highlight.aiComments' => 'AI yorumlar',

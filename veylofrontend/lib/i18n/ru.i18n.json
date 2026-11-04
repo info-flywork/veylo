@@ -578,7 +578,12 @@
       "hoursAgo": "{hours} ч",
       "minutesAgo": "{minutes} мин",
       "daysAgo": "{days} д",
-      "deleteCommentTitle": "Удалить комментарий?"
+      "deleteCommentTitle": "Удалить комментарий?",
+      "edit": "Изменить",
+      "delete": "Удалить",
+      "editCaption": "Изменить подпись",
+      "deletePostTitle": "Удалить эту публикацию?",
+      "captionHint": "Напиши подпись..."
     },
     "story": {
       "draft": "ЧЕРНОВИК",
@@ -596,7 +601,13 @@
       "downloaded": "Сохранено в галерею",
       "downloadFailed": "Не удалось сохранить",
       "savedToDraft": "Сохранено в черновики",
-      "cameraDenied": "Чтобы делать фото, нужен доступ к камере."
+      "cameraDenied": "Чтобы делать фото, нужен доступ к камере.",
+      "drafts": "Черновики",
+      "draftsEmpty": "У тебя пока нет черновиков.",
+      "delete": "Удалить",
+      "deleteDraftPrompt": "Удалить этот черновик?",
+      "published": "Опубликовано",
+      "draftsError": "Не удалось загрузить черновики."
     },
     "highlight": {
       "title": "Актуальное",

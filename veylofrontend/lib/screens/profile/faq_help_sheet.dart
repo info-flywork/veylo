@@ -8,7 +8,20 @@ import 'package:veylo/i18n/strings.g.dart';
 
 const _kItemFill = Color(0x0D998FED); // #998FED @ 5%
 const _kItemBorder = Color(0x3383A0B4); // #83A0B4 @ 20%
-const _kSupportEmail = 'support@fly-work.com';
+const kSupportEmail = 'support@fly-work.com';
+
+/// Destek adresine e-posta açar; posta uygulaması yoksa adresi gösterir.
+Future<void> openSupportMail(BuildContext context) async {
+  final uri = Uri(scheme: 'mailto', path: kSupportEmail);
+  try {
+    final ok = await launchUrl(uri);
+    if (!ok && context.mounted) {
+      showErrorSnackBar(context, 'mailto:$kSupportEmail');
+    }
+  } catch (e) {
+    if (context.mounted) showErrorSnackBar(context, e);
+  }
+}
 
 /// SSS / F.A.Q & Help bottom sheet.
 Future<void> showFaqHelpSheet(BuildContext context) {
@@ -47,20 +60,7 @@ class _FaqHelpSheetState extends State<FaqHelpSheet> {
     (q: f.q14, a: f.a14),
   ];
 
-  Future<void> _contactUs() async {
-    final uri = Uri(
-      scheme: 'mailto',
-      path: _kSupportEmail,
-    );
-    try {
-      final ok = await launchUrl(uri);
-      if (!ok && mounted) {
-        showErrorSnackBar(context, 'mailto:$_kSupportEmail');
-      }
-    } catch (e) {
-      if (mounted) showErrorSnackBar(context, e);
-    }
-  }
+  Future<void> _contactUs() => openSupportMail(context);
 
   @override
   Widget build(BuildContext context) {

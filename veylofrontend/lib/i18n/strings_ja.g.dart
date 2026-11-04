@@ -1117,6 +1117,11 @@ class _Translations$discover$post$ja extends Translations$discover$post$tr {
 	@override String minutesAgo({required Object minutes}) => '${minutes}分';
 	@override String daysAgo({required Object days}) => '${days}日';
 	@override String get deleteCommentTitle => 'このコメントを削除しますか？';
+	@override String get edit => '編集';
+	@override String get delete => '削除';
+	@override String get editCaption => 'キャプションを編集';
+	@override String get deletePostTitle => 'この投稿を削除しますか？';
+	@override String get captionHint => 'キャプションを書く...';
 }
 
 // Path: discover.story
@@ -1142,6 +1147,12 @@ class _Translations$discover$story$ja extends Translations$discover$story$tr {
 	@override String get downloadFailed => '保存できませんでした';
 	@override String get savedToDraft => '下書きに保存しました';
 	@override String get cameraDenied => '写真を撮るにはカメラへのアクセスが必要です。';
+	@override String get drafts => '下書き';
+	@override String get draftsEmpty => '下書きはまだありません。';
+	@override String get delete => '削除';
+	@override String get deleteDraftPrompt => 'この下書きを削除しますか？';
+	@override String get published => 'シェアしました';
+	@override String get draftsError => '下書きを読み込めませんでした。';
 }
 
 // Path: discover.highlight
@@ -1760,6 +1771,11 @@ extension on TranslationsJa {
 			'discover.post.minutesAgo' => ({required Object minutes}) => '${minutes}分',
 			'discover.post.daysAgo' => ({required Object days}) => '${days}日',
 			'discover.post.deleteCommentTitle' => 'このコメントを削除しますか？',
+			'discover.post.edit' => '編集',
+			'discover.post.delete' => '削除',
+			'discover.post.editCaption' => 'キャプションを編集',
+			'discover.post.deletePostTitle' => 'この投稿を削除しますか？',
+			'discover.post.captionHint' => 'キャプションを書く...',
 			'discover.story.draft' => '下書き',
 			'discover.story.story' => 'ストーリー',
 			'discover.story.share' => 'シェア',
@@ -1776,6 +1792,12 @@ extension on TranslationsJa {
 			'discover.story.downloadFailed' => '保存できませんでした',
 			'discover.story.savedToDraft' => '下書きに保存しました',
 			'discover.story.cameraDenied' => '写真を撮るにはカメラへのアクセスが必要です。',
+			'discover.story.drafts' => '下書き',
+			'discover.story.draftsEmpty' => '下書きはまだありません。',
+			'discover.story.delete' => '削除',
+			'discover.story.deleteDraftPrompt' => 'この下書きを削除しますか？',
+			'discover.story.published' => 'シェアしました',
+			'discover.story.draftsError' => '下書きを読み込めませんでした。',
 			'discover.highlight.title' => 'ハイライト',
 			'discover.highlight.view' => '表示',
 			'discover.highlight.aiComments' => 'AIコメント',
