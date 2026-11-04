@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
@@ -260,7 +261,7 @@ class VibesMapView extends StatefulWidget {
 }
 
 class _VibesMapViewState extends State<VibesMapView>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   String? _selected;
 
   /// Görünen balonun ekrandaki yeri (önizleme kartı için).
@@ -279,16 +280,29 @@ class _VibesMapViewState extends State<VibesMapView>
   List<_PlacedBubble> _tile = const [];
   Size _tileSize = Size.zero;
 
+  /// Balonların süzülmesi için sürekli saat (sn).
+  late final Ticker _clock = createTicker(_onClockTick);
+  double _time = 0;
+  Duration _lastTick = Duration.zero;
+
   @override
   void initState() {
     super.initState();
     _fling.addListener(_onFlingTick);
+    _clock.start();
   }
 
   @override
   void dispose() {
+    _clock.dispose();
     _fling.dispose();
     super.dispose();
+  }
+
+  void _onClockTick(Duration elapsed) {
+    final dt = ((elapsed - _lastTick).inMicroseconds / 1e6).clamp(0.0, 0.1);
+    _lastTick = elapsed;
+    setState(() => _time += dt);
   }
 
   void _onFlingTick() {
@@ -361,7 +375,18 @@ class _VibesMapViewState extends State<VibesMapView>
         final tile = _tileFor(Size(tileW, tileH));
 
         // Görünen karolar (+1 kenar payı) ve içlerindeki balonlar.
-        final bubbles = <({double sx, double sy, double size, VibePost post})>[];
+        final bubbles =
+            <
+              ({
+                Key key,
+                double sx,
+                double sy,
+                double size,
+                double base,
+                double phase,
+                VibePost post,
+              })
+            >[];
         if (posts.isNotEmpty && tile.isNotEmpty) {
           final col0 = ((-_pan.dx) / tileW).floor() - 1;
           final row0 = ((-_pan.dy) / tileH).floor() - 1;
@@ -380,7 +405,17 @@ class _VibesMapViewState extends State<VibesMapView>
                 if (sy + half < 0 || sy - half > viewH) continue;
                 final scale = _edgeScale(sx, sy, mapW, viewH);
                 final post = posts[(i + shift) % posts.length];
-                bubbles.add((sx: sx, sy: sy, size: b.spec.size * scale, post: post));
+                bubbles.add((
+                  // Karo + sıra: kaydırırken her balon kendi widget'ını korur (görsel karışmaz).
+                  key: ValueKey('$r/$c/$i'),
+                  sx: sx,
+                  sy: sy,
+                  size: b.spec.size * scale,
+                  base: b.spec.size,
+                  // Her balon kendi ritminde süzülür.
+                  phase: ((r * 31 + c * 17 + i * 7) % 97) / 97 * math.pi * 2,
+                  post: post,
+                ));
               }
             }
           }
@@ -405,36 +440,28 @@ class _VibesMapViewState extends State<VibesMapView>
               const Positioned.fill(
                 child: ColoredBox(color: Color(0xFFFFFFFF)),
               ),
-              Positioned(
-                top: _kMapShift,
-                left: 0,
-                right: 0,
-                bottom: -_kMapShift,
+              Positioned.fill(
                 child: IgnorePointer(
-                  child: ClipRect(
-                    child: Opacity(
-                      opacity: 0.22,
-                      child: ColorFiltered(
-                        colorFilter: _kMapColor,
-                        child: Image.asset(
-                          AppAssets.vibesMap,
-                          fit: BoxFit.cover,
-                          alignment: Alignment.center,
-                        ),
-                      ),
+                  child: Opacity(
+                    opacity: 0.22,
+                    child: ColorFiltered(
+                      colorFilter: _kMapColor,
+                      child: _RollingMap(pan: _pan, width: mapW, height: mapH),
                     ),
                   ),
                 ),
               ),
               for (final b in bubbles)
                 Positioned(
+                  key: b.key,
                   left: b.sx - b.size / 2,
                   top: b.sy - b.size / 2,
                   width: b.size,
                   height: b.size,
                   child: GestureDetector(
                     onTap: () => setState(() {
-                      final same = _selected == b.post.id &&
+                      final same =
+                          _selected == b.post.id &&
                           _selectedAt?.cx == b.sx &&
                           _selectedAt?.cy == b.sy;
                       _selected = same ? null : b.post.id;
@@ -442,10 +469,23 @@ class _VibesMapViewState extends State<VibesMapView>
                           ? null
                           : (cx: b.sx, cy: b.sy, size: b.size);
                     }),
-                    child: _PersonBubble(
-                      size: b.size,
-                      url: b.post.avatarAsset,
-                      blurred: b.post.blurred,
+                    child: Transform.translate(
+                      // Yavaş, hafif süzülme (≈4 sn'lik dalga, ±3 px).
+                      offset: Offset(
+                        math.cos(_time * 1.1 + b.phase) * 1.5,
+                        math.sin(_time * 1.6 + b.phase) * 3,
+                      ),
+                      child: _PopIn(
+                        delay: Duration(
+                          milliseconds: (b.phase / (math.pi * 2) * 260).round(),
+                        ),
+                        child: _PersonBubble(
+                          size: b.size,
+                          base: b.base,
+                          url: b.post.avatarAsset,
+                          blurred: b.post.blurred,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -458,17 +498,35 @@ class _VibesMapViewState extends State<VibesMapView>
                     onLongPress: widget.onLongPress == null
                         ? null
                         : () => widget.onLongPress!(selectedPost),
-                    child: _VibePreviewCard(
-                      post: selectedPost,
-                      liked: selectedPost.likedByMe,
-                      sendLabel: Translations.of(context).vibes.sendMessage,
-                      onLike: () => VibeStore.instance.toggleLike(selectedPost),
-                      onSend: selectedPost.isMine
-                          ? () {}
-                          : () => showVibeTalkSheet(context, selectedPost),
-                      onDelete: selectedPost.isMine && widget.onDelete != null
-                          ? () => widget.onDelete!(selectedPost)
-                          : null,
+                    child: TweenAnimationBuilder<double>(
+                      // Her yeni seçimde kart balondan büyüyerek açılır.
+                      key: ValueKey('${selectedPost.id}@${sel.cx},${sel.cy}'),
+                      tween: Tween(begin: 0, end: 1),
+                      duration: const Duration(milliseconds: 260),
+                      curve: Curves.easeOutBack,
+                      builder: (_, v, child) => Opacity(
+                        opacity: v.clamp(0.0, 1.0),
+                        child: Transform.scale(
+                          scale: 0.85 + 0.15 * v,
+                          alignment: sel.cy < _cardTop(sel.cy, sel.size, viewH)
+                              ? Alignment.topCenter
+                              : Alignment.bottomCenter,
+                          child: child,
+                        ),
+                      ),
+                      child: _VibePreviewCard(
+                        post: selectedPost,
+                        liked: selectedPost.likedByMe,
+                        sendLabel: Translations.of(context).vibes.sendMessage,
+                        onLike: () =>
+                            VibeStore.instance.toggleLike(selectedPost),
+                        onSend: selectedPost.isMine
+                            ? () {}
+                            : () => showVibeTalkSheet(context, selectedPost),
+                        onDelete: selectedPost.isMine && widget.onDelete != null
+                            ? () => widget.onDelete!(selectedPost)
+                            : null,
+                      ),
                     ),
                   ),
                 ),
@@ -497,6 +555,106 @@ class _VibesMapViewState extends State<VibesMapView>
     if (above >= 8) return above;
     return math.max(8.0, usableH - cardH);
   }
+}
+
+/// Dünya haritası: balonlarla birlikte (harita gibi) kayar, her yöne sonsuz döner.
+/// Görsel kırpılmış bir harita: yatayda komşu kopyalar aynalanır (kesik kıtalar
+/// dikişsiz oturur); dikeyde alt/üst kenar okyanus olduğundan düz tekrar eder. 360° bir harita gelirse [_mirror] false yapılır.
+class _RollingMap extends StatelessWidget {
+  const _RollingMap({
+    required this.pan,
+    required this.width,
+    required this.height,
+  });
+
+  final Offset pan;
+  final double width;
+  final double height;
+
+  static const _aspect = 860 / 950;
+  static const _mirror = true;
+
+  @override
+  Widget build(BuildContext context) {
+    // Eski yerleşimle aynı ölçek: alanı kaplar (cover).
+    final h = math.max(height, width / _aspect);
+    final w = h * _aspect;
+    final periodX = _mirror ? w * 2 : w;
+    final periodY = h;
+    // Ortalanmış başlangıç: ilk açılışta harita eskisi gibi görünür.
+    final originX = (width - w) / 2 + pan.dx % periodX - periodX;
+    final originY = _kMapShift + pan.dy % periodY - periodY;
+    final cols = (width / w).ceil() + 3;
+    final rows = (height / h).ceil() + 3;
+
+    Widget map(int col) {
+      final image = Image.asset(
+        AppAssets.vibesMap,
+        width: w,
+        height: h,
+        fit: BoxFit.cover,
+      );
+      if (!_mirror || col.isEven) return image;
+      return Transform.flip(flipX: true, child: image);
+    }
+
+    return ClipRect(
+      child: Stack(
+        clipBehavior: Clip.hardEdge,
+        children: [
+          for (var r = 0; r < rows; r++)
+            for (var c = 0; c < cols; c++)
+              Positioned(
+                left: originX + c * w,
+                top: originY + r * h,
+                width: w,
+                height: h,
+                child: map(c),
+              ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Ekrana giren balon küçükten büyüyerek gelir.
+class _PopIn extends StatefulWidget {
+  const _PopIn({required this.child, this.delay = Duration.zero});
+
+  final Widget child;
+  final Duration delay;
+
+  @override
+  State<_PopIn> createState() => _PopInState();
+}
+
+class _PopInState extends State<_PopIn> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 420),
+  );
+  late final Animation<double> _scale = CurvedAnimation(
+    parent: _c,
+    curve: Curves.easeOutBack,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(widget.delay, () {
+      if (mounted) _c.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) =>
+      ScaleTransition(scale: _scale, child: widget.child);
 }
 
 /// Fırlatma için zaman sayacı: değer = geçen saniye.
@@ -565,15 +723,15 @@ class _VibePreviewCard extends StatelessWidget {
                 Expanded(
                   child: Row(
                     children: [
-                          Flexible(
-                            child: AppText(
-                              post.name,
-                              style: AppTextStyles.vibesName,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
+                      Flexible(
+                        child: AppText(
+                          post.name,
+                          style: AppTextStyles.vibesName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -662,29 +820,40 @@ class _VibePreviewCard extends StatelessWidget {
 class _PersonBubble extends StatelessWidget {
   const _PersonBubble({
     required this.size,
+    required this.base,
     required this.url,
     required this.blurred,
   });
 
   final double size;
+
+  /// Görsel bu sabit boyutta çözülür; kenarda küçülme sadece ölçeklenir.
+  /// (Her karede yeni boyutta çözmek görselin gidip gelmesine yol açıyordu.)
+  final double base;
   final String url;
   final bool blurred;
 
   @override
   Widget build(BuildContext context) {
     // daire tam dolsun (yuvarlak kalsın)
-    final image = ChatAvatarImage(url: url, size: size);
+    final image = ChatAvatarImage(url: url, size: base);
 
     return ClipOval(
       child: SizedBox(
         width: size,
         height: size,
-        child: blurred
-            ? ImageFiltered(
-                imageFilter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                child: Transform.scale(scale: 1.35, child: image),
-              )
-            : image,
+        child: FittedBox(
+          child: SizedBox(
+            width: base,
+            height: base,
+            child: blurred
+                ? ImageFiltered(
+                    imageFilter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                    child: Transform.scale(scale: 1.35, child: image),
+                  )
+                : image,
+          ),
+        ),
       ),
     );
   }
