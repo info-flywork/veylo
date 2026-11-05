@@ -2717,6 +2717,21 @@ class Translations$discover$story$tr {
 	/// tr: 'Bilinmiyor'
 	String get unknownTrack => 'Bilinmiyor';
 
+	/// tr: 'Sana özel'
+	String get musicForYou => 'Sana özel';
+
+	/// tr: 'Trend'
+	String get musicTrending => 'Trend';
+
+	/// tr: 'Kaydedilenler'
+	String get musicSaved => 'Kaydedilenler';
+
+	/// tr: 'Henüz kaydedilmiş müzik yok.'
+	String get musicSavedEmpty => 'Henüz kaydedilmiş müzik yok.';
+
+	/// tr: 'İptal'
+	String get musicCancel => 'İptal';
+
 	/// tr: 'Galeriye kaydedildi'
 	String get downloaded => 'Galeriye kaydedildi';
 
@@ -3453,6 +3468,11 @@ extension on Translations {
 			'discover.story.musicEmpty' => 'Müzik bulunamadı.',
 			'discover.story.musicError' => 'Müzikler yüklenemedi.',
 			'discover.story.unknownTrack' => 'Bilinmiyor',
+			'discover.story.musicForYou' => 'Sana özel',
+			'discover.story.musicTrending' => 'Trend',
+			'discover.story.musicSaved' => 'Kaydedilenler',
+			'discover.story.musicSavedEmpty' => 'Henüz kaydedilmiş müzik yok.',
+			'discover.story.musicCancel' => 'İptal',
 			'discover.story.downloaded' => 'Galeriye kaydedildi',
 			'discover.story.downloadFailed' => 'Kaydedilemedi',
 			'discover.story.savedToDraft' => 'Taslağa kaydedildi',

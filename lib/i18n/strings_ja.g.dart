@@ -1143,6 +1143,11 @@ class _Translations$discover$story$ja extends Translations$discover$story$tr {
 	@override String get musicEmpty => '曲が見つかりません。';
 	@override String get musicError => '曲を読み込めませんでした。';
 	@override String get unknownTrack => '不明';
+	@override String get musicForYou => 'おすすめ';
+	@override String get musicTrending => 'トレンド';
+	@override String get musicSaved => '保存済み';
+	@override String get musicSavedEmpty => '保存した音楽はまだありません。';
+	@override String get musicCancel => 'キャンセル';
 	@override String get downloaded => 'ギャラリーに保存しました';
 	@override String get downloadFailed => '保存できませんでした';
 	@override String get savedToDraft => '下書きに保存しました';
@@ -1788,6 +1793,11 @@ extension on TranslationsJa {
 			'discover.story.musicEmpty' => '曲が見つかりません。',
 			'discover.story.musicError' => '曲を読み込めませんでした。',
 			'discover.story.unknownTrack' => '不明',
+			'discover.story.musicForYou' => 'おすすめ',
+			'discover.story.musicTrending' => 'トレンド',
+			'discover.story.musicSaved' => '保存済み',
+			'discover.story.musicSavedEmpty' => '保存した音楽はまだありません。',
+			'discover.story.musicCancel' => 'キャンセル',
 			'discover.story.downloaded' => 'ギャラリーに保存しました',
 			'discover.story.downloadFailed' => '保存できませんでした',
 			'discover.story.savedToDraft' => '下書きに保存しました',

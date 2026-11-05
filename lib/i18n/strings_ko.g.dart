@@ -1143,6 +1143,11 @@ class _Translations$discover$story$ko extends Translations$discover$story$tr {
 	@override String get musicEmpty => '음악을 찾을 수 없어요.';
 	@override String get musicError => '음악을 불러올 수 없어요.';
 	@override String get unknownTrack => '알 수 없음';
+	@override String get musicForYou => '추천';
+	@override String get musicTrending => '인기';
+	@override String get musicSaved => '저장됨';
+	@override String get musicSavedEmpty => '저장한 음악이 없습니다.';
+	@override String get musicCancel => '취소';
 	@override String get downloaded => '갤러리에 저장됐어요';
 	@override String get downloadFailed => '저장할 수 없어요';
 	@override String get savedToDraft => '임시 저장했어요';
@@ -1788,6 +1793,11 @@ extension on TranslationsKo {
 			'discover.story.musicEmpty' => '음악을 찾을 수 없어요.',
 			'discover.story.musicError' => '음악을 불러올 수 없어요.',
 			'discover.story.unknownTrack' => '알 수 없음',
+			'discover.story.musicForYou' => '추천',
+			'discover.story.musicTrending' => '인기',
+			'discover.story.musicSaved' => '저장됨',
+			'discover.story.musicSavedEmpty' => '저장한 음악이 없습니다.',
+			'discover.story.musicCancel' => '취소',
 			'discover.story.downloaded' => '갤러리에 저장됐어요',
 			'discover.story.downloadFailed' => '저장할 수 없어요',
 			'discover.story.savedToDraft' => '임시 저장했어요',

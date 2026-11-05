@@ -1143,6 +1143,11 @@ class _Translations$discover$story$it extends Translations$discover$story$tr {
 	@override String get musicEmpty => 'Nessuna musica trovata.';
 	@override String get musicError => 'Impossibile caricare la musica.';
 	@override String get unknownTrack => 'Sconosciuto';
+	@override String get musicForYou => 'Per te';
+	@override String get musicTrending => 'Di tendenza';
+	@override String get musicSaved => 'Salvati';
+	@override String get musicSavedEmpty => 'Nessuna musica salvata.';
+	@override String get musicCancel => 'Annulla';
 	@override String get downloaded => 'Salvato in galleria';
 	@override String get downloadFailed => 'Impossibile salvare';
 	@override String get savedToDraft => 'Salvato nelle bozze';
@@ -1788,6 +1793,11 @@ extension on TranslationsIt {
 			'discover.story.musicEmpty' => 'Nessuna musica trovata.',
 			'discover.story.musicError' => 'Impossibile caricare la musica.',
 			'discover.story.unknownTrack' => 'Sconosciuto',
+			'discover.story.musicForYou' => 'Per te',
+			'discover.story.musicTrending' => 'Di tendenza',
+			'discover.story.musicSaved' => 'Salvati',
+			'discover.story.musicSavedEmpty' => 'Nessuna musica salvata.',
+			'discover.story.musicCancel' => 'Annulla',
 			'discover.story.downloaded' => 'Salvato in galleria',
 			'discover.story.downloadFailed' => 'Impossibile salvare',
 			'discover.story.savedToDraft' => 'Salvato nelle bozze',

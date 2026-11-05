@@ -8,14 +8,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 
-
 /// Svg wrapper — Zovi AppIcon karşılığı.
 class _StoryIcon extends StatelessWidget {
-  const _StoryIcon(
-    this.asset, {
-    this.size = 24,
-    this.color,
-  });
+  const _StoryIcon(this.asset, {this.size = 24, this.color});
 
   final String asset;
   final double size;
@@ -40,7 +35,6 @@ class StoryTextEditResult {
   final String text;
   final StoryTextDraft style;
 }
-
 
 enum StoryTextToolMode { keyboard, fonts, style, typography, color }
 
@@ -314,9 +308,9 @@ final class _StoryTextEditorOverlayState extends State<StoryTextEditorOverlay> {
 
   void _done() {
     final draft = _draft.copyWith(text: _controller.text);
-    Navigator.of(context).pop(
-      StoryTextEditResult(text: draft.text, style: draft),
-    );
+    Navigator.of(
+      context,
+    ).pop(StoryTextEditResult(text: draft.text, style: draft));
   }
 
   @override
@@ -329,7 +323,10 @@ final class _StoryTextEditorOverlayState extends State<StoryTextEditorOverlay> {
     // Panel yüksekliği = klavye yüksekliği (klavye hiç açılmadıysa makul bir varsayılan).
     final panelHeight = _keyboardHeight > 0
         ? _keyboardHeight
-        : math.max(260.0 + safeBottom, MediaQuery.sizeOf(context).height * 0.34);
+        : math.max(
+            260.0 + safeBottom,
+            MediaQuery.sizeOf(context).height * 0.34,
+          );
     // Klavye sekmesinde çubuk klavyenin üstünde; klavye açılıp kapanırken
     // (biliniyorsa) sabit yükseklik kullanılır, böylece aşağı yukarı fırlamaz.
     final toolbarBottom = isKeyboardTab
@@ -414,8 +411,7 @@ final class _StoryTextEditorOverlayState extends State<StoryTextEditorOverlay> {
                               Expanded(
                                 child: _TabIcon(
                                   asset: AppAssets.iconStoryKeyboard,
-                                  selected:
-                                      _tab == StoryTextToolMode.keyboard,
+                                  selected: _tab == StoryTextToolMode.keyboard,
                                   onTap: () =>
                                       _selectTab(StoryTextToolMode.keyboard),
                                 ),
@@ -444,9 +440,8 @@ final class _StoryTextEditorOverlayState extends State<StoryTextEditorOverlay> {
                                   asset: AppAssets.iconStoryAaTool,
                                   selected:
                                       _tab == StoryTextToolMode.typography,
-                                  onTap: () => _selectTab(
-                                    StoryTextToolMode.typography,
-                                  ),
+                                  onTap: () =>
+                                      _selectTab(StoryTextToolMode.typography),
                                 ),
                               ),
                               const SizedBox(width: 10),
@@ -1016,7 +1011,8 @@ final class _CustomColorPickerDialog extends StatefulWidget {
       _CustomColorPickerDialogState();
 }
 
-final class _CustomColorPickerDialogState extends State<_CustomColorPickerDialog> {
+final class _CustomColorPickerDialogState
+    extends State<_CustomColorPickerDialog> {
   late HSVColor _hsv;
 
   @override
@@ -1168,7 +1164,9 @@ final class _CustomColorPickerDialogState extends State<_CustomColorPickerDialog
                                   borderRadius: BorderRadius.circular(14),
                                 ),
                               ),
-                              child: Text(Translations.of(context).storyText.cancel),
+                              child: Text(
+                                Translations.of(context).storyText.cancel,
+                              ),
                             ),
                           ),
                         ),

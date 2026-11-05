@@ -149,8 +149,9 @@ class _StoryCameraPageState extends State<StoryCameraPage>
     try {
       final file = await _picker.pickImage(
         source: ImageSource.camera,
-        preferredCameraDevice:
-            _useFront ? CameraDevice.front : CameraDevice.rear,
+        preferredCameraDevice: _useFront
+            ? CameraDevice.front
+            : CameraDevice.rear,
         maxWidth: 2048,
         maxHeight: 2048,
         imageQuality: 90,
@@ -178,7 +179,9 @@ class _StoryCameraPageState extends State<StoryCameraPage>
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(Translations.of(context).storyText.galleryError)),
+        SnackBar(
+          content: Text(Translations.of(context).storyText.galleryError),
+        ),
       );
     }
   }
@@ -239,150 +242,161 @@ class _CameraView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.black,
-      body: Column(
+      // Önizleme tüm ekranı kaplar (alt bar üstünde durur): editör de fotoğrafı
+      // tam ekran gösterdiği için kadraj birebir aynı kalır, çekince zoom olmaz.
+      body: Stack(
+        fit: StackFit.expand,
         children: [
-          Expanded(
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                preview ?? const ColoredBox(color: AppColors.black),
-                if (denied)
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 40),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
+          ?preview,
+          Column(
+            children: [
+              Expanded(
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    if (denied)
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              AppText(
+                                t.cameraDenied,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontFamily: AppFonts.poppins,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 16,
+                                  color: AppColors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 14),
+                              OutlinedButton(
+                                onPressed: onOpenSettings,
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: AppColors.white,
+                                  side: const BorderSide(
+                                    color: AppColors.white,
+                                  ),
+                                  shape: const StadiumBorder(),
+                                ),
+                                child: Text(
+                                  Translations.of(context).chats.openSettings,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    Positioned(
+                      top: top + 8,
+                      left: 16,
+                      right: 16,
+                      child: Row(
                         children: [
-                          AppText(
-                            t.cameraDenied,
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontFamily: AppFonts.poppins,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16,
+                          _CircleIconButton(
+                            onTap: onClose,
+                            child: const Icon(
+                              Icons.close,
                               color: AppColors.white,
+                              size: 20,
                             ),
                           ),
-                          const SizedBox(height: 14),
-                          OutlinedButton(
-                            onPressed: onOpenSettings,
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: AppColors.white,
-                              side: const BorderSide(color: AppColors.white),
-                              shape: const StadiumBorder(),
-                            ),
-                            child: Text(
-                              Translations.of(context).chats.openSettings,
-                            ),
-                          ),
+                          // Flaş: çekim sistem kamerasında yapılır, flaş orada seçilir.
                         ],
                       ),
                     ),
-                  ),
-                Positioned(
-                  top: top + 8,
-                  left: 16,
-                  right: 16,
-                  child: Row(
-                    children: [
-                      _CircleIconButton(
-                        onTap: onClose,
-                        child: const Icon(
-                          Icons.close,
-                          color: AppColors.white,
-                          size: 20,
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 24,
+                      child: Center(
+                        child: GestureDetector(
+                          onTap: onCapture,
+                          child: SvgPicture.asset(
+                            AppAssets.iconClickCamera,
+                            width: 98,
+                            height: 98,
+                          ),
                         ),
-                      ),
-                      // Flaş: çekim sistem kamerasında yapılır, flaş orada seçilir.
-                    ],
-                  ),
-                ),
-                Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 24,
-                  child: Center(
-                    child: GestureDetector(
-                      onTap: onCapture,
-                      child: SvgPicture.asset(
-                        AppAssets.iconClickCamera,
-                        width: 98,
-                        height: 98,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            height: 96 + bottom,
-            padding: EdgeInsets.fromLTRB(16, 10, 16, 10 + bottom),
-            color: const Color(0xFF151515),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: onGallery,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: SizedBox(
-                      width: 48,
-                      height: 48,
-                      child: galleryThumb != null
-                          ? Image.file(galleryThumb!, fit: BoxFit.cover)
-                          : ColoredBox(
-                              color: AppColors.white.withValues(alpha: 0.12),
-                              child: const Icon(
-                                Icons.photo_library_outlined,
-                                color: AppColors.white,
-                                size: 24,
-                              ),
-                            ),
-                    ),
-                  ),
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    GestureDetector(
-                      onTap: () => onModeChanged(0),
-                      child: AppText(
-                        t.draft,
-                        style: mode == 0
-                            ? AppTextStyles.storyModeActive
-                            : AppTextStyles.storyModeIdle,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    GestureDetector(
-                      onTap: () => onModeChanged(1),
-                      child: AppText(
-                        t.story,
-                        style: mode == 1
-                            ? AppTextStyles.storyModeActive
-                            : AppTextStyles.storyModeIdle,
                       ),
                     ),
                   ],
                 ),
-                GestureDetector(
-                  onTap: onFlip,
-                  behavior: HitTestBehavior.opaque,
-                  child: SizedBox(
-                    width: 48,
-                    height: 48,
-                    child: Center(
-                      child: SvgPicture.asset(
-                        AppAssets.iconConvert,
-                        width: 24,
-                        height: 24,
+              ),
+              Container(
+                height: 96 + bottom,
+                padding: EdgeInsets.fromLTRB(16, 10, 16, 10 + bottom),
+                color: const Color(0xFF151515),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: onGallery,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: SizedBox(
+                          width: 48,
+                          height: 48,
+                          child: galleryThumb != null
+                              ? Image.file(galleryThumb!, fit: BoxFit.cover)
+                              : ColoredBox(
+                                  color: AppColors.white.withValues(
+                                    alpha: 0.12,
+                                  ),
+                                  child: const Icon(
+                                    Icons.photo_library_outlined,
+                                    color: AppColors.white,
+                                    size: 24,
+                                  ),
+                                ),
+                        ),
                       ),
                     ),
-                  ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        GestureDetector(
+                          onTap: () => onModeChanged(0),
+                          child: AppText(
+                            t.draft,
+                            style: mode == 0
+                                ? AppTextStyles.storyModeActive
+                                : AppTextStyles.storyModeIdle,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        GestureDetector(
+                          onTap: () => onModeChanged(1),
+                          child: AppText(
+                            t.story,
+                            style: mode == 1
+                                ? AppTextStyles.storyModeActive
+                                : AppTextStyles.storyModeIdle,
+                          ),
+                        ),
+                      ],
+                    ),
+                    GestureDetector(
+                      onTap: onFlip,
+                      behavior: HitTestBehavior.opaque,
+                      child: SizedBox(
+                        width: 48,
+                        height: 48,
+                        child: Center(
+                          child: SvgPicture.asset(
+                            AppAssets.iconConvert,
+                            width: 24,
+                            height: 24,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
@@ -391,10 +405,7 @@ class _CameraView extends StatelessWidget {
 }
 
 class _CircleIconButton extends StatelessWidget {
-  const _CircleIconButton({
-    required this.onTap,
-    required this.child,
-  });
+  const _CircleIconButton({required this.onTap, required this.child});
 
   final VoidCallback onTap;
   final Widget child;
