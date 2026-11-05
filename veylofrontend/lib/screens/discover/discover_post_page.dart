@@ -561,13 +561,14 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
+                // Sadece alttaki isim/yorum satırının arkası hafif kararır (fotoğraf kapanmaz).
                 colors: [
                   Colors.transparent,
                   Colors.transparent,
-                  Color(0x99000000),
-                  Color(0xE6000000),
+                  Color(0x26000000),
+                  Color(0x73000000),
                 ],
-                stops: [0, 0.45, 0.72, 1],
+                stops: [0, 0.7, 0.85, 1],
               ),
             ),
           ),

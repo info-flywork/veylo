@@ -47,7 +47,10 @@ class StoryEditorLayers {
     'textRotation': textRotation,
     'stickers': [
       for (final s in stickers)
-        {'asset': s.asset, 'center': [s.center.dx, s.center.dy]},
+        {
+          'asset': s.asset,
+          'center': [s.center.dx, s.center.dy],
+        },
     ],
     if (music != null)
       'music': {

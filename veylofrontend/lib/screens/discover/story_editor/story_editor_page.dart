@@ -94,12 +94,17 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
   StoryTextDraft _textDraft = const StoryTextDraft();
   bool _toolsExpanded = true;
   bool _textEditorOpen = false;
+
+  /// Müzik seçici açıkken editör kontrolleri gizlenir (Instagram gibi).
+  bool _musicOpen = false;
+
   /// Yazının ekran ortasına göre konumu, ölçeği ve açısı (iki parmakla büyüt/döndür).
   Offset _textOffset = const Offset(0, -80);
   double _textScale = 1;
   double _textRotation = 0;
   double _gestureStartScale = 1;
   double _gestureStartRotation = 0;
+
   /// Hareket yazının üstünde (ya da iki parmakla) başladıysa yazıyı taşır.
   bool _movingText = false;
   final _textKey = GlobalKey();
@@ -201,7 +206,8 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
     await WidgetsBinding.instance.endOfFrame;
     try {
       final boundary =
-          _canvasKey.currentContext!.findRenderObject()! as RenderRepaintBoundary;
+          _canvasKey.currentContext!.findRenderObject()!
+              as RenderRepaintBoundary;
       final image = await boundary.toImage(pixelRatio: ratio);
       final rgba = await image.toByteData(format: ImageByteFormat.rawRgba);
       final jpeg = await compute(_encodeJpeg, (
@@ -308,7 +314,8 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
     } catch (_) {}
     if (!mounted) return;
     final before = _music;
-    // Sheet seçimde kapanmaz; her Kaydet'te müzik güncellenir.
+    setState(() => _musicOpen = true);
+    // Kırpma ekranında ✓ ile seçilen müzik bildirilir ve sheet kapanır.
     await showStoryMusicSheet(
       context,
       initial: before,
@@ -316,6 +323,7 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
         if (mounted) setState(() => _music = track);
       },
     );
+    if (mounted) setState(() => _musicOpen = false);
     final track = _music;
     if (track == null || !mounted) return;
     if (identical(track, before)) {
@@ -367,14 +375,14 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
       final file = _hasOverlay ? await _renderCanvas() : widget.file;
       await Gal.putImage(file.path);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.downloaded)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(t.downloaded)));
     } catch (_) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.downloadFailed)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(t.downloadFailed)));
     }
   }
 
@@ -397,10 +405,7 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
       ..pop(); // camera
     if (draft) {
       messenger.showSnackBar(
-        SnackBar(
-          content: Text(savedText),
-          behavior: SnackBarBehavior.floating,
-        ),
+        SnackBar(content: Text(savedText), behavior: SnackBarBehavior.floating),
       );
     }
   }
@@ -523,99 +528,96 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
                   ),
                 // Paylaşırken görsele işlenen yazı (editörde aşağıdaki katman görünür).
                 if (_capturing && hasText)
-                  Positioned.fill(child: _textLayer(displayText, _textDraft.color)),
+                  Positioned.fill(
+                    child: _textLayer(displayText, _textDraft.color),
+                  ),
               ],
             ),
           ),
 
           // Top chrome — Figma/Zovi: close + music pill | settings + tools
-          Positioned(
-            top: top + 10,
-            left: 16,
-            right: 16,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  onTap: _onClose,
-                  behavior: HitTestBehavior.opaque,
-                  child: SvgPicture.asset(
-                    AppAssets.iconStoryClose,
-                    width: 32,
-                    height: 32,
-                    colorFilter: const ColorFilter.mode(
-                      AppColors.white,
-                      BlendMode.srcIn,
+          if (!_musicOpen)
+            Positioned(
+              top: top + 10,
+              left: 16,
+              right: 16,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: _onClose,
+                    behavior: HitTestBehavior.opaque,
+                    child: SvgPicture.asset(
+                      AppAssets.iconStoryClose,
+                      width: 32,
+                      height: 32,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.white,
+                        BlendMode.srcIn,
+                      ),
                     ),
                   ),
-                ),
-                if (_music != null) ...[
-                  const SizedBox(width: 10),
-                  _MusicChip(
-                    track: _music!,
-                    onClear: _clearMusic,
+                  if (_music != null) ...[
+                    const SizedBox(width: 10),
+                    _MusicChip(track: _music!, onClear: _clearMusic),
+                  ],
+                  const Spacer(),
+                  SizedBox(
+                    width: 44,
+                    child: Column(
+                      children: [
+                        _ToolIcon(
+                          asset: AppAssets.iconStorySetting,
+                          onTap: () =>
+                              setState(() => _toolsExpanded = !_toolsExpanded),
+                        ),
+                        ClipRect(
+                          child: TweenAnimationBuilder<double>(
+                            tween: Tween<double>(end: _toolsExpanded ? 1 : 0),
+                            duration: const Duration(milliseconds: 280),
+                            curve: Curves.easeOutCubic,
+                            builder: (context, value, child) {
+                              return Align(
+                                alignment: Alignment.topCenter,
+                                heightFactor: value,
+                                widthFactor: 1,
+                                child: Opacity(
+                                  opacity: value.clamp(0.0, 1.0),
+                                  child: child,
+                                ),
+                              );
+                            },
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const SizedBox(height: 20),
+                                _ToolIcon(
+                                  asset: AppAssets.iconStoryTextAa,
+                                  onTap: () => _openTextTools(),
+                                ),
+                                const SizedBox(height: 20),
+                                _ToolIcon(
+                                  asset: AppAssets.iconStorySticker,
+                                  onTap: _openStickers,
+                                ),
+                                const SizedBox(height: 20),
+                                _ToolIcon(
+                                  asset: AppAssets.iconStoryMusic,
+                                  onTap: _openMusic,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
-                const Spacer(),
-                SizedBox(
-                  width: 44,
-                  child: Column(
-                    children: [
-                      _ToolIcon(
-                        asset: AppAssets.iconStorySetting,
-                        onTap: () => setState(
-                          () => _toolsExpanded = !_toolsExpanded,
-                        ),
-                      ),
-                      ClipRect(
-                        child: TweenAnimationBuilder<double>(
-                          tween: Tween<double>(
-                            end: _toolsExpanded ? 1 : 0,
-                          ),
-                          duration: const Duration(milliseconds: 280),
-                          curve: Curves.easeOutCubic,
-                          builder: (context, value, child) {
-                            return Align(
-                              alignment: Alignment.topCenter,
-                              heightFactor: value,
-                              widthFactor: 1,
-                              child: Opacity(
-                                opacity: value.clamp(0.0, 1.0),
-                                child: child,
-                              ),
-                            );
-                          },
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const SizedBox(height: 20),
-                              _ToolIcon(
-                                asset: AppAssets.iconStoryTextAa,
-                                onTap: () => _openTextTools(),
-                              ),
-                              const SizedBox(height: 20),
-                              _ToolIcon(
-                                asset: AppAssets.iconStorySticker,
-                                onTap: _openStickers,
-                              ),
-                              const SizedBox(height: 20),
-                              _ToolIcon(
-                                asset: AppAssets.iconStoryMusic,
-                                onTap: _openMusic,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
 
           // Canvas text — overlay açıkken gizle (çift placeholder olmasın)
-          if (!_textEditorOpen && !_capturing && !hasText)
+          if (!_textEditorOpen && !_capturing && !_musicOpen && !hasText)
             Positioned(
               left: 24,
               right: 56,
@@ -634,114 +636,115 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
           // Yazı: tek parmakla taşı, iki parmakla büyüt/küçült ve döndür, dokun düzenle.
           if (!_textEditorOpen && !_capturing && hasText)
             Positioned.fill(
-              child: _textLayer(
-                displayText,
-                _textDraft.color,
-                editing: true,
-              ),
+              child: _textLayer(displayText, _textDraft.color, editing: true),
             ),
 
           // Bottom bar — download + mevcut Share buton yapısı
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: ClipRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + bottom),
-                  color: AppColors.black.withValues(alpha: 0.70),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: _download,
-                        behavior: HitTestBehavior.opaque,
-                        child: Container(
-                          width: 44,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColors.black.withValues(alpha: 0.50),
-                          ),
-                          alignment: Alignment.center,
-                          child: SvgPicture.asset(
-                            AppAssets.iconStoryDownload,
-                            width: 24,
-                            height: 24,
-                            colorFilter: const ColorFilter.mode(
-                              AppColors.white,
-                              BlendMode.srcIn,
+          if (!_musicOpen)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: ClipRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + bottom),
+                    color: AppColors.black.withValues(alpha: 0.70),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: _download,
+                          behavior: HitTestBehavior.opaque,
+                          child: Container(
+                            width: 44,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.black.withValues(alpha: 0.50),
+                            ),
+                            alignment: Alignment.center,
+                            child: SvgPicture.asset(
+                              AppAssets.iconStoryDownload,
+                              width: 24,
+                              height: 24,
+                              colorFilter: const ColorFilter.mode(
+                                AppColors.white,
+                                BlendMode.srcIn,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: SizedBox(
-                          height: 52,
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(999),
-                              gradient: const LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  AppColors.brandPurpleSoft,
-                                  AppColors.brandPurpleDeep,
-                                ],
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: SizedBox(
+                            height: 52,
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(999),
+                                gradient: const LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    AppColors.brandPurpleSoft,
+                                    AppColors.brandPurpleDeep,
+                                  ],
+                                ),
                               ),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(3),
-                              child: Material(
-                                color: Colors.transparent,
-                                child: InkWell(
-                                  onTap: _share,
-                                  borderRadius: BorderRadius.circular(999),
-                                  child: Ink(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(999),
-                                      gradient: const LinearGradient(
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                        colors: [
-                                          AppColors.brandPurple,
-                                          AppColors.brandPurpleLight,
-                                        ],
-                                      ),
-                                      border: Border.all(
-                                        width: 0.6,
-                                        color: AppColors.white
-                                            .withValues(alpha: 0.33),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        SvgPicture.asset(
-                                          AppAssets.iconStorySend,
-                                          width: 22,
-                                          height: 22,
-                                          colorFilter: const ColorFilter.mode(
-                                            AppColors.white,
-                                            BlendMode.srcIn,
+                              child: Padding(
+                                padding: const EdgeInsets.all(3),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  child: InkWell(
+                                    onTap: _share,
+                                    borderRadius: BorderRadius.circular(999),
+                                    child: Ink(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                          999,
+                                        ),
+                                        gradient: const LinearGradient(
+                                          begin: Alignment.centerLeft,
+                                          end: Alignment.centerRight,
+                                          colors: [
+                                            AppColors.brandPurple,
+                                            AppColors.brandPurpleLight,
+                                          ],
+                                        ),
+                                        border: Border.all(
+                                          width: 0.6,
+                                          color: AppColors.white.withValues(
+                                            alpha: 0.33,
                                           ),
                                         ),
-                                        const SizedBox(width: 8),
-                                        AppText(
-                                          widget.editing != null
-                                              ? (widget.editing!.isDraft
-                                                    ? t.share
-                                                    : t.save)
-                                              : widget.saveAsDraft
-                                              ? t.saveToDraft
-                                              : t.share,
-                                          style: AppTextStyles.storyShare,
-                                        ),
-                                      ],
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          SvgPicture.asset(
+                                            AppAssets.iconStorySend,
+                                            width: 22,
+                                            height: 22,
+                                            colorFilter: const ColorFilter.mode(
+                                              AppColors.white,
+                                              BlendMode.srcIn,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          AppText(
+                                            widget.editing != null
+                                                ? (widget.editing!.isDraft
+                                                      ? t.share
+                                                      : t.save)
+                                                : widget.saveAsDraft
+                                                ? t.saveToDraft
+                                                : t.share,
+                                            style: AppTextStyles.storyShare,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -749,13 +752,12 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );
@@ -777,10 +779,7 @@ class _ToolIcon extends StatelessWidget {
         asset,
         width: 32,
         height: 32,
-        colorFilter: const ColorFilter.mode(
-          AppColors.white,
-          BlendMode.srcIn,
-        ),
+        colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
       ),
     );
   }

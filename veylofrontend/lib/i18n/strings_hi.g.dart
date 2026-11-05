@@ -1143,6 +1143,11 @@ class _Translations$discover$story$hi extends Translations$discover$story$tr {
 	@override String get musicEmpty => 'कोई म्यूज़िक नहीं मिला।';
 	@override String get musicError => 'म्यूज़िक लोड नहीं हो सका।';
 	@override String get unknownTrack => 'अज्ञात';
+	@override String get musicForYou => 'आपके लिए';
+	@override String get musicTrending => 'ट्रेंडिंग';
+	@override String get musicSaved => 'सहेजे गए';
+	@override String get musicSavedEmpty => 'अभी कोई सहेजा गया संगीत नहीं।';
+	@override String get musicCancel => 'रद्द करें';
 	@override String get downloaded => 'गैलरी में सेव हो गया';
 	@override String get downloadFailed => 'सेव नहीं हो सका';
 	@override String get savedToDraft => 'ड्राफ़्ट में सेव हो गया';
@@ -1788,6 +1793,11 @@ extension on TranslationsHi {
 			'discover.story.musicEmpty' => 'कोई म्यूज़िक नहीं मिला।',
 			'discover.story.musicError' => 'म्यूज़िक लोड नहीं हो सका।',
 			'discover.story.unknownTrack' => 'अज्ञात',
+			'discover.story.musicForYou' => 'आपके लिए',
+			'discover.story.musicTrending' => 'ट्रेंडिंग',
+			'discover.story.musicSaved' => 'सहेजे गए',
+			'discover.story.musicSavedEmpty' => 'अभी कोई सहेजा गया संगीत नहीं।',
+			'discover.story.musicCancel' => 'रद्द करें',
 			'discover.story.downloaded' => 'गैलरी में सेव हो गया',
 			'discover.story.downloadFailed' => 'सेव नहीं हो सका',
 			'discover.story.savedToDraft' => 'ड्राफ़्ट में सेव हो गया',

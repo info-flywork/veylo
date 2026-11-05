@@ -1143,6 +1143,11 @@ class _Translations$discover$story$zh extends Translations$discover$story$tr {
 	@override String get musicEmpty => '未找到音乐。';
 	@override String get musicError => '无法加载音乐。';
 	@override String get unknownTrack => '未知';
+	@override String get musicForYou => '为你推荐';
+	@override String get musicTrending => '热门';
+	@override String get musicSaved => '已保存';
+	@override String get musicSavedEmpty => '还没有保存的音乐。';
+	@override String get musicCancel => '取消';
 	@override String get downloaded => '已保存到相册';
 	@override String get downloadFailed => '保存失败';
 	@override String get savedToDraft => '已保存到草稿';
@@ -1788,6 +1793,11 @@ extension on TranslationsZh {
 			'discover.story.musicEmpty' => '未找到音乐。',
 			'discover.story.musicError' => '无法加载音乐。',
 			'discover.story.unknownTrack' => '未知',
+			'discover.story.musicForYou' => '为你推荐',
+			'discover.story.musicTrending' => '热门',
+			'discover.story.musicSaved' => '已保存',
+			'discover.story.musicSavedEmpty' => '还没有保存的音乐。',
+			'discover.story.musicCancel' => '取消',
 			'discover.story.downloaded' => '已保存到相册',
 			'discover.story.downloadFailed' => '保存失败',
 			'discover.story.savedToDraft' => '已保存到草稿',

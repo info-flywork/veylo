@@ -207,7 +207,8 @@ class _MainShellState extends State<MainShell> {
             ChatsPage(
               onRequestTap: () => ChatRequestPage.open(context),
             ),
-            const VibesPage(),
+            // Gizliyken harita animasyonu durur (pil).
+            TickerMode(enabled: _stackIndex == 2, child: const VibesPage()),
             ProfilePage(
               onEditProfileTap: () => EditProfilePage.open(context),
               onSettingsTap: () => AccountManagementPage.open(context),
