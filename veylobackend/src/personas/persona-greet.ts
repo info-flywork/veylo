@@ -3,19 +3,15 @@ import { logger } from '../lib/logger';
 import { prisma } from '../lib/prisma';
 import { conversationService } from '../services/conversation.service';
 import { pairKey } from '../utils/mask';
+import { personaByUsername, type PersonaDef } from './catalog';
 import { complete } from './openai';
+import { greetSystemPrompt } from './prompts';
 
 /** Ara sıra gerçek bir kullanıcıya kısa bir merhaba. */
 const TICK_MS = 25 * 60 * 1000;
 const CHANCE = 0.3;
 const QUIET_CHANCE = CHANCE / 3;
-
-const HELLOS = [
-  'selam, nasılsın?',
-  'merhaba, bugün nasıl geçiyor?',
-  'hey, buradasın diye yazayım dedim',
-  'selam, yeni bir şeyler oluyor mu sende?',
-];
+const GREET_TEMPERATURE = 0.75;
 
 function quietHour() {
   const hour = (new Date().getUTCHours() + 3) % 24;
@@ -27,10 +23,12 @@ async function tick() {
 
   const personas = await prisma.user.findMany({
     where: { isPersona: true, status: 'ACTIVE' },
-    select: { id: true, displayName: true },
+    select: { id: true, displayName: true, username: true },
   });
-  const persona = personas[Math.floor(Math.random() * personas.length)];
-  if (!persona) return;
+  const row = personas[Math.floor(Math.random() * personas.length)];
+  if (!row) return;
+  const def = personaByUsername(row.username);
+  if (!def) return;
 
   const since = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
   const people = await prisma.user.findMany({
@@ -51,37 +49,35 @@ async function tick() {
     });
     if (alreadyToday) continue;
     const existing = await prisma.conversation.findUnique({
-      where: { type_pairKey: { type: 'DIRECT', pairKey: pairKey(persona.id, person.id) } },
+      where: { type_pairKey: { type: 'DIRECT', pairKey: pairKey(row.id, person.id) } },
       select: { id: true },
     });
     if (existing) continue;
 
-    const line = await helloLine(persona.displayName);
-    const conversation = await conversationService.createDirect(persona.id, person.id);
-    await conversationService.send(persona.id, conversation.id, {
+    const line = await helloLine(def);
+    const conversation = await conversationService.createDirect(row.id, person.id);
+    await conversationService.send(row.id, conversation.id, {
       clientMsgId: randomUUID(),
       type: 'TEXT',
       body: line,
     });
-    logger.info({ persona: persona.displayName, userId: person.id }, 'AI karakter merhaba dedi');
+    logger.info({ persona: def.displayName, userId: person.id }, 'AI karakter merhaba dedi');
     return;
   }
 }
 
-async function helloLine(name: string | null) {
+async function helloLine(def: PersonaDef) {
   const raw = await complete(
     [
-      {
-        role: 'system',
-        content: `Sen ${name ?? 'bir kullanıcı'}sın. Tanımadığın birine Veylo'da ilk mesajı Türkçe yaz. Tek kısa cümle, samimi, flört veya kişisel bilgi yok. Sadece mesajı yaz.`,
-      },
+      { role: 'system', content: greetSystemPrompt(def) },
       { role: 'user', content: 'Merhaba de.' },
     ],
-    { maxTokens: 40, temperature: 1 },
+    { maxTokens: 40, temperature: GREET_TEMPERATURE },
   );
   const text = raw?.trim().replace(/^["“”']+|["“”']+$/g, '').split('\n')[0]?.trim();
   if (text && text.length >= 2 && text.length <= 120) return text;
-  return HELLOS[Math.floor(Math.random() * HELLOS.length)]!;
+  return def.voiceExamples[Math.floor(Math.random() * def.voiceExamples.length)]
+    ?? 'selam, nasılsın?';
 }
 
 export function startPersonaGreets() {

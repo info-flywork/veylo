@@ -23,8 +23,8 @@ export async function complete(
         model: env.OPENAI_MODEL,
         messages,
         max_tokens: opts.maxTokens,
-        temperature: opts.temperature ?? 0.9,
-        presence_penalty: 0.4,
+        temperature: opts.temperature ?? 0.7,
+        presence_penalty: 0.25,
       }),
       signal: AbortSignal.timeout(20_000),
     });

@@ -33,6 +33,8 @@ const EN_REPLIES = [
   'keep going',
   'that’s fair',
 ];
+/** Chat cevaplarında tarz sapmasını azaltmak için daha düşük sıcaklık. */
+const CHAT_TEMPERATURE = 0.65;
 const HISTORY = 14;
 /** Grupta gerçek biri susunca cevap bu sürenin içinde gelsin. */
 const GROUP_DELAY_MIN = 45_000;
@@ -89,7 +91,10 @@ function replyLanguage(text: string): ReplyLanguage {
   return 'en';
 }
 
-function fallbackReply(sample: string) {
+function fallbackReply(sample: string, def?: PersonaDef) {
+  if (def?.voiceExamples.length && replyLanguage(sample) === 'tr') {
+    return def.voiceExamples[Math.floor(Math.random() * def.voiceExamples.length)]!;
+  }
   const pool = replyLanguage(sample) === 'tr' ? TR_REPLIES : EN_REPLIES;
   return pool[Math.floor(Math.random() * pool.length)]!;
 }
@@ -246,9 +251,12 @@ async function deliver(conversationId: string, persona: { member: Member; def: P
   // İstemci "yazıyor"u 3 sn sonra gizler; cevap üretilirken yenilenir.
   const ticker = setInterval(typing, 2_500);
   try {
-    const raw = openAiEnabled() ? await complete(turns, { maxTokens: 160 }) : null;
+    const raw = openAiEnabled() ? await complete(turns, { maxTokens: 160, temperature: CHAT_TEMPERATURE }) : null;
     const drafted = clean(raw, persona.def);
-    const text = drafted && (language !== 'tr' || looksTurkish(drafted)) ? drafted : fallbackReply(sample || 'merhaba');
+    const text =
+      drafted && (language !== 'tr' || looksTurkish(drafted))
+        ? drafted
+        : fallbackReply(sample || 'merhaba', persona.def);
     if (!text) return;
     // Yazma süresi: uzun mesaj biraz daha uzun sürer.
     await sleep(Math.min(6_000, 600 + text.length * 35));

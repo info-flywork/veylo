@@ -3,10 +3,10 @@ import { prisma } from '../lib/prisma';
 import { turkishVibeLines } from './vibe-lines';
 
 /** Harita dolu kalsın: bu kadar yayındaki vibe hedeflenir. */
-const TARGET = 28;
-const MAX_ACTIVE = 36;
-const TICK_MS = 3 * 60 * 1000;
-const MIN_GAP_MS = 25 * 60 * 1000;
+const TARGET = 12;
+const MAX_ACTIVE = 16;
+const TICK_MS = 6 * 60 * 1000;
+const MIN_GAP_MS = 40 * 60 * 1000;
 const LIVE_MS = 48 * 60 * 60 * 1000;
 
 type PersonaUser = { id: string; username: string | null };
