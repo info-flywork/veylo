@@ -224,8 +224,9 @@ class ChatStore extends ChangeNotifier {
     }
     _inbox = _inbox.where((t) => t.id != thread.id).toList();
     _requests = _requests.where((t) => t.id != thread.id).toList();
-    final visible = thread.status != 'REJECTED' || thread.isInitiator;
-    if (visible && (thread.lastMessagePreview.isNotEmpty || thread.isGroup)) {
+    // Kullanıcı silene kadar kalsın. Boş önizleme yüzünden listeden düşürme.
+    final keep = thread.status != 'REJECTED' || thread.isInitiator;
+    if (keep) {
       if (thread.isStrangerRequest) {
         _requests = _sorted([..._requests, thread]);
       } else {

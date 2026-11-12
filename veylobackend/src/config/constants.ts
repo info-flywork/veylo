@@ -53,7 +53,7 @@ export const VIBE = {
   ttlHours: 24,
   /** Kullanıcı başına 24 saatte en fazla paylaşım. */
   dailyLimit: 10,
-  pageSize: 12,
+  pageSize: 8,
 } as const;
 
 export const POST = {

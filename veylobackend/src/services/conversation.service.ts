@@ -99,13 +99,12 @@ async function list(viewerId: string, box: 'inbox' | 'requests') {
     take: 200,
   });
 
-  const blocked = await safetyService.blockedIdsFor(viewerId);
   const visible = rows.filter((c) => {
     if (c.type === 'GROUP') return true;
     const peer = peerOf(c, viewerId);
-    // AI karakter sohbetleri de listede kalır; sadece mesajı olmayanlar / engellenenler gizlenir.
-    // Kullanıcı silene kadar (hidden) inbox'ta görünür.
-    return peer && !blocked.has(peer.userId) && c.lastSeq > 0;
+    // Yazışılmış sohbetler kullanıcı silene kadar (hidden) kalır.
+    // AI / engel yüzünden listeden düşürülmez.
+    return Boolean(peer) && c.lastSeq > 0;
   });
 
   // Beni kısıtlayan karşı taraflar (tek sorguda).
@@ -144,7 +143,10 @@ async function openPair(
   contextQuote?: string,
 ) {
   if (viewerId === targetId) throw AppError.badRequest('CANNOT_CHAT_SELF');
-  const target = await prisma.user.findUnique({ where: { id: targetId }, select: { status: true } });
+  const target = await prisma.user.findUnique({
+    where: { id: targetId },
+    select: { status: true, isPersona: true },
+  });
   if (!target || target.status !== 'ACTIVE' || (await safetyService.isBlockedBetween(viewerId, targetId))) {
     throw AppError.notFound('USER_NOT_FOUND');
   }
@@ -156,13 +158,19 @@ async function openPair(
       where: { conversationId_userId: { conversationId: existing.id, userId: viewerId } },
       data: { hidden: false },
     });
+    // Eski AI istekleri listede kaybolmasın diye kabul et.
+    if (target.isPersona && existing.status === 'PENDING') {
+      await prisma.conversation.update({ where: { id: existing.id }, data: { status: 'ACCEPTED' } });
+    }
     return get(viewerId, existing.id);
   }
 
-  // Karşı taraf beni takip ediyorsa direkt sohbet hemen açılır, değilse mesaj isteği olur.
-  // Anonim sohbetler her zaman istek olarak başlar.
+  // AI karakterlerle sohbet hemen açılır. Gerçek kullanıcıda takip yoksa istek olur.
+  // Anonim sohbetler (AI hariç) her zaman istek olarak başlar.
   let status: 'ACCEPTED' | 'PENDING' = 'PENDING';
-  if (type === 'DIRECT') {
+  if (target.isPersona) {
+    status = 'ACCEPTED';
+  } else if (type === 'DIRECT') {
     const followsMe = await prisma.follow.findUnique({
       where: { followerId_followingId: { followerId: targetId, followingId: viewerId } },
     });

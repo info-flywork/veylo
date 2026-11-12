@@ -3,12 +3,12 @@ import { prisma } from '../lib/prisma';
 import { turkishVibeLines } from './vibe-lines';
 
 /** Harita seyrek kalsın; aynı avatar tekrar etmesin. */
-const TARGET = 8;
-const MAX_ACTIVE = 8;
+const TARGET = 5;
+const MAX_ACTIVE = 5;
 /** Aynı karakterin haritada birden fazla pin'i olmasın. */
 const MAX_PER_AUTHOR = 1;
-const TICK_MS = 8 * 60 * 1000;
-const MIN_GAP_MS = 60 * 60 * 1000;
+const TICK_MS = 12 * 60 * 1000;
+const MIN_GAP_MS = 90 * 60 * 1000;
 const LIVE_MS = 48 * 60 * 60 * 1000;
 
 type PersonaUser = { id: string; username: string | null };
