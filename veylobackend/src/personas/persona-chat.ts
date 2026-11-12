@@ -11,28 +11,6 @@ import { personaLimits } from './limits';
 import { complete, openAiEnabled, type ChatTurn } from './openai';
 import { chatSystemPrompt, type ChatKind } from './prompts';
 
-const TR_REPLIES = [
-  'aynı şeyi düşünüyordum',
-  'anlat bakalım, dinliyorum',
-  'bence de, devam et',
-  'bunu daha önce de düşündüm',
-  'valla evet',
-  'biraz açar mısın',
-  'ben de öyle hissediyorum',
-  'haha tam olarak',
-  'sonra ne oldu',
-  'buna katılırım',
-];
-const EN_REPLIES = [
-  'same honestly',
-  'wait, say more',
-  'i feel that',
-  'okay and then',
-  'yeah i get that',
-  'haha true',
-  'keep going',
-  'that’s fair',
-];
 /** Chat cevaplarında tarz sapmasını azaltmak için daha düşük sıcaklık. */
 const CHAT_TEMPERATURE = 0.65;
 const HISTORY = 14;
@@ -68,17 +46,38 @@ function mentions(text: string, def: PersonaDef) {
 const TR_WORDS = new Set([
   'abi', 'abla', 'akşam', 'aksam', 'aynen', 'ben', 'bence', 'bir', 'biz', 'bu', 'bugün', 'bugun',
   'burada', 'çok', 'cok', 'çünkü', 'cunku', 'değil', 'degil', 'evet', 'eyvallah', 'gece', 'güzel',
-  'guzel', 'hadi', 'hayır', 'hayir', 'için', 'icin', 'işte', 'iste', 'kanka', 'lütfen', 'lutfen',
-  'merhaba', 'naber', 'nasıl', 'nasil', 'nasılsın', 'nasilsin', 'orada', 'sağol', 'sagol', 'selam',
-  'sen', 'sence', 'şimdi', 'simdi', 'siz', 'sonra', 'şu', 'su', 'tamam', 'teşekkür', 'tesekkur',
-  'valla', 'var', 'yok', 'yarın', 'yarin',
+  'guzel', 'hadi', 'hayır', 'hayir', 'için', 'icin', 'işte', 'iste', 'kanka', 'knk', 'lütfen', 'lutfen',
+  'merhaba', 'mrb', 'naber', 'nbr', 'napıyon', 'napiyon', 'napıyosun', 'napiyosun', 'napıyorsun',
+  'napiyorsun', 'napıyosunuz', 'napiyosunuz', 'napıyorsunuz', 'napiyorsunuz', 'naberlan', 'nasıl',
+  'nasil', 'nasılsın', 'nasilsin', 'nasılsınız', 'nasilsiniz', 'ne', 'neden', 'neredesi', 'neredeysin',
+  'nolur', 'olur', 'orada', 'sağol', 'sagol', 'selam', 'slm', 'sen', 'sence', 'şimdi', 'simdi', 'siz',
+  'sonra', 'şu', 'su', 'tamam', 'tmm', 'teşekkür', 'tesekkur', 'valla', 'var', 'yok', 'yarın', 'yarin',
+  'ya', 'lan', 'yaa', 'hee', 'heeey', 'baya', 'bayağı', 'bayagi', 'degil', 'misin', 'musun', 'mısın',
+  'misiniz', 'musunuz', 'mısınız',
+]);
+
+const EN_WORDS = new Set([
+  'the', 'and', 'you', 'are', 'is', 'what', 'how', 'hey', 'hello', 'yeah', 'yes', 'no', 'ok', 'okay',
+  'thanks', 'please', 'why', 'who', 'where', 'when', 'really', 'just', 'like', 'this', 'that', 'with',
 ]);
 
 function looksTurkish(text: string) {
   if (/[çğıöşüıÇĞİÖŞÜ]/.test(text)) return true;
+  // ascii yazılmış Türkçe argo / soru kalıpları
+  if (/\b(nap[iı]?yo|naber|nbr|slm|tmm|knk|valla|lan|misin|musun|m[iı]s[iı]n)\w*\b/i.test(text)) {
+    return true;
+  }
+  if (/\b(nap[iı]yorsunuz|napiyosunuz|napıyosunuz|nasilsiniz|nasılsınız)\b/i.test(text)) return true;
   const words = text.toLocaleLowerCase('tr').split(/[^\p{L}]+/u).filter(Boolean);
   const hits = words.filter((w) => TR_WORDS.has(w)).length;
-  return hits >= 2 || (hits >= 1 && words.length <= 4);
+  return hits >= 2 || (hits >= 1 && words.length <= 5);
+}
+
+function looksEnglish(text: string) {
+  const words = text.toLowerCase().split(/[^\p{L}]+/u).filter(Boolean);
+  if (words.length === 0) return false;
+  const hits = words.filter((w) => EN_WORDS.has(w)).length;
+  return hits >= 2 || (hits >= 1 && words.length <= 3 && !looksTurkish(text));
 }
 
 type ReplyLanguage = 'tr' | 'en' | 'other';
@@ -88,15 +87,29 @@ function replyLanguage(text: string): ReplyLanguage {
   if (!sample) return 'other';
   if (looksTurkish(sample)) return 'tr';
   if (/[а-яё]/i.test(sample) || /[ぁ-んァ-ン가-힣\u4e00-\u9fff]/.test(sample)) return 'other';
-  return 'en';
+  if (looksEnglish(sample)) return 'en';
+  // belirsiz kısa latin metin: İngilizceye zorlama (fallback/prompt bozulmasın)
+  return 'other';
 }
 
-function fallbackReply(sample: string, def?: PersonaDef) {
-  if (def?.voiceExamples.length && replyLanguage(sample) === 'tr') {
-    return def.voiceExamples[Math.floor(Math.random() * def.voiceExamples.length)]!;
-  }
-  const pool = replyLanguage(sample) === 'tr' ? TR_REPLIES : EN_REPLIES;
+function isGreeting(text: string) {
+  const t = text.toLocaleLowerCase('tr');
+  return (
+    /\b(selam|slm|merhaba|mrb|hey|hi|hello|yo|naber|nbr)\b/i.test(t) ||
+    /\b(nas[iı]ls[iı]n(?:[iı]z)?|nasilsin(?:iz)?|how are you)\b/i.test(t)
+  );
+}
+
+function pick(pool: string[]) {
   return pool[Math.floor(Math.random() * pool.length)]!;
+}
+
+/** Model yoksa/başarısızsa: selamsa greetFallbacks, değilse voiceExamples. Jenerik havuz yok. */
+function fallbackReply(sample: string, def: PersonaDef) {
+  if (isGreeting(sample) && def.greetFallbacks.length) return pick(def.greetFallbacks);
+  if (def.voiceExamples.length) return pick(def.voiceExamples);
+  if (def.greetFallbacks.length) return pick(def.greetFallbacks);
+  return replyLanguage(sample) === 'en' ? 'hey, what’s up' : 'selam, naber';
 }
 
 function delayFor(kind: string) {
@@ -253,10 +266,20 @@ async function deliver(conversationId: string, persona: { member: Member; def: P
   try {
     const raw = openAiEnabled() ? await complete(turns, { maxTokens: 160, temperature: CHAT_TEMPERATURE }) : null;
     const drafted = clean(raw, persona.def);
-    const text =
-      drafted && (language !== 'tr' || looksTurkish(drafted))
-        ? drafted
-        : fallbackReply(sample || 'merhaba', persona.def);
+    const acceptDraft =
+      Boolean(drafted) &&
+      (language === 'en'
+        ? true
+        : language === 'tr'
+          ? looksTurkish(drafted!)
+          : looksTurkish(drafted!) || !looksEnglish(drafted!));
+    const text = acceptDraft ? drafted! : fallbackReply(sample || 'merhaba', persona.def);
+    if (!acceptDraft) {
+      logger.warn(
+        { persona: persona.def.username, language, openAi: Boolean(raw), sample: sample.slice(0, 80) },
+        'AI karakter fallback cevabı kullandı',
+      );
+    }
     if (!text) return;
     // Yazma süresi: uzun mesaj biraz daha uzun sürer.
     await sleep(Math.min(6_000, 600 + text.length * 35));

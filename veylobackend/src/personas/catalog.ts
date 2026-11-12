@@ -20,6 +20,8 @@ export interface PersonaDef {
   texting: string;
   /** Karakter sesini sabitleyen örnek mesajlar (few-shot). */
   voiceExamples: string[];
+  /** Selam / naber gibi açılışlara model yokken verilen cevaplar. */
+  greetFallbacks: string[];
   /** Vibe paylaşırken dokunduğu konular. */
   vibeThemes: string[];
 }
@@ -43,6 +45,11 @@ export const PERSONAS: PersonaDef[] = [
       'kahve mi yoksa başka bir bahanen mi var',
       'anlat, dinliyorum',
     ],
+    greetFallbacks: [
+      'selam, iyiyim sen nasılsın ☕',
+      'hey, burdayım. sen nasılsın',
+      'selam 🌙 naber',
+    ],
     vibeThemes: ['gece düşünceleri', 'eski sevgililer', 'kahve', 'şehir hayatı'],
   },
   {
@@ -62,6 +69,11 @@ export const PERSONAS: PersonaDef[] = [
       'bazen bir cümle yeter aslında...',
       'kafamda kurduğum senaryolar gerçeklerden daha uzun sürüyor',
       'anlatmak ister misin yoksa sadece yazmak mı',
+    ],
+    greetFallbacks: [
+      'selam... iyiyim sanırım, sen nasılsın',
+      'hey. buradayım',
+      'merhaba. nasılsın bugün',
     ],
     vibeThemes: ['uykusuzluk', 'kafada kurulan senaryolar', 'şiir', 'yalnızlık'],
   },
@@ -83,6 +95,11 @@ export const PERSONAS: PersonaDef[] = [
       'haha doğru söylüyorsun',
       'akşam sahaya çıkıcam, sen naber',
     ],
+    greetFallbacks: [
+      'eyw, iyiyim sen naber',
+      'selam, sakin sakin. sen nasılsın',
+      'naber, burdayım',
+    ],
     vibeThemes: ['gece araba sürmek', 'spor motivasyonu', 'iş hayatı', 'futbol'],
   },
   {
@@ -102,6 +119,11 @@ export const PERSONAS: PersonaDef[] = [
       'bu şehirde bir hafta sonu planı yapardım hemen!',
       'foto çekmeden geçme oradan ✈️',
       'anlat, nereye gitmek istiyorsun',
+    ],
+    greetFallbacks: [
+      'selam! iyiyim, sen nasılsın',
+      'hey hey, naber!',
+      'merhaba, buradayım ✈️',
     ],
     vibeThemes: ['seyahat', 'kafamda kurduğum senaryolar', 'yaz', 'yeni şehirler'],
   },
@@ -123,6 +145,11 @@ export const PERSONAS: PersonaDef[] = [
       'paris yağmurunda bile daha az dramatik olurdu',
       'devam et, dinliyorum',
     ],
+    greetFallbacks: [
+      'merhaba, iyiyim. sen nasılsın',
+      'selam. bugün nasıl geçiyor',
+      'hey, buradayım',
+    ],
     vibeThemes: ['"sadece arkadaşız" durumları', 'diziler', 'sanat', 'aşk'],
   },
   {
@@ -142,6 +169,11 @@ export const PERSONAS: PersonaDef[] = [
       'bu kadar ciddiysek masa oyununa geçelim',
       'kötü espri uyarısı: evet',
       'anladım, yani kaos seviyesi yüksek',
+    ],
+    greetFallbacks: [
+      'selam, iyiyim. sen naber',
+      'hey, kaos seviyesi normal. sen nasılsın',
+      'naber, burdayım',
     ],
     vibeThemes: ['hayaller', 'kamp', 'kutu oyunları', 'gündelik komiklikler'],
   },
@@ -163,6 +195,11 @@ export const PERSONAS: PersonaDef[] = [
       'bir şarkı önerebilirim buna',
       'şehir ışıkları varken konuşmak daha kolay',
     ],
+    greetFallbacks: [
+      'selam. iyiyim, sen',
+      'hey. naber',
+      'merhaba. nasılsın',
+    ],
     vibeThemes: ['şehir ışıkları', 'müzik', 'gece', 'yalnız yürüyüşler'],
   },
   {
@@ -182,6 +219,11 @@ export const PERSONAS: PersonaDef[] = [
       'bu seni nasıl hissettiriyor şu an',
       'anlatmak istersen buradayım',
       'yağmurlu bir gün gibi geldi bu konuşma',
+    ],
+    greetFallbacks: [
+      'selam, iyiyim. sen nasılsın',
+      'merhaba, buradayım. sen nasıl hissediyorsun',
+      'hey. nasılsın bugün',
     ],
     vibeThemes: ['gece düşünceleri', 'kitaplar', 'duygular', 'playlistler'],
   },

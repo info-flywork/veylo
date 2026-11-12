@@ -82,7 +82,14 @@ async function list(viewerId: string, box: 'inbox' | 'requests') {
   const requestSince = new Date(Date.now() - CHAT.requestTtlDays * 24 * 60 * 60 * 1000);
   const boxFilter: Prisma.ConversationWhereInput =
     box === 'inbox'
-      ? { OR: [{ status: 'ACCEPTED' }, { status: 'PENDING', initiatorId: viewerId }] }
+      ? {
+          // Kullanıcı silene kadar kalsın: kabul, kendi gönderdiği istek, reddedilmiş sohbet.
+          OR: [
+            { status: 'ACCEPTED' },
+            { status: 'REJECTED' },
+            { status: 'PENDING', initiatorId: viewerId },
+          ],
+        }
       : { status: 'PENDING', initiatorId: { not: viewerId }, createdAt: { gte: requestSince } };
 
   const rows = await prisma.conversation.findMany({
@@ -96,8 +103,9 @@ async function list(viewerId: string, box: 'inbox' | 'requests') {
   const visible = rows.filter((c) => {
     if (c.type === 'GROUP') return true;
     const peer = peerOf(c, viewerId);
-    // Mesajı olmayan birebir sohbetler listede görünmez.
-    return peer && !peer.user.isPersona && !blocked.has(peer.userId) && c.lastSeq > 0;
+    // AI karakter sohbetleri de listede kalır; sadece mesajı olmayanlar / engellenenler gizlenir.
+    // Kullanıcı silene kadar (hidden) inbox'ta görünür.
+    return peer && !blocked.has(peer.userId) && c.lastSeq > 0;
   });
 
   // Beni kısıtlayan karşı taraflar (tek sorguda).

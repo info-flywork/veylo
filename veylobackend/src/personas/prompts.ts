@@ -48,11 +48,15 @@ export function chatSystemPrompt(
     lines.push('Bu birebir bir sohbet. Son mesaja değin, kısa yaz ve ara sıra bir soruyla devam ettir.');
   }
   if (ctx.language === 'tr') {
-    lines.push('Son mesaj Türkçe. Cevabın tamamı Türkçe olsun. İngilizce kelime ve cümle kullanma.');
+    lines.push(
+      'Son mesaj Türkçe (argo/kısaltma olabilir: napıyon, naber, slm vb.). Cevabın tamamı Türkçe olsun. İngilizce kelime, cümle veya "same honestly" gibi kalıplar kullanma.',
+    );
   } else if (ctx.language === 'en') {
     lines.push('The latest message is English. Reply only in English. Keep the same character voice.');
   } else {
-    lines.push('Karşı tarafın son mesajıyla aynı dilde cevap ver. Dili değiştirme.');
+    lines.push(
+      'Karşı tarafın son mesajıyla aynı dilde cevap ver. Belirsizse Türkçe yaz. İngilizce jenerik kalıplara kayma.',
+    );
   }
   return lines.join('\n');
 }
