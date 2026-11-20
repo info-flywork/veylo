@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Veylo – Kullanım Koşulları · Veylo</title>
+<meta name="description" content="Veylo terms of use / kullanım koşulları">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#7D37FD">
+<style>
+:root {
+  --ink: #1A1714; --muted: #636363;
+  --purple: #7D37FD; --purple-deep: #5E35B4; --purple-soft: #EDE6FF;
+  --purple-mid: #998FED; --line: #E5E5E5; --bg: #FAFAFC; --card: #FFFFFF;
+  --warn-bg: #FEF9E8; --warn-line: #F0D48A;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+header {
+  position: relative; overflow: hidden;
+  background:
+    radial-gradient(ellipse 80% 70% at 8% -20%, rgba(125,55,253,.22), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 95% 0%, rgba(153,143,237,.28), transparent 50%),
+    linear-gradient(180deg, #F3EEFF 0%, #EDE6FF 45%, var(--bg) 100%);
+  border-bottom: 1px solid var(--line);
+}
+.wrap { max-width: 820px; margin: 0 auto; padding: 0 20px; position: relative; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 0 8px; }
+.brand {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-weight: 800; font-size: 22px; letter-spacing: -.35px;
+  text-decoration: none; color: var(--ink);
+}
+.brand-mark {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: linear-gradient(135deg, #7B2FFF, var(--purple-mid));
+  box-shadow: 0 4px 12px rgba(125,55,253,.28);
+  position: relative; flex: 0 0 auto;
+}
+.brand-mark::after {
+  content: ""; position: absolute; inset: 9px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.92); border-bottom-color: transparent;
+  transform: rotate(-35deg);
+}
+.brand em { font-style: normal; color: var(--purple); }
+.lang {
+  display: inline-flex; border: 1px solid var(--line); border-radius: 999px;
+  overflow: hidden; background: rgba(255,255,255,.9); backdrop-filter: blur(6px);
+}
+.lang button {
+  border: 0; background: transparent; padding: 6px 14px; font: inherit; font-size: 14px;
+  cursor: pointer; color: var(--muted);
+}
+.lang button[aria-pressed="true"] { background: var(--purple); color: #fff; }
+nav.pages { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 4px 0 18px; font-size: 14px; }
+nav.pages a { color: var(--muted); text-decoration: none; }
+nav.pages a.active {
+  color: var(--ink); font-weight: 700;
+  border-bottom: 3px solid var(--purple); padding-bottom: 2px;
+}
+main { padding: 28px 0 56px; }
+h1 { font-size: 30px; line-height: 1.2; margin: 0 0 6px; letter-spacing: -.4px; color: var(--ink); }
+.updated { color: var(--muted); font-size: 14px; margin: 0 0 24px; }
+h2 {
+  font-size: 20px; margin: 34px 0 8px; padding-top: 10px;
+  border-top: 1px dashed var(--line); color: var(--ink);
+}
+h3 { font-size: 16px; margin: 20px 0 4px; color: var(--purple-deep); }
+p, li { color: #2A2622; }
+ul { padding-left: 22px; }
+li { margin: 4px 0; }
+a { color: var(--purple); }
+a:hover { color: var(--purple-deep); }
+.note {
+  background: linear-gradient(180deg, #fff, #F7F3FF);
+  border: 1px solid #D9CEF8; border-radius: 18px; padding: 16px 18px; margin: 16px 0;
+  box-shadow: 0 8px 0 rgba(125,55,253,.04);
+}
+.warn {
+  background: linear-gradient(180deg, #FFFCF3, var(--warn-bg));
+  border: 1px solid var(--warn-line); border-radius: 18px; padding: 16px 18px; margin: 16px 0;
+}
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 15px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+th { background: var(--purple-soft); font-weight: 700; color: var(--ink); }
+.table {
+  overflow-x: auto; border: 1px solid var(--line); border-radius: 16px;
+  background: var(--card); box-shadow: 0 6px 0 rgba(26,23,20,.03);
+}
+.table table { margin: 0; }
+.table th:first-child, .table td:first-child { padding-left: 14px; }
+footer {
+  border-top: 1px solid var(--line); color: var(--muted); font-size: 14px;
+  padding: 22px 0 40px;
+  background: linear-gradient(180deg, transparent, rgba(125,55,253,.06));
+}
+[data-lang] { display: none; }
+html[lang="tr"] [data-lang="tr"], html[lang="en"] [data-lang="en"] { display: block; }
+@media (max-width: 560px) {
+  h1 { font-size: 25px; }
+  body { font-size: 15.5px; }
+  .brand { font-size: 19px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="top">
+      <a class="brand" href="../about/"><span class="brand-mark" aria-hidden="true"></span>V<em>eylo</em></a>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-set="tr" aria-pressed="true">Türkçe</button>
+        <button type="button" data-set="en" aria-pressed="false">English</button>
+      </div>
+    </div>
+    <nav class="pages"><a href="../about/" data-tr="Hakkında" data-en="About">Hakkında</a><a href="../privacy-policy/" data-tr="Gizlilik" data-en="Privacy">Gizlilik</a><a href="../terms/" data-tr="Kullanım Koşulları" data-en="Terms" class="active">Kullanım Koşulları</a><a href="../cookies/" data-tr="Çerezler" data-en="Cookies">Çerezler</a><a href="../csae/" data-tr="Çocuk Güvenliği" data-en="Child Safety">Çocuk Güvenliği</a></nav>
+  </div>
+</header>
+<main class="wrap">
+  <section data-lang="tr">
+    <h1>Veylo – Kullanım Koşulları</h1>
+    <p class="updated">Son güncelleme: 20 Kasım 2026</p>
+
+<div class="note"><strong>Kısaca:</strong> Veylo bir sosyal uygulamadır. Hesap oluşturarak veya uygulamayı
+kullanarak bu koşulları ve <a href="../privacy-policy/">Gizlilik Politikası</a>'nı kabul edersin. 17 yaşından
+küçükler kullanamaz. Taciz, dolandırıcılık, yasa dışı içerik ve çocuk istismarı yasaktır.</div>
+
+<h2>1. Kabul</h2>
+<p>Veylo uygulamasını ("Uygulama") indirerek, hesap oluşturarak veya kullanarak bu Kullanım Koşulları'nı
+kabul etmiş olursun. Kabul etmiyorsan Uygulamayı kullanma. Uygulama Fly Work ("biz") tarafından sunulur.</p>
+
+<h2>2. Hizmet</h2>
+<p>Veylo; tanışma, anonim ve açık sohbet, bağlantı / yakınlık ilerlemesi, Vibes ve gönderiler, gruplar,
+rastgele eşleşme, sesli / görüntülü arama ve isteğe bağlı ücretli özellikler sunar. Özellikleri, jeton
+fiyatlarını ve kuralları zaman içinde değiştirebilir, ekleyebilir veya kaldırabiliriz.</p>
+
+<h2>3. Hesap ve yaş</h2>
+<ul>
+<li>Doğru bilgi vermeli ve giriş bilgilerini güvende tutmalısın. Hesabındaki aktivitelerden sen
+sorumlusun.</li>
+<li>Veylo'yu kullanmak için en az <strong>17 yaşında</strong> olmalı ve bulunduğun ülkenin yasalarına göre
+bu tür bir hizmeti kullanabilecek yaşta olmalısın.</li>
+<li>Tek bir gerçek kişi hesabı açabilirsin; başkasının kimliğine bürünmek yasaktır.</li>
+</ul>
+
+<h2>4. Anonim sohbet ve profil açma</h2>
+<ul>
+<li>Anonim sohbetlerde isim ve fotoğraf, bağlantı eşiklerine kadar gizli / maskeli kalabilir.</li>
+<li>Tam profil açılışı karşılıklı onay gerektirir. Kimliğini açması için kimseyi zorlama.</li>
+<li>Anonimliği güvenlik özelliklerini atlatmak veya zarar vermek için kullanma.</li>
+</ul>
+
+<h2>5. Kabul edilebilir kullanım</h2>
+<p>Şunları yapmamayı kabul edersin:</p>
+<ul>
+<li>Taciz, tehdit, nefret söylemi, şiddet, dolandırıcılık, spam veya kimliğe bürünme.</li>
+<li>Yasa dışı, müstehcen (izin verilmeyen), çocuk cinsel istismarı materyali veya zararlı içerik paylaşmak.</li>
+<li>Başkalarının rızası olmadan özel içeriklerini yaymak.</li>
+<li>Tersine mühendislik, otomasyon / bot, aşırı yük veya güvenlik önlemlerini atlatma.</li>
+<li>Jeton veya ücretli özellikleri hileyle elde etmek.</li>
+</ul>
+<p>İhlalde içerik kaldırılabilir, özellikler kısıtlanabilir veya hesap askıya alınabilir / kapatılabilir.
+Şikâyet ve engelleme araçlarını kullan; acil tehlikede yerel acil hattını ara.</p>
+
+<h2>6. İçeriğin</h2>
+<ul>
+<li>Paylaştığın içeriğin haklarına sen sahipsin; hizmeti işletmek için bize barındırma ve gösterme lisansı
+verirsin.</li>
+<li>Paylaşmaya hakkın olmayan içeriği yükleme.</li>
+<li>Kurallara aykırı içeriği kaldırma ve şikâyetleri inceleme hakkımız saklıdır.</li>
+</ul>
+
+<h2>7. Jetonlar ve satın alımlar</h2>
+<ul>
+<li>Bazı özellikler (ör. görüntülü arama, oda oluşturma, boost, kenarlık) jeton veya mağaza ürünü
+gerektirebilir.</li>
+<li>Jetonlar Uygulama içinde kullanman için verilen <strong>sınırlı, devredilemez ve geri alınabilir bir
+lisanstır</strong>; gerçek para değeri yoktur, nakde çevrilemez ve başka hesaba aktarılamaz.</li>
+<li>Ödemeler Apple App Store veya Google Play üzerinden alınır; iade ve faturalama mağaza kurallarına
+tabidir. "Satın alımları geri yükle" aynı mağaza hesabındaki uygun satın alımları geri getirir.</li>
+</ul>
+
+<h2>8. Fikri mülkiyet</h2>
+<p>Uygulama, marka, tasarım, yazılım ve ilgili içerikler bize veya lisans verenlerimize aittir. Sana
+Uygulamayı kişisel ve ticari olmayan amaçla kullanman için sınırlı, devredilemez bir hak veriyoruz.</p>
+
+<h2>9. Üçüncü taraf hizmetleri</h2>
+<p>Apple, Google, Firebase, Agora, CDN ve ödeme / abonelik doğrulama hizmetlerinin kullanımı, o
+hizmetlerin kendi koşullarına da tabidir.</p>
+
+<h2>10. Sorumluluğun sınırlandırılması</h2>
+<p>Uygulama "olduğu gibi" sunulur. Diğer kullanıcıların davranışlarını garanti etmeyiz. Yürürlükteki
+hukukun izin verdiği ölçüde; dolaylı zararlardan sorumlu değiliz. Kast veya ağır ihmal ile tüketici
+olarak sahip olduğun yasal haklar saklıdır.</p>
+
+<h2>11. Fesih</h2>
+<p>Uygulamayı istediğin zaman bırakabilir ve Hesap Yönetimi'nden silme talebi oluşturabilirsin. Bu
+koşulları ihlal edersen hesabını askıya alabilir veya kapatabiliriz. Kalan jetonlar silme sonrası geri
+getirilemez.</p>
+
+<h2>12. Uygulanacak hukuk</h2>
+<p>Bu koşullar Türkiye Cumhuriyeti hukukuna tabidir. Tüketici olarak ikamet ettiğin ülkenin emredici
+hükümlerinden doğan hakların saklıdır.</p>
+
+<h2>13. Değişiklikler</h2>
+<p>Bu koşulları güncelleyebiliriz. Önemli değişikliklerde Uygulama içinde bilgilendiririz.</p>
+
+<h2>14. İletişim</h2>
+<p><a href="mailto:support@fly-work.com">support@fly-work.com</a></p>
+
+  </section>
+  <section data-lang="en">
+    <h1>Veylo – Terms of Use</h1>
+    <p class="updated">Last updated: November 20, 2026</p>
+
+<div class="note"><strong>In short:</strong> Veylo is a social app. By creating an account or using the App
+you accept these terms and our <a href="../privacy-policy/">Privacy Policy</a>. Users under 17 are not
+allowed. Harassment, scams, illegal content and child exploitation are prohibited.</div>
+
+<h2>1. Acceptance</h2>
+<p>By downloading, creating an account or using the Veylo app (the "App") you accept these Terms of Use.
+If you do not agree, do not use the App. The App is provided by Fly Work ("we").</p>
+
+<h2>2. The service</h2>
+<p>Veylo offers meeting people, anonymous and open chat, connection progress, Vibes and posts, groups,
+random matching, voice / video calls and optional paid features. We may change, add or remove features,
+token prices and rules over time.</p>
+
+<h2>3. Account and age</h2>
+<ul>
+<li>You must provide accurate information and keep your login secure. You are responsible for activity
+under your account.</li>
+<li>You must be at least <strong>17 years old</strong> and old enough under the laws of your country to use
+a service like Veylo.</li>
+<li>One account per real person; impersonation is prohibited.</li>
+</ul>
+
+<h2>4. Anonymous chat and profile reveal</h2>
+<ul>
+<li>In anonymous chats, name and photo may stay hidden / masked until connection milestones.</li>
+<li>Full profile reveal requires mutual consent. Do not pressure others to reveal identity.</li>
+<li>Do not use anonymity to bypass safety features or to harm others.</li>
+</ul>
+
+<h2>5. Acceptable use</h2>
+<p>You agree not to:</p>
+<ul>
+<li>Harass, threaten, use hate speech, promote violence, scam, spam or impersonate others.</li>
+<li>Share illegal, prohibited sexual, child sexual abuse material or other harmful content.</li>
+<li>Distribute others' private content without consent.</li>
+<li>Reverse engineer, automate / bot, overload or circumvent security measures.</li>
+<li>Obtain tokens or paid features through cheating.</li>
+</ul>
+<p>We may remove content, limit features or suspend / close accounts for violations. Use in-app report
+and block tools; if someone is in immediate danger, call your local emergency number.</p>
+
+<h2>6. Your content</h2>
+<ul>
+<li>You keep rights to content you share; you grant us a licence to host and display it as needed to
+operate the service.</li>
+<li>Do not upload content you do not have rights to share.</li>
+<li>We may remove content that breaks the rules and review reports.</li>
+</ul>
+
+<h2>7. Tokens and purchases</h2>
+<ul>
+<li>Some features (e.g. video calls, creating rooms, boosts, borders) may require tokens or store
+products.</li>
+<li>Tokens are a <strong>limited, non-transferable, revocable licence</strong> for use in the App; they have
+no real-world monetary value, cannot be cashed out and cannot be transferred.</li>
+<li>Payments are processed by the Apple App Store or Google Play; refunds and billing follow store rules.
+"Restore purchases" recovers eligible buys on the same store account.</li>
+</ul>
+
+<h2>8. Intellectual property</h2>
+<p>The App, brand, design, software and related materials belong to us or our licensors. We grant you a
+limited, non-transferable right to use the App for personal, non-commercial purposes.</p>
+
+<h2>9. Third-party services</h2>
+<p>Use of Apple, Google, Firebase, Agora, the CDN and payment / subscription verification services is also
+subject to their own terms.</p>
+
+<h2>10. Limitation of liability</h2>
+<p>The App is provided "as is". We do not guarantee other users' behaviour. To the extent permitted by law,
+we are not liable for indirect damages. Liability for intent or gross negligence and your statutory
+consumer rights remain unaffected.</p>
+
+<h2>11. Termination</h2>
+<p>You may stop using the App anytime and submit a deletion request from Account Management. If you
+violate these terms, we may suspend or close your account. Remaining tokens cannot be restored after
+deletion.</p>
+
+<h2>12. Governing law</h2>
+<p>These terms are governed by the laws of the Republic of Türkiye. Mandatory consumer protection rights of
+your country of residence remain unaffected.</p>
+
+<h2>13. Changes</h2>
+<p>We may update these terms. We will inform you in the App about significant changes.</p>
+
+<h2>14. Contact</h2>
+<p><a href="mailto:support@fly-work.com">support@fly-work.com</a></p>
+
+  </section>
+</main>
+<footer>
+  <div class="wrap">
+    <span data-lang="tr">© 2026 Veylo · Fly Work. Tüm hakları saklıdır. İletişim: <a href="mailto:support@fly-work.com">support@fly-work.com</a></span>
+    <span data-lang="en">© 2026 Veylo · Fly Work. All rights reserved. Contact: <a href="mailto:support@fly-work.com">support@fly-work.com</a></span>
+  </div>
+</footer>
+<script>
+/* Dil: ?lang=en / #en ya da tarayıcı dili. Çerez veya yerel depolama kullanılmaz. */
+(function () {
+  var q = new URLSearchParams(location.search).get('lang') || location.hash.replace('#', '');
+  var nav = (navigator.language || 'tr').slice(0, 2).toLowerCase();
+  var lang = (q === 'tr' || q === 'en') ? q : (nav === 'tr' ? 'tr' : 'en');
+  function set(l) {
+    document.documentElement.lang = l;
+    document.querySelectorAll('.lang button').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.set === l));
+    });
+    document.querySelectorAll('nav.pages a').forEach(function (a) {
+      a.textContent = a.dataset[l];
+      a.href = a.getAttribute('href').split('?')[0] + '?lang=' + l;
+    });
+    var t = document.querySelector('section[data-lang="' + l + '"] h1');
+    if (t) document.title = t.textContent + ' · Veylo';
+  }
+  document.querySelectorAll('.lang button').forEach(function (b) {
+    b.addEventListener('click', function () { set(b.dataset.set); });
+  });
+  set(lang);
+})();
+</script>
+</body>
+</html>
