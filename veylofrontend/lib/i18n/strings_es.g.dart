@@ -179,6 +179,9 @@ class _Translations$chats$es extends Translations$chats$tr {
 	@override String get messageReplying => 'Respondiendo';
 	@override String get messageEditing => 'Editando';
 	@override String get reportReasonSubtitle => '¿Por qué denuncias este mensaje?';
+	@override String get reportUserReasonSubtitle => '¿Por qué denuncias a este usuario?';
+	@override String get reportGroupReasonSubtitle => '¿Por qué denuncias este grupo?';
+	@override String get reportRoomReasonSubtitle => '¿Por qué denuncias esta sala?';
 	@override String get reasonHarassment => 'Acoso o intimidación';
 	@override String get reasonHateSpeech => 'Discurso de odio';
 	@override String get reasonNudity => 'Desnudos o contenido sexual';
@@ -1351,6 +1354,9 @@ extension on TranslationsEs {
 			'chats.messageReplying' => 'Respondiendo',
 			'chats.messageEditing' => 'Editando',
 			'chats.reportReasonSubtitle' => '¿Por qué denuncias este mensaje?',
+			'chats.reportUserReasonSubtitle' => '¿Por qué denuncias a este usuario?',
+			'chats.reportGroupReasonSubtitle' => '¿Por qué denuncias este grupo?',
+			'chats.reportRoomReasonSubtitle' => '¿Por qué denuncias esta sala?',
 			'chats.reasonHarassment' => 'Acoso o intimidación',
 			'chats.reasonHateSpeech' => 'Discurso de odio',
 			'chats.reasonNudity' => 'Desnudos o contenido sexual',
@@ -1767,11 +1773,11 @@ extension on TranslationsEs {
 			'discover.liveRoom.leaveConfirmSubtitle' => 'You will leave while the conversation continues.',
 			'discover.liveRoom.leaveConfirm' => 'Leave',
 			'discover.liveRoom.cancel' => 'Cancel',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} usuarios',
 			'discover.groupChat.sampleVictoria' => 'Estoy muy aburrida. ¿Hacemos algo, chicos?',
 			'discover.groupChat.sampleSona' => '¿Qué podemos hacer? ¿Qué tienes en mente?',
-			_ => null,
-		} ?? switch (path) {
 			'discover.groupChat.sampleOwn' => 'Nos vemos en el muelle',
 			'discover.groupInfo.media' => 'Multimedia',
 			'discover.groupInfo.gallery' => 'Galería',

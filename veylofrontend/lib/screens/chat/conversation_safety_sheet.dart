@@ -167,8 +167,16 @@ Future<void> reportTargetUser(
   String? contentId,
   String? details,
 }) {
+  final chats = Translations.of(context).chats;
+  final subtitle = switch (contextType) {
+    'GROUP' => chats.reportGroupReasonSubtitle,
+    'ROOM' => chats.reportRoomReasonSubtitle,
+    'CHAT' => chats.reportUserReasonSubtitle,
+    _ => null,
+  };
   return showReportReasonSheet(
     context,
+    subtitle: subtitle,
     onSubmit: (reason) => SafetyRepository.instance.report(
       userId: userId,
       conversationId: conversationId,

@@ -179,6 +179,9 @@ class _Translations$chats$de extends Translations$chats$tr {
 	@override String get messageReplying => 'Antworten';
 	@override String get messageEditing => 'Bearbeiten';
 	@override String get reportReasonSubtitle => 'Warum meldest du diese Nachricht?';
+	@override String get reportUserReasonSubtitle => 'Warum meldest du diesen Nutzer?';
+	@override String get reportGroupReasonSubtitle => 'Warum meldest du diese Gruppe?';
+	@override String get reportRoomReasonSubtitle => 'Warum meldest du diesen Raum?';
 	@override String get reasonHarassment => 'Belästigung oder Mobbing';
 	@override String get reasonHateSpeech => 'Hassrede';
 	@override String get reasonNudity => 'Nacktheit oder sexuelle Inhalte';
@@ -1351,6 +1354,9 @@ extension on TranslationsDe {
 			'chats.messageReplying' => 'Antworten',
 			'chats.messageEditing' => 'Bearbeiten',
 			'chats.reportReasonSubtitle' => 'Warum meldest du diese Nachricht?',
+			'chats.reportUserReasonSubtitle' => 'Warum meldest du diesen Nutzer?',
+			'chats.reportGroupReasonSubtitle' => 'Warum meldest du diese Gruppe?',
+			'chats.reportRoomReasonSubtitle' => 'Warum meldest du diesen Raum?',
 			'chats.reasonHarassment' => 'Belästigung oder Mobbing',
 			'chats.reasonHateSpeech' => 'Hassrede',
 			'chats.reasonNudity' => 'Nacktheit oder sexuelle Inhalte',
@@ -1767,11 +1773,11 @@ extension on TranslationsDe {
 			'discover.liveRoom.leaveConfirmSubtitle' => 'You will leave while the conversation continues.',
 			'discover.liveRoom.leaveConfirm' => 'Leave',
 			'discover.liveRoom.cancel' => 'Cancel',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} Nutzer',
 			'discover.groupChat.sampleVictoria' => 'Mir ist so langweilig. Wollen wir was machen, Leute?',
 			'discover.groupChat.sampleSona' => 'Was können wir machen? Was hast du im Kopf?',
-			_ => null,
-		} ?? switch (path) {
 			'discover.groupChat.sampleOwn' => 'Lass uns am Steg treffen',
 			'discover.groupInfo.media' => 'Medien',
 			'discover.groupInfo.gallery' => 'Galerie',

@@ -179,6 +179,9 @@ class _Translations$chats$ru extends Translations$chats$tr {
 	@override String get messageReplying => 'Ответ';
 	@override String get messageEditing => 'Редактирование';
 	@override String get reportReasonSubtitle => 'Почему вы жалуетесь на это сообщение?';
+	@override String get reportUserReasonSubtitle => 'Почему вы жалуетесь на этого пользователя?';
+	@override String get reportGroupReasonSubtitle => 'Почему вы жалуетесь на эту группу?';
+	@override String get reportRoomReasonSubtitle => 'Почему вы жалуетесь на эту комнату?';
 	@override String get reasonHarassment => 'Оскорбления или травля';
 	@override String get reasonHateSpeech => 'Язык вражды';
 	@override String get reasonNudity => 'Нагота или сексуальный контент';
@@ -1351,6 +1354,9 @@ extension on TranslationsRu {
 			'chats.messageReplying' => 'Ответ',
 			'chats.messageEditing' => 'Редактирование',
 			'chats.reportReasonSubtitle' => 'Почему вы жалуетесь на это сообщение?',
+			'chats.reportUserReasonSubtitle' => 'Почему вы жалуетесь на этого пользователя?',
+			'chats.reportGroupReasonSubtitle' => 'Почему вы жалуетесь на эту группу?',
+			'chats.reportRoomReasonSubtitle' => 'Почему вы жалуетесь на эту комнату?',
 			'chats.reasonHarassment' => 'Оскорбления или травля',
 			'chats.reasonHateSpeech' => 'Язык вражды',
 			'chats.reasonNudity' => 'Нагота или сексуальный контент',
@@ -1767,11 +1773,11 @@ extension on TranslationsRu {
 			'discover.liveRoom.leaveConfirmSubtitle' => 'You will leave while the conversation continues.',
 			'discover.liveRoom.leaveConfirm' => 'Leave',
 			'discover.liveRoom.cancel' => 'Cancel',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupChat.usersCount' => ({required Object count}) => 'Участники: ${count}',
 			'discover.groupChat.sampleVictoria' => 'Мне ужасно скучно. Может, чем-нибудь займёмся?',
 			'discover.groupChat.sampleSona' => 'Чем займёмся? Есть идеи?',
-			_ => null,
-		} ?? switch (path) {
 			'discover.groupChat.sampleOwn' => 'Давайте встретимся на пирсе',
 			'discover.groupInfo.media' => 'Медиа',
 			'discover.groupInfo.gallery' => 'Галерея',

@@ -63,6 +63,9 @@ class SafetyRepository {
     'OTHER',
   ];
 
+  /// Canlı API hâlâ PROFILE/CHAT/CALL/ROOM enum'unda olabilir.
+  static const _legacyContexts = {'PROFILE', 'CHAT', 'CALL', 'ROOM'};
+
   /// [context]: PROFILE | CHAT | CALL | ROOM | GROUP | POST | VIBE
   /// [reason]: [reportReasons] değerlerinden biri.
   Future<void> report({
@@ -73,8 +76,9 @@ class SafetyRepository {
     String context = 'PROFILE',
     String? contentId,
   }) async {
-    // Sohbet üzerinden mesaj şikayeti (messageId = contentId).
-    if (conversationId != null && contentId != null) {
+    // Yalnızca DM/anonim sohbet (CHAT): conversation report endpoint'i.
+    // GROUP/ROOM şikayetinde contentId = oda/grup id'sidir; mesaj id'si değildir.
+    if (context == 'CHAT' && conversationId != null) {
       return ChatRepository.instance.reportPeer(
         conversationId,
         reason: reason,
@@ -82,27 +86,50 @@ class SafetyRepository {
         messageId: contentId,
       );
     }
-    if (conversationId != null && contentId == null && context == 'CHAT') {
-      return ChatRepository.instance.reportPeer(
-        conversationId,
-        reason: reason,
-        details: details,
-      );
-    }
     if (!isRealUser(userId)) {
       throw const ApiException(status: 404, code: 'PEER_UNAVAILABLE');
     }
-    await _api.post(
-      '/safety/reports',
-      body: {
-        'targetUserId': userId,
-        'context': context,
-        'reason': reason,
-        if (details != null && details.isNotEmpty) 'details': details,
-        if (conversationId != null) 'conversationId': conversationId,
-        if (contentId != null) 'contentId': contentId,
-      },
-    );
+
+    Future<void> post({
+      required String wireContext,
+      String? wireDetails,
+      bool includeExtraIds = true,
+    }) {
+      return _api.post(
+        '/safety/reports',
+        body: {
+          'targetUserId': userId,
+          'context': wireContext,
+          'reason': reason,
+          if (wireDetails != null && wireDetails.isNotEmpty) 'details': wireDetails,
+          if (includeExtraIds && conversationId != null)
+            'conversationId': conversationId,
+          if (includeExtraIds && contentId != null) 'contentId': contentId,
+        },
+      );
+    }
+
+    try {
+      await post(wireContext: context, wireDetails: details);
+    } on ApiException catch (e) {
+      // Eski API GROUP/VIBE/POST veya conversationId alanını reddederse uyumlu gövdeyle dene.
+      if (e.status != 400 || _legacyContexts.contains(context)) rethrow;
+      final fallbackContext = context == 'GROUP' ? 'ROOM' : 'PROFILE';
+      var fallbackDetails = [
+        if (details != null && details.trim().isNotEmpty) details.trim(),
+        'context=$context',
+        if (conversationId != null) 'conversationId=$conversationId',
+        if (contentId != null) 'contentId=$contentId',
+      ].join('\n');
+      if (fallbackDetails.length > 1000) {
+        fallbackDetails = fallbackDetails.substring(0, 1000);
+      }
+      await post(
+        wireContext: fallbackContext,
+        wireDetails: fallbackDetails,
+        includeExtraIds: false,
+      );
+    }
   }
 }
 

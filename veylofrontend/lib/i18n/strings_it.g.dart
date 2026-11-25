@@ -179,6 +179,9 @@ class _Translations$chats$it extends Translations$chats$tr {
 	@override String get messageReplying => 'Rispondendo';
 	@override String get messageEditing => 'Modifica';
 	@override String get reportReasonSubtitle => 'Perché stai segnalando questo messaggio?';
+	@override String get reportUserReasonSubtitle => 'Perché segnali questo utente?';
+	@override String get reportGroupReasonSubtitle => 'Perché segnali questo gruppo?';
+	@override String get reportRoomReasonSubtitle => 'Perché segnali questa stanza?';
 	@override String get reasonHarassment => 'Molestie o bullismo';
 	@override String get reasonHateSpeech => 'Incitamento all\'odio';
 	@override String get reasonNudity => 'Nudità o contenuti sessuali';
@@ -1351,6 +1354,9 @@ extension on TranslationsIt {
 			'chats.messageReplying' => 'Rispondendo',
 			'chats.messageEditing' => 'Modifica',
 			'chats.reportReasonSubtitle' => 'Perché stai segnalando questo messaggio?',
+			'chats.reportUserReasonSubtitle' => 'Perché segnali questo utente?',
+			'chats.reportGroupReasonSubtitle' => 'Perché segnali questo gruppo?',
+			'chats.reportRoomReasonSubtitle' => 'Perché segnali questa stanza?',
 			'chats.reasonHarassment' => 'Molestie o bullismo',
 			'chats.reasonHateSpeech' => 'Incitamento all\'odio',
 			'chats.reasonNudity' => 'Nudità o contenuti sessuali',
@@ -1767,11 +1773,11 @@ extension on TranslationsIt {
 			'discover.liveRoom.leaveConfirmSubtitle' => 'You will leave while the conversation continues.',
 			'discover.liveRoom.leaveConfirm' => 'Leave',
 			'discover.liveRoom.cancel' => 'Cancel',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} utenti',
 			'discover.groupChat.sampleVictoria' => 'Mi sto annoiando tantissimo. Facciamo qualcosa, ragazzi?',
 			'discover.groupChat.sampleSona' => 'Cosa possiamo fare? Che idee hai?',
-			_ => null,
-		} ?? switch (path) {
 			'discover.groupChat.sampleOwn' => 'Vediamoci al molo',
 			'discover.groupInfo.media' => 'Media',
 			'discover.groupInfo.gallery' => 'Galleria',

@@ -179,6 +179,9 @@ class _Translations$chats$ko extends Translations$chats$tr {
 	@override String get messageReplying => '답장 중';
 	@override String get messageEditing => '수정 중';
 	@override String get reportReasonSubtitle => '이 메시지를 신고하는 이유가 무엇인가요?';
+	@override String get reportUserReasonSubtitle => '이 사용자를 신고하는 이유는 무엇인가요?';
+	@override String get reportGroupReasonSubtitle => '이 그룹을 신고하는 이유는 무엇인가요?';
+	@override String get reportRoomReasonSubtitle => '이 룸을 신고하는 이유는 무엇인가요?';
 	@override String get reasonHarassment => '괴롭힘 또는 따돌림';
 	@override String get reasonHateSpeech => '혐오 발언';
 	@override String get reasonNudity => '나체 또는 성적인 콘텐츠';
@@ -1351,6 +1354,9 @@ extension on TranslationsKo {
 			'chats.messageReplying' => '답장 중',
 			'chats.messageEditing' => '수정 중',
 			'chats.reportReasonSubtitle' => '이 메시지를 신고하는 이유가 무엇인가요?',
+			'chats.reportUserReasonSubtitle' => '이 사용자를 신고하는 이유는 무엇인가요?',
+			'chats.reportGroupReasonSubtitle' => '이 그룹을 신고하는 이유는 무엇인가요?',
+			'chats.reportRoomReasonSubtitle' => '이 룸을 신고하는 이유는 무엇인가요?',
 			'chats.reasonHarassment' => '괴롭힘 또는 따돌림',
 			'chats.reasonHateSpeech' => '혐오 발언',
 			'chats.reasonNudity' => '나체 또는 성적인 콘텐츠',
@@ -1767,11 +1773,11 @@ extension on TranslationsKo {
 			'discover.liveRoom.leaveConfirmSubtitle' => 'You will leave while the conversation continues.',
 			'discover.liveRoom.leaveConfirm' => 'Leave',
 			'discover.liveRoom.cancel' => 'Cancel',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupChat.usersCount' => ({required Object count}) => '사용자 ${count}명',
 			'discover.groupChat.sampleVictoria' => '너무 심심해요. 우리 뭐라도 할까요?',
 			'discover.groupChat.sampleSona' => '뭐 할까요? 생각해 둔 거 있어요?',
-			_ => null,
-		} ?? switch (path) {
 			'discover.groupChat.sampleOwn' => '부두에서 만나요',
 			'discover.groupInfo.media' => '미디어',
 			'discover.groupInfo.gallery' => '갤러리',

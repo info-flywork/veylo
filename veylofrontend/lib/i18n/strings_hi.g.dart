@@ -179,6 +179,9 @@ class _Translations$chats$hi extends Translations$chats$tr {
 	@override String get messageReplying => 'जवाब दे रहे हैं';
 	@override String get messageEditing => 'संपादन';
 	@override String get reportReasonSubtitle => 'आप इस संदेश की रिपोर्ट क्यों कर रहे हैं?';
+	@override String get reportUserReasonSubtitle => 'आप इस उपयोगकर्ता की रिपोर्ट क्यों कर रहे हैं?';
+	@override String get reportGroupReasonSubtitle => 'आप इस ग्रुप की रिपोर्ट क्यों कर रहे हैं?';
+	@override String get reportRoomReasonSubtitle => 'आप इस रूम की रिपोर्ट क्यों कर रहे हैं?';
 	@override String get reasonHarassment => 'उत्पीड़न या धमकाना';
 	@override String get reasonHateSpeech => 'नफ़रत भरी बातें';
 	@override String get reasonNudity => 'नग्नता या यौन सामग्री';
@@ -1351,6 +1354,9 @@ extension on TranslationsHi {
 			'chats.messageReplying' => 'जवाब दे रहे हैं',
 			'chats.messageEditing' => 'संपादन',
 			'chats.reportReasonSubtitle' => 'आप इस संदेश की रिपोर्ट क्यों कर रहे हैं?',
+			'chats.reportUserReasonSubtitle' => 'आप इस उपयोगकर्ता की रिपोर्ट क्यों कर रहे हैं?',
+			'chats.reportGroupReasonSubtitle' => 'आप इस ग्रुप की रिपोर्ट क्यों कर रहे हैं?',
+			'chats.reportRoomReasonSubtitle' => 'आप इस रूम की रिपोर्ट क्यों कर रहे हैं?',
 			'chats.reasonHarassment' => 'उत्पीड़न या धमकाना',
 			'chats.reasonHateSpeech' => 'नफ़रत भरी बातें',
 			'chats.reasonNudity' => 'नग्नता या यौन सामग्री',
@@ -1767,11 +1773,11 @@ extension on TranslationsHi {
 			'discover.liveRoom.leaveConfirmSubtitle' => 'You will leave while the conversation continues.',
 			'discover.liveRoom.leaveConfirm' => 'Leave',
 			'discover.liveRoom.cancel' => 'Cancel',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} यूज़र',
 			'discover.groupChat.sampleVictoria' => 'मैं बहुत बोर हो रही हूँ। दोस्तों, कुछ करें?',
 			'discover.groupChat.sampleSona' => 'क्या करें? आपके मन में क्या है?',
-			_ => null,
-		} ?? switch (path) {
 			'discover.groupChat.sampleOwn' => 'चलो घाट पर मिलते हैं',
 			'discover.groupInfo.media' => 'मीडिया',
 			'discover.groupInfo.gallery' => 'गैलरी',

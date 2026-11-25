@@ -179,6 +179,9 @@ class _Translations$chats$pt extends Translations$chats$tr {
 	@override String get messageReplying => 'Respondendo';
 	@override String get messageEditing => 'Editando';
 	@override String get reportReasonSubtitle => 'Por que você está denunciando esta mensagem?';
+	@override String get reportUserReasonSubtitle => 'Por que você está denunciando este usuário?';
+	@override String get reportGroupReasonSubtitle => 'Por que você está denunciando este grupo?';
+	@override String get reportRoomReasonSubtitle => 'Por que você está denunciando esta sala?';
 	@override String get reasonHarassment => 'Assédio ou bullying';
 	@override String get reasonHateSpeech => 'Discurso de ódio';
 	@override String get reasonNudity => 'Nudez ou conteúdo sexual';
@@ -1351,6 +1354,9 @@ extension on TranslationsPt {
 			'chats.messageReplying' => 'Respondendo',
 			'chats.messageEditing' => 'Editando',
 			'chats.reportReasonSubtitle' => 'Por que você está denunciando esta mensagem?',
+			'chats.reportUserReasonSubtitle' => 'Por que você está denunciando este usuário?',
+			'chats.reportGroupReasonSubtitle' => 'Por que você está denunciando este grupo?',
+			'chats.reportRoomReasonSubtitle' => 'Por que você está denunciando esta sala?',
 			'chats.reasonHarassment' => 'Assédio ou bullying',
 			'chats.reasonHateSpeech' => 'Discurso de ódio',
 			'chats.reasonNudity' => 'Nudez ou conteúdo sexual',
@@ -1767,11 +1773,11 @@ extension on TranslationsPt {
 			'discover.liveRoom.leaveConfirmSubtitle' => 'You will leave while the conversation continues.',
 			'discover.liveRoom.leaveConfirm' => 'Leave',
 			'discover.liveRoom.cancel' => 'Cancel',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} usuários',
 			'discover.groupChat.sampleVictoria' => 'Tô muito entediada. Bora fazer alguma coisa, galera?',
 			'discover.groupChat.sampleSona' => 'O que a gente pode fazer? O que vocês têm em mente?',
-			_ => null,
-		} ?? switch (path) {
 			'discover.groupChat.sampleOwn' => 'Vamos nos encontrar no píer',
 			'discover.groupInfo.media' => 'Mídia',
 			'discover.groupInfo.gallery' => 'Galeria',

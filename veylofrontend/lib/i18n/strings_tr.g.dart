@@ -368,6 +368,15 @@ class Translations$chats$tr {
 	/// tr: 'Bu mesajı neden şikayet ediyorsun?'
 	String get reportReasonSubtitle => 'Bu mesajı neden şikayet ediyorsun?';
 
+	/// tr: 'Bu kullanıcıyı neden şikayet ediyorsun?'
+	String get reportUserReasonSubtitle => 'Bu kullanıcıyı neden şikayet ediyorsun?';
+
+	/// tr: 'Bu grubu neden şikayet ediyorsun?'
+	String get reportGroupReasonSubtitle => 'Bu grubu neden şikayet ediyorsun?';
+
+	/// tr: 'Bu odayı neden şikayet ediyorsun?'
+	String get reportRoomReasonSubtitle => 'Bu odayı neden şikayet ediyorsun?';
+
 	/// tr: 'Taciz veya zorbalık'
 	String get reasonHarassment => 'Taciz veya zorbalık';
 
@@ -3098,6 +3107,9 @@ extension on Translations {
 			'chats.messageReplying' => 'Yanıtlanıyor',
 			'chats.messageEditing' => 'Düzenleniyor',
 			'chats.reportReasonSubtitle' => 'Bu mesajı neden şikayet ediyorsun?',
+			'chats.reportUserReasonSubtitle' => 'Bu kullanıcıyı neden şikayet ediyorsun?',
+			'chats.reportGroupReasonSubtitle' => 'Bu grubu neden şikayet ediyorsun?',
+			'chats.reportRoomReasonSubtitle' => 'Bu odayı neden şikayet ediyorsun?',
 			'chats.reasonHarassment' => 'Taciz veya zorbalık',
 			'chats.reasonHateSpeech' => 'Nefret söylemi',
 			'chats.reasonNudity' => 'Çıplaklık veya cinsel içerik',
@@ -3514,11 +3526,11 @@ extension on Translations {
 			'discover.liveRoom.reject' => 'Reddet',
 			'discover.liveRoom.pendingRequests' => 'Katılma istekleri',
 			'discover.liveRoom.noRequests' => 'Bekleyen istek yok.',
+			_ => null,
+		} ?? switch (path) {
 			'discover.liveRoom.closeConfirmTitle' => 'Odayı kapatmak istediğine emin misin?',
 			'discover.liveRoom.closeConfirmSubtitle' => 'Oda herkes için kapanacak.',
 			'discover.liveRoom.closeConfirm' => 'Kapat',
-			_ => null,
-		} ?? switch (path) {
 			'discover.liveRoom.leaveConfirmTitle' => 'Odadan ayrılmak istediğine emin misin?',
 			'discover.liveRoom.leaveConfirmSubtitle' => 'Konuşma devam ederken odadan çıkacaksın.',
 			'discover.liveRoom.leaveConfirm' => 'Ayrıl',

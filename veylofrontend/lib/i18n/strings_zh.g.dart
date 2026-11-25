@@ -179,6 +179,9 @@ class _Translations$chats$zh extends Translations$chats$tr {
 	@override String get messageReplying => '正在回复';
 	@override String get messageEditing => '正在编辑';
 	@override String get reportReasonSubtitle => '你为什么要举报这条消息？';
+	@override String get reportUserReasonSubtitle => '你为什么举报此用户？';
+	@override String get reportGroupReasonSubtitle => '你为什么举报此群组？';
+	@override String get reportRoomReasonSubtitle => '你为什么举报此房间？';
 	@override String get reasonHarassment => '骚扰或欺凌';
 	@override String get reasonHateSpeech => '仇恨言论';
 	@override String get reasonNudity => '裸露或色情内容';
@@ -1351,6 +1354,9 @@ extension on TranslationsZh {
 			'chats.messageReplying' => '正在回复',
 			'chats.messageEditing' => '正在编辑',
 			'chats.reportReasonSubtitle' => '你为什么要举报这条消息？',
+			'chats.reportUserReasonSubtitle' => '你为什么举报此用户？',
+			'chats.reportGroupReasonSubtitle' => '你为什么举报此群组？',
+			'chats.reportRoomReasonSubtitle' => '你为什么举报此房间？',
 			'chats.reasonHarassment' => '骚扰或欺凌',
 			'chats.reasonHateSpeech' => '仇恨言论',
 			'chats.reasonNudity' => '裸露或色情内容',
@@ -1767,11 +1773,11 @@ extension on TranslationsZh {
 			'discover.liveRoom.leaveConfirmSubtitle' => 'You will leave while the conversation continues.',
 			'discover.liveRoom.leaveConfirm' => 'Leave',
 			'discover.liveRoom.cancel' => 'Cancel',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} 位用户',
 			'discover.groupChat.sampleVictoria' => '好无聊啊，大家要不要一起做点什么？',
 			'discover.groupChat.sampleSona' => '我们能做点什么？你有什么想法？',
-			_ => null,
-		} ?? switch (path) {
 			'discover.groupChat.sampleOwn' => '我们在码头见吧',
 			'discover.groupInfo.media' => '媒体',
 			'discover.groupInfo.gallery' => '相册',

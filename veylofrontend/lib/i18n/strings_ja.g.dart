@@ -179,6 +179,9 @@ class _Translations$chats$ja extends Translations$chats$tr {
 	@override String get messageReplying => '返信中';
 	@override String get messageEditing => '編集中';
 	@override String get reportReasonSubtitle => 'このメッセージを報告する理由は？';
+	@override String get reportUserReasonSubtitle => 'このユーザーを報告する理由は？';
+	@override String get reportGroupReasonSubtitle => 'このグループを報告する理由は？';
+	@override String get reportRoomReasonSubtitle => 'このルームを報告する理由は？';
 	@override String get reasonHarassment => '嫌がらせ・いじめ';
 	@override String get reasonHateSpeech => 'ヘイトスピーチ';
 	@override String get reasonNudity => 'ヌード・性的なコンテンツ';
@@ -1351,6 +1354,9 @@ extension on TranslationsJa {
 			'chats.messageReplying' => '返信中',
 			'chats.messageEditing' => '編集中',
 			'chats.reportReasonSubtitle' => 'このメッセージを報告する理由は？',
+			'chats.reportUserReasonSubtitle' => 'このユーザーを報告する理由は？',
+			'chats.reportGroupReasonSubtitle' => 'このグループを報告する理由は？',
+			'chats.reportRoomReasonSubtitle' => 'このルームを報告する理由は？',
 			'chats.reasonHarassment' => '嫌がらせ・いじめ',
 			'chats.reasonHateSpeech' => 'ヘイトスピーチ',
 			'chats.reasonNudity' => 'ヌード・性的なコンテンツ',
@@ -1767,11 +1773,11 @@ extension on TranslationsJa {
 			'discover.liveRoom.leaveConfirmSubtitle' => 'You will leave while the conversation continues.',
 			'discover.liveRoom.leaveConfirm' => 'Leave',
 			'discover.liveRoom.cancel' => 'Cancel',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count}人のユーザー',
 			'discover.groupChat.sampleVictoria' => 'すごく退屈。みんなで何かしない？',
 			'discover.groupChat.sampleSona' => '何する？何かアイデアある？',
-			_ => null,
-		} ?? switch (path) {
 			'discover.groupChat.sampleOwn' => '桟橋で会おうよ',
 			'discover.groupInfo.media' => 'メディア',
 			'discover.groupInfo.gallery' => 'ギャラリー',

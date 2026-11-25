@@ -302,14 +302,19 @@ class _GroupChatPageState extends State<GroupChatPage> {
         String? targetId;
         try {
           final info = await GroupRepository.instance.info(conversationId);
-          targetId = info.members
-              .where((m) => m.role == 'OWNER' && m.userId != null && !m.isYou)
-              .map((m) => m.userId)
-              .firstOrNull;
-          targetId ??= info.members
+          // Önce gerçek (AI olmayan) üyeler; yoksa owner / herhangi biri.
+          final others = info.members
               .where((m) => m.userId != null && !m.isYou)
+              .toList();
+          targetId = others
+              .where((m) => !m.isAi)
               .map((m) => m.userId)
               .firstOrNull;
+          targetId ??= others
+              .where((m) => m.role == 'OWNER')
+              .map((m) => m.userId)
+              .firstOrNull;
+          targetId ??= others.map((m) => m.userId).firstOrNull;
         } catch (_) {
           targetId = _ctrl?.messages
               .where((m) => !m.isMine && m.senderId != null)

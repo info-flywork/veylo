@@ -179,6 +179,9 @@ class _Translations$chats$en extends Translations$chats$tr {
 	@override String get messageReplying => 'Replying';
 	@override String get messageEditing => 'Editing';
 	@override String get reportReasonSubtitle => 'Why are you reporting this message?';
+	@override String get reportUserReasonSubtitle => 'Why are you reporting this user?';
+	@override String get reportGroupReasonSubtitle => 'Why are you reporting this group?';
+	@override String get reportRoomReasonSubtitle => 'Why are you reporting this room?';
 	@override String get reasonHarassment => 'Harassment or bullying';
 	@override String get reasonHateSpeech => 'Hate speech';
 	@override String get reasonNudity => 'Nudity or sexual content';
@@ -1359,6 +1362,9 @@ extension on TranslationsEn {
 			'chats.messageReplying' => 'Replying',
 			'chats.messageEditing' => 'Editing',
 			'chats.reportReasonSubtitle' => 'Why are you reporting this message?',
+			'chats.reportUserReasonSubtitle' => 'Why are you reporting this user?',
+			'chats.reportGroupReasonSubtitle' => 'Why are you reporting this group?',
+			'chats.reportRoomReasonSubtitle' => 'Why are you reporting this room?',
 			'chats.reasonHarassment' => 'Harassment or bullying',
 			'chats.reasonHateSpeech' => 'Hate speech',
 			'chats.reasonNudity' => 'Nudity or sexual content',
@@ -1775,11 +1781,11 @@ extension on TranslationsEn {
 			'discover.liveRoom.reject' => 'Reject',
 			'discover.liveRoom.pendingRequests' => 'Join requests',
 			'discover.liveRoom.noRequests' => 'No pending requests.',
+			_ => null,
+		} ?? switch (path) {
 			'discover.liveRoom.closeConfirmTitle' => 'Are you sure you want to close the room?',
 			'discover.liveRoom.closeConfirmSubtitle' => 'The room will end for everyone.',
 			'discover.liveRoom.closeConfirm' => 'Close',
-			_ => null,
-		} ?? switch (path) {
 			'discover.liveRoom.leaveConfirmTitle' => 'Are you sure you want to leave the room?',
 			'discover.liveRoom.leaveConfirmSubtitle' => 'You will leave while the conversation continues.',
 			'discover.liveRoom.leaveConfirm' => 'Leave',
