@@ -671,7 +671,10 @@
     "legalMiddle": "에 동의하고 ",
     "privacyPolicy": "개인정보 처리방침",
     "legalSuffix": "을 확인한 것으로 간주돼요.",
-    "passwordResetSent": "이메일로 비밀번호 재설정 링크를 보냈어요."
+    "passwordResetSent": "이메일로 비밀번호 재설정 링크를 보냈어요.",
+    "ageEulaBeforeLink": "만 18세 이상이며 ",
+    "ageEulaAfterLink": "(EULA)에 동의하고, 부적절한 콘텐츠와 악용에 대해 무관용 원칙이 적용됨을 확인합니다.",
+    "ageEulaRequired": "계속하려면 18세 이상 및 서비스 약관 동의 확인란을 선택하세요."
   },
   "onboarding": {
     "skip": "건너뛰기",
@@ -680,7 +683,7 @@
     "page2Title": "문자. 통화. 분위기를 느껴봐요.",
     "page2Subtitle": "익명으로 시작하고, 준비되면 문자, 통화, 영상으로 만나요.",
     "page3Title": "나와 맞는 사람을 찾고\n대화에 참여하세요.",
-    "page3Subtitle": "룸에 들어가 새로운 사람을 만나고\n순간을 함께 나눠요.",
+    "page3Subtitle": "관심사에 맞는 채팅방에 참여하고 커뮤니티와 교류하세요.",
     "getStarted": "시작하기",
     "alreadyHaveAccount": "이미 Veylo 계정이 있나요? ",
     "logInAction": "로그인"

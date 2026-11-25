@@ -604,6 +604,9 @@ class _Translations$auth$es extends Translations$auth$tr {
 	@override String get privacyPolicy => 'Política de privacidad';
 	@override String get legalSuffix => '.';
 	@override String get passwordResetSent => 'Te enviamos a tu correo un enlace para restablecer la contraseña.';
+	@override String get ageEulaBeforeLink => 'Confirmo que soy mayor de 18 años, que acepto los ';
+	@override String get ageEulaAfterLink => ' (EULA) y que hay tolerancia cero ante contenido objetable y abuso.';
+	@override String get ageEulaRequired => 'Marca la casilla de 18+ y Términos del Servicio para continuar.';
 }
 
 // Path: onboarding
@@ -619,7 +622,7 @@ class _Translations$onboarding$es extends Translations$onboarding$tr {
 	@override String get page2Title => 'Escribe. Habla. Siente la vibra.';
 	@override String get page2Subtitle => 'Empieza en anónimo y luego escribe, llama o vean sus caras cuando estés listo.';
 	@override String get page3Title => 'Encuentra a tu gente. Únete\na la conversación.';
-	@override String get page3Subtitle => 'Entra en salas, conoce gente nueva y\ncompartan el momento juntos.';
+	@override String get page3Subtitle => 'Únete a salas de chat según tus intereses e interactúa con la comunidad.';
 	@override String get getStarted => 'Empezar';
 	@override String get alreadyHaveAccount => '¿Ya tienes una cuenta de Veylo? ';
 	@override String get logInAction => 'Iniciar sesión';
@@ -1856,13 +1859,16 @@ extension on TranslationsEs {
 			'auth.privacyPolicy' => 'Política de privacidad',
 			'auth.legalSuffix' => '.',
 			'auth.passwordResetSent' => 'Te enviamos a tu correo un enlace para restablecer la contraseña.',
+			'auth.ageEulaBeforeLink' => 'Confirmo que soy mayor de 18 años, que acepto los ',
+			'auth.ageEulaAfterLink' => ' (EULA) y que hay tolerancia cero ante contenido objetable y abuso.',
+			'auth.ageEulaRequired' => 'Marca la casilla de 18+ y Términos del Servicio para continuar.',
 			'onboarding.skip' => 'Omitir',
 			'onboarding.page1Title' => 'Sé tú. Sigue en el anonimato.',
 			'onboarding.page1Subtitle' => 'Conoce gente nueva y empieza conversaciones\nsin revelar quién eres.',
 			'onboarding.page2Title' => 'Escribe. Habla. Siente la vibra.',
 			'onboarding.page2Subtitle' => 'Empieza en anónimo y luego escribe, llama o vean sus caras cuando estés listo.',
 			'onboarding.page3Title' => 'Encuentra a tu gente. Únete\na la conversación.',
-			'onboarding.page3Subtitle' => 'Entra en salas, conoce gente nueva y\ncompartan el momento juntos.',
+			'onboarding.page3Subtitle' => 'Únete a salas de chat según tus intereses e interactúa con la comunidad.',
 			'onboarding.getStarted' => 'Empezar',
 			'onboarding.alreadyHaveAccount' => '¿Ya tienes una cuenta de Veylo? ',
 			'onboarding.logInAction' => 'Iniciar sesión',

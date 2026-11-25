@@ -671,7 +671,10 @@
     "legalMiddle": " e confermi di aver letto la nostra ",
     "privacyPolicy": "Informativa sulla privacy",
     "legalSuffix": ".",
-    "passwordResetSent": "Ti abbiamo inviato via email un link per reimpostare la password."
+    "passwordResetSent": "Ti abbiamo inviato via email un link per reimpostare la password.",
+    "ageEulaBeforeLink": "Confermo di avere più di 18 anni, di accettare i ",
+    "ageEulaAfterLink": " (EULA) e che c’è tolleranza zero per contenuti inappropriati e abusi.",
+    "ageEulaRequired": "Seleziona la casella 18+ e Termini di servizio per continuare."
   },
   "onboarding": {
     "skip": "Salta",
@@ -680,7 +683,7 @@
     "page2Title": "Scrivi. Parla. Senti la vibe.",
     "page2Subtitle": "Inizia in anonimo, poi scrivi, chiama o incontratevi quando ti senti pronto.",
     "page3Title": "Trova la tua gente. Unisciti\nalla conversazione.",
-    "page3Subtitle": "Entra nelle stanze, conosci persone nuove e\nvivi il momento insieme.",
+    "page3Subtitle": "Entra nelle chat room per interessi e interagisci con la community.",
     "getStarted": "Iniziamo",
     "alreadyHaveAccount": "Hai già un account Veylo? ",
     "logInAction": "Accedi"

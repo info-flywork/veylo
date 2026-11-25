@@ -1063,6 +1063,21 @@ class Translations$profile$tr {
 
 	/// tr: 'Uzat'
 	String get boostExtend => 'Uzat';
+
+	/// tr: 'Destek & İletişim'
+	String get reportIssueTitle => 'Destek & İletişim';
+
+	/// tr: 'Uygunsuz içerik veya kötüye kullanım bildirmek için yaz. Destek: support@fly-work.com'
+	String get reportIssueSubtitle => 'Uygunsuz içerik veya kötüye kullanım bildirmek için yaz. Destek: support@fly-work.com';
+
+	/// tr: 'Sorunu kısaca anlat…'
+	String get reportIssueHint => 'Sorunu kısaca anlat…';
+
+	/// tr: 'Gönder'
+	String get reportIssueSend => 'Gönder';
+
+	/// tr: 'Bildirimin alındı. En kısa sürede dönüş yapacağız.'
+	String get reportIssueSent => 'Bildirimin alındı. En kısa sürede dönüş yapacağız.';
 }
 
 // Path: nav
@@ -1472,6 +1487,15 @@ class Translations$auth$tr {
 
 	/// tr: 'Şifre sıfırlama bağlantısını e-postana gönderdik.'
 	String get passwordResetSent => 'Şifre sıfırlama bağlantısını e-postana gönderdik.';
+
+	/// tr: '18 yaşından büyük olduğumu, '
+	String get ageEulaBeforeLink => '18 yaşından büyük olduğumu, ';
+
+	/// tr: '’nı (EULA) kabul ettiğimi ve sakıncalı içerik ile kötüye kullanıma sıfır tolerans gösterileceğini onaylıyorum.'
+	String get ageEulaAfterLink => '’nı (EULA) kabul ettiğimi ve sakıncalı içerik ile kötüye kullanıma sıfır tolerans gösterileceğini onaylıyorum.';
+
+	/// tr: 'Devam etmek için 18+ ve Hizmet Şartları onayını işaretlemelisin.'
+	String get ageEulaRequired => 'Devam etmek için 18+ ve Hizmet Şartları onayını işaretlemelisin.';
 }
 
 // Path: onboarding
@@ -1488,8 +1512,8 @@ class Translations$onboarding$tr {
 	/// tr: 'Kendin ol. Anonim kal.'
 	String get page1Title => 'Kendin ol. Anonim kal.';
 
-	/// tr: 'Kimliğini paylaşmadan yeni insanlarla tanış ve sohbet et.'
-	String get page1Subtitle => 'Kimliğini paylaşmadan yeni insanlarla tanış ve sohbet et.';
+	/// tr: 'Kimliğini paylaşmadan ilgi alanlarına göre topluluklarla sohbet et.'
+	String get page1Subtitle => 'Kimliğini paylaşmadan ilgi alanlarına göre topluluklarla sohbet et.';
 
 	/// tr: 'Yaz. Konuş. Vibeleri hisset.'
 	String get page2Title => 'Yaz. Konuş. Vibeleri hisset.';
@@ -1500,8 +1524,8 @@ class Translations$onboarding$tr {
 	/// tr: 'İnsanlarını bul. Sohbete katıl.'
 	String get page3Title => 'İnsanlarını bul. Sohbete katıl.';
 
-	/// tr: 'Yeni insanlarla odalara gir ve anı birlikte paylaş.'
-	String get page3Subtitle => 'Yeni insanlarla odalara gir ve anı birlikte paylaş.';
+	/// tr: 'İlgi alanlarına göre sohbet odalarına katıl ve toplulukla etkileşime geç.'
+	String get page3Subtitle => 'İlgi alanlarına göre sohbet odalarına katıl ve toplulukla etkileşime geç.';
 
 	/// tr: 'Başla'
 	String get getStarted => 'Başla';
@@ -1640,11 +1664,11 @@ class Translations$createProfile$tr {
 	/// tr: 'Bu, şu anki ruh haline uygun eşleşmeyi bulmamıza yardımcı olur.'
 	String get chatGoalSubtitle => 'Bu, şu anki ruh haline uygun eşleşmeyi bulmamıza yardımcı olur.';
 
-	/// tr: 'Hızlı eşleşme — doğrudan sohbete gir'
-	String get chatGoalQuickMatch => 'Hızlı eşleşme — doğrudan sohbete gir';
+	/// tr: 'Hızlı eşleşme — ortak ilgi alanlarıyla sohbete gir'
+	String get chatGoalQuickMatch => 'Hızlı eşleşme — ortak ilgi alanlarıyla sohbete gir';
 
-	/// tr: 'Flört sohbeti — hafif, eğlenceli muhabbet'
-	String get chatGoalFlirtyChat => 'Flört sohbeti — hafif, eğlenceli muhabbet';
+	/// tr: 'Eğlenceli sohbet — hafif, samimi muhabbet'
+	String get chatGoalFlirtyChat => 'Eğlenceli sohbet — hafif, samimi muhabbet';
 
 	/// tr: 'Ruh hali eşleşmesi — nasıl hissettiğine göre'
 	String get chatGoalMoodMatch => 'Ruh hali eşleşmesi — nasıl hissettiğine göre';
@@ -1652,8 +1676,8 @@ class Translations$createProfile$tr {
 	/// tr: 'Gece sohbeti — dünya uyurken derin konuşmalar'
 	String get chatGoalLateNight => 'Gece sohbeti — dünya uyurken derin konuşmalar';
 
-	/// tr: 'Yeni biriyle tanış — özel hedef yok, keşfet'
-	String get chatGoalMeetSomeoneNew => 'Yeni biriyle tanış — özel hedef yok, keşfet';
+	/// tr: 'Yeni insanlarla tanış — topluluğu keşfet'
+	String get chatGoalMeetSomeoneNew => 'Yeni insanlarla tanış — topluluğu keşfet';
 
 	/// tr: 'Başla'
 	String get getStarted => 'Başla';
@@ -1729,6 +1753,9 @@ class Translations$errors$tr {
 
 	/// tr: 'Lütfen tüm alanları doldur.'
 	String get fillAllFields => 'Lütfen tüm alanları doldur.';
+
+	/// tr: 'Bu metin uygunsuz veya sakıncalı ifadeler içeriyor. Lütfen düzenleyip tekrar dene.'
+	String get contentBlocked => 'Bu metin uygunsuz veya sakıncalı ifadeler içeriyor. Lütfen düzenleyip tekrar dene.';
 
 	/// tr: 'Yeterli token yok.'
 	String get insufficientTokens => 'Yeterli token yok.';
@@ -1892,8 +1919,8 @@ class Translations$legal$tr {
 	/// tr: 'Gizlilik Politikası'
 	String get privacyTitle => 'Gizlilik Politikası';
 
-	/// tr: 'Son güncelleme: 16 Mart 2026 Veylo’ya hoş geldin. Hesap oluşturarak veya uygulamayı kullanarak bu Hizmet Şartları’nı kabul etmiş olursun. 1. Veylo nedir? Veylo; insanlarla tanışabileceğin, anonim sohbet edebileceğin, bağlantını zamanla güçlendirebileceğin ve karşılıklı onayla sesli veya yüz yüze aramaya geçebileceğin bir sosyal uygulamadır. 2. Hesabın Doğru bilgi vermeli ve giriş bilgilerini güvende tutmalısın. Hesabındaki aktivitelerden sen sorumlusun. Yaşadığın ülkenin yasalarına göre Veylo’yu kullanabilecek yaşta olmalısın. 3. Saygılı kullanım Taciz, tehdit, dolandırıcılık, kimliğe bürünme, yasa dışı içerik veya güvenlik özelliklerini atlatma girişimleri yasaktır. Kuralları ihlal eden içerik kaldırılabilir, özellikler kısıtlanabilir veya hesap askıya alınabilir. 4. Anonim sohbet ve profil açma Anonim sohbetlerde isim ve fotoğraf, bağlantı eşiklerine kadar gizli kalabilir. Tam profil açılışı karşılıklı onay gerektirir. Kimliğini açması için kimseyi zorlama. 5. Satın alımlar Bazı özellikler ücretli olabilir. Ödemeler App Store veya Google Play üzerinden yapılır. Restore Purchases, aynı mağaza hesabındaki uygun satın alımları geri yükler. İadeler mağaza politikasına tabidir. 6. Paylaştığın içerik İçeriğinin hakları sende kalır; Veylo’ya hizmeti sunmak için gereken ölçüde barındırma ve gösterme lisansı verirsin. Hakkın olmayan içeriği paylaşma. 7. Kullanımı sonlandırma İstediğin zaman Veylo’yu bırakabilir ve Ayarlar’dan hesap silme talebi oluşturabilirsin. Gerekirse hizmeti makul bildirimle değiştirebilir veya sonlandırabiliriz. 8. İletişim Bu şartlarla ilgili soruların için: support@veylo.app'
-	String get termsBody => 'Son güncelleme: 16 Mart 2026\n\nVeylo’ya hoş geldin. Hesap oluşturarak veya uygulamayı kullanarak bu Hizmet Şartları’nı kabul etmiş olursun.\n\n1. Veylo nedir?\nVeylo; insanlarla tanışabileceğin, anonim sohbet edebileceğin, bağlantını zamanla güçlendirebileceğin ve karşılıklı onayla sesli veya yüz yüze aramaya geçebileceğin bir sosyal uygulamadır.\n\n2. Hesabın\nDoğru bilgi vermeli ve giriş bilgilerini güvende tutmalısın. Hesabındaki aktivitelerden sen sorumlusun. Yaşadığın ülkenin yasalarına göre Veylo’yu kullanabilecek yaşta olmalısın.\n\n3. Saygılı kullanım\nTaciz, tehdit, dolandırıcılık, kimliğe bürünme, yasa dışı içerik veya güvenlik özelliklerini atlatma girişimleri yasaktır. Kuralları ihlal eden içerik kaldırılabilir, özellikler kısıtlanabilir veya hesap askıya alınabilir.\n\n4. Anonim sohbet ve profil açma\nAnonim sohbetlerde isim ve fotoğraf, bağlantı eşiklerine kadar gizli kalabilir. Tam profil açılışı karşılıklı onay gerektirir. Kimliğini açması için kimseyi zorlama.\n\n5. Satın alımlar\nBazı özellikler ücretli olabilir. Ödemeler App Store veya Google Play üzerinden yapılır. Restore Purchases, aynı mağaza hesabındaki uygun satın alımları geri yükler. İadeler mağaza politikasına tabidir.\n\n6. Paylaştığın içerik\nİçeriğinin hakları sende kalır; Veylo’ya hizmeti sunmak için gereken ölçüde barındırma ve gösterme lisansı verirsin. Hakkın olmayan içeriği paylaşma.\n\n7. Kullanımı sonlandırma\nİstediğin zaman Veylo’yu bırakabilir ve Ayarlar’dan hesap silme talebi oluşturabilirsin. Gerekirse hizmeti makul bildirimle değiştirebilir veya sonlandırabiliriz.\n\n8. İletişim\nBu şartlarla ilgili soruların için: support@veylo.app';
+	/// tr: 'Son güncelleme: 16 Mart 2026 Veylo’ya hoş geldin. Hesap oluşturarak veya uygulamayı kullanarak bu Hizmet Şartları’nı kabul etmiş olursun. Sıfır tolerans (zero tolerance): Sakıncalı, müstehcen, nefret söylemi içeren veya taciz edici paylaşımlara ve kötüye kullanıma kesinlikle sıfır tolerans gösterilir. Bu kuralları ihlal eden içerikler 24 saat içinde kaldırılır ve ilgili kullanıcıların hesapları kalıcı olarak kapatılır. Yaş: Veylo yalnızca 18 yaşından büyük kullanıcılar içindir. 1. Veylo nedir? Veylo; insanlarla tanışabileceğin, anonim sohbet edebileceğin, bağlantını zamanla güçlendirebileceğin ve karşılıklı onayla sesli veya yüz yüze aramaya geçebileceğin bir sosyal uygulamadır. 2. Hesabın Doğru bilgi vermeli ve giriş bilgilerini güvende tutmalısın. Hesabındaki aktivitelerden sen sorumlusun. Yaşadığın ülkenin yasalarına göre Veylo’yu kullanabilecek yaşta olmalısın. 3. Saygılı kullanım Taciz, tehdit, dolandırıcılık, kimliğe bürünme, yasa dışı içerik veya güvenlik özelliklerini atlatma girişimleri yasaktır. Kuralları ihlal eden içerik kaldırılabilir, özellikler kısıtlanabilir veya hesap askıya alınabilir. 4. Anonim sohbet ve profil açma Anonim sohbetlerde isim ve fotoğraf, bağlantı eşiklerine kadar gizli kalabilir. Tam profil açılışı karşılıklı onay gerektirir. Kimliğini açması için kimseyi zorlama. 5. Satın alımlar Bazı özellikler ücretli olabilir. Ödemeler App Store veya Google Play üzerinden yapılır. Restore Purchases, aynı mağaza hesabındaki uygun satın alımları geri yükler. İadeler mağaza politikasına tabidir. 6. Paylaştığın içerik İçeriğinin hakları sende kalır; Veylo’ya hizmeti sunmak için gereken ölçüde barındırma ve gösterme lisansı verirsin. Hakkın olmayan içeriği paylaşma. 7. Kullanımı sonlandırma İstediğin zaman Veylo’yu bırakabilir ve Ayarlar’dan hesap silme talebi oluşturabilirsin. Gerekirse hizmeti makul bildirimle değiştirebilir veya sonlandırabiliriz. 8. İletişim Bu şartlarla ilgili soruların için: support@veylo.app'
+	String get termsBody => 'Son güncelleme: 16 Mart 2026\n\nVeylo’ya hoş geldin. Hesap oluşturarak veya uygulamayı kullanarak bu Hizmet Şartları’nı kabul etmiş olursun.\n\nSıfır tolerans (zero tolerance): Sakıncalı, müstehcen, nefret söylemi içeren veya taciz edici paylaşımlara ve kötüye kullanıma kesinlikle sıfır tolerans gösterilir. Bu kuralları ihlal eden içerikler 24 saat içinde kaldırılır ve ilgili kullanıcıların hesapları kalıcı olarak kapatılır.\n\nYaş: Veylo yalnızca 18 yaşından büyük kullanıcılar içindir.\n\n1. Veylo nedir?\nVeylo; insanlarla tanışabileceğin, anonim sohbet edebileceğin, bağlantını zamanla güçlendirebileceğin ve karşılıklı onayla sesli veya yüz yüze aramaya geçebileceğin bir sosyal uygulamadır.\n\n2. Hesabın\nDoğru bilgi vermeli ve giriş bilgilerini güvende tutmalısın. Hesabındaki aktivitelerden sen sorumlusun. Yaşadığın ülkenin yasalarına göre Veylo’yu kullanabilecek yaşta olmalısın.\n\n3. Saygılı kullanım\nTaciz, tehdit, dolandırıcılık, kimliğe bürünme, yasa dışı içerik veya güvenlik özelliklerini atlatma girişimleri yasaktır. Kuralları ihlal eden içerik kaldırılabilir, özellikler kısıtlanabilir veya hesap askıya alınabilir.\n\n4. Anonim sohbet ve profil açma\nAnonim sohbetlerde isim ve fotoğraf, bağlantı eşiklerine kadar gizli kalabilir. Tam profil açılışı karşılıklı onay gerektirir. Kimliğini açması için kimseyi zorlama.\n\n5. Satın alımlar\nBazı özellikler ücretli olabilir. Ödemeler App Store veya Google Play üzerinden yapılır. Restore Purchases, aynı mağaza hesabındaki uygun satın alımları geri yükler. İadeler mağaza politikasına tabidir.\n\n6. Paylaştığın içerik\nİçeriğinin hakları sende kalır; Veylo’ya hizmeti sunmak için gereken ölçüde barındırma ve gösterme lisansı verirsin. Hakkın olmayan içeriği paylaşma.\n\n7. Kullanımı sonlandırma\nİstediğin zaman Veylo’yu bırakabilir ve Ayarlar’dan hesap silme talebi oluşturabilirsin. Gerekirse hizmeti makul bildirimle değiştirebilir veya sonlandırabiliriz.\n\n8. İletişim\nBu şartlarla ilgili soruların için: support@veylo.app';
 
 	/// tr: 'Son güncelleme: 16 Mart 2026 Bu Gizlilik Politikası, Veylo’nun bilgilerini nasıl topladığını, kullandığını ve koruduğunu açıklar. 1. Topladığımız bilgiler • Hesap verileri: e-posta, görünen ad, profil fotoğrafları, bio, tercihler • Kullanım verileri: sohbetler, bağlantı ilerlemesi, kullandığın arama özellikleri, temel cihaz/uygulama bilgileri • Satın alımlar: ücretli özellikleri açmak ve geri yüklemek için gerekli mağaza fiş bilgileri 2. Nasıl kullanırız? Verilerini Veylo’yu işletmek, eşleşme ve sohbet deneyimini kişiselleştirmek, topluluğu güvende tutmak, satın alımları işlemek ve ürünü geliştirmek için kullanırız. Kişisel verilerini satmayız. 3. Anonim mod Anonim sohbetlerde diğer kullanıcıların gördüğü bilgiler (ör. maskeli isim veya bulanık fotoğraf) kilit açma kuralları ve karşılıklı onayla sınırlıdır. Özelliğin güvenli çalışması için hesap tanımlayıcılarına yine ihtiyaç duyarız. 4. Paylaşım Verileri yalnızca barındırma, analiz veya ödeme gibi hizmet sağlayıcılarla gerektiği ölçüde paylaşabiliriz. Yasal zorunluluk veya kullanıcıları zarardan koruma durumlarında da açıklama yapılabilir. 5. Saklama Hesabın aktifken ve yasal, güvenlik ile faturalama gerekçeleriyle gerektiği süre veriyi saklarız. Silme talebi tamamlandıktan sonra, zorunlu saklama dışında kişisel veriler silinir veya anonimleştirilir. 6. Seçeneklerin Profilini düzenleyebilir, bildirimleri yönetebilir, hesap silme talebi oluşturabilir ve verilerin hakkında bize yazabilirsin. Mağaza satın alımları Apple veya Google üzerinden de yönetilir. 7. Güvenlik Bilgilerini korumak için makul teknik ve idari önlemler alırız. Hiçbir sistem tamamen risksiz değildir; güçlü parola kullan ve cihazını güncel tut. 8. İletişim Gizlilik soruları: privacy@veylo.app'
 	String get privacyBody => 'Son güncelleme: 16 Mart 2026\n\nBu Gizlilik Politikası, Veylo’nun bilgilerini nasıl topladığını, kullandığını ve koruduğunu açıklar.\n\n1. Topladığımız bilgiler\n• Hesap verileri: e-posta, görünen ad, profil fotoğrafları, bio, tercihler\n• Kullanım verileri: sohbetler, bağlantı ilerlemesi, kullandığın arama özellikleri, temel cihaz/uygulama bilgileri\n• Satın alımlar: ücretli özellikleri açmak ve geri yüklemek için gerekli mağaza fiş bilgileri\n\n2. Nasıl kullanırız?\nVerilerini Veylo’yu işletmek, eşleşme ve sohbet deneyimini kişiselleştirmek, topluluğu güvende tutmak, satın alımları işlemek ve ürünü geliştirmek için kullanırız. Kişisel verilerini satmayız.\n\n3. Anonim mod\nAnonim sohbetlerde diğer kullanıcıların gördüğü bilgiler (ör. maskeli isim veya bulanık fotoğraf) kilit açma kuralları ve karşılıklı onayla sınırlıdır. Özelliğin güvenli çalışması için hesap tanımlayıcılarına yine ihtiyaç duyarız.\n\n4. Paylaşım\nVerileri yalnızca barındırma, analiz veya ödeme gibi hizmet sağlayıcılarla gerektiği ölçüde paylaşabiliriz. Yasal zorunluluk veya kullanıcıları zarardan koruma durumlarında da açıklama yapılabilir.\n\n5. Saklama\nHesabın aktifken ve yasal, güvenlik ile faturalama gerekçeleriyle gerektiği süre veriyi saklarız. Silme talebi tamamlandıktan sonra, zorunlu saklama dışında kişisel veriler silinir veya anonimleştirilir.\n\n6. Seçeneklerin\nProfilini düzenleyebilir, bildirimleri yönetebilir, hesap silme talebi oluşturabilir ve verilerin hakkında bize yazabilirsin. Mağaza satın alımları Apple veya Google üzerinden de yönetilir.\n\n7. Güvenlik\nBilgilerini korumak için makul teknik ve idari önlemler alırız. Hiçbir sistem tamamen risksiz değildir; güçlü parola kullan ve cihazını güncel tut.\n\n8. İletişim\nGizlilik soruları: privacy@veylo.app';
@@ -2671,6 +2698,21 @@ class Translations$discover$post$tr {
 
 	/// tr: 'Açıklama yaz...'
 	String get captionHint => 'Açıklama yaz...';
+
+	/// tr: 'Şikayet Et'
+	String get report => 'Şikayet Et';
+
+	/// tr: 'Kullanıcıyı Engelle'
+	String get block => 'Kullanıcıyı Engelle';
+
+	/// tr: 'Bu gönderiyi neden şikayet ediyorsun?'
+	String get reportPostSubtitle => 'Bu gönderiyi neden şikayet ediyorsun?';
+
+	/// tr: 'Gönderi şikayet edildi ve akışından kaldırıldı.'
+	String get hiddenAfterReport => 'Gönderi şikayet edildi ve akışından kaldırıldı.';
+
+	/// tr: 'Kullanıcı engellendi. İçerikleri akışından kaldırıldı.'
+	String get hiddenAfterBlock => 'Kullanıcı engellendi. İçerikleri akışından kaldırıldı.';
 }
 
 // Path: discover.story
@@ -3225,6 +3267,11 @@ extension on Translations {
 			'profile.boostActiveTitle' => 'Öne çıkarıldın!',
 			'profile.boostRemaining' => ({required Object time}) => '${time} kaldı',
 			'profile.boostExtend' => 'Uzat',
+			'profile.reportIssueTitle' => 'Destek & İletişim',
+			'profile.reportIssueSubtitle' => 'Uygunsuz içerik veya kötüye kullanım bildirmek için yaz. Destek: support@fly-work.com',
+			'profile.reportIssueHint' => 'Sorunu kısaca anlat…',
+			'profile.reportIssueSend' => 'Gönder',
+			'profile.reportIssueSent' => 'Bildirimin alındı. En kısa sürede dönüş yapacağız.',
 			'nav.discover' => 'Keşfet',
 			'nav.chat' => 'Sohbet',
 			'nav.call' => 'Ara',
@@ -3410,13 +3457,13 @@ extension on Translations {
 			'discover.groupInfo.blocked' => 'Engellenenler',
 			'discover.groupInfo.private' => 'Gizli',
 			'discover.groupInfo.membersCount' => ({required Object count}) => '${count} üye',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupInfo.addPeople' => 'Kişi Ekle',
 			'discover.groupInfo.you' => 'Sen',
 			'discover.groupInfo.admin' => 'Yönetici',
 			'discover.groupInfo.leaveGroup' => 'Gruptan ayrıl',
 			'discover.groupInfo.requests' => 'Katılma istekleri',
-			_ => null,
-		} ?? switch (path) {
 			'discover.groupInfo.approve' => 'Onayla',
 			'discover.groupInfo.reject' => 'Reddet',
 			'discover.groupInfo.addPeopleEmpty' => 'Gruba eklemek için önce birilerini takip et.',
@@ -3456,6 +3503,11 @@ extension on Translations {
 			'discover.post.editCaption' => 'Açıklamayı düzenle',
 			'discover.post.deletePostTitle' => 'Bu gönderi silinsin mi?',
 			'discover.post.captionHint' => 'Açıklama yaz...',
+			'discover.post.report' => 'Şikayet Et',
+			'discover.post.block' => 'Kullanıcıyı Engelle',
+			'discover.post.reportPostSubtitle' => 'Bu gönderiyi neden şikayet ediyorsun?',
+			'discover.post.hiddenAfterReport' => 'Gönderi şikayet edildi ve akışından kaldırıldı.',
+			'discover.post.hiddenAfterBlock' => 'Kullanıcı engellendi. İçerikleri akışından kaldırıldı.',
 			'discover.story.draft' => 'TASLAK',
 			'discover.story.story' => 'HİKÂYE',
 			'discover.story.share' => 'Paylaş',
@@ -3531,13 +3583,16 @@ extension on Translations {
 			'auth.privacyPolicy' => 'Gizlilik Politikası',
 			'auth.legalSuffix' => '’nı onaylamış olursun.',
 			'auth.passwordResetSent' => 'Şifre sıfırlama bağlantısını e-postana gönderdik.',
+			'auth.ageEulaBeforeLink' => '18 yaşından büyük olduğumu, ',
+			'auth.ageEulaAfterLink' => '’nı (EULA) kabul ettiğimi ve sakıncalı içerik ile kötüye kullanıma sıfır tolerans gösterileceğini onaylıyorum.',
+			'auth.ageEulaRequired' => 'Devam etmek için 18+ ve Hizmet Şartları onayını işaretlemelisin.',
 			'onboarding.skip' => 'Atla',
 			'onboarding.page1Title' => 'Kendin ol. Anonim kal.',
-			'onboarding.page1Subtitle' => 'Kimliğini paylaşmadan yeni insanlarla tanış ve sohbet et.',
+			'onboarding.page1Subtitle' => 'Kimliğini paylaşmadan ilgi alanlarına göre topluluklarla sohbet et.',
 			'onboarding.page2Title' => 'Yaz. Konuş. Vibeleri hisset.',
 			'onboarding.page2Subtitle' => 'Anonim başla; hazır olunca yaz, ara veya yüz yüze geç.',
 			'onboarding.page3Title' => 'İnsanlarını bul. Sohbete katıl.',
-			'onboarding.page3Subtitle' => 'Yeni insanlarla odalara gir ve anı birlikte paylaş.',
+			'onboarding.page3Subtitle' => 'İlgi alanlarına göre sohbet odalarına katıl ve toplulukla etkileşime geç.',
 			'onboarding.getStarted' => 'Başla',
 			'onboarding.alreadyHaveAccount' => 'Zaten Veylo hesabın var mı? ',
 			'onboarding.logInAction' => 'Giriş yap',
@@ -3602,11 +3657,11 @@ extension on Translations {
 			'createProfile.stepChatGoal' => '5/5 Sohbet hedefi',
 			'createProfile.chatGoalTitle' => 'Bugün ne arıyorsun?',
 			'createProfile.chatGoalSubtitle' => 'Bu, şu anki ruh haline uygun eşleşmeyi bulmamıza yardımcı olur.',
-			'createProfile.chatGoalQuickMatch' => 'Hızlı eşleşme — doğrudan sohbete gir',
-			'createProfile.chatGoalFlirtyChat' => 'Flört sohbeti — hafif, eğlenceli muhabbet',
+			'createProfile.chatGoalQuickMatch' => 'Hızlı eşleşme — ortak ilgi alanlarıyla sohbete gir',
+			'createProfile.chatGoalFlirtyChat' => 'Eğlenceli sohbet — hafif, samimi muhabbet',
 			'createProfile.chatGoalMoodMatch' => 'Ruh hali eşleşmesi — nasıl hissettiğine göre',
 			'createProfile.chatGoalLateNight' => 'Gece sohbeti — dünya uyurken derin konuşmalar',
-			'createProfile.chatGoalMeetSomeoneNew' => 'Yeni biriyle tanış — özel hedef yok, keşfet',
+			'createProfile.chatGoalMeetSomeoneNew' => 'Yeni insanlarla tanış — topluluğu keşfet',
 			'createProfile.getStarted' => 'Başla',
 			'createProfile.preparingTitleLine1' => 'Sana uygun',
 			'createProfile.preparingTitleLine2' => 'profilleri',
@@ -3629,6 +3684,7 @@ extension on Translations {
 			'errors.invalidEmail' => 'Lütfen geçerli bir e-posta adresi gir.',
 			'errors.tooManyAttempts' => 'Çok fazla deneme yapıldı. Biraz bekleyip tekrar dene.',
 			'errors.fillAllFields' => 'Lütfen tüm alanları doldur.',
+			'errors.contentBlocked' => 'Bu metin uygunsuz veya sakıncalı ifadeler içeriyor. Lütfen düzenleyip tekrar dene.',
 			'errors.insufficientTokens' => 'Yeterli token yok.',
 			'errors.requestNotAccepted' => 'Cevap vermek için isteği onayla.',
 			'errors.requestPendingLimit' => 'İsteğini kabul ettiğinde daha fazla mesaj gönderebilirsin.',
@@ -3677,7 +3733,7 @@ extension on Translations {
 			'faq.a14' => 'Ayarlar → Hesap Yönetimi → Hesabı ve Verileri Sil yolunu izle. Sebep belirttikten sonra silme talebini onaylaman gerekir.',
 			'legal.termsTitle' => 'Hizmet Şartları',
 			'legal.privacyTitle' => 'Gizlilik Politikası',
-			'legal.termsBody' => 'Son güncelleme: 16 Mart 2026\n\nVeylo’ya hoş geldin. Hesap oluşturarak veya uygulamayı kullanarak bu Hizmet Şartları’nı kabul etmiş olursun.\n\n1. Veylo nedir?\nVeylo; insanlarla tanışabileceğin, anonim sohbet edebileceğin, bağlantını zamanla güçlendirebileceğin ve karşılıklı onayla sesli veya yüz yüze aramaya geçebileceğin bir sosyal uygulamadır.\n\n2. Hesabın\nDoğru bilgi vermeli ve giriş bilgilerini güvende tutmalısın. Hesabındaki aktivitelerden sen sorumlusun. Yaşadığın ülkenin yasalarına göre Veylo’yu kullanabilecek yaşta olmalısın.\n\n3. Saygılı kullanım\nTaciz, tehdit, dolandırıcılık, kimliğe bürünme, yasa dışı içerik veya güvenlik özelliklerini atlatma girişimleri yasaktır. Kuralları ihlal eden içerik kaldırılabilir, özellikler kısıtlanabilir veya hesap askıya alınabilir.\n\n4. Anonim sohbet ve profil açma\nAnonim sohbetlerde isim ve fotoğraf, bağlantı eşiklerine kadar gizli kalabilir. Tam profil açılışı karşılıklı onay gerektirir. Kimliğini açması için kimseyi zorlama.\n\n5. Satın alımlar\nBazı özellikler ücretli olabilir. Ödemeler App Store veya Google Play üzerinden yapılır. Restore Purchases, aynı mağaza hesabındaki uygun satın alımları geri yükler. İadeler mağaza politikasına tabidir.\n\n6. Paylaştığın içerik\nİçeriğinin hakları sende kalır; Veylo’ya hizmeti sunmak için gereken ölçüde barındırma ve gösterme lisansı verirsin. Hakkın olmayan içeriği paylaşma.\n\n7. Kullanımı sonlandırma\nİstediğin zaman Veylo’yu bırakabilir ve Ayarlar’dan hesap silme talebi oluşturabilirsin. Gerekirse hizmeti makul bildirimle değiştirebilir veya sonlandırabiliriz.\n\n8. İletişim\nBu şartlarla ilgili soruların için: support@veylo.app',
+			'legal.termsBody' => 'Son güncelleme: 16 Mart 2026\n\nVeylo’ya hoş geldin. Hesap oluşturarak veya uygulamayı kullanarak bu Hizmet Şartları’nı kabul etmiş olursun.\n\nSıfır tolerans (zero tolerance): Sakıncalı, müstehcen, nefret söylemi içeren veya taciz edici paylaşımlara ve kötüye kullanıma kesinlikle sıfır tolerans gösterilir. Bu kuralları ihlal eden içerikler 24 saat içinde kaldırılır ve ilgili kullanıcıların hesapları kalıcı olarak kapatılır.\n\nYaş: Veylo yalnızca 18 yaşından büyük kullanıcılar içindir.\n\n1. Veylo nedir?\nVeylo; insanlarla tanışabileceğin, anonim sohbet edebileceğin, bağlantını zamanla güçlendirebileceğin ve karşılıklı onayla sesli veya yüz yüze aramaya geçebileceğin bir sosyal uygulamadır.\n\n2. Hesabın\nDoğru bilgi vermeli ve giriş bilgilerini güvende tutmalısın. Hesabındaki aktivitelerden sen sorumlusun. Yaşadığın ülkenin yasalarına göre Veylo’yu kullanabilecek yaşta olmalısın.\n\n3. Saygılı kullanım\nTaciz, tehdit, dolandırıcılık, kimliğe bürünme, yasa dışı içerik veya güvenlik özelliklerini atlatma girişimleri yasaktır. Kuralları ihlal eden içerik kaldırılabilir, özellikler kısıtlanabilir veya hesap askıya alınabilir.\n\n4. Anonim sohbet ve profil açma\nAnonim sohbetlerde isim ve fotoğraf, bağlantı eşiklerine kadar gizli kalabilir. Tam profil açılışı karşılıklı onay gerektirir. Kimliğini açması için kimseyi zorlama.\n\n5. Satın alımlar\nBazı özellikler ücretli olabilir. Ödemeler App Store veya Google Play üzerinden yapılır. Restore Purchases, aynı mağaza hesabındaki uygun satın alımları geri yükler. İadeler mağaza politikasına tabidir.\n\n6. Paylaştığın içerik\nİçeriğinin hakları sende kalır; Veylo’ya hizmeti sunmak için gereken ölçüde barındırma ve gösterme lisansı verirsin. Hakkın olmayan içeriği paylaşma.\n\n7. Kullanımı sonlandırma\nİstediğin zaman Veylo’yu bırakabilir ve Ayarlar’dan hesap silme talebi oluşturabilirsin. Gerekirse hizmeti makul bildirimle değiştirebilir veya sonlandırabiliriz.\n\n8. İletişim\nBu şartlarla ilgili soruların için: support@veylo.app',
 			'legal.privacyBody' => 'Son güncelleme: 16 Mart 2026\n\nBu Gizlilik Politikası, Veylo’nun bilgilerini nasıl topladığını, kullandığını ve koruduğunu açıklar.\n\n1. Topladığımız bilgiler\n• Hesap verileri: e-posta, görünen ad, profil fotoğrafları, bio, tercihler\n• Kullanım verileri: sohbetler, bağlantı ilerlemesi, kullandığın arama özellikleri, temel cihaz/uygulama bilgileri\n• Satın alımlar: ücretli özellikleri açmak ve geri yüklemek için gerekli mağaza fiş bilgileri\n\n2. Nasıl kullanırız?\nVerilerini Veylo’yu işletmek, eşleşme ve sohbet deneyimini kişiselleştirmek, topluluğu güvende tutmak, satın alımları işlemek ve ürünü geliştirmek için kullanırız. Kişisel verilerini satmayız.\n\n3. Anonim mod\nAnonim sohbetlerde diğer kullanıcıların gördüğü bilgiler (ör. maskeli isim veya bulanık fotoğraf) kilit açma kuralları ve karşılıklı onayla sınırlıdır. Özelliğin güvenli çalışması için hesap tanımlayıcılarına yine ihtiyaç duyarız.\n\n4. Paylaşım\nVerileri yalnızca barındırma, analiz veya ödeme gibi hizmet sağlayıcılarla gerektiği ölçüde paylaşabiliriz. Yasal zorunluluk veya kullanıcıları zarardan koruma durumlarında da açıklama yapılabilir.\n\n5. Saklama\nHesabın aktifken ve yasal, güvenlik ile faturalama gerekçeleriyle gerektiği süre veriyi saklarız. Silme talebi tamamlandıktan sonra, zorunlu saklama dışında kişisel veriler silinir veya anonimleştirilir.\n\n6. Seçeneklerin\nProfilini düzenleyebilir, bildirimleri yönetebilir, hesap silme talebi oluşturabilir ve verilerin hakkında bize yazabilirsin. Mağaza satın alımları Apple veya Google üzerinden de yönetilir.\n\n7. Güvenlik\nBilgilerini korumak için makul teknik ve idari önlemler alırız. Hiçbir sistem tamamen risksiz değildir; güçlü parola kullan ve cihazını güncel tut.\n\n8. İletişim\nGizlilik soruları: privacy@veylo.app',
 			'logout.title' => 'Çıkış yap',
 			'logout.subtitle' => 'Çıkış yapmak istediğinden emin misin?',

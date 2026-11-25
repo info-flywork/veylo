@@ -7,6 +7,7 @@ import { presence } from '../realtime/presence.store';
 import { serializeUserSummary } from '../serializers/user.serializer';
 import { mediaService } from './media.service';
 import { notificationService } from './notification.service';
+import { assertCleanContent } from '../lib/content-filter';
 import { safetyService } from './safety.service';
 import { tokenService } from './token.service';
 
@@ -99,7 +100,14 @@ const GENDER = { women: 'FEMALE', men: 'MALE' } as const;
  * İlgi alanı ve "şu an aktif" filtreleri sayfa içinde uygulanır.
  */
 async function feed(viewerId: string, q: FeedQuery) {
-  const blocked = await safetyService.blockedIdsFor(viewerId);
+  const [blocked, reported] = await Promise.all([
+    safetyService.blockedIdsFor(viewerId),
+    prisma.report.findMany({
+      where: { reporterId: viewerId, context: 'POST', contentId: { not: null } },
+      select: { contentId: true },
+    }),
+  ]);
+  const reportedIds = reported.map((r) => r.contentId!).filter(Boolean);
   const now = new Date();
   const authorWhere: Prisma.UserWhereInput = {
     status: 'ACTIVE',
@@ -112,6 +120,7 @@ async function feed(viewerId: string, q: FeedQuery) {
     deletedAt: null,
     author: authorWhere,
     ...(blocked.size ? { authorId: { notIn: [...blocked] } } : {}),
+    ...(reportedIds.length ? { id: { notIn: reportedIds } } : {}),
     ...(search
       ? {
           OR: [
@@ -171,6 +180,7 @@ async function create(
     draft: boolean;
   },
 ) {
+  assertCleanContent(input.caption);
   const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
   const recent = await prisma.post.count({ where: { authorId: viewerId, createdAt: { gte: since } } });
   if (recent >= POST.dailyLimit) throw AppError.forbidden('POST_DAILY_LIMIT');
@@ -222,6 +232,7 @@ async function update(
   },
 ) {
   const post = await loadMine(postId, viewerId);
+  if (data.caption !== undefined) assertCleanContent(data.caption);
   const rendered =
     data.mediaId && data.thumbId ? await mediaService.resolveForPost(viewerId, data.mediaId, data.thumbId) : null;
   await prisma.post.update({
@@ -351,6 +362,7 @@ async function comments(viewerId: string, postId: string, cursor?: string) {
 }
 
 async function addComment(viewerId: string, postId: string, body: string) {
+  assertCleanContent(body);
   const p = await loadVisible(postId, viewerId);
   const [comment] = await prisma.$transaction([
     prisma.comment.create({ data: { postId, authorId: viewerId, body }, include: { author: true } }),

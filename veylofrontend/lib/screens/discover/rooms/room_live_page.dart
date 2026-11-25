@@ -5,19 +5,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/errors/error_messages.dart';
+import 'package:veylo/core/safety/content_filter.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/data/remote/agora_service.dart';
+import 'package:veylo/data/remote/api_client.dart';
 import 'package:veylo/data/remote/room_pip_store.dart';
 import 'package:veylo/data/remote/room_repository.dart';
 import 'package:veylo/data/remote/room_store.dart';
+import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/data/remote/socket_service.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/room/live_room.dart';
 import 'package:veylo/screens/chat/chat_sticker.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 import 'package:veylo/screens/discover/discover_page.dart';
+import 'package:veylo/screens/discover/post_safety_sheet.dart';
 import 'package:veylo/screens/discover/rooms/room_close_confirm_sheet.dart';
 import 'package:veylo/screens/discover/story_editor/story_sticker_sheet.dart';
 
@@ -201,12 +205,35 @@ class _RoomLivePageState extends State<RoomLivePage> {
   Future<void> _send(String text) async {
     final body = text.trim();
     if (body.isEmpty) return;
+    if (ContentFilter.isObjectionable(body)) {
+      showErrorSnackBar(
+        context,
+        const ApiException(status: 400, code: 'CONTENT_BLOCKED'),
+      );
+      return;
+    }
     _input.clear();
     try {
       await _repo.send(widget.roomId, body);
     } catch (e) {
       if (mounted) showErrorSnackBar(context, e);
     }
+  }
+
+  Future<void> _openSafetyMenu() async {
+    final myId = SessionStore.instance.me?.id;
+    final peer = _people
+            .where((p) => p.userId != null && p.userId != myId)
+            .firstOrNull ??
+        _people.where((p) => p.isHost && p.userId != null && p.userId != myId).firstOrNull;
+    final userId = peer?.userId;
+    if (userId == null) return;
+    await handlePeerSafetyFromRoom(
+      context,
+      userId: userId,
+      displayName: peer!.displayName,
+      avatarUrl: peer.avatarUrl,
+    );
   }
 
   Future<void> _sendSticker() async {
@@ -558,6 +585,18 @@ class _RoomLivePageState extends State<RoomLivePage> {
                               ),
                             ),
                           ),
+                        GestureDetector(
+                          onTap: _openSafetyMenu,
+                          behavior: HitTestBehavior.opaque,
+                          child: const Padding(
+                            padding: EdgeInsets.only(right: 8),
+                            child: Icon(
+                              Icons.more_horiz,
+                              size: 28,
+                              color: AppColors.black,
+                            ),
+                          ),
+                        ),
                         GestureDetector(
                           onTap: _confirmClose,
                           behavior: HitTestBehavior.opaque,

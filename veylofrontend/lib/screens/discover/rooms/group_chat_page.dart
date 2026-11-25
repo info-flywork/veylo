@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/errors/error_messages.dart';
+import 'package:veylo/core/safety/content_filter.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/widgets/profile_tappable_avatar.dart';
+import 'package:veylo/data/remote/api_client.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/chat/chat_message.dart';
 import 'package:veylo/models/chat/chat_thread.dart';
@@ -109,6 +111,13 @@ class _GroupChatPageState extends State<GroupChatPage> {
     final ctrl = _ctrl;
     final text = _input.text.trim();
     if (ctrl == null || text.isEmpty) return;
+    if (ContentFilter.isObjectionable(text)) {
+      showErrorSnackBar(
+        context,
+        const ApiException(status: 400, code: 'CONTENT_BLOCKED'),
+      );
+      return;
+    }
     _input.clear();
     await ctrl.send(text);
     final err = ctrl.lastError;

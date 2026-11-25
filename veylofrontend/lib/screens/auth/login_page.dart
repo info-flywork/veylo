@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/navigation/session_navigation.dart';
 import 'package:veylo/core/theme/theme.dart';
+import 'package:veylo/core/widgets/age_eula_checkbox.dart';
 import 'package:veylo/core/widgets/app_back_button.dart';
 import 'package:veylo/core/widgets/app_gradient_text.dart';
 import 'package:veylo/core/widgets/app_legal_footer.dart';
@@ -13,6 +14,7 @@ import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_social_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/widgets/app_text_field.dart';
+import 'package:veylo/data/local/eula_store.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/screens/profile/legal_doc_sheet.dart';
@@ -29,6 +31,15 @@ class _LoginPageState extends State<LoginPage> {
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
   bool _busy = false;
+  bool _eulaAccepted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    EulaStore.isAccepted().then((v) {
+      if (mounted) setState(() => _eulaAccepted = v);
+    });
+  }
 
   @override
   void dispose() {
@@ -52,6 +63,20 @@ class _LoginPageState extends State<LoginPage> {
     } finally {
       if (mounted) setState(() => _busy = false);
     }
+  }
+
+  Future<bool> _ensureEulaForSocial() async {
+    if (_eulaAccepted) {
+      await EulaStore.accept();
+      return true;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(Translations.of(context).auth.ageEulaRequired),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+    return false;
   }
 
   void _logInWithPassword() {
@@ -193,7 +218,12 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 40),
                     AppOrDivider(label: t.common.or),
-                    const SizedBox(height: 40),
+                    const SizedBox(height: 24),
+                    AgeEulaCheckbox(
+                      value: _eulaAccepted,
+                      onChanged: (v) => setState(() => _eulaAccepted = v),
+                    ),
+                    const SizedBox(height: 16),
                     // Android'de Apple ile giriş gösterilmiyor.
                     if (Platform.isIOS) ...[
                       AppSocialButton(
@@ -201,7 +231,10 @@ class _LoginPageState extends State<LoginPage> {
                         label: t.auth.continueWithApple,
                         onPressed: _busy
                             ? null
-                            : () => _signIn(session.signInWithApple),
+                            : () async {
+                                if (!await _ensureEulaForSocial()) return;
+                                await _signIn(session.signInWithApple);
+                              },
                       ),
                       const SizedBox(height: AppSpacing.buttonGap),
                     ],
@@ -210,7 +243,10 @@ class _LoginPageState extends State<LoginPage> {
                       label: t.auth.continueWithGoogle,
                       onPressed: _busy
                           ? null
-                          : () => _signIn(session.signInWithGoogle),
+                          : () async {
+                              if (!await _ensureEulaForSocial()) return;
+                              await _signIn(session.signInWithGoogle);
+                            },
                     ),
                     const SizedBox(height: AppSpacing.xl),
                   ],

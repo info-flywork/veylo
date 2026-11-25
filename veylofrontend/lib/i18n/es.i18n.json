@@ -671,7 +671,10 @@
     "legalMiddle": " y reconoces nuestra ",
     "privacyPolicy": "Política de privacidad",
     "legalSuffix": ".",
-    "passwordResetSent": "Te enviamos a tu correo un enlace para restablecer la contraseña."
+    "passwordResetSent": "Te enviamos a tu correo un enlace para restablecer la contraseña.",
+    "ageEulaBeforeLink": "Confirmo que soy mayor de 18 años, que acepto los ",
+    "ageEulaAfterLink": " (EULA) y que hay tolerancia cero ante contenido objetable y abuso.",
+    "ageEulaRequired": "Marca la casilla de 18+ y Términos del Servicio para continuar."
   },
   "onboarding": {
     "skip": "Omitir",
@@ -680,7 +683,7 @@
     "page2Title": "Escribe. Habla. Siente la vibra.",
     "page2Subtitle": "Empieza en anónimo y luego escribe, llama o vean sus caras cuando estés listo.",
     "page3Title": "Encuentra a tu gente. Únete\na la conversación.",
-    "page3Subtitle": "Entra en salas, conoce gente nueva y\ncompartan el momento juntos.",
+    "page3Subtitle": "Únete a salas de chat según tus intereses e interactúa con la comunidad.",
     "getStarted": "Empezar",
     "alreadyHaveAccount": "¿Ya tienes una cuenta de Veylo? ",
     "logInAction": "Iniciar sesión"

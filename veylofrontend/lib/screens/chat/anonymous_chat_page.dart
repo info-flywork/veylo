@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/errors/error_messages.dart';
+import 'package:veylo/core/safety/content_filter.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/widgets/profile_tappable_avatar.dart';
-import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/data/remote/api_client.dart';
 import 'package:veylo/data/remote/chat_store.dart';
+import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/chat/chat_thread.dart';
 import 'package:veylo/screens/chat/chat_actions_sheet.dart';
 import 'package:veylo/screens/chat/widgets/chat_call_buttons.dart';
@@ -83,6 +85,13 @@ class _AnonymousChatPageState extends State<AnonymousChatPage> {
   void _send() {
     final text = _input.text;
     if (text.trim().isEmpty) return;
+    if (ContentFilter.isObjectionable(text)) {
+      showErrorSnackBar(
+        context,
+        const ApiException(status: 400, code: 'CONTENT_BLOCKED'),
+      );
+      return;
+    }
     _input.clear();
     _ctrl.send(text);
   }

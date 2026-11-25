@@ -14,6 +14,7 @@ import 'package:veylo/screens/discover/discover_post_page.dart';
 import 'package:veylo/screens/discover/filters_sheet.dart';
 import 'package:veylo/screens/discover/highlight_sheet.dart';
 import 'package:veylo/core/widgets/app_bottom_nav.dart';
+import 'package:veylo/screens/discover/post_safety_sheet.dart';
 import 'package:veylo/screens/discover/rooms/create_room_or_group_sheet.dart';
 import 'package:veylo/screens/discover/rooms/rooms_tab.dart';
 import 'package:veylo/screens/discover/story_camera_page.dart';
@@ -240,14 +241,14 @@ class _DiscoverPageState extends State<DiscoverPage> {
                     itemCount: _store.posts.length,
                     itemBuilder: (_, index) {
                       final post = _store.posts[index];
-                      return GestureDetector(
-                        onTap: () => DiscoverPostPage.openPost(
+                      return _DiscoverCard(
+                        post: post,
+                        onOpen: () => DiscoverPostPage.openPost(
                           context,
                           post,
                           index: index,
                           liveFeed: true,
                         ),
-                        child: _DiscoverCard(post: post),
                       );
                     },
                   ),
@@ -324,9 +325,10 @@ class _DiscoverTabs extends StatelessWidget {
 }
 
 class _DiscoverCard extends StatelessWidget {
-  const _DiscoverCard({required this.post});
+  const _DiscoverCard({required this.post, required this.onOpen});
 
   final Post post;
+  final VoidCallback onOpen;
 
   @override
   Widget build(BuildContext context) {
@@ -336,62 +338,87 @@ class _DiscoverCard extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Positioned.fill(
-            child: Image(
-              image: CachedNetworkImageProvider(post.thumbUrl),
-              fit: BoxFit.cover,
-              alignment: Alignment.center,
-              filterQuality: FilterQuality.high,
-              errorBuilder: (_, _, _) =>
-                  const ColoredBox(color: AppColors.inputFill),
+            child: GestureDetector(
+              onTap: onOpen,
+              child: Image(
+                image: CachedNetworkImageProvider(post.thumbUrl),
+                fit: BoxFit.cover,
+                alignment: Alignment.center,
+                filterQuality: FilterQuality.high,
+                errorBuilder: (_, _, _) =>
+                    const ColoredBox(color: AppColors.inputFill),
+              ),
             ),
           ),
           const Positioned.fill(
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.transparent,
-                    Color(0x99000000),
-                  ],
-                  stops: [0, 0.55, 1],
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.transparent,
+                      Color(0x99000000),
+                    ],
+                    stops: [0, 0.55, 1],
+                  ),
                 ),
               ),
             ),
           ),
+          if (!post.isMine)
+            Positioned(
+              top: 0,
+              right: 0,
+              child: GestureDetector(
+                onTap: () => handlePostSafetyAction(context, post),
+                behavior: HitTestBehavior.opaque,
+                child: const Padding(
+                  padding: EdgeInsets.all(4),
+                  child: Icon(
+                    Icons.more_horiz,
+                    size: 20,
+                    color: AppColors.white,
+                  ),
+                ),
+              ),
+            ),
           Positioned(
             left: 6,
             right: 6,
             bottom: 8,
-            child: Row(
-              children: [
-                Container(
-                  width: 18,
-                  height: 18,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.white, width: 1),
-                  ),
-                  child: ClipOval(
-                    child: ChatAvatarImage(
-                      url: post.authorAvatarUrl ?? '',
-                      size: 18,
+            child: GestureDetector(
+              onTap: onOpen,
+              child: Row(
+                children: [
+                  Container(
+                    width: 18,
+                    height: 18,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.white, width: 1),
+                    ),
+                    child: ClipOval(
+                      child: ChatAvatarImage(
+                        url: post.authorAvatarUrl ?? '',
+                        size: 18,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 4),
-                Flexible(
-                  child: AppText(
-                    post.handle,
-                    style: AppTextStyles.discoverCardUsername,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  const SizedBox(width: 4),
+                  Flexible(
+                    child: AppText(
+                      post.handle,
+                      style: AppTextStyles.discoverCardUsername,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ),
-                if (post.authorIsAi) const AiBadge(compact: true),
-              ],
+                  if (post.authorIsAi) const AiBadge(compact: true),
+                ],
+              ),
             ),
           ),
         ],

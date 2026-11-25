@@ -8,10 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:veylo/core/assets/app_assets.dart';
-import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/errors/error_messages.dart';
+import 'package:veylo/core/safety/content_filter.dart';
+import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/ai_badge.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/data/remote/api_client.dart';
 import 'package:veylo/data/remote/discover_store.dart';
 import 'package:veylo/data/remote/post_repository.dart';
 import 'package:veylo/data/remote/user_repository.dart';
@@ -21,6 +23,7 @@ import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 import 'package:veylo/screens/discover/comments_sheet.dart';
 import 'package:veylo/screens/discover/story_editor/story_editor_page.dart';
 import 'package:veylo/screens/discover/post_owner_sheet.dart';
+import 'package:veylo/screens/discover/post_safety_sheet.dart';
 import 'package:veylo/screens/profile/profile_navigation.dart';
 
 /// Discover grid’den açılan full-screen post.
@@ -409,6 +412,19 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
     }
   }
 
+  /// Başkasının gönderisi: ⋯ → şikayet et / engelle; akıştan anında gizle.
+  Future<void> _openSafetyMenu() async {
+    final post = _post;
+    if (post == null) return;
+    await handlePostSafetyAction(
+      context,
+      post,
+      onRemoved: () {
+        if (mounted) Navigator.of(context).pop();
+      },
+    );
+  }
+
   /// Oluşturma editörü katmanlarıyla açılır; kaydedilirse görsel ve müzik yenilenir.
   Future<void> _editInEditor(Post post) async {
     // Editör kendi önizlemesini çalar; buradaki müzik üst üste binmesin.
@@ -427,6 +443,13 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
     final old = post.caption ?? '';
     final text = await showEditCaptionSheet(context, initial: old);
     if (text == null || text == old.trim() || !mounted) return;
+    if (ContentFilter.isObjectionable(text)) {
+      showErrorSnackBar(
+        context,
+        const ApiException(status: 400, code: 'CONTENT_BLOCKED'),
+      );
+      return;
+    }
     try {
       final p = await _repo.updateCaption(post.id, text.isEmpty ? null : text);
       if (!mounted) return;
@@ -572,12 +595,12 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
               ),
             ),
           ),
-          if (post?.isMine ?? false)
+          if (post != null)
             Positioned(
               top: top + 8,
               right: 8,
               child: GestureDetector(
-                onTap: _openOwnerMenu,
+                onTap: post.isMine ? _openOwnerMenu : _openSafetyMenu,
                 behavior: HitTestBehavior.opaque,
                 child: const SizedBox(
                   width: 44,

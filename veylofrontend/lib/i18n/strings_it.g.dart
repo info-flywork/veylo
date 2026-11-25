@@ -604,6 +604,9 @@ class _Translations$auth$it extends Translations$auth$tr {
 	@override String get privacyPolicy => 'Informativa sulla privacy';
 	@override String get legalSuffix => '.';
 	@override String get passwordResetSent => 'Ti abbiamo inviato via email un link per reimpostare la password.';
+	@override String get ageEulaBeforeLink => 'Confermo di avere più di 18 anni, di accettare i ';
+	@override String get ageEulaAfterLink => ' (EULA) e che c’è tolleranza zero per contenuti inappropriati e abusi.';
+	@override String get ageEulaRequired => 'Seleziona la casella 18+ e Termini di servizio per continuare.';
 }
 
 // Path: onboarding
@@ -619,7 +622,7 @@ class _Translations$onboarding$it extends Translations$onboarding$tr {
 	@override String get page2Title => 'Scrivi. Parla. Senti la vibe.';
 	@override String get page2Subtitle => 'Inizia in anonimo, poi scrivi, chiama o incontratevi quando ti senti pronto.';
 	@override String get page3Title => 'Trova la tua gente. Unisciti\nalla conversazione.';
-	@override String get page3Subtitle => 'Entra nelle stanze, conosci persone nuove e\nvivi il momento insieme.';
+	@override String get page3Subtitle => 'Entra nelle chat room per interessi e interagisci con la community.';
 	@override String get getStarted => 'Iniziamo';
 	@override String get alreadyHaveAccount => 'Hai già un account Veylo? ';
 	@override String get logInAction => 'Accedi';
@@ -1856,13 +1859,16 @@ extension on TranslationsIt {
 			'auth.privacyPolicy' => 'Informativa sulla privacy',
 			'auth.legalSuffix' => '.',
 			'auth.passwordResetSent' => 'Ti abbiamo inviato via email un link per reimpostare la password.',
+			'auth.ageEulaBeforeLink' => 'Confermo di avere più di 18 anni, di accettare i ',
+			'auth.ageEulaAfterLink' => ' (EULA) e che c’è tolleranza zero per contenuti inappropriati e abusi.',
+			'auth.ageEulaRequired' => 'Seleziona la casella 18+ e Termini di servizio per continuare.',
 			'onboarding.skip' => 'Salta',
 			'onboarding.page1Title' => 'Sii te stesso. Resta anonimo.',
 			'onboarding.page1Subtitle' => 'Conosci persone nuove e inizia a chattare\nsenza rivelare chi sei.',
 			'onboarding.page2Title' => 'Scrivi. Parla. Senti la vibe.',
 			'onboarding.page2Subtitle' => 'Inizia in anonimo, poi scrivi, chiama o incontratevi quando ti senti pronto.',
 			'onboarding.page3Title' => 'Trova la tua gente. Unisciti\nalla conversazione.',
-			'onboarding.page3Subtitle' => 'Entra nelle stanze, conosci persone nuove e\nvivi il momento insieme.',
+			'onboarding.page3Subtitle' => 'Entra nelle chat room per interessi e interagisci con la community.',
 			'onboarding.getStarted' => 'Iniziamo',
 			'onboarding.alreadyHaveAccount' => 'Hai già un account Veylo? ',
 			'onboarding.logInAction' => 'Accedi',

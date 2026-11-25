@@ -15,6 +15,7 @@ import {
   type ConversationFull,
 } from '../serializers/conversation.serializer';
 import { maskName, pairKey } from '../utils/mask';
+import { assertCleanContent } from '../lib/content-filter';
 import { mediaService } from './media.service';
 import { unlockNotice } from '../i18n/unlock-notices';
 import { notificationService } from './notification.service';
@@ -254,6 +255,7 @@ async function send(viewerId: string, conversationId: string, input: SendInput, 
   ]);
   if (dup) return { message: serializeMessage(dup, dup.conversation, viewerId), duplicate: true };
 
+  if (!asSystem && input.type === 'TEXT') assertCleanContent(input.body);
   await assertCanSend(c, viewerId);
   const media =
     input.type !== 'TEXT' && input.mediaId
@@ -654,6 +656,7 @@ async function deleteMessage(viewerId: string, conversationId: string, messageId
  * Üyelere `message:edited` gider.
  */
 async function editMessage(viewerId: string, conversationId: string, messageId: string, body: string) {
+  assertCleanContent(body);
   const c = await loadForMember(conversationId, viewerId);
   const msg = await prisma.message.findFirst({
     where: { id: messageId, conversationId: c.id },

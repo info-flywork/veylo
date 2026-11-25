@@ -327,7 +327,12 @@
     "zodiacPisces": "Pisces",
     "boostActiveTitle": "You're standing out!",
     "boostRemaining": "{time} left",
-    "boostExtend": "Extend"
+    "boostExtend": "Extend",
+    "reportIssueTitle": "Support & Contact",
+    "reportIssueSubtitle": "Report objectionable content or abuse. Support: support@fly-work.com",
+    "reportIssueHint": "Briefly describe the issue…",
+    "reportIssueSend": "Send",
+    "reportIssueSent": "Thanks — we received your report and will get back soon."
   },
   "nav": {
     "discover": "Discover",
@@ -585,7 +590,12 @@
       "delete": "Delete",
       "editCaption": "Edit caption",
       "deletePostTitle": "Delete this post?",
-      "captionHint": "Write a caption..."
+      "captionHint": "Write a caption...",
+      "report": "Report",
+      "block": "Block User",
+      "reportPostSubtitle": "Why are you reporting this post?",
+      "hiddenAfterReport": "Post reported and removed from your feed.",
+      "hiddenAfterBlock": "User blocked. Their content was removed from your feed."
     },
     "story": {
       "draft": "DRAFT",
@@ -673,16 +683,19 @@
     "legalMiddle": " and acknowledge our ",
     "privacyPolicy": "Privacy Policy",
     "legalSuffix": ".",
-    "passwordResetSent": "We sent a password reset link to your email."
+    "passwordResetSent": "We sent a password reset link to your email.",
+    "ageEulaBeforeLink": "I confirm that I am 18 years of age or older, that I accept the ",
+    "ageEulaAfterLink": " (EULA), and that there is zero tolerance for objectionable content and abuse.",
+    "ageEulaRequired": "Please confirm the 18+ and Terms of Service checkbox to continue."
   },
   "onboarding": {
     "skip": "Skip",
     "page1Title": "Be yourself. Stay anonymous.",
-    "page1Subtitle": "Meet new people and start conversations\nwithout revealing who you are.",
+    "page1Subtitle": "Chat with communities around your interests without sharing your identity.",
     "page2Title": "Text. Talk. Feel the vibe.",
     "page2Subtitle": "Start anonymously, then text, call, or go face to face when you're ready.",
     "page3Title": "Find your people. Join\nthe conversation.",
-    "page3Subtitle": "Jump into rooms, meet new people, and\nshare the moment together.",
+    "page3Subtitle": "Join chat rooms by interest and engage with the community.",
     "getStarted": "Get Started",
     "alreadyHaveAccount": "Already have a Veylo account? ",
     "logInAction": "Log In"
@@ -751,11 +764,11 @@
     "stepChatGoal": "5/5 Chat goal",
     "chatGoalTitle": "What are you looking for today?",
     "chatGoalSubtitle": "This helps us find the right match for your mood right now.",
-    "chatGoalQuickMatch": "Quick match — jump straight into a\nconversation",
-    "chatGoalFlirtyChat": "Flirty chat — light, playful\nconversations",
+    "chatGoalQuickMatch": "Quick match — jump into chats around shared interests",
+    "chatGoalFlirtyChat": "Fun chat — light, friendly conversation",
     "chatGoalMoodMatch": "Mood match — match based on how you're\nfeeling",
     "chatGoalLateNight": "Late night talk — deep chats when the world's\nasleep",
-    "chatGoalMeetSomeoneNew": "Meet someone new — no specific goal, just\nexplore",
+    "chatGoalMeetSomeoneNew": "Meet new people — explore the community",
     "getStarted": "Get Started",
     "preparingTitleLine1": "We're preparing",
     "preparingTitleLine2": "profiles that are right for",
@@ -797,7 +810,8 @@
     "alreadyCheckedIn": "You've already collected today's reward.",
     "purchasesUnavailable": "Purchases aren't available right now.",
     "peerBusy": "They are in another call right now. Try again a bit later.",
-    "videoLocked": "Video calls unlock once you both reveal your profiles."
+    "videoLocked": "Video calls unlock once you both reveal your profiles.",
+    "contentBlocked": "This text contains inappropriate or objectionable language. Please edit and try again."
   },
   "faq": {
     "q1": "How does this app work?",
@@ -832,7 +846,7 @@
   "legal": {
     "termsTitle": "Terms of Service",
     "privacyTitle": "Privacy Policy",
-    "termsBody": "Last updated: March 16, 2026\n\nWelcome to Veylo. By creating an account or using the app, you agree to these Terms of Service.\n\n1. What Veylo is\nVeylo is a social app where you can meet people, chat anonymously, build connection over time, and optionally move to voice or face-to-face calls when both sides agree.\n\n2. Your account\nYou must provide accurate information and keep your login secure. You are responsible for activity under your account. You must be old enough to use Veylo under the laws of your country.\n\n3. Respectful use\nDo not harass, threaten, scam, impersonate others, share illegal content, or try to bypass safety features. We may remove content, limit features, or suspend accounts that break these rules.\n\n4. Anonymous chat & profile reveal\nAnonymous chats may hide your name and photo until connection milestones are reached. Full profile reveal requires mutual consent. Do not pressure others to reveal identity.\n\n5. Purchases\nSome features may be paid. Purchases are handled by Apple App Store or Google Play. Restore Purchases recovers eligible buys on the same store account. Refunds follow the store’s policy.\n\n6. Content you share\nYou keep rights to your content, but grant Veylo a license to host and display it in the app as needed to operate the service. Do not post content you do not have rights to share.\n\n7. Ending use\nYou can stop using Veylo anytime and request account deletion from Settings. We may also end or change the service with reasonable notice when required.\n\n8. Contact\nQuestions about these terms: support@veylo.app",
+    "termsBody": "Last updated: March 16, 2026\n\nWelcome to Veylo. By creating an account or using the app, you agree to these Terms of Service.\n\nZero tolerance: Objectionable, obscene, hate speech, or harassing posts and abuse are met with zero tolerance. Violating content is removed within 24 hours and the accounts of users who break these rules are permanently closed.\n\nAge: Veylo is only for users 18 years of age or older.\n\n1. What Veylo is\nVeylo is a social app where you can meet people, chat anonymously, build connection over time, and optionally move to voice or face-to-face calls when both sides agree.\n\n2. Your account\nYou must provide accurate information and keep your login secure. You are responsible for activity under your account. You must be old enough to use Veylo under the laws of your country.\n\n3. Respectful use\nDo not harass, threaten, scam, impersonate others, share illegal content, or try to bypass safety features. We may remove content, limit features, or suspend accounts that break these rules.\n\n4. Anonymous chat & profile reveal\nAnonymous chats may hide your name and photo until connection milestones are reached. Full profile reveal requires mutual consent. Do not pressure others to reveal identity.\n\n5. Purchases\nSome features may be paid. Purchases are handled by Apple App Store or Google Play. Restore Purchases recovers eligible buys on the same store account. Refunds follow the store’s policy.\n\n6. Content you share\nYou keep rights to your content, but grant Veylo a license to host and display it in the app as needed to operate the service. Do not post content you do not have rights to share.\n\n7. Ending use\nYou can stop using Veylo anytime and request account deletion from Settings. We may also end or change the service with reasonable notice when required.\n\n8. Contact\nQuestions about these terms: support@veylo.app",
     "privacyBody": "Last updated: March 16, 2026\n\nThis Privacy Policy explains how Veylo collects, uses, and protects your information.\n\n1. Information we collect\n• Account data: email, display name, profile photos, bio, preferences\n• Usage data: chats, connection progress, call features you use, device/app basics\n• Purchases: store receipt data needed to unlock and restore paid features\n\n2. How we use it\nWe use your data to run Veylo, personalize matching and chat experiences, keep the community safe, process purchases, and improve the product. We do not sell your personal data.\n\n3. Anonymous mode\nIn anonymous chats we limit what others see (for example masked name or blurred photo) until unlock rules and mutual consent allow more. Behind the scenes we still need account identifiers to operate the feature securely.\n\n4. Sharing\nWe may share data with service providers that help us host, analyze, or process payments—only as needed. We may also disclose information if required by law or to protect users from harm.\n\n5. Retention\nWe keep data while your account is active and as needed for legal, safety, and billing reasons. After a deletion request is completed, we remove or anonymize personal data except where retention is required.\n\n6. Your choices\nYou can edit profile info, manage notifications, request account deletion, and contact us about your data. Store purchases are also managed through Apple or Google.\n\n7. Security\nWe use reasonable technical and organizational measures to protect your information. No system is perfectly secure; please use a strong password and keep your device updated.\n\n8. Contact\nPrivacy questions: privacy@veylo.app"
   },
   "logout": {
