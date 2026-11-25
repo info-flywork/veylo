@@ -605,6 +605,9 @@ class _Translations$auth$ru extends Translations$auth$tr {
 	@override String get privacyPolicy => 'Политикой конфиденциальности';
 	@override String get legalSuffix => '.';
 	@override String get passwordResetSent => 'Мы отправили ссылку для сброса пароля на твою почту.';
+	@override String get ageEulaBeforeLink => 'Подтверждаю, что мне есть 18 лет, что я принимаю ';
+	@override String get ageEulaAfterLink => ' (EULA) и что к неприемлемому контенту и злоупотреблениям применяется нулевая терпимость.';
+	@override String get ageEulaRequired => 'Отметьте галочку 18+ и Условия использования, чтобы продолжить.';
 }
 
 // Path: onboarding
@@ -620,7 +623,7 @@ class _Translations$onboarding$ru extends Translations$onboarding$tr {
 	@override String get page2Title => 'Пиши. Говори. Лови вайб.';
 	@override String get page2Subtitle => 'Начни анонимно, а когда будешь готов(а) — переписка, звонок или встреча.';
 	@override String get page3Title => 'Найди своих. Присоединяйся\nк разговору.';
-	@override String get page3Subtitle => 'Заходи в комнаты, знакомься и\nпроживай моменты вместе.';
+	@override String get page3Subtitle => 'Присоединяйся к чатам по интересам и общайся с сообществом.';
 	@override String get getStarted => 'Начать';
 	@override String get alreadyHaveAccount => 'Уже есть аккаунт Veylo? ';
 	@override String get logInAction => 'Войти';
@@ -1129,6 +1132,11 @@ class _Translations$discover$post$ru extends Translations$discover$post$tr {
 	@override String viewOtherReplies({required Object count}) => 'Посмотреть ещё ${count} ответов';
 	@override String get boost => 'Продвинуть';
 	@override String get deletePostMessage => 'Вы уверены, что хотите удалить эту публикацию? Это действие нельзя отменить.';
+	@override String get report => 'Report';
+	@override String get block => 'Block User';
+	@override String get reportPostSubtitle => 'Why are you reporting this post?';
+	@override String get hiddenAfterReport => 'Post reported and removed from your feed.';
+	@override String get hiddenAfterBlock => 'User blocked. Their content was removed from your feed.';
 }
 
 // Path: discover.story
@@ -1794,6 +1802,11 @@ extension on TranslationsRu {
 			'discover.post.viewOtherReplies' => ({required Object count}) => 'Посмотреть ещё ${count} ответов',
 			'discover.post.boost' => 'Продвинуть',
 			'discover.post.deletePostMessage' => 'Вы уверены, что хотите удалить эту публикацию? Это действие нельзя отменить.',
+			'discover.post.report' => 'Report',
+			'discover.post.block' => 'Block User',
+			'discover.post.reportPostSubtitle' => 'Why are you reporting this post?',
+			'discover.post.hiddenAfterReport' => 'Post reported and removed from your feed.',
+			'discover.post.hiddenAfterBlock' => 'User blocked. Their content was removed from your feed.',
 			'discover.story.draft' => 'ЧЕРНОВИК',
 			'discover.story.story' => 'ИСТОРИЯ',
 			'discover.story.share' => 'Опубликовать',
@@ -1870,13 +1883,16 @@ extension on TranslationsRu {
 			'auth.privacyPolicy' => 'Политикой конфиденциальности',
 			'auth.legalSuffix' => '.',
 			'auth.passwordResetSent' => 'Мы отправили ссылку для сброса пароля на твою почту.',
+			'auth.ageEulaBeforeLink' => 'Подтверждаю, что мне есть 18 лет, что я принимаю ',
+			'auth.ageEulaAfterLink' => ' (EULA) и что к неприемлемому контенту и злоупотреблениям применяется нулевая терпимость.',
+			'auth.ageEulaRequired' => 'Отметьте галочку 18+ и Условия использования, чтобы продолжить.',
 			'onboarding.skip' => 'Пропустить',
 			'onboarding.page1Title' => 'Будь собой. Оставайся анонимным.',
 			'onboarding.page1Subtitle' => 'Знакомься и общайся,\nне раскрывая, кто ты.',
 			'onboarding.page2Title' => 'Пиши. Говори. Лови вайб.',
 			'onboarding.page2Subtitle' => 'Начни анонимно, а когда будешь готов(а) — переписка, звонок или встреча.',
 			'onboarding.page3Title' => 'Найди своих. Присоединяйся\nк разговору.',
-			'onboarding.page3Subtitle' => 'Заходи в комнаты, знакомься и\nпроживай моменты вместе.',
+			'onboarding.page3Subtitle' => 'Присоединяйся к чатам по интересам и общайся с сообществом.',
 			'onboarding.getStarted' => 'Начать',
 			'onboarding.alreadyHaveAccount' => 'Уже есть аккаунт Veylo? ',
 			'onboarding.logInAction' => 'Войти',

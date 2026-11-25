@@ -605,6 +605,9 @@ class _Translations$auth$hi extends Translations$auth$tr {
 	@override String get privacyPolicy => 'प्राइवेसी पॉलिसी';
 	@override String get legalSuffix => ' को स्वीकार करते हैं।';
 	@override String get passwordResetSent => 'हमने आपके ईमेल पर पासवर्ड रीसेट लिंक भेजा है।';
+	@override String get ageEulaBeforeLink => 'मैं पुष्टि करता/करती हूँ कि मेरी आयु 18 वर्ष से अधिक है, मैं ';
+	@override String get ageEulaAfterLink => ' (EULA) स्वीकार करता/करती हूँ, और आपत्तिजनक सामग्री तथा दुरुपयोग पर शून्य सहिष्णुता लागू होगी।';
+	@override String get ageEulaRequired => 'जारी रखने के लिए 18+ और सेवा की शर्तें चेकबॉक्स चुनें।';
 }
 
 // Path: onboarding
@@ -620,7 +623,7 @@ class _Translations$onboarding$hi extends Translations$onboarding$tr {
 	@override String get page2Title => 'लिखें। बात करें। Vibe महसूस करें।';
 	@override String get page2Subtitle => 'गुमनाम शुरुआत करें, फिर तैयार होने पर मैसेज, कॉल या आमने-सामने बात करें।';
 	@override String get page3Title => 'अपने लोग ढूँढें। बातचीत में\nशामिल हों।';
-	@override String get page3Subtitle => 'रूम में जाएँ, नए लोगों से मिलें और\nसाथ मिलकर पल शेयर करें।';
+	@override String get page3Subtitle => 'रुचि के अनुसार चैट रूम में शामिल हों और समुदाय से जुड़ें।';
 	@override String get getStarted => 'शुरू करें';
 	@override String get alreadyHaveAccount => 'पहले से Veylo अकाउंट है? ';
 	@override String get logInAction => 'लॉग इन';
@@ -1129,6 +1132,11 @@ class _Translations$discover$post$hi extends Translations$discover$post$tr {
 	@override String viewOtherReplies({required Object count}) => '${count} और जवाब देखें';
 	@override String get boost => 'बूस्ट';
 	@override String get deletePostMessage => 'क्या आप वाकई इस पोस्ट को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।';
+	@override String get report => 'Report';
+	@override String get block => 'Block User';
+	@override String get reportPostSubtitle => 'Why are you reporting this post?';
+	@override String get hiddenAfterReport => 'Post reported and removed from your feed.';
+	@override String get hiddenAfterBlock => 'User blocked. Their content was removed from your feed.';
 }
 
 // Path: discover.story
@@ -1794,6 +1802,11 @@ extension on TranslationsHi {
 			'discover.post.viewOtherReplies' => ({required Object count}) => '${count} और जवाब देखें',
 			'discover.post.boost' => 'बूस्ट',
 			'discover.post.deletePostMessage' => 'क्या आप वाकई इस पोस्ट को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।',
+			'discover.post.report' => 'Report',
+			'discover.post.block' => 'Block User',
+			'discover.post.reportPostSubtitle' => 'Why are you reporting this post?',
+			'discover.post.hiddenAfterReport' => 'Post reported and removed from your feed.',
+			'discover.post.hiddenAfterBlock' => 'User blocked. Their content was removed from your feed.',
 			'discover.story.draft' => 'ड्राफ़्ट',
 			'discover.story.story' => 'स्टोरी',
 			'discover.story.share' => 'शेयर करें',
@@ -1870,13 +1883,16 @@ extension on TranslationsHi {
 			'auth.privacyPolicy' => 'प्राइवेसी पॉलिसी',
 			'auth.legalSuffix' => ' को स्वीकार करते हैं।',
 			'auth.passwordResetSent' => 'हमने आपके ईमेल पर पासवर्ड रीसेट लिंक भेजा है।',
+			'auth.ageEulaBeforeLink' => 'मैं पुष्टि करता/करती हूँ कि मेरी आयु 18 वर्ष से अधिक है, मैं ',
+			'auth.ageEulaAfterLink' => ' (EULA) स्वीकार करता/करती हूँ, और आपत्तिजनक सामग्री तथा दुरुपयोग पर शून्य सहिष्णुता लागू होगी।',
+			'auth.ageEulaRequired' => 'जारी रखने के लिए 18+ और सेवा की शर्तें चेकबॉक्स चुनें।',
 			'onboarding.skip' => 'छोड़ें',
 			'onboarding.page1Title' => 'जैसे हैं वैसे रहें। गुमनाम रहें।',
 			'onboarding.page1Subtitle' => 'बिना अपनी पहचान बताए नए लोगों से\nमिलें और बातचीत शुरू करें।',
 			'onboarding.page2Title' => 'लिखें। बात करें। Vibe महसूस करें।',
 			'onboarding.page2Subtitle' => 'गुमनाम शुरुआत करें, फिर तैयार होने पर मैसेज, कॉल या आमने-सामने बात करें।',
 			'onboarding.page3Title' => 'अपने लोग ढूँढें। बातचीत में\nशामिल हों।',
-			'onboarding.page3Subtitle' => 'रूम में जाएँ, नए लोगों से मिलें और\nसाथ मिलकर पल शेयर करें।',
+			'onboarding.page3Subtitle' => 'रुचि के अनुसार चैट रूम में शामिल हों और समुदाय से जुड़ें।',
 			'onboarding.getStarted' => 'शुरू करें',
 			'onboarding.alreadyHaveAccount' => 'पहले से Veylo अकाउंट है? ',
 			'onboarding.logInAction' => 'लॉग इन',

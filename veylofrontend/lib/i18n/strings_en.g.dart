@@ -417,6 +417,11 @@ class _Translations$profile$en extends Translations$profile$tr {
 	@override String get boostActiveTitle => 'You\'re standing out!';
 	@override String boostRemaining({required Object time}) => '${time} left';
 	@override String get boostExtend => 'Extend';
+	@override String get reportIssueTitle => 'Support & Contact';
+	@override String get reportIssueSubtitle => 'Report objectionable content or abuse. Support: support@fly-work.com';
+	@override String get reportIssueHint => 'Briefly describe the issue…';
+	@override String get reportIssueSend => 'Send';
+	@override String get reportIssueSent => 'Thanks — we received your report and will get back soon.';
 }
 
 // Path: nav
@@ -605,6 +610,9 @@ class _Translations$auth$en extends Translations$auth$tr {
 	@override String get privacyPolicy => 'Privacy Policy';
 	@override String get legalSuffix => '.';
 	@override String get passwordResetSent => 'We sent a password reset link to your email.';
+	@override String get ageEulaBeforeLink => 'I confirm that I am 18 years of age or older, that I accept the ';
+	@override String get ageEulaAfterLink => ' (EULA), and that there is zero tolerance for objectionable content and abuse.';
+	@override String get ageEulaRequired => 'Please confirm the 18+ and Terms of Service checkbox to continue.';
 }
 
 // Path: onboarding
@@ -616,11 +624,11 @@ class _Translations$onboarding$en extends Translations$onboarding$tr {
 	// Translations
 	@override String get skip => 'Skip';
 	@override String get page1Title => 'Be yourself. Stay anonymous.';
-	@override String get page1Subtitle => 'Meet new people and start conversations\nwithout revealing who you are.';
+	@override String get page1Subtitle => 'Chat with communities around your interests without sharing your identity.';
 	@override String get page2Title => 'Text. Talk. Feel the vibe.';
 	@override String get page2Subtitle => 'Start anonymously, then text, call, or go face to face when you\'re ready.';
 	@override String get page3Title => 'Find your people. Join\nthe conversation.';
-	@override String get page3Subtitle => 'Jump into rooms, meet new people, and\nshare the moment together.';
+	@override String get page3Subtitle => 'Join chat rooms by interest and engage with the community.';
 	@override String get getStarted => 'Get Started';
 	@override String get alreadyHaveAccount => 'Already have a Veylo account? ';
 	@override String get logInAction => 'Log In';
@@ -673,11 +681,11 @@ class _Translations$createProfile$en extends Translations$createProfile$tr {
 	@override String get stepChatGoal => '5/5 Chat goal';
 	@override String get chatGoalTitle => 'What are you looking for today?';
 	@override String get chatGoalSubtitle => 'This helps us find the right match for your mood right now.';
-	@override String get chatGoalQuickMatch => 'Quick match — jump straight into a\nconversation';
-	@override String get chatGoalFlirtyChat => 'Flirty chat — light, playful\nconversations';
+	@override String get chatGoalQuickMatch => 'Quick match — jump into chats around shared interests';
+	@override String get chatGoalFlirtyChat => 'Fun chat — light, friendly conversation';
 	@override String get chatGoalMoodMatch => 'Mood match — match based on how you\'re\nfeeling';
 	@override String get chatGoalLateNight => 'Late night talk — deep chats when the world\'s\nasleep';
-	@override String get chatGoalMeetSomeoneNew => 'Meet someone new — no specific goal, just\nexplore';
+	@override String get chatGoalMeetSomeoneNew => 'Meet new people — explore the community';
 	@override String get getStarted => 'Get Started';
 	@override String get preparingTitleLine1 => 'We\'re preparing';
 	@override String get preparingTitleLine2 => 'profiles that are right for';
@@ -727,6 +735,7 @@ class _Translations$errors$en extends Translations$errors$tr {
 	@override String get purchasesUnavailable => 'Purchases aren\'t available right now.';
 	@override String get peerBusy => 'They are in another call right now. Try again a bit later.';
 	@override String get videoLocked => 'Video calls unlock once you both reveal your profiles.';
+	@override String get contentBlocked => 'This text contains inappropriate or objectionable language. Please edit and try again.';
 }
 
 // Path: faq
@@ -775,7 +784,7 @@ class _Translations$legal$en extends Translations$legal$tr {
 	// Translations
 	@override String get termsTitle => 'Terms of Service';
 	@override String get privacyTitle => 'Privacy Policy';
-	@override String get termsBody => 'Last updated: March 16, 2026\n\nWelcome to Veylo. By creating an account or using the app, you agree to these Terms of Service.\n\n1. What Veylo is\nVeylo is a social app where you can meet people, chat anonymously, build connection over time, and optionally move to voice or face-to-face calls when both sides agree.\n\n2. Your account\nYou must provide accurate information and keep your login secure. You are responsible for activity under your account. You must be old enough to use Veylo under the laws of your country.\n\n3. Respectful use\nDo not harass, threaten, scam, impersonate others, share illegal content, or try to bypass safety features. We may remove content, limit features, or suspend accounts that break these rules.\n\n4. Anonymous chat & profile reveal\nAnonymous chats may hide your name and photo until connection milestones are reached. Full profile reveal requires mutual consent. Do not pressure others to reveal identity.\n\n5. Purchases\nSome features may be paid. Purchases are handled by Apple App Store or Google Play. Restore Purchases recovers eligible buys on the same store account. Refunds follow the store’s policy.\n\n6. Content you share\nYou keep rights to your content, but grant Veylo a license to host and display it in the app as needed to operate the service. Do not post content you do not have rights to share.\n\n7. Ending use\nYou can stop using Veylo anytime and request account deletion from Settings. We may also end or change the service with reasonable notice when required.\n\n8. Contact\nQuestions about these terms: support@veylo.app';
+	@override String get termsBody => 'Last updated: March 16, 2026\n\nWelcome to Veylo. By creating an account or using the app, you agree to these Terms of Service.\n\nZero tolerance: Objectionable, obscene, hate speech, or harassing posts and abuse are met with zero tolerance. Violating content is removed within 24 hours and the accounts of users who break these rules are permanently closed.\n\nAge: Veylo is only for users 18 years of age or older.\n\n1. What Veylo is\nVeylo is a social app where you can meet people, chat anonymously, build connection over time, and optionally move to voice or face-to-face calls when both sides agree.\n\n2. Your account\nYou must provide accurate information and keep your login secure. You are responsible for activity under your account. You must be old enough to use Veylo under the laws of your country.\n\n3. Respectful use\nDo not harass, threaten, scam, impersonate others, share illegal content, or try to bypass safety features. We may remove content, limit features, or suspend accounts that break these rules.\n\n4. Anonymous chat & profile reveal\nAnonymous chats may hide your name and photo until connection milestones are reached. Full profile reveal requires mutual consent. Do not pressure others to reveal identity.\n\n5. Purchases\nSome features may be paid. Purchases are handled by Apple App Store or Google Play. Restore Purchases recovers eligible buys on the same store account. Refunds follow the store’s policy.\n\n6. Content you share\nYou keep rights to your content, but grant Veylo a license to host and display it in the app as needed to operate the service. Do not post content you do not have rights to share.\n\n7. Ending use\nYou can stop using Veylo anytime and request account deletion from Settings. We may also end or change the service with reasonable notice when required.\n\n8. Contact\nQuestions about these terms: support@veylo.app';
 	@override String get privacyBody => 'Last updated: March 16, 2026\n\nThis Privacy Policy explains how Veylo collects, uses, and protects your information.\n\n1. Information we collect\n• Account data: email, display name, profile photos, bio, preferences\n• Usage data: chats, connection progress, call features you use, device/app basics\n• Purchases: store receipt data needed to unlock and restore paid features\n\n2. How we use it\nWe use your data to run Veylo, personalize matching and chat experiences, keep the community safe, process purchases, and improve the product. We do not sell your personal data.\n\n3. Anonymous mode\nIn anonymous chats we limit what others see (for example masked name or blurred photo) until unlock rules and mutual consent allow more. Behind the scenes we still need account identifiers to operate the feature securely.\n\n4. Sharing\nWe may share data with service providers that help us host, analyze, or process payments—only as needed. We may also disclose information if required by law or to protect users from harm.\n\n5. Retention\nWe keep data while your account is active and as needed for legal, safety, and billing reasons. After a deletion request is completed, we remove or anonymize personal data except where retention is required.\n\n6. Your choices\nYou can edit profile info, manage notifications, request account deletion, and contact us about your data. Store purchases are also managed through Apple or Google.\n\n7. Security\nWe use reasonable technical and organizational measures to protect your information. No system is perfectly secure; please use a strong password and keep your device updated.\n\n8. Contact\nPrivacy questions: privacy@veylo.app';
 }
 
@@ -1131,6 +1140,11 @@ class _Translations$discover$post$en extends Translations$discover$post$tr {
 	@override String viewOtherReplies({required Object count}) => 'View ${count} other replies';
 	@override String get boost => 'Boost';
 	@override String get deletePostMessage => 'Are you sure you want to delete this post? This action cannot be undone.';
+	@override String get report => 'Report';
+	@override String get block => 'Block User';
+	@override String get reportPostSubtitle => 'Why are you reporting this post?';
+	@override String get hiddenAfterReport => 'Post reported and removed from your feed.';
+	@override String get hiddenAfterBlock => 'User blocked. Their content was removed from your feed.';
 }
 
 // Path: discover.story
@@ -1561,6 +1575,11 @@ extension on TranslationsEn {
 			'profile.boostActiveTitle' => 'You\'re standing out!',
 			'profile.boostRemaining' => ({required Object time}) => '${time} left',
 			'profile.boostExtend' => 'Extend',
+			'profile.reportIssueTitle' => 'Support & Contact',
+			'profile.reportIssueSubtitle' => 'Report objectionable content or abuse. Support: support@fly-work.com',
+			'profile.reportIssueHint' => 'Briefly describe the issue…',
+			'profile.reportIssueSend' => 'Send',
+			'profile.reportIssueSent' => 'Thanks — we received your report and will get back soon.',
 			'nav.discover' => 'Discover',
 			'nav.chat' => 'Chat',
 			'nav.call' => 'Call',
@@ -1746,13 +1765,13 @@ extension on TranslationsEn {
 			'discover.groupInfo.settings' => 'Settings',
 			'discover.groupInfo.notifications' => 'Notifications',
 			'discover.groupInfo.blocked' => 'Blocked',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupInfo.private' => 'Private',
 			'discover.groupInfo.membersCount' => ({required Object count}) => '${count} members',
 			'discover.groupInfo.addPeople' => 'Add people',
 			'discover.groupInfo.you' => 'You',
 			'discover.groupInfo.admin' => 'Admin',
-			_ => null,
-		} ?? switch (path) {
 			'discover.groupInfo.leaveGroup' => 'Leave the group',
 			'discover.groupInfo.requests' => 'Join requests',
 			'discover.groupInfo.approve' => 'Approve',
@@ -1798,6 +1817,11 @@ extension on TranslationsEn {
 			'discover.post.viewOtherReplies' => ({required Object count}) => 'View ${count} other replies',
 			'discover.post.boost' => 'Boost',
 			'discover.post.deletePostMessage' => 'Are you sure you want to delete this post? This action cannot be undone.',
+			'discover.post.report' => 'Report',
+			'discover.post.block' => 'Block User',
+			'discover.post.reportPostSubtitle' => 'Why are you reporting this post?',
+			'discover.post.hiddenAfterReport' => 'Post reported and removed from your feed.',
+			'discover.post.hiddenAfterBlock' => 'User blocked. Their content was removed from your feed.',
 			'discover.story.draft' => 'DRAFT',
 			'discover.story.story' => 'STORY',
 			'discover.story.share' => 'Share',
@@ -1874,13 +1898,16 @@ extension on TranslationsEn {
 			'auth.privacyPolicy' => 'Privacy Policy',
 			'auth.legalSuffix' => '.',
 			'auth.passwordResetSent' => 'We sent a password reset link to your email.',
+			'auth.ageEulaBeforeLink' => 'I confirm that I am 18 years of age or older, that I accept the ',
+			'auth.ageEulaAfterLink' => ' (EULA), and that there is zero tolerance for objectionable content and abuse.',
+			'auth.ageEulaRequired' => 'Please confirm the 18+ and Terms of Service checkbox to continue.',
 			'onboarding.skip' => 'Skip',
 			'onboarding.page1Title' => 'Be yourself. Stay anonymous.',
-			'onboarding.page1Subtitle' => 'Meet new people and start conversations\nwithout revealing who you are.',
+			'onboarding.page1Subtitle' => 'Chat with communities around your interests without sharing your identity.',
 			'onboarding.page2Title' => 'Text. Talk. Feel the vibe.',
 			'onboarding.page2Subtitle' => 'Start anonymously, then text, call, or go face to face when you\'re ready.',
 			'onboarding.page3Title' => 'Find your people. Join\nthe conversation.',
-			'onboarding.page3Subtitle' => 'Jump into rooms, meet new people, and\nshare the moment together.',
+			'onboarding.page3Subtitle' => 'Join chat rooms by interest and engage with the community.',
 			'onboarding.getStarted' => 'Get Started',
 			'onboarding.alreadyHaveAccount' => 'Already have a Veylo account? ',
 			'onboarding.logInAction' => 'Log In',
@@ -1945,11 +1972,11 @@ extension on TranslationsEn {
 			'createProfile.stepChatGoal' => '5/5 Chat goal',
 			'createProfile.chatGoalTitle' => 'What are you looking for today?',
 			'createProfile.chatGoalSubtitle' => 'This helps us find the right match for your mood right now.',
-			'createProfile.chatGoalQuickMatch' => 'Quick match — jump straight into a\nconversation',
-			'createProfile.chatGoalFlirtyChat' => 'Flirty chat — light, playful\nconversations',
+			'createProfile.chatGoalQuickMatch' => 'Quick match — jump into chats around shared interests',
+			'createProfile.chatGoalFlirtyChat' => 'Fun chat — light, friendly conversation',
 			'createProfile.chatGoalMoodMatch' => 'Mood match — match based on how you\'re\nfeeling',
 			'createProfile.chatGoalLateNight' => 'Late night talk — deep chats when the world\'s\nasleep',
-			'createProfile.chatGoalMeetSomeoneNew' => 'Meet someone new — no specific goal, just\nexplore',
+			'createProfile.chatGoalMeetSomeoneNew' => 'Meet new people — explore the community',
 			'createProfile.getStarted' => 'Get Started',
 			'createProfile.preparingTitleLine1' => 'We\'re preparing',
 			'createProfile.preparingTitleLine2' => 'profiles that are right for',
@@ -1990,6 +2017,7 @@ extension on TranslationsEn {
 			'errors.purchasesUnavailable' => 'Purchases aren\'t available right now.',
 			'errors.peerBusy' => 'They are in another call right now. Try again a bit later.',
 			'errors.videoLocked' => 'Video calls unlock once you both reveal your profiles.',
+			'errors.contentBlocked' => 'This text contains inappropriate or objectionable language. Please edit and try again.',
 			'faq.q1' => 'How does this app work?',
 			'faq.q2' => 'What is anonymous chat?',
 			'faq.q3' => 'What is Connection Progress?',
@@ -2020,7 +2048,7 @@ extension on TranslationsEn {
 			'faq.a14' => 'Go to Settings → Account Management → Delete Account and Data. After sharing a reason, confirm to submit your deletion request.',
 			'legal.termsTitle' => 'Terms of Service',
 			'legal.privacyTitle' => 'Privacy Policy',
-			'legal.termsBody' => 'Last updated: March 16, 2026\n\nWelcome to Veylo. By creating an account or using the app, you agree to these Terms of Service.\n\n1. What Veylo is\nVeylo is a social app where you can meet people, chat anonymously, build connection over time, and optionally move to voice or face-to-face calls when both sides agree.\n\n2. Your account\nYou must provide accurate information and keep your login secure. You are responsible for activity under your account. You must be old enough to use Veylo under the laws of your country.\n\n3. Respectful use\nDo not harass, threaten, scam, impersonate others, share illegal content, or try to bypass safety features. We may remove content, limit features, or suspend accounts that break these rules.\n\n4. Anonymous chat & profile reveal\nAnonymous chats may hide your name and photo until connection milestones are reached. Full profile reveal requires mutual consent. Do not pressure others to reveal identity.\n\n5. Purchases\nSome features may be paid. Purchases are handled by Apple App Store or Google Play. Restore Purchases recovers eligible buys on the same store account. Refunds follow the store’s policy.\n\n6. Content you share\nYou keep rights to your content, but grant Veylo a license to host and display it in the app as needed to operate the service. Do not post content you do not have rights to share.\n\n7. Ending use\nYou can stop using Veylo anytime and request account deletion from Settings. We may also end or change the service with reasonable notice when required.\n\n8. Contact\nQuestions about these terms: support@veylo.app',
+			'legal.termsBody' => 'Last updated: March 16, 2026\n\nWelcome to Veylo. By creating an account or using the app, you agree to these Terms of Service.\n\nZero tolerance: Objectionable, obscene, hate speech, or harassing posts and abuse are met with zero tolerance. Violating content is removed within 24 hours and the accounts of users who break these rules are permanently closed.\n\nAge: Veylo is only for users 18 years of age or older.\n\n1. What Veylo is\nVeylo is a social app where you can meet people, chat anonymously, build connection over time, and optionally move to voice or face-to-face calls when both sides agree.\n\n2. Your account\nYou must provide accurate information and keep your login secure. You are responsible for activity under your account. You must be old enough to use Veylo under the laws of your country.\n\n3. Respectful use\nDo not harass, threaten, scam, impersonate others, share illegal content, or try to bypass safety features. We may remove content, limit features, or suspend accounts that break these rules.\n\n4. Anonymous chat & profile reveal\nAnonymous chats may hide your name and photo until connection milestones are reached. Full profile reveal requires mutual consent. Do not pressure others to reveal identity.\n\n5. Purchases\nSome features may be paid. Purchases are handled by Apple App Store or Google Play. Restore Purchases recovers eligible buys on the same store account. Refunds follow the store’s policy.\n\n6. Content you share\nYou keep rights to your content, but grant Veylo a license to host and display it in the app as needed to operate the service. Do not post content you do not have rights to share.\n\n7. Ending use\nYou can stop using Veylo anytime and request account deletion from Settings. We may also end or change the service with reasonable notice when required.\n\n8. Contact\nQuestions about these terms: support@veylo.app',
 			'legal.privacyBody' => 'Last updated: March 16, 2026\n\nThis Privacy Policy explains how Veylo collects, uses, and protects your information.\n\n1. Information we collect\n• Account data: email, display name, profile photos, bio, preferences\n• Usage data: chats, connection progress, call features you use, device/app basics\n• Purchases: store receipt data needed to unlock and restore paid features\n\n2. How we use it\nWe use your data to run Veylo, personalize matching and chat experiences, keep the community safe, process purchases, and improve the product. We do not sell your personal data.\n\n3. Anonymous mode\nIn anonymous chats we limit what others see (for example masked name or blurred photo) until unlock rules and mutual consent allow more. Behind the scenes we still need account identifiers to operate the feature securely.\n\n4. Sharing\nWe may share data with service providers that help us host, analyze, or process payments—only as needed. We may also disclose information if required by law or to protect users from harm.\n\n5. Retention\nWe keep data while your account is active and as needed for legal, safety, and billing reasons. After a deletion request is completed, we remove or anonymize personal data except where retention is required.\n\n6. Your choices\nYou can edit profile info, manage notifications, request account deletion, and contact us about your data. Store purchases are also managed through Apple or Google.\n\n7. Security\nWe use reasonable technical and organizational measures to protect your information. No system is perfectly secure; please use a strong password and keep your device updated.\n\n8. Contact\nPrivacy questions: privacy@veylo.app',
 			'logout.title' => 'Log out',
 			'logout.subtitle' => 'Are you sure you want to log out?',

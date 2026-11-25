@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/navigation/session_navigation.dart';
 import 'package:veylo/core/theme/theme.dart';
+import 'package:veylo/core/widgets/age_eula_checkbox.dart';
 import 'package:veylo/core/widgets/app_back_button.dart';
 import 'package:veylo/core/widgets/app_legal_footer.dart';
 import 'package:veylo/core/widgets/app_primary_button.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/core/widgets/app_text_field.dart';
+import 'package:veylo/data/local/eula_store.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/screens/profile/legal_doc_sheet.dart';
@@ -23,6 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _eulaAccepted = false;
 
   @override
   void dispose() {
@@ -37,6 +40,16 @@ class _RegisterPageState extends State<RegisterPage> {
   /// Firebase'de hesap açar, backend kullanıcısını oluşturur (+100 token),
   /// sonra profil oluşturmaya geçer (kullanıcı adı orada hazır gelir).
   Future<void> _signUp() async {
+    final t = Translations.of(context);
+    if (!_eulaAccepted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(t.auth.ageEulaRequired),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
     final username = _usernameController.text
         .trim()
         .replaceFirst(RegExp(r'^@+'), '')
@@ -46,7 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
     if (username.isEmpty || email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(Translations.of(context).errors.fillAllFields),
+          content: Text(t.errors.fillAllFields),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -55,6 +68,7 @@ class _RegisterPageState extends State<RegisterPage> {
     FocusScope.of(context).unfocus();
     setState(() => _busy = true);
     try {
+      await EulaStore.accept();
       final status = await SessionStore.instance.registerWithEmail(
         email,
         password,
@@ -129,9 +143,14 @@ class _RegisterPageState extends State<RegisterPage> {
                       autofillHints: const [AutofillHints.newPassword],
                     ),
                     const SizedBox(height: AppSpacing.sectionGap),
+                    AgeEulaCheckbox(
+                      value: _eulaAccepted,
+                      onChanged: (v) => setState(() => _eulaAccepted = v),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
                     AppPrimaryButton(
                       label: _busy ? t.common.loading : t.auth.signUp,
-                      onPressed: _busy ? null : _signUp,
+                      onPressed: _busy || !_eulaAccepted ? null : _signUp,
                     ),
                     const SizedBox(height: AppSpacing.xl),
                   ],

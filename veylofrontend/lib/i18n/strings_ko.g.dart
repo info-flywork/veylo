@@ -605,6 +605,9 @@ class _Translations$auth$ko extends Translations$auth$tr {
 	@override String get privacyPolicy => '개인정보 처리방침';
 	@override String get legalSuffix => '을 확인한 것으로 간주돼요.';
 	@override String get passwordResetSent => '이메일로 비밀번호 재설정 링크를 보냈어요.';
+	@override String get ageEulaBeforeLink => '만 18세 이상이며 ';
+	@override String get ageEulaAfterLink => '(EULA)에 동의하고, 부적절한 콘텐츠와 악용에 대해 무관용 원칙이 적용됨을 확인합니다.';
+	@override String get ageEulaRequired => '계속하려면 18세 이상 및 서비스 약관 동의 확인란을 선택하세요.';
 }
 
 // Path: onboarding
@@ -620,7 +623,7 @@ class _Translations$onboarding$ko extends Translations$onboarding$tr {
 	@override String get page2Title => '문자. 통화. 분위기를 느껴봐요.';
 	@override String get page2Subtitle => '익명으로 시작하고, 준비되면 문자, 통화, 영상으로 만나요.';
 	@override String get page3Title => '나와 맞는 사람을 찾고\n대화에 참여하세요.';
-	@override String get page3Subtitle => '룸에 들어가 새로운 사람을 만나고\n순간을 함께 나눠요.';
+	@override String get page3Subtitle => '관심사에 맞는 채팅방에 참여하고 커뮤니티와 교류하세요.';
 	@override String get getStarted => '시작하기';
 	@override String get alreadyHaveAccount => '이미 Veylo 계정이 있나요? ';
 	@override String get logInAction => '로그인';
@@ -1129,6 +1132,11 @@ class _Translations$discover$post$ko extends Translations$discover$post$tr {
 	@override String viewOtherReplies({required Object count}) => '다른 답글 ${count}개 보기';
 	@override String get boost => '부스트';
 	@override String get deletePostMessage => '이 게시물을 정말 삭제할까요? 이 작업은 되돌릴 수 없어요.';
+	@override String get report => 'Report';
+	@override String get block => 'Block User';
+	@override String get reportPostSubtitle => 'Why are you reporting this post?';
+	@override String get hiddenAfterReport => 'Post reported and removed from your feed.';
+	@override String get hiddenAfterBlock => 'User blocked. Their content was removed from your feed.';
 }
 
 // Path: discover.story
@@ -1794,6 +1802,11 @@ extension on TranslationsKo {
 			'discover.post.viewOtherReplies' => ({required Object count}) => '다른 답글 ${count}개 보기',
 			'discover.post.boost' => '부스트',
 			'discover.post.deletePostMessage' => '이 게시물을 정말 삭제할까요? 이 작업은 되돌릴 수 없어요.',
+			'discover.post.report' => 'Report',
+			'discover.post.block' => 'Block User',
+			'discover.post.reportPostSubtitle' => 'Why are you reporting this post?',
+			'discover.post.hiddenAfterReport' => 'Post reported and removed from your feed.',
+			'discover.post.hiddenAfterBlock' => 'User blocked. Their content was removed from your feed.',
 			'discover.story.draft' => '임시저장',
 			'discover.story.story' => '스토리',
 			'discover.story.share' => '공유',
@@ -1870,13 +1883,16 @@ extension on TranslationsKo {
 			'auth.privacyPolicy' => '개인정보 처리방침',
 			'auth.legalSuffix' => '을 확인한 것으로 간주돼요.',
 			'auth.passwordResetSent' => '이메일로 비밀번호 재설정 링크를 보냈어요.',
+			'auth.ageEulaBeforeLink' => '만 18세 이상이며 ',
+			'auth.ageEulaAfterLink' => '(EULA)에 동의하고, 부적절한 콘텐츠와 악용에 대해 무관용 원칙이 적용됨을 확인합니다.',
+			'auth.ageEulaRequired' => '계속하려면 18세 이상 및 서비스 약관 동의 확인란을 선택하세요.',
 			'onboarding.skip' => '건너뛰기',
 			'onboarding.page1Title' => '있는 그대로, 익명으로.',
 			'onboarding.page1Subtitle' => '정체를 밝히지 않고 새로운 사람을 만나\n대화를 시작해 보세요.',
 			'onboarding.page2Title' => '문자. 통화. 분위기를 느껴봐요.',
 			'onboarding.page2Subtitle' => '익명으로 시작하고, 준비되면 문자, 통화, 영상으로 만나요.',
 			'onboarding.page3Title' => '나와 맞는 사람을 찾고\n대화에 참여하세요.',
-			'onboarding.page3Subtitle' => '룸에 들어가 새로운 사람을 만나고\n순간을 함께 나눠요.',
+			'onboarding.page3Subtitle' => '관심사에 맞는 채팅방에 참여하고 커뮤니티와 교류하세요.',
 			'onboarding.getStarted' => '시작하기',
 			'onboarding.alreadyHaveAccount' => '이미 Veylo 계정이 있나요? ',
 			'onboarding.logInAction' => '로그인',

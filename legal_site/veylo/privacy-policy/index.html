@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Veylo – Gizlilik Politikası · Veylo</title>
+<meta name="description" content="Veylo privacy policy / gizlilik politikası">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#7D37FD">
+<style>
+:root {
+  --ink: #1A1714; --muted: #636363;
+  --purple: #7D37FD; --purple-deep: #5E35B4; --purple-soft: #EDE6FF;
+  --purple-mid: #998FED; --line: #E5E5E5; --bg: #FAFAFC; --card: #FFFFFF;
+  --warn-bg: #FEF9E8; --warn-line: #F0D48A;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+header {
+  position: relative; overflow: hidden;
+  background:
+    radial-gradient(ellipse 80% 70% at 8% -20%, rgba(125,55,253,.22), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 95% 0%, rgba(153,143,237,.28), transparent 50%),
+    linear-gradient(180deg, #F3EEFF 0%, #EDE6FF 45%, var(--bg) 100%);
+  border-bottom: 1px solid var(--line);
+}
+.wrap { max-width: 820px; margin: 0 auto; padding: 0 20px; position: relative; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 0 8px; }
+.brand {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-weight: 800; font-size: 22px; letter-spacing: -.35px;
+  text-decoration: none; color: var(--ink);
+}
+.brand-mark {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: linear-gradient(135deg, #7B2FFF, var(--purple-mid));
+  box-shadow: 0 4px 12px rgba(125,55,253,.28);
+  position: relative; flex: 0 0 auto;
+}
+.brand-mark::after {
+  content: ""; position: absolute; inset: 9px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.92); border-bottom-color: transparent;
+  transform: rotate(-35deg);
+}
+.brand em { font-style: normal; color: var(--purple); }
+.lang {
+  display: inline-flex; border: 1px solid var(--line); border-radius: 999px;
+  overflow: hidden; background: rgba(255,255,255,.9); backdrop-filter: blur(6px);
+}
+.lang button {
+  border: 0; background: transparent; padding: 6px 14px; font: inherit; font-size: 14px;
+  cursor: pointer; color: var(--muted);
+}
+.lang button[aria-pressed="true"] { background: var(--purple); color: #fff; }
+nav.pages { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 4px 0 18px; font-size: 14px; }
+nav.pages a { color: var(--muted); text-decoration: none; }
+nav.pages a.active {
+  color: var(--ink); font-weight: 700;
+  border-bottom: 3px solid var(--purple); padding-bottom: 2px;
+}
+main { padding: 28px 0 56px; }
+h1 { font-size: 30px; line-height: 1.2; margin: 0 0 6px; letter-spacing: -.4px; color: var(--ink); }
+.updated { color: var(--muted); font-size: 14px; margin: 0 0 24px; }
+h2 {
+  font-size: 20px; margin: 34px 0 8px; padding-top: 10px;
+  border-top: 1px dashed var(--line); color: var(--ink);
+}
+h3 { font-size: 16px; margin: 20px 0 4px; color: var(--purple-deep); }
+p, li { color: #2A2622; }
+ul { padding-left: 22px; }
+li { margin: 4px 0; }
+a { color: var(--purple); }
+a:hover { color: var(--purple-deep); }
+.note {
+  background: linear-gradient(180deg, #fff, #F7F3FF);
+  border: 1px solid #D9CEF8; border-radius: 18px; padding: 16px 18px; margin: 16px 0;
+  box-shadow: 0 8px 0 rgba(125,55,253,.04);
+}
+.warn {
+  background: linear-gradient(180deg, #FFFCF3, var(--warn-bg));
+  border: 1px solid var(--warn-line); border-radius: 18px; padding: 16px 18px; margin: 16px 0;
+}
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 15px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+th { background: var(--purple-soft); font-weight: 700; color: var(--ink); }
+.table {
+  overflow-x: auto; border: 1px solid var(--line); border-radius: 16px;
+  background: var(--card); box-shadow: 0 6px 0 rgba(26,23,20,.03);
+}
+.table table { margin: 0; }
+.table th:first-child, .table td:first-child { padding-left: 14px; }
+footer {
+  border-top: 1px solid var(--line); color: var(--muted); font-size: 14px;
+  padding: 22px 0 40px;
+  background: linear-gradient(180deg, transparent, rgba(125,55,253,.06));
+}
+[data-lang] { display: none; }
+html[lang="tr"] [data-lang="tr"], html[lang="en"] [data-lang="en"] { display: block; }
+@media (max-width: 560px) {
+  h1 { font-size: 25px; }
+  body { font-size: 15.5px; }
+  .brand { font-size: 19px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="top">
+      <a class="brand" href="../about/"><span class="brand-mark" aria-hidden="true"></span>V<em>eylo</em></a>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-set="tr" aria-pressed="true">Türkçe</button>
+        <button type="button" data-set="en" aria-pressed="false">English</button>
+      </div>
+    </div>
+    <nav class="pages"><a href="../about/" data-tr="Hakkında" data-en="About">Hakkında</a><a href="../privacy-policy/" data-tr="Gizlilik" data-en="Privacy" class="active">Gizlilik</a><a href="../terms/" data-tr="Kullanım Koşulları" data-en="Terms">Kullanım Koşulları</a><a href="../cookies/" data-tr="Çerezler" data-en="Cookies">Çerezler</a><a href="../csae/" data-tr="Çocuk Güvenliği" data-en="Child Safety">Çocuk Güvenliği</a></nav>
+  </div>
+</header>
+<main class="wrap">
+  <section data-lang="tr">
+    <h1>Veylo – Gizlilik Politikası</h1>
+    <p class="updated">Son güncelleme: 20 Kasım 2026</p>
+
+<div class="note"><strong>Veylo</strong>, insanlarla tanışabileceğin, anonim sohbet edebileceğin, bağlantını
+zamanla güçlendirebileceğin ve karşılıklı onayla sesli veya görüntülü aramaya geçebileceğin bir sosyal
+uygulamadır. Verilerini <strong>satmayız</strong>. Bu politika hangi verileri neden işlediğimizi ve haklarını
+açıklar (6698 sayılı KVKK ve AB Genel Veri Koruma Tüzüğü – GDPR).</div>
+
+<h2>1. Veri sorumlusu</h2>
+<p>Veylo uygulaması ("Uygulama") Fly Work tarafından geliştirilir ve işletilir. Kişisel verilerinle ilgili tüm
+talepler için: <a href="mailto:support@fly-work.com">support@fly-work.com</a></p>
+
+<h2>2. Topladığımız veriler</h2>
+<h3>2.1 Hesap ve kimlik doğrulama</h3>
+<ul>
+<li>E-posta ve şifre ile kayıt, veya Google / Apple ile giriş (Firebase Authentication).</li>
+<li>Kimlik doğrulama sağlayıcısından gelen kullanıcı kimliği (Firebase UID) ve isteğe bağlı e-posta.</li>
+<li>Doğrulama amaçlı ad-soyad (herkese açık profilde gösterilmez).</li>
+</ul>
+<h3>2.2 Profil</h3>
+<ul>
+<li>Kullanıcı adı, görünen ad, bio, cinsiyet, ilgi alanları, sohbet / ilişki hedefleri, boy, diller, burç,
+eğitim, evcil hayvan, alkol / sigara tercihleri.</li>
+<li>Profil fotoğrafları ve (anonim sohbet için) sunucuda bulanıklaştırılmış küçük sürüm.</li>
+<li>İsteğe bağlı sesli tanıtım kaydı.</li>
+<li>Profil görünürlüğü, kenarlık / kozmetik öğeler ve profil öne çıkarma (boost) durumu.</li>
+</ul>
+<h3>2.3 Sosyal etkileşim</h3>
+<ul>
+<li>Sohbetler (doğrudan, anonim, grup): metin, görsel ve sesli mesajlar; tepkiler; bağlantı / yakınlık
+ilerlemesi ve profil açma onayı.</li>
+<li>Takip ilişkileri, durum notları, Vibes (24 saatlik kısa paylaşımlar), gönderiler ve yorumlar.</li>
+<li>Engelleme / kısıtlama ve şikâyet kayıtları (neden, bağlam, içerik kimliği).</li>
+</ul>
+<h3>2.4 Arama ve gerçek zamanlı iletişim</h3>
+<ul>
+<li>Sesli veya görüntülü arama oturum meta verileri (kimler, süre, tür). Canlı ses / görüntü Agora üzerinden
+aktarılır; arama içeriğini kalıcı olarak saklamayız.</li>
+<li>Rastgele eşleşme ve oda özellikleri için gerekli oturum bilgileri.</li>
+</ul>
+<h3>2.5 Satın alma ve jeton</h3>
+<ul>
+<li>Uygulama içi jeton bakiyesi ve hareket kayıtları (bonus, satın alma, harcama, iade).</li>
+<li>Satın alımları doğrulamak için mağaza / RevenueCat fiş verileri. Kart numaranı biz tutmayız; ödemeyi
+Apple App Store veya Google Play işler.</li>
+</ul>
+<h3>2.6 Cihaz ve teknik veriler</h3>
+<ul>
+<li>Push bildirim jetonu, platform (iOS / Android) ve bildirim dili tercihi.</li>
+<li>Uygulama sürümü, dil tercihi; güvenlik ve kötüye kullanımı önleme amaçlı sunucu istek kayıtları
+(IP adresi dahil).</li>
+<li>Son görülme zamanı (çevrimiçi durumu).</li>
+</ul>
+<p>Sağlık verisi veya tarama geçmişi <strong>toplamayız</strong>. Konum yalnızca cihazda, sen açıkça izin
+verdiğinde ve ilgili özelliğin çalışması için kullanılır; kalıcı konum geçmişi oluşturmayız.</p>
+
+<h2>3. Verileri neden ve hangi hukuki sebeple işliyoruz</h2>
+<div class="table"><table>
+<tr><th>Amaç</th><th>Hukuki sebep</th></tr>
+<tr><td>Hesap oluşturma, giriş, profil ve sohbet hizmetini sunmak</td><td>Sözleşmenin kurulması ve ifası</td></tr>
+<tr><td>Anonim sohbet, bağlantı ilerlemesi ve karşılıklı profil açma</td><td>Sözleşmenin ifası</td></tr>
+<tr><td>Sesli / görüntülü arama ve eşleşme özelliklerini çalıştırmak</td><td>Sözleşmenin ifası</td></tr>
+<tr><td>Jeton bakiyesi, satın alma doğrulama ve ücretli özellikler</td><td>Sözleşmenin ifası</td></tr>
+<tr><td>Push bildirimleri (mesaj, eşleşme vb.)</td><td>Sözleşmenin ifası / meşru menfaat</td></tr>
+<tr><td>Güvenlik, dolandırıcılık, taciz ve çocuk güvenliği; engelleme / şikâyet</td><td>Meşru menfaat / kanuni yükümlülük</td></tr>
+<tr><td>Hesap silme taleplerini işlemek</td><td>Sözleşmenin ifası / kanuni yükümlülük</td></tr>
+<tr><td>Yasal yükümlülükler (ör. ticari kayıtlar)</td><td>Kanuni yükümlülük</td></tr>
+</table></div>
+<p>Verilerini reklam ağlarına satmayız ve uygulamalar arası takip için kullanmayız.</p>
+
+<h2>4. Verilerin aktarıldığı taraflar</h2>
+<p>Verilerini <strong>satmayız</strong>. Yalnızca hizmeti sunmak için gereken asgari veriyi, bizim adımıza
+çalışan sağlayıcılarla paylaşırız:</p>
+<div class="table"><table>
+<tr><th>Hizmet sağlayıcı</th><th>Veri</th><th>Konum</th></tr>
+<tr><td>Barındırma (API, veritabanı)</td><td>Hesap, profil, sohbet ve işlem kayıtları</td><td>Avrupa Birliği / hizmet bölgesi</td></tr>
+<tr><td>Firebase (Google) – Auth &amp; FCM</td><td>Kimlik doğrulama, push jetonları</td><td>Global</td></tr>
+<tr><td>Bunny Storage / CDN</td><td>Profil, sohbet ve gönderi medyası</td><td>Global CDN</td></tr>
+<tr><td>Agora</td><td>Canlı ses / görüntü oturumu (geçici aktarım)</td><td>Global</td></tr>
+<tr><td>RevenueCat + Apple / Google</td><td>Satın alma doğrulama ve abonelik / ürün durumu</td><td>Global</td></tr>
+</table></div>
+<p>Ayrıca yasal zorunluluk, yetkili makam talebi veya kullanıcıları zarardan korumak için veri
+açıklayabiliriz. Diğer kullanıcılara, senin paylaştığın profil ve sohbet içeriği görünür (anonim
+modda sınırlı).</p>
+
+<h2>5. Yurt dışına aktarım</h2>
+<p>Firebase, CDN, Agora ve mağaza hizmetleri Türkiye ve Avrupa Ekonomik Alanı dışında bulunabilir. Bu
+aktarımları KVKK ve GDPR'ın öngördüğü güvencelerle (standart sözleşme hükümleri ve ilgili bildirimler)
+yaparız.</p>
+
+<h2>6. Saklama süreleri</h2>
+<div class="table"><table>
+<tr><th>Veri</th><th>Süre</th></tr>
+<tr><td>Hesap ve profil</td><td>Hesap aktifken; silme talebi tamamlanınca silinir / anonimleştirilir</td></tr>
+<tr><td>Sohbetler ve medya</td><td>Hesap veya ilgili içerik silinene kadar (grup / yasal saklama istisnaları hariç)</td></tr>
+<tr><td>Vibes / durum notları</td><td>Yayın süresi bitince (ör. 24 saat) veya silindiğinde</td></tr>
+<tr><td>Arama meta verileri</td><td>Hizmet ve güvenlik için makul süre; canlı medya kalıcı saklanmaz</td></tr>
+<tr><td>Jeton hareketleri / satın alma kayıtları</td><td>Hesap aktifken ve yasal saklama zorunluluğu süresince</td></tr>
+<tr><td>Şikâyet ve güvenlik kayıtları</td><td>İnceleme ve yasal yükümlülük için gerekli süre</td></tr>
+<tr><td>Hesap silme talebi</td><td>Talep sonrası bekleme süresi dolunca kalıcı silme; süre içinde giriş yapılırsa iptal edilebilir</td></tr>
+<tr><td>Sunucu istek kayıtları</td><td>Kısa süre (ör. 30 gün)</td></tr>
+</table></div>
+
+<h2>7. Hakların</h2>
+<p>KVKK m.11 ve GDPR kapsamında; verilerinin işlenip işlenmediğini öğrenme, bilgi ve kopya talep etme,
+düzeltme, silme, işlemeyi kısıtlama ve itiraz etme ve verilerin taşınması hakların vardır.</p>
+<ul>
+<li><strong>Verilerini / hesabını silme:</strong> Uygulama içi <em>Hesap Yönetimi → Hesabı ve Verileri Sil</em>
+veya <a href="mailto:support@fly-work.com">support@fly-work.com</a> (konu: "Veylo veri silme"). Talebin işlendikten ve bekleme süresi dolduktan sonra kişisel
+verilerin silinir veya anonimleştirilir; yasal saklama zorunluluğu olan kayıtlar hariç.</li>
+<li><strong>Diğer talepler</strong> (bilgi, kopya, itiraz): <a href="mailto:support@fly-work.com">support@fly-work.com</a>. En geç 30 gün içinde yanıtlarız.</li>
+<li>Kişisel Verileri Koruma Kurulu'na veya bulunduğun ülkedeki veri koruma otoritesine şikâyette bulunma
+hakkın saklıdır.</li>
+</ul>
+
+<h2>8. Çocuklar</h2>
+<p>Veylo 17 yaşından küçük kullanıcılara yönelik değildir. 17 yaşından küçük çocuklardan bilerek hesap
+açtırmayız veya kişisel veri toplamayız. Yaş ihlali tespit edersek hesabı kapatır ve ilgili verileri
+sileriz. Ayrıca <a href="../csae/">Çocuk Güvenliği Standartları (CSAE)</a> sayfamıza bak.</p>
+
+<h2>9. Güvenlik</h2>
+<p>Veriler aktarım sırasında TLS ile şifrelenir; sunucu erişimi yetkiyle sınırlıdır; hesap silme, engelleme
+ve şikâyet araçları sunulur. Hiçbir sistem yüzde yüz güvenli olmasa da makul teknik ve idari önlemleri
+alırız. Güçlü bir parola kullan ve cihazını güncel tut.</p>
+
+<h2>10. Değişiklikler</h2>
+<p>Bu politikayı güncelleyebiliriz. Önemli değişikliklerde uygulama içinde bilgilendiririz. Güncel sürüm
+her zaman bu sayfadadır.</p>
+
+<h2>11. İletişim</h2>
+<p>Sorular ve talepler için: <a href="mailto:support@fly-work.com">support@fly-work.com</a></p>
+
+  </section>
+  <section data-lang="en">
+    <h1>Veylo – Privacy Policy</h1>
+    <p class="updated">Last updated: November 20, 2026</p>
+
+<div class="note"><strong>Veylo</strong> is a social app where you can meet people, chat anonymously, build
+connection over time, and optionally move to voice or video calls when both sides agree. We
+<strong>do not sell</strong> your data. This policy explains what we process, why, and your rights
+(Turkish Personal Data Protection Law No. 6698 – KVKK and the EU GDPR).</div>
+
+<h2>1. Data controller</h2>
+<p>The Veylo app (the "App") is developed and operated by Fly Work. For any request regarding your
+personal data: <a href="mailto:support@fly-work.com">support@fly-work.com</a></p>
+
+<h2>2. Data we collect</h2>
+<h3>2.1 Account and authentication</h3>
+<ul>
+<li>Sign-up with email and password, or Google / Apple sign-in (Firebase Authentication).</li>
+<li>Authentication user ID (Firebase UID) and optional email from the provider.</li>
+<li>Full name for verification (not shown on the public profile).</li>
+</ul>
+<h3>2.2 Profile</h3>
+<ul>
+<li>Username, display name, bio, gender, interests, chat / relationship goals, height, languages,
+zodiac, education, pets, drinking / smoking preferences.</li>
+<li>Profile photos and a server-blurred small version used in anonymous chat.</li>
+<li>Optional voice intro recording.</li>
+<li>Profile visibility, cosmetic borders / items and profile boost status.</li>
+</ul>
+<h3>2.3 Social interaction</h3>
+<ul>
+<li>Conversations (direct, anonymous, group): text, image and voice messages; reactions; connection /
+intimacy progress and profile-reveal consent.</li>
+<li>Follows, status notes, Vibes (short posts that expire after about 24 hours), feed posts and comments.</li>
+<li>Block / restrict and report records (reason, context, content id).</li>
+</ul>
+<h3>2.4 Calls and realtime</h3>
+<ul>
+<li>Voice or video call session metadata (who, duration, type). Live audio / video is carried by Agora;
+we do not permanently store call media.</li>
+<li>Session data needed for random match and room features.</li>
+</ul>
+<h3>2.5 Purchases and tokens</h3>
+<ul>
+<li>In-app token balance and ledger entries (bonus, purchase, spend, refund).</li>
+<li>Store / RevenueCat receipt data to unlock and restore purchases. We do not store your card number;
+payments are processed by the Apple App Store or Google Play.</li>
+</ul>
+<h3>2.6 Device and technical data</h3>
+<ul>
+<li>Push notification token, platform (iOS / Android) and notification language.</li>
+<li>App version, language preference; server request logs (including IP) for security and abuse prevention.</li>
+<li>Last-seen time (online status).</li>
+</ul>
+<p>We <strong>do not collect</strong> health data or browsing history. Location is used on-device only when
+you grant permission and only as needed for the relevant feature; we do not build a permanent location
+history.</p>
+
+<h2>3. Why we process data and on what legal basis</h2>
+<div class="table"><table>
+<tr><th>Purpose</th><th>Legal basis</th></tr>
+<tr><td>Creating accounts, sign-in, profiles and chat</td><td>Performance of a contract</td></tr>
+<tr><td>Anonymous chat, connection progress and mutual profile reveal</td><td>Performance of a contract</td></tr>
+<tr><td>Running voice / video calls and matching</td><td>Performance of a contract</td></tr>
+<tr><td>Token balance, purchase verification and paid features</td><td>Performance of a contract</td></tr>
+<tr><td>Push notifications (messages, matches, etc.)</td><td>Performance of a contract / legitimate interest</td></tr>
+<tr><td>Safety, fraud, harassment and child safety; blocks / reports</td><td>Legitimate interest / legal obligation</td></tr>
+<tr><td>Processing account deletion requests</td><td>Performance of a contract / legal obligation</td></tr>
+<tr><td>Legal obligations (e.g. commercial records)</td><td>Legal obligation</td></tr>
+</table></div>
+<p>We do not sell your data to ad networks or use it for cross-app tracking.</p>
+
+<h2>4. Who we share data with</h2>
+<p>We <strong>do not sell</strong> your data. We share only the minimum needed with providers acting on our
+behalf:</p>
+<div class="table"><table>
+<tr><th>Provider</th><th>Data</th><th>Location</th></tr>
+<tr><td>Hosting (API, database)</td><td>Account, profile, chat and transaction records</td><td>European Union / service region</td></tr>
+<tr><td>Firebase (Google) – Auth &amp; FCM</td><td>Authentication, push tokens</td><td>Global</td></tr>
+<tr><td>Bunny Storage / CDN</td><td>Profile, chat and post media</td><td>Global CDN</td></tr>
+<tr><td>Agora</td><td>Live audio / video session (transient)</td><td>Global</td></tr>
+<tr><td>RevenueCat + Apple / Google</td><td>Purchase verification and product / subscription status</td><td>Global</td></tr>
+</table></div>
+<p>We may also disclose data where required by law, by a competent authority, or to protect users from
+harm. Other users see the profile and chat content you choose to share (limited in anonymous mode).</p>
+
+<h2>5. International transfers</h2>
+<p>Firebase, the CDN, Agora and store services may be located outside Türkiye and the European Economic
+Area. We carry out these transfers with the safeguards required by KVKK and GDPR (standard contractual
+clauses and related notifications).</p>
+
+<h2>6. Retention</h2>
+<div class="table"><table>
+<tr><th>Data</th><th>Period</th></tr>
+<tr><td>Account and profile</td><td>While the account is active; deleted / anonymised after deletion completes</td></tr>
+<tr><td>Chats and media</td><td>Until the account or content is deleted (subject to group / legal retention)</td></tr>
+<tr><td>Vibes / status notes</td><td>Until expiry (e.g. 24 hours) or deletion</td></tr>
+<tr><td>Call metadata</td><td>Reasonable period for service and safety; live media is not stored permanently</td></tr>
+<tr><td>Token ledger / purchase records</td><td>While the account is active and as required by law</td></tr>
+<tr><td>Reports and safety records</td><td>As needed for review and legal obligations</td></tr>
+<tr><td>Account deletion request</td><td>Permanent purge after the waiting period; signing in again may cancel it</td></tr>
+<tr><td>Server request logs</td><td>Short period (e.g. 30 days)</td></tr>
+</table></div>
+
+<h2>7. Your rights</h2>
+<p>Under KVKK Art. 11 and the GDPR you have the right to know whether your data is processed, to request
+information and a copy, to rectification, erasure, restriction and objection, and to data portability.</p>
+<ul>
+<li><strong>Deleting your data / account:</strong> in-app <em>Account Management → Delete Account and Data</em>
+or <a href="mailto:support@fly-work.com">support@fly-work.com</a> (subject: "Veylo data deletion"). After processing and the waiting period, personal data is
+deleted or anonymised except where retention is legally required.</li>
+<li><strong>Other requests</strong> (information, copy, objection): <a href="mailto:support@fly-work.com">support@fly-work.com</a>. We respond within 30 days.</li>
+<li>You may also lodge a complaint with the Turkish Personal Data Protection Authority or the authority in
+your country.</li>
+</ul>
+
+<h2>8. Children</h2>
+<p>Veylo is not directed at users under 17. We do not knowingly allow accounts or collect personal data
+from children under 17. If we learn of an underage account, we close it and delete related data. See also
+our <a href="../csae/">Child Safety Standards (CSAE)</a>.</p>
+
+<h2>9. Security</h2>
+<p>Data is encrypted in transit with TLS; server access is restricted; account deletion, blocking and
+reporting tools are provided. No system is 100% secure, but we take reasonable technical and
+organisational measures. Use a strong password and keep your device updated.</p>
+
+<h2>10. Changes</h2>
+<p>We may update this policy. We will inform you in the App about significant changes. The current version
+is always on this page.</p>
+
+<h2>11. Contact</h2>
+<p>For questions and requests: <a href="mailto:support@fly-work.com">support@fly-work.com</a></p>
+
+  </section>
+</main>
+<footer>
+  <div class="wrap">
+    <span data-lang="tr">© 2026 Veylo · Fly Work. Tüm hakları saklıdır. İletişim: <a href="mailto:support@fly-work.com">support@fly-work.com</a></span>
+    <span data-lang="en">© 2026 Veylo · Fly Work. All rights reserved. Contact: <a href="mailto:support@fly-work.com">support@fly-work.com</a></span>
+  </div>
+</footer>
+<script>
+/* Dil: ?lang=en / #en ya da tarayıcı dili. Çerez veya yerel depolama kullanılmaz. */
+(function () {
+  var q = new URLSearchParams(location.search).get('lang') || location.hash.replace('#', '');
+  var nav = (navigator.language || 'tr').slice(0, 2).toLowerCase();
+  var lang = (q === 'tr' || q === 'en') ? q : (nav === 'tr' ? 'tr' : 'en');
+  function set(l) {
+    document.documentElement.lang = l;
+    document.querySelectorAll('.lang button').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.set === l));
+    });
+    document.querySelectorAll('nav.pages a').forEach(function (a) {
+      a.textContent = a.dataset[l];
+      a.href = a.getAttribute('href').split('?')[0] + '?lang=' + l;
+    });
+    var t = document.querySelector('section[data-lang="' + l + '"] h1');
+    if (t) document.title = t.textContent + ' · Veylo';
+  }
+  document.querySelectorAll('.lang button').forEach(function (b) {
+    b.addEventListener('click', function () { set(b.dataset.set); });
+  });
+  set(lang);
+})();
+</script>
+</body>
+</html>

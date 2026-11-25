@@ -136,6 +136,13 @@ class DiscoverStore extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Engellenen kullanıcının tüm gönderilerini akıştan kaldırır.
+  void removeByAuthor(String authorId) {
+    _posts = _posts.where((p) => p.authorId != authorId).toList();
+    _postsEpoch++;
+    notifyListeners();
+  }
+
   void clear() {
     _posts = const [];
     _nextCursor = null;

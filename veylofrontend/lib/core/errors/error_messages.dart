@@ -19,6 +19,7 @@ String errorMessage(BuildContext context, Object error) {
       'REQUEST_NOT_ACCEPTED' => e.requestNotAccepted,
       'REQUEST_PENDING_LIMIT' => e.requestPendingLimit,
       'BLOCKED' => e.blocked,
+      'CONTENT_BLOCKED' => e.contentBlocked,
       'PEER_UNAVAILABLE' => e.peerUnavailable,
       'INVALID_CREDENTIALS' => e.wrongCredentials,
       'TOO_MANY_ATTEMPTS' => e.tooManyAttempts,

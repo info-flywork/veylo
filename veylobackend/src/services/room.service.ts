@@ -8,6 +8,7 @@ import { prisma } from '../lib/prisma';
 import { emitToChannel, emitToUser, joinChannel, leaveChannel } from '../realtime/emitter';
 import { presence } from '../realtime/presence.store';
 import { maskName } from '../utils/mask';
+import { assertCleanContent } from '../lib/content-filter';
 import { notificationService } from './notification.service';
 import { safetyService } from './safety.service';
 import { tokenService } from './token.service';
@@ -338,6 +339,7 @@ function requestProfile(viewerId: string, roomId: string, uid: number) {
 }
 
 function sendMessage(viewerId: string, roomId: string, body: string) {
+  assertCleanContent(body);
   const r = live.get(roomId);
   const p = r?.participants.get(viewerId);
   if (!r || !p) throw AppError.notFound('NOT_IN_ROOM');

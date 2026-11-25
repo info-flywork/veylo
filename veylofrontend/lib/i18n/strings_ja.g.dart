@@ -605,6 +605,9 @@ class _Translations$auth$ja extends Translations$auth$tr {
 	@override String get privacyPolicy => 'プライバシーポリシー';
 	@override String get legalSuffix => 'を確認したものとみなされます。';
 	@override String get passwordResetSent => 'パスワード再設定用のリンクをメールで送信しました。';
+	@override String get ageEulaBeforeLink => '18歳以上であること、';
+	@override String get ageEulaAfterLink => '（EULA）に同意すること、および不適切なコンテンツや不正行為にはゼロトレランスで対応することを確認します。';
+	@override String get ageEulaRequired => '続行するには、18歳以上および利用規約への同意にチェックを入れてください。';
 }
 
 // Path: onboarding
@@ -620,7 +623,7 @@ class _Translations$onboarding$ja extends Translations$onboarding$tr {
 	@override String get page2Title => 'メッセージも通話も、ノリで。';
 	@override String get page2Subtitle => 'まずは匿名で。準備ができたら、メッセージ、通話、そして直接会うことも。';
 	@override String get page3Title => '仲間を見つけて、\n会話に参加しよう。';
-	@override String get page3Subtitle => 'ルームに参加して、新しい人と出会い、\nその瞬間を一緒に楽しもう。';
+	@override String get page3Subtitle => '興味に合ったチャットルームに参加して、コミュニティとつながろう。';
 	@override String get getStarted => 'はじめる';
 	@override String get alreadyHaveAccount => 'Veyloアカウントをお持ちの方は ';
 	@override String get logInAction => 'ログイン';
@@ -1129,6 +1132,11 @@ class _Translations$discover$post$ja extends Translations$discover$post$tr {
 	@override String viewOtherReplies({required Object count}) => '他${count}件の返信を表示';
 	@override String get boost => 'ブースト';
 	@override String get deletePostMessage => 'この投稿を削除してもよろしいですか？この操作は元に戻せません。';
+	@override String get report => 'Report';
+	@override String get block => 'Block User';
+	@override String get reportPostSubtitle => 'Why are you reporting this post?';
+	@override String get hiddenAfterReport => 'Post reported and removed from your feed.';
+	@override String get hiddenAfterBlock => 'User blocked. Their content was removed from your feed.';
 }
 
 // Path: discover.story
@@ -1794,6 +1802,11 @@ extension on TranslationsJa {
 			'discover.post.viewOtherReplies' => ({required Object count}) => '他${count}件の返信を表示',
 			'discover.post.boost' => 'ブースト',
 			'discover.post.deletePostMessage' => 'この投稿を削除してもよろしいですか？この操作は元に戻せません。',
+			'discover.post.report' => 'Report',
+			'discover.post.block' => 'Block User',
+			'discover.post.reportPostSubtitle' => 'Why are you reporting this post?',
+			'discover.post.hiddenAfterReport' => 'Post reported and removed from your feed.',
+			'discover.post.hiddenAfterBlock' => 'User blocked. Their content was removed from your feed.',
 			'discover.story.draft' => '下書き',
 			'discover.story.story' => 'ストーリー',
 			'discover.story.share' => 'シェア',
@@ -1870,13 +1883,16 @@ extension on TranslationsJa {
 			'auth.privacyPolicy' => 'プライバシーポリシー',
 			'auth.legalSuffix' => 'を確認したものとみなされます。',
 			'auth.passwordResetSent' => 'パスワード再設定用のリンクをメールで送信しました。',
+			'auth.ageEulaBeforeLink' => '18歳以上であること、',
+			'auth.ageEulaAfterLink' => '（EULA）に同意すること、および不適切なコンテンツや不正行為にはゼロトレランスで対応することを確認します。',
+			'auth.ageEulaRequired' => '続行するには、18歳以上および利用規約への同意にチェックを入れてください。',
 			'onboarding.skip' => 'スキップ',
 			'onboarding.page1Title' => 'ありのままで、匿名のままで。',
 			'onboarding.page1Subtitle' => '正体を明かさずに\n新しい人と出会って話そう。',
 			'onboarding.page2Title' => 'メッセージも通話も、ノリで。',
 			'onboarding.page2Subtitle' => 'まずは匿名で。準備ができたら、メッセージ、通話、そして直接会うことも。',
 			'onboarding.page3Title' => '仲間を見つけて、\n会話に参加しよう。',
-			'onboarding.page3Subtitle' => 'ルームに参加して、新しい人と出会い、\nその瞬間を一緒に楽しもう。',
+			'onboarding.page3Subtitle' => '興味に合ったチャットルームに参加して、コミュニティとつながろう。',
 			'onboarding.getStarted' => 'はじめる',
 			'onboarding.alreadyHaveAccount' => 'Veyloアカウントをお持ちの方は ',
 			'onboarding.logInAction' => 'ログイン',

@@ -589,7 +589,12 @@
       "reply": "Ответить",
       "viewOtherReplies": "Посмотреть ещё {count} ответов",
       "boost": "Продвинуть",
-      "deletePostMessage": "Вы уверены, что хотите удалить эту публикацию? Это действие нельзя отменить."
+      "deletePostMessage": "Вы уверены, что хотите удалить эту публикацию? Это действие нельзя отменить.",
+      "report": "Report",
+      "block": "Block User",
+      "reportPostSubtitle": "Why are you reporting this post?",
+      "hiddenAfterReport": "Post reported and removed from your feed.",
+      "hiddenAfterBlock": "User blocked. Their content was removed from your feed."
     },
     "story": {
       "draft": "ЧЕРНОВИК",
@@ -678,7 +683,10 @@
     "legalMiddle": " и подтверждаешь, что ознакомлен(а) с ",
     "privacyPolicy": "Политикой конфиденциальности",
     "legalSuffix": ".",
-    "passwordResetSent": "Мы отправили ссылку для сброса пароля на твою почту."
+    "passwordResetSent": "Мы отправили ссылку для сброса пароля на твою почту.",
+    "ageEulaBeforeLink": "Подтверждаю, что мне есть 18 лет, что я принимаю ",
+    "ageEulaAfterLink": " (EULA) и что к неприемлемому контенту и злоупотреблениям применяется нулевая терпимость.",
+    "ageEulaRequired": "Отметьте галочку 18+ и Условия использования, чтобы продолжить."
   },
   "onboarding": {
     "skip": "Пропустить",
@@ -687,7 +695,7 @@
     "page2Title": "Пиши. Говори. Лови вайб.",
     "page2Subtitle": "Начни анонимно, а когда будешь готов(а) — переписка, звонок или встреча.",
     "page3Title": "Найди своих. Присоединяйся\nк разговору.",
-    "page3Subtitle": "Заходи в комнаты, знакомься и\nпроживай моменты вместе.",
+    "page3Subtitle": "Присоединяйся к чатам по интересам и общайся с сообществом.",
     "getStarted": "Начать",
     "alreadyHaveAccount": "Уже есть аккаунт Veylo? ",
     "logInAction": "Войти"

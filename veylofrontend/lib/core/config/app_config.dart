@@ -19,6 +19,14 @@ abstract final class AppConfig {
 
   /// Story GIF sheet — key gerektirmeyen public API.
   static const gifApiBaseUrl = 'https://gifsnap.com/api/v1';
+
+  /// Yasal sayfalar (fly-work.com/veylo/...). Kaynak: repo kökü `legal_site/`.
+  static const String legalBaseUrl = 'https://fly-work.com/veylo';
+  static const String privacyPolicyUrl = '$legalBaseUrl/privacy-policy/';
+  static const String termsOfServiceUrl = '$legalBaseUrl/terms/';
+  static const String cookiesPolicyUrl = '$legalBaseUrl/cookies/';
+  static const String childSafetyUrl = '$legalBaseUrl/csae/';
+  static const String aboutUrl = '$legalBaseUrl/about/';
 }
 
 /// Backend'deki TOKENS ile aynı (fiyatlar sunucuda uygulanır; burada sadece gösterim).

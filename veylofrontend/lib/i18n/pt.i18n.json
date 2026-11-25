@@ -589,7 +589,12 @@
       "reply": "Responder",
       "viewOtherReplies": "Ver mais {count} respostas",
       "boost": "Impulsionar",
-      "deletePostMessage": "Tem certeza de que deseja excluir esta publicação? Esta ação não pode ser desfeita."
+      "deletePostMessage": "Tem certeza de que deseja excluir esta publicação? Esta ação não pode ser desfeita.",
+      "report": "Report",
+      "block": "Block User",
+      "reportPostSubtitle": "Why are you reporting this post?",
+      "hiddenAfterReport": "Post reported and removed from your feed.",
+      "hiddenAfterBlock": "User blocked. Their content was removed from your feed."
     },
     "story": {
       "draft": "RASCUNHO",
@@ -678,7 +683,10 @@
     "legalMiddle": " e reconhece nossa ",
     "privacyPolicy": "Política de Privacidade",
     "legalSuffix": ".",
-    "passwordResetSent": "Enviamos um link para redefinir a senha para seu e-mail."
+    "passwordResetSent": "Enviamos um link para redefinir a senha para seu e-mail.",
+    "ageEulaBeforeLink": "Confirmo que tenho mais de 18 anos, que aceito os ",
+    "ageEulaAfterLink": " (EULA) e que há tolerância zero a conteúdo objetável e abuso.",
+    "ageEulaRequired": "Marque a caixa de 18+ e Termos de Serviço para continuar."
   },
   "onboarding": {
     "skip": "Pular",
@@ -687,7 +695,7 @@
     "page2Title": "Escreva. Fale. Sinta a vibe.",
     "page2Subtitle": "Comece no anonimato e depois troque mensagens, ligue ou se veja cara a cara quando quiser.",
     "page3Title": "Encontre sua turma. Entre\nna conversa.",
-    "page3Subtitle": "Entre em salas, conheça gente nova e\ncompartilhe o momento juntos.",
+    "page3Subtitle": "Entre em salas de chat por interesses e interaja com a comunidade.",
     "getStarted": "Começar",
     "alreadyHaveAccount": "Já tem uma conta Veylo? ",
     "logInAction": "Entrar"

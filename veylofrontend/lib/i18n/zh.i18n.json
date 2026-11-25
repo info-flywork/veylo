@@ -589,7 +589,12 @@
       "reply": "回复",
       "viewOtherReplies": "查看另外 {count} 条回复",
       "boost": "推广",
-      "deletePostMessage": "确定要删除这条帖子吗？此操作无法撤销。"
+      "deletePostMessage": "确定要删除这条帖子吗？此操作无法撤销。",
+      "report": "Report",
+      "block": "Block User",
+      "reportPostSubtitle": "Why are you reporting this post?",
+      "hiddenAfterReport": "Post reported and removed from your feed.",
+      "hiddenAfterBlock": "User blocked. Their content was removed from your feed."
     },
     "story": {
       "draft": "草稿",
@@ -678,7 +683,10 @@
     "legalMiddle": "并知悉我们的",
     "privacyPolicy": "隐私政策",
     "legalSuffix": "。",
-    "passwordResetSent": "我们已向你的邮箱发送密码重置链接。"
+    "passwordResetSent": "我们已向你的邮箱发送密码重置链接。",
+    "ageEulaBeforeLink": "我确认年满 18 岁，接受",
+    "ageEulaAfterLink": "（EULA），并对不当内容和滥用行为实行零容忍。",
+    "ageEulaRequired": "请勾选 18+ 与服务条款确认框以继续。"
   },
   "onboarding": {
     "skip": "跳过",
@@ -687,7 +695,7 @@
     "page2Title": "打字、聊天，感受 Vibe。",
     "page2Subtitle": "从匿名开始，准备好后再发消息、通话或见面。",
     "page3Title": "找到同频的人，\n加入对话。",
-    "page3Subtitle": "进入房间，结识新朋友，\n一起分享此刻。",
+    "page3Subtitle": "按兴趣加入聊天室，与社区互动。",
     "getStarted": "开始使用",
     "alreadyHaveAccount": "已有 Veylo 账号？",
     "logInAction": "登录"

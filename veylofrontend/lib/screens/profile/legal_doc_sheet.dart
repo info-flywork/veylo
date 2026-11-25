@@ -1,8 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:veylo/core/config/app_config.dart';
 import 'package:veylo/core/theme/theme.dart';
-import 'package:veylo/i18n/strings.g.dart';
 
-/// Hizmet şartları / gizlilik politikası bottom sheet.
+Future<void> _openLegalUrl(String url) {
+  return launchUrl(
+    Uri.parse(url),
+    mode: LaunchMode.externalApplication,
+  );
+}
+
+Future<void> showTermsOfServiceSheet(BuildContext context) {
+  return _openLegalUrl(AppConfig.termsOfServiceUrl);
+}
+
+Future<void> showPrivacyPolicySheet(BuildContext context) {
+  return _openLegalUrl(AppConfig.privacyPolicyUrl);
+}
+
+/// Yerel / çevrimdışı yedek: tam metin bottom sheet (eski davranış).
 Future<void> showLegalDocSheet(
   BuildContext context, {
   required String title,
@@ -14,16 +30,6 @@ Future<void> showLegalDocSheet(
     backgroundColor: Colors.transparent,
     builder: (_) => LegalDocSheet(title: title, body: body),
   );
-}
-
-Future<void> showTermsOfServiceSheet(BuildContext context) {
-  final t = Translations.of(context).legal;
-  return showLegalDocSheet(context, title: t.termsTitle, body: t.termsBody);
-}
-
-Future<void> showPrivacyPolicySheet(BuildContext context) {
-  final t = Translations.of(context).legal;
-  return showLegalDocSheet(context, title: t.privacyTitle, body: t.privacyBody);
 }
 
 class LegalDocSheet extends StatelessWidget {
@@ -101,7 +107,3 @@ class LegalDocSheet extends StatelessWidget {
     );
   }
 }
-
-
-
-

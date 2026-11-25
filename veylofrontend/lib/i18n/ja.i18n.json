@@ -589,7 +589,12 @@
       "reply": "返信",
       "viewOtherReplies": "他{count}件の返信を表示",
       "boost": "ブースト",
-      "deletePostMessage": "この投稿を削除してもよろしいですか？この操作は元に戻せません。"
+      "deletePostMessage": "この投稿を削除してもよろしいですか？この操作は元に戻せません。",
+      "report": "Report",
+      "block": "Block User",
+      "reportPostSubtitle": "Why are you reporting this post?",
+      "hiddenAfterReport": "Post reported and removed from your feed.",
+      "hiddenAfterBlock": "User blocked. Their content was removed from your feed."
     },
     "story": {
       "draft": "下書き",
@@ -678,7 +683,10 @@
     "legalMiddle": "に同意し、",
     "privacyPolicy": "プライバシーポリシー",
     "legalSuffix": "を確認したものとみなされます。",
-    "passwordResetSent": "パスワード再設定用のリンクをメールで送信しました。"
+    "passwordResetSent": "パスワード再設定用のリンクをメールで送信しました。",
+    "ageEulaBeforeLink": "18歳以上であること、",
+    "ageEulaAfterLink": "（EULA）に同意すること、および不適切なコンテンツや不正行為にはゼロトレランスで対応することを確認します。",
+    "ageEulaRequired": "続行するには、18歳以上および利用規約への同意にチェックを入れてください。"
   },
   "onboarding": {
     "skip": "スキップ",
@@ -687,7 +695,7 @@
     "page2Title": "メッセージも通話も、ノリで。",
     "page2Subtitle": "まずは匿名で。準備ができたら、メッセージ、通話、そして直接会うことも。",
     "page3Title": "仲間を見つけて、\n会話に参加しよう。",
-    "page3Subtitle": "ルームに参加して、新しい人と出会い、\nその瞬間を一緒に楽しもう。",
+    "page3Subtitle": "興味に合ったチャットルームに参加して、コミュニティとつながろう。",
     "getStarted": "はじめる",
     "alreadyHaveAccount": "Veyloアカウントをお持ちの方は ",
     "logInAction": "ログイン"

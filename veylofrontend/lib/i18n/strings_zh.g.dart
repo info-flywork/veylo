@@ -605,6 +605,9 @@ class _Translations$auth$zh extends Translations$auth$tr {
 	@override String get privacyPolicy => '隐私政策';
 	@override String get legalSuffix => '。';
 	@override String get passwordResetSent => '我们已向你的邮箱发送密码重置链接。';
+	@override String get ageEulaBeforeLink => '我确认年满 18 岁，接受';
+	@override String get ageEulaAfterLink => '（EULA），并对不当内容和滥用行为实行零容忍。';
+	@override String get ageEulaRequired => '请勾选 18+ 与服务条款确认框以继续。';
 }
 
 // Path: onboarding
@@ -620,7 +623,7 @@ class _Translations$onboarding$zh extends Translations$onboarding$tr {
 	@override String get page2Title => '打字、聊天，感受 Vibe。';
 	@override String get page2Subtitle => '从匿名开始，准备好后再发消息、通话或见面。';
 	@override String get page3Title => '找到同频的人，\n加入对话。';
-	@override String get page3Subtitle => '进入房间，结识新朋友，\n一起分享此刻。';
+	@override String get page3Subtitle => '按兴趣加入聊天室，与社区互动。';
 	@override String get getStarted => '开始使用';
 	@override String get alreadyHaveAccount => '已有 Veylo 账号？';
 	@override String get logInAction => '登录';
@@ -1129,6 +1132,11 @@ class _Translations$discover$post$zh extends Translations$discover$post$tr {
 	@override String viewOtherReplies({required Object count}) => '查看另外 ${count} 条回复';
 	@override String get boost => '推广';
 	@override String get deletePostMessage => '确定要删除这条帖子吗？此操作无法撤销。';
+	@override String get report => 'Report';
+	@override String get block => 'Block User';
+	@override String get reportPostSubtitle => 'Why are you reporting this post?';
+	@override String get hiddenAfterReport => 'Post reported and removed from your feed.';
+	@override String get hiddenAfterBlock => 'User blocked. Their content was removed from your feed.';
 }
 
 // Path: discover.story
@@ -1794,6 +1802,11 @@ extension on TranslationsZh {
 			'discover.post.viewOtherReplies' => ({required Object count}) => '查看另外 ${count} 条回复',
 			'discover.post.boost' => '推广',
 			'discover.post.deletePostMessage' => '确定要删除这条帖子吗？此操作无法撤销。',
+			'discover.post.report' => 'Report',
+			'discover.post.block' => 'Block User',
+			'discover.post.reportPostSubtitle' => 'Why are you reporting this post?',
+			'discover.post.hiddenAfterReport' => 'Post reported and removed from your feed.',
+			'discover.post.hiddenAfterBlock' => 'User blocked. Their content was removed from your feed.',
 			'discover.story.draft' => '草稿',
 			'discover.story.story' => '快拍',
 			'discover.story.share' => '分享',
@@ -1870,13 +1883,16 @@ extension on TranslationsZh {
 			'auth.privacyPolicy' => '隐私政策',
 			'auth.legalSuffix' => '。',
 			'auth.passwordResetSent' => '我们已向你的邮箱发送密码重置链接。',
+			'auth.ageEulaBeforeLink' => '我确认年满 18 岁，接受',
+			'auth.ageEulaAfterLink' => '（EULA），并对不当内容和滥用行为实行零容忍。',
+			'auth.ageEulaRequired' => '请勾选 18+ 与服务条款确认框以继续。',
 			'onboarding.skip' => '跳过',
 			'onboarding.page1Title' => '做自己，保持匿名。',
 			'onboarding.page1Subtitle' => '结识新朋友、开启对话，\n无需透露你是谁。',
 			'onboarding.page2Title' => '打字、聊天，感受 Vibe。',
 			'onboarding.page2Subtitle' => '从匿名开始，准备好后再发消息、通话或见面。',
 			'onboarding.page3Title' => '找到同频的人，\n加入对话。',
-			'onboarding.page3Subtitle' => '进入房间，结识新朋友，\n一起分享此刻。',
+			'onboarding.page3Subtitle' => '按兴趣加入聊天室，与社区互动。',
 			'onboarding.getStarted' => '开始使用',
 			'onboarding.alreadyHaveAccount' => '已有 Veylo 账号？',
 			'onboarding.logInAction' => '登录',

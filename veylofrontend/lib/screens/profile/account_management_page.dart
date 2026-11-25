@@ -20,6 +20,7 @@ import 'package:veylo/screens/profile/delete_conversation_sheet.dart';
 import 'package:veylo/screens/profile/faq_help_sheet.dart';
 import 'package:veylo/screens/profile/legal_doc_sheet.dart';
 import 'package:veylo/screens/profile/logout_sheet.dart';
+import 'package:veylo/screens/profile/report_issue_sheet.dart';
 import 'package:veylo/screens/profile/share_app_sheet.dart';
 
 const _kContentWidth = 398.0;
@@ -286,6 +287,12 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                   _SettingsRow(
                     label: t.faqHelp,
                     onTap: () => showFaqHelpSheet(context),
+                  ),
+                  const SizedBox(height: 8),
+                  _SettingsRow(
+                    label: t.reportIssueTitle,
+                    value: kSupportEmail,
+                    onTap: () => showReportIssueSheet(context),
                   ),
                   const SizedBox(height: 8),
                   _SettingsRow(

@@ -589,7 +589,12 @@
       "reply": "Antworten",
       "viewOtherReplies": "{count} weitere Antworten anzeigen",
       "boost": "Boosten",
-      "deletePostMessage": "Möchtest du diesen Beitrag wirklich löschen? Das kann nicht rückgängig gemacht werden."
+      "deletePostMessage": "Möchtest du diesen Beitrag wirklich löschen? Das kann nicht rückgängig gemacht werden.",
+      "report": "Report",
+      "block": "Block User",
+      "reportPostSubtitle": "Why are you reporting this post?",
+      "hiddenAfterReport": "Post reported and removed from your feed.",
+      "hiddenAfterBlock": "User blocked. Their content was removed from your feed."
     },
     "story": {
       "draft": "ENTWURF",
@@ -678,7 +683,10 @@
     "legalMiddle": " zu und bestätigst unsere ",
     "privacyPolicy": "Datenschutzerklärung",
     "legalSuffix": ".",
-    "passwordResetSent": "Wir haben dir einen Link zum Zurücksetzen des Passworts per E-Mail geschickt."
+    "passwordResetSent": "Wir haben dir einen Link zum Zurücksetzen des Passworts per E-Mail geschickt.",
+    "ageEulaBeforeLink": "Ich bestätige, dass ich mindestens 18 Jahre alt bin, die ",
+    "ageEulaAfterLink": " (EULA) akzeptiere und dass für anstößige Inhalte und Missbrauch null Toleranz gilt.",
+    "ageEulaRequired": "Bitte bestätige die 18+- und Nutzungsbedingungen-Checkbox, um fortzufahren."
   },
   "onboarding": {
     "skip": "Überspringen",
@@ -687,7 +695,7 @@
     "page2Title": "Schreiben. Reden. Den Vibe spüren.",
     "page2Subtitle": "Starte anonym und schreib, ruf an oder triff dich persönlich, wenn du bereit bist.",
     "page3Title": "Finde deine Leute. Mach\nmit beim Gespräch.",
-    "page3Subtitle": "Spring in Räume, lerne neue Leute kennen\nund teilt den Moment zusammen.",
+    "page3Subtitle": "Tritt Chat-Räumen nach Interessen bei und vernetze dich mit der Community.",
     "getStarted": "Los geht’s",
     "alreadyHaveAccount": "Du hast schon ein Veylo-Konto? ",
     "logInAction": "Anmelden"

@@ -605,6 +605,9 @@ class _Translations$auth$fr extends Translations$auth$tr {
 	@override String get privacyPolicy => 'Politique de confidentialité';
 	@override String get legalSuffix => '.';
 	@override String get passwordResetSent => 'Nous t\'avons envoyé un lien de réinitialisation par e-mail.';
+	@override String get ageEulaBeforeLink => 'Je confirme avoir plus de 18 ans, accepter les ';
+	@override String get ageEulaAfterLink => ' (EULA) et qu’il y a une tolérance zéro envers les contenus répréhensibles et les abus.';
+	@override String get ageEulaRequired => 'Cochez la case 18+ et Conditions d’utilisation pour continuer.';
 }
 
 // Path: onboarding
@@ -620,7 +623,7 @@ class _Translations$onboarding$fr extends Translations$onboarding$tr {
 	@override String get page2Title => 'Écris. Parle. Ressens la vibe.';
 	@override String get page2Subtitle => 'Commence anonymement, puis écris, appelle ou passe en face à face quand tu es prêt(e).';
 	@override String get page3Title => 'Trouve ta tribu. Rejoins\nla conversation.';
-	@override String get page3Subtitle => 'Entre dans des salons, fais des rencontres et\npartagez le moment ensemble.';
+	@override String get page3Subtitle => 'Rejoins des salons selon tes centres d’intérêt et échange avec la communauté.';
 	@override String get getStarted => 'C\'est parti';
 	@override String get alreadyHaveAccount => 'Déjà un compte Veylo ? ';
 	@override String get logInAction => 'Se connecter';
@@ -1129,6 +1132,11 @@ class _Translations$discover$post$fr extends Translations$discover$post$tr {
 	@override String viewOtherReplies({required Object count}) => 'Voir ${count} autres réponses';
 	@override String get boost => 'Booster';
 	@override String get deletePostMessage => 'Voulez-vous vraiment supprimer cette publication ? Cette action est irréversible.';
+	@override String get report => 'Report';
+	@override String get block => 'Block User';
+	@override String get reportPostSubtitle => 'Why are you reporting this post?';
+	@override String get hiddenAfterReport => 'Post reported and removed from your feed.';
+	@override String get hiddenAfterBlock => 'User blocked. Their content was removed from your feed.';
 }
 
 // Path: discover.story
@@ -1794,6 +1802,11 @@ extension on TranslationsFr {
 			'discover.post.viewOtherReplies' => ({required Object count}) => 'Voir ${count} autres réponses',
 			'discover.post.boost' => 'Booster',
 			'discover.post.deletePostMessage' => 'Voulez-vous vraiment supprimer cette publication ? Cette action est irréversible.',
+			'discover.post.report' => 'Report',
+			'discover.post.block' => 'Block User',
+			'discover.post.reportPostSubtitle' => 'Why are you reporting this post?',
+			'discover.post.hiddenAfterReport' => 'Post reported and removed from your feed.',
+			'discover.post.hiddenAfterBlock' => 'User blocked. Their content was removed from your feed.',
 			'discover.story.draft' => 'BROUILLON',
 			'discover.story.story' => 'STORY',
 			'discover.story.share' => 'Partager',
@@ -1870,13 +1883,16 @@ extension on TranslationsFr {
 			'auth.privacyPolicy' => 'Politique de confidentialité',
 			'auth.legalSuffix' => '.',
 			'auth.passwordResetSent' => 'Nous t\'avons envoyé un lien de réinitialisation par e-mail.',
+			'auth.ageEulaBeforeLink' => 'Je confirme avoir plus de 18 ans, accepter les ',
+			'auth.ageEulaAfterLink' => ' (EULA) et qu’il y a une tolérance zéro envers les contenus répréhensibles et les abus.',
+			'auth.ageEulaRequired' => 'Cochez la case 18+ et Conditions d’utilisation pour continuer.',
 			'onboarding.skip' => 'Passer',
 			'onboarding.page1Title' => 'Sois toi-même. Reste anonyme.',
 			'onboarding.page1Subtitle' => 'Rencontre de nouvelles personnes et discute\nsans révéler qui tu es.',
 			'onboarding.page2Title' => 'Écris. Parle. Ressens la vibe.',
 			'onboarding.page2Subtitle' => 'Commence anonymement, puis écris, appelle ou passe en face à face quand tu es prêt(e).',
 			'onboarding.page3Title' => 'Trouve ta tribu. Rejoins\nla conversation.',
-			'onboarding.page3Subtitle' => 'Entre dans des salons, fais des rencontres et\npartagez le moment ensemble.',
+			'onboarding.page3Subtitle' => 'Rejoins des salons selon tes centres d’intérêt et échange avec la communauté.',
 			'onboarding.getStarted' => 'C\'est parti',
 			'onboarding.alreadyHaveAccount' => 'Déjà un compte Veylo ? ',
 			'onboarding.logInAction' => 'Se connecter',

@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Veylo – Çerez Politikası · Veylo</title>
+<meta name="description" content="Veylo cookie policy / çerez politikası">
+<meta name="robots" content="index,follow">
+<meta name="theme-color" content="#7D37FD">
+<style>
+:root {
+  --ink: #1A1714; --muted: #636363;
+  --purple: #7D37FD; --purple-deep: #5E35B4; --purple-soft: #EDE6FF;
+  --purple-mid: #998FED; --line: #E5E5E5; --bg: #FAFAFC; --card: #FFFFFF;
+  --warn-bg: #FEF9E8; --warn-line: #F0D48A;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+header {
+  position: relative; overflow: hidden;
+  background:
+    radial-gradient(ellipse 80% 70% at 8% -20%, rgba(125,55,253,.22), transparent 55%),
+    radial-gradient(ellipse 60% 50% at 95% 0%, rgba(153,143,237,.28), transparent 50%),
+    linear-gradient(180deg, #F3EEFF 0%, #EDE6FF 45%, var(--bg) 100%);
+  border-bottom: 1px solid var(--line);
+}
+.wrap { max-width: 820px; margin: 0 auto; padding: 0 20px; position: relative; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 0 8px; }
+.brand {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-weight: 800; font-size: 22px; letter-spacing: -.35px;
+  text-decoration: none; color: var(--ink);
+}
+.brand-mark {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: linear-gradient(135deg, #7B2FFF, var(--purple-mid));
+  box-shadow: 0 4px 12px rgba(125,55,253,.28);
+  position: relative; flex: 0 0 auto;
+}
+.brand-mark::after {
+  content: ""; position: absolute; inset: 9px; border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.92); border-bottom-color: transparent;
+  transform: rotate(-35deg);
+}
+.brand em { font-style: normal; color: var(--purple); }
+.lang {
+  display: inline-flex; border: 1px solid var(--line); border-radius: 999px;
+  overflow: hidden; background: rgba(255,255,255,.9); backdrop-filter: blur(6px);
+}
+.lang button {
+  border: 0; background: transparent; padding: 6px 14px; font: inherit; font-size: 14px;
+  cursor: pointer; color: var(--muted);
+}
+.lang button[aria-pressed="true"] { background: var(--purple); color: #fff; }
+nav.pages { display: flex; flex-wrap: wrap; gap: 6px 16px; padding: 4px 0 18px; font-size: 14px; }
+nav.pages a { color: var(--muted); text-decoration: none; }
+nav.pages a.active {
+  color: var(--ink); font-weight: 700;
+  border-bottom: 3px solid var(--purple); padding-bottom: 2px;
+}
+main { padding: 28px 0 56px; }
+h1 { font-size: 30px; line-height: 1.2; margin: 0 0 6px; letter-spacing: -.4px; color: var(--ink); }
+.updated { color: var(--muted); font-size: 14px; margin: 0 0 24px; }
+h2 {
+  font-size: 20px; margin: 34px 0 8px; padding-top: 10px;
+  border-top: 1px dashed var(--line); color: var(--ink);
+}
+h3 { font-size: 16px; margin: 20px 0 4px; color: var(--purple-deep); }
+p, li { color: #2A2622; }
+ul { padding-left: 22px; }
+li { margin: 4px 0; }
+a { color: var(--purple); }
+a:hover { color: var(--purple-deep); }
+.note {
+  background: linear-gradient(180deg, #fff, #F7F3FF);
+  border: 1px solid #D9CEF8; border-radius: 18px; padding: 16px 18px; margin: 16px 0;
+  box-shadow: 0 8px 0 rgba(125,55,253,.04);
+}
+.warn {
+  background: linear-gradient(180deg, #FFFCF3, var(--warn-bg));
+  border: 1px solid var(--warn-line); border-radius: 18px; padding: 16px 18px; margin: 16px 0;
+}
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 15px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+th { background: var(--purple-soft); font-weight: 700; color: var(--ink); }
+.table {
+  overflow-x: auto; border: 1px solid var(--line); border-radius: 16px;
+  background: var(--card); box-shadow: 0 6px 0 rgba(26,23,20,.03);
+}
+.table table { margin: 0; }
+.table th:first-child, .table td:first-child { padding-left: 14px; }
+footer {
+  border-top: 1px solid var(--line); color: var(--muted); font-size: 14px;
+  padding: 22px 0 40px;
+  background: linear-gradient(180deg, transparent, rgba(125,55,253,.06));
+}
+[data-lang] { display: none; }
+html[lang="tr"] [data-lang="tr"], html[lang="en"] [data-lang="en"] { display: block; }
+@media (max-width: 560px) {
+  h1 { font-size: 25px; }
+  body { font-size: 15.5px; }
+  .brand { font-size: 19px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="top">
+      <a class="brand" href="../about/"><span class="brand-mark" aria-hidden="true"></span>V<em>eylo</em></a>
+      <div class="lang" role="group" aria-label="Language">
+        <button type="button" data-set="tr" aria-pressed="true">Türkçe</button>
+        <button type="button" data-set="en" aria-pressed="false">English</button>
+      </div>
+    </div>
+    <nav class="pages"><a href="../about/" data-tr="Hakkında" data-en="About">Hakkında</a><a href="../privacy-policy/" data-tr="Gizlilik" data-en="Privacy">Gizlilik</a><a href="../terms/" data-tr="Kullanım Koşulları" data-en="Terms">Kullanım Koşulları</a><a href="../cookies/" data-tr="Çerezler" data-en="Cookies" class="active">Çerezler</a><a href="../csae/" data-tr="Çocuk Güvenliği" data-en="Child Safety">Çocuk Güvenliği</a></nav>
+  </div>
+</header>
+<main class="wrap">
+  <section data-lang="tr">
+    <h1>Veylo – Çerez Politikası</h1>
+    <p class="updated">Son güncelleme: 20 Kasım 2026</p>
+
+<div class="note">Kısaca: Veylo yasal web sayfaları <strong>çerez veya yerel depolama kullanmaz</strong>.
+Mobil uygulama, çalışması için gereken oturum ve tercihleri cihazında saklar; reklam / takip çerezi
+kullanmaz.</div>
+
+<h2>1. Çerez nedir?</h2>
+<p>Çerezler, web sitelerinin tarayıcına kaydettiği küçük dosyalardır. Mobil uygulamalar tarayıcı çerezi
+yerine cihazdaki benzer depolama alanlarını (güvenli anahtar deposu, uygulama tercihleri) kullanır. Bu
+politika her ikisini de kapsar.</p>
+
+<h2>2. Uygulamanın cihazında sakladığı bilgiler</h2>
+<p>Bunlar hizmet için <strong>gerekli</strong> niteliktedir; reklam veya uygulamalar arası takip amacıyla
+kullanılmaz:</p>
+<div class="table"><table>
+<tr><th>Bilgi</th><th>Amaç</th><th>Nerede</th></tr>
+<tr><td>Oturum / kimlik doğrulama jetonları</td><td>Girişinin sürmesi</td><td>Cihaz güvenli deposu / Firebase SDK</td></tr>
+<tr><td>Dil ve bildirim tercihleri</td><td>Ayarlarını hatırlamak</td><td>Uygulama tercihleri</td></tr>
+<tr><td>Önbelleğe alınan görseller</td><td>Performans</td><td>Uygulama önbelleği</td></tr>
+<tr><td>Push bildirim jetonu</td><td>Mesaj ve uyarı göndermek</td><td>Cihaz + sunucu</td></tr>
+</table></div>
+<p>Uygulamayı kaldırdığında cihazındaki uygulama verileri silinir (platform kurallarına bağlı olarak bazı
+güvenli depo öğeleri kalabilir).</p>
+
+<h2>3. Üçüncü taraf bileşenler</h2>
+<ul>
+<li><strong>Firebase Auth / FCM:</strong> giriş ve push.</li>
+<li><strong>Bunny CDN:</strong> medya barındırma.</li>
+<li><strong>Agora:</strong> canlı arama aktarımı.</li>
+<li><strong>RevenueCat / mağazalar:</strong> satın alma doğrulama.</li>
+</ul>
+<p>Bu sağlayıcıların kendi gizlilik politikaları da geçerlidir. Uygulamada üçüncü taraf reklam SDK'sı
+<strong>yoktur</strong>.</p>
+
+<h2>4. Bu web sayfaları</h2>
+<p>Veylo yasal sayfaları çerez, yerel depolama veya analitik araç kullanmaz. Dil seçimi yalnızca sayfa
+adresi (<code>?lang=</code>) üzerinden yapılır.</p>
+
+<h2>5. Tercihlerini yönetme</h2>
+<ul>
+<li>Bildirimleri uygulama ayarlarından kapatabilirsin.</li>
+<li>Hesabını ve verilerini Hesap Yönetimi'nden silebilirsin.</li>
+<li>Ayrıntılar: <a href="../privacy-policy/">Gizlilik Politikası</a>.</li>
+</ul>
+
+<h2>6. İletişim</h2>
+<p><a href="mailto:support@fly-work.com">support@fly-work.com</a></p>
+
+  </section>
+  <section data-lang="en">
+    <h1>Veylo – Cookie Policy</h1>
+    <p class="updated">Last updated: November 20, 2026</p>
+
+<div class="note">In short: Veylo legal web pages <strong>do not use cookies or local storage</strong>. The
+mobile app stores on your device only what it needs for sessions and preferences; it does not use
+advertising / tracking cookies.</div>
+
+<h2>1. What are cookies?</h2>
+<p>Cookies are small files websites store in your browser. Mobile apps use similar on-device storage
+(secure key storage, app preferences) instead of browser cookies. This policy covers both.</p>
+
+<h2>2. Information the App stores on your device</h2>
+<p>This is <strong>necessary</strong> for the service and is not used for advertising or cross-app
+tracking:</p>
+<div class="table"><table>
+<tr><th>Information</th><th>Purpose</th><th>Where</th></tr>
+<tr><td>Session / auth tokens</td><td>Keeping you signed in</td><td>Device secure storage / Firebase SDK</td></tr>
+<tr><td>Language and notification preferences</td><td>Remembering settings</td><td>App preferences</td></tr>
+<tr><td>Cached images</td><td>Performance</td><td>App cache</td></tr>
+<tr><td>Push notification token</td><td>Delivering messages and alerts</td><td>Device + server</td></tr>
+</table></div>
+<p>Uninstalling the App removes app data from your device (some secure-storage items may remain depending
+on platform rules).</p>
+
+<h2>3. Third-party components</h2>
+<ul>
+<li><strong>Firebase Auth / FCM:</strong> sign-in and push.</li>
+<li><strong>Bunny CDN:</strong> media hosting.</li>
+<li><strong>Agora:</strong> live call transport.</li>
+<li><strong>RevenueCat / stores:</strong> purchase verification.</li>
+</ul>
+<p>Those providers' own privacy policies also apply. There is <strong>no</strong> third-party advertising
+SDK in the App.</p>
+
+<h2>4. These web pages</h2>
+<p>The Veylo legal pages do not use cookies, local storage or analytics. Language is selected only via the
+page address (<code>?lang=</code>).</p>
+
+<h2>5. Managing your preferences</h2>
+<ul>
+<li>You can turn off notifications in app settings.</li>
+<li>You can delete your account and data from Account Management.</li>
+<li>Details: <a href="../privacy-policy/">Privacy Policy</a>.</li>
+</ul>
+
+<h2>6. Contact</h2>
+<p><a href="mailto:support@fly-work.com">support@fly-work.com</a></p>
+
+  </section>
+</main>
+<footer>
+  <div class="wrap">
+    <span data-lang="tr">© 2026 Veylo · Fly Work. Tüm hakları saklıdır. İletişim: <a href="mailto:support@fly-work.com">support@fly-work.com</a></span>
+    <span data-lang="en">© 2026 Veylo · Fly Work. All rights reserved. Contact: <a href="mailto:support@fly-work.com">support@fly-work.com</a></span>
+  </div>
+</footer>
+<script>
+/* Dil: ?lang=en / #en ya da tarayıcı dili. Çerez veya yerel depolama kullanılmaz. */
+(function () {
+  var q = new URLSearchParams(location.search).get('lang') || location.hash.replace('#', '');
+  var nav = (navigator.language || 'tr').slice(0, 2).toLowerCase();
+  var lang = (q === 'tr' || q === 'en') ? q : (nav === 'tr' ? 'tr' : 'en');
+  function set(l) {
+    document.documentElement.lang = l;
+    document.querySelectorAll('.lang button').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.set === l));
+    });
+    document.querySelectorAll('nav.pages a').forEach(function (a) {
+      a.textContent = a.dataset[l];
+      a.href = a.getAttribute('href').split('?')[0] + '?lang=' + l;
+    });
+    var t = document.querySelector('section[data-lang="' + l + '"] h1');
+    if (t) document.title = t.textContent + ' · Veylo';
+  }
+  document.querySelectorAll('.lang button').forEach(function (b) {
+    b.addEventListener('click', function () { set(b.dataset.set); });
+  });
+  set(lang);
+})();
+</script>
+</body>
+</html>
