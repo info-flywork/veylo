@@ -198,14 +198,19 @@ class _RoomLivePageState extends State<RoomLivePage> {
     });
   }
 
+  bool _sending = false;
+
   Future<void> _send(String text) async {
     final body = text.trim();
-    if (body.isEmpty) return;
+    if (body.isEmpty || _sending) return;
+    _sending = true;
     _input.clear();
     try {
       await _repo.send(widget.roomId, body);
     } catch (e) {
       if (mounted) showErrorSnackBar(context, e);
+    } finally {
+      _sending = false;
     }
   }
 
@@ -1207,13 +1212,26 @@ class _MessageInput extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          // Yazı varken gönder (sohbet kutusundaki gönder butonuyla aynı).
+          // Mikrofonum: kapalıyken soluk.
+          GestureDetector(
+            onTap: onMic,
+            behavior: HitTestBehavior.opaque,
+            child: Opacity(
+              opacity: micOn ? 1 : 0.4,
+              child: SvgPicture.asset(
+                AppAssets.iconMicrophone,
+                width: 28,
+                height: 28,
+              ),
+            ),
+          ),
+          // Mesaj gönder: sağ kenarda (yazı varken).
           ValueListenableBuilder<TextEditingValue>(
             valueListenable: controller,
             builder: (context, value, _) {
               if (value.text.trim().isEmpty) return const SizedBox.shrink();
               return Padding(
-                padding: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.only(left: 8),
                 child: GestureDetector(
                   onTap: () => onSubmit(controller.text),
                   child: Container(
@@ -1233,19 +1251,6 @@ class _MessageInput extends StatelessWidget {
                 ),
               );
             },
-          ),
-          // Mikrofonum: kapalıyken soluk.
-          GestureDetector(
-            onTap: onMic,
-            behavior: HitTestBehavior.opaque,
-            child: Opacity(
-              opacity: micOn ? 1 : 0.4,
-              child: SvgPicture.asset(
-                AppAssets.iconMicrophone,
-                width: 28,
-                height: 28,
-              ),
-            ),
           ),
         ],
       ),

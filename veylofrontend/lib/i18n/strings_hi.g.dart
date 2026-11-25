@@ -544,6 +544,7 @@ class _Translations$discover$hi extends Translations$discover$tr {
 	@override late final _Translations$discover$stats$hi stats = _Translations$discover$stats$hi._(_root);
 	@override String hostedBy({required Object name}) => 'होस्ट: ${name}';
 	@override String get requestPending => 'आपका अनुरोध भेजा गया है, मंज़ूरी का इंतज़ार है।';
+	@override String get enter => 'प्रवेश';
 }
 
 // Path: common
@@ -997,6 +998,8 @@ class _Translations$discover$createSpace$hi extends Translations$discover$create
 	@override String get nameSubtitle => 'अपने ग्रुप को एक नाम दें';
 	@override String get nameHint => 'रात के उल्लू';
 	@override String createRoomFor({required Object count}) => '${count} टोकन में बनाएँ';
+	@override String get requirePermission => 'अनुमति आवश्यक';
+	@override String get requirePermissionSubtitle => 'शामिल होने के लिए स्वीकृति चाहिए';
 }
 
 // Path: discover.liveRoom
@@ -1120,8 +1123,12 @@ class _Translations$discover$post$hi extends Translations$discover$post$tr {
 	@override String get edit => 'संपादित करें';
 	@override String get delete => 'हटाएँ';
 	@override String get editCaption => 'कैप्शन संपादित करें';
-	@override String get deletePostTitle => 'यह पोस्ट हटाएँ?';
+	@override String get deletePostTitle => 'पोस्ट हटाएँ?';
 	@override String get captionHint => 'कैप्शन लिखें...';
+	@override String get reply => 'जवाब दें';
+	@override String viewOtherReplies({required Object count}) => '${count} और जवाब देखें';
+	@override String get boost => 'बूस्ट';
+	@override String get deletePostMessage => 'क्या आप वाकई इस पोस्ट को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।';
 }
 
 // Path: discover.story
@@ -1699,6 +1706,8 @@ extension on TranslationsHi {
 			'discover.createSpace.nameSubtitle' => 'अपने ग्रुप को एक नाम दें',
 			'discover.createSpace.nameHint' => 'रात के उल्लू',
 			'discover.createSpace.createRoomFor' => ({required Object count}) => '${count} टोकन में बनाएँ',
+			'discover.createSpace.requirePermission' => 'अनुमति आवश्यक',
+			'discover.createSpace.requirePermissionSubtitle' => 'शामिल होने के लिए स्वीकृति चाहिए',
 			'discover.liveRoom.adminSuffix' => '(एडमिन)',
 			'discover.liveRoom.messageHint' => 'मैसेज',
 			'discover.liveRoom.quickReplyHey' => 'हाय, सब लोग!',
@@ -1740,10 +1749,10 @@ extension on TranslationsHi {
 			'discover.groupInfo.admin' => 'एडमिन',
 			'discover.groupInfo.leaveGroup' => 'ग्रुप छोड़ें',
 			'discover.groupInfo.requests' => 'जॉइन रिक्वेस्ट',
-			'discover.groupInfo.approve' => 'स्वीकार करें',
-			'discover.groupInfo.reject' => 'अस्वीकार करें',
 			_ => null,
 		} ?? switch (path) {
+			'discover.groupInfo.approve' => 'स्वीकार करें',
+			'discover.groupInfo.reject' => 'अस्वीकार करें',
 			'discover.groupInfo.addPeopleEmpty' => 'लोगों को ग्रुप में जोड़ने के लिए पहले उन्हें फ़ॉलो करें।',
 			'discover.groupInfo.add' => 'जोड़ें',
 			'discover.groupInfo.makeAdmin' => 'एडमिन बनाएँ',
@@ -1779,8 +1788,12 @@ extension on TranslationsHi {
 			'discover.post.edit' => 'संपादित करें',
 			'discover.post.delete' => 'हटाएँ',
 			'discover.post.editCaption' => 'कैप्शन संपादित करें',
-			'discover.post.deletePostTitle' => 'यह पोस्ट हटाएँ?',
+			'discover.post.deletePostTitle' => 'पोस्ट हटाएँ?',
 			'discover.post.captionHint' => 'कैप्शन लिखें...',
+			'discover.post.reply' => 'जवाब दें',
+			'discover.post.viewOtherReplies' => ({required Object count}) => '${count} और जवाब देखें',
+			'discover.post.boost' => 'बूस्ट',
+			'discover.post.deletePostMessage' => 'क्या आप वाकई इस पोस्ट को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।',
 			'discover.story.draft' => 'ड्राफ़्ट',
 			'discover.story.story' => 'स्टोरी',
 			'discover.story.share' => 'शेयर करें',
@@ -1823,6 +1836,7 @@ extension on TranslationsHi {
 			'discover.stats.boosted' => 'बूस्ट हो गया! आपकी पोस्ट 24 घंटे तक सबसे ऊपर रहेगी।',
 			'discover.hostedBy' => ({required Object name}) => 'होस्ट: ${name}',
 			'discover.requestPending' => 'आपका अनुरोध भेजा गया है, मंज़ूरी का इंतज़ार है।',
+			'discover.enter' => 'प्रवेश',
 			'common.loading' => 'लोड हो रहा है…',
 			'common.retry' => 'फिर कोशिश करें',
 			'common.cancel' => 'रद्द करें',

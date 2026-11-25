@@ -94,6 +94,58 @@ class Post {
   /// Kartta gösterilen kullanıcı adı.
   String get handle => authorUsername ?? authorName;
 
+  Post copyWith({
+    String? id,
+    String? mediaUrl,
+    String? thumbUrl,
+    String? authorId,
+    String? authorName,
+    DateTime? createdAt,
+    String? authorUsername,
+    String? authorAvatarUrl,
+    bool? authorIsAi,
+    bool? iFollowAuthor,
+    String? caption,
+    PostMusic? music,
+    int? likeCount,
+    int? commentCount,
+    int? viewCount,
+    bool? likedByMe,
+    bool? savedByMe,
+    bool? isMine,
+    bool? boosted,
+    DateTime? boostedUntil,
+    bool? isDraft,
+    String? sourceUrl,
+    Map<String, dynamic>? editorState,
+  }) {
+    return Post(
+      id: id ?? this.id,
+      mediaUrl: mediaUrl ?? this.mediaUrl,
+      thumbUrl: thumbUrl ?? this.thumbUrl,
+      authorId: authorId ?? this.authorId,
+      authorName: authorName ?? this.authorName,
+      createdAt: createdAt ?? this.createdAt,
+      authorUsername: authorUsername ?? this.authorUsername,
+      authorAvatarUrl: authorAvatarUrl ?? this.authorAvatarUrl,
+      authorIsAi: authorIsAi ?? this.authorIsAi,
+      iFollowAuthor: iFollowAuthor ?? this.iFollowAuthor,
+      caption: caption ?? this.caption,
+      music: music ?? this.music,
+      likeCount: likeCount ?? this.likeCount,
+      commentCount: commentCount ?? this.commentCount,
+      viewCount: viewCount ?? this.viewCount,
+      likedByMe: likedByMe ?? this.likedByMe,
+      savedByMe: savedByMe ?? this.savedByMe,
+      isMine: isMine ?? this.isMine,
+      boosted: boosted ?? this.boosted,
+      boostedUntil: boostedUntil ?? this.boostedUntil,
+      isDraft: isDraft ?? this.isDraft,
+      sourceUrl: sourceUrl ?? this.sourceUrl,
+      editorState: editorState ?? this.editorState,
+    );
+  }
+
   factory Post.fromJson(Map<String, dynamic> j) {
     final a = j['author'] as Map<String, dynamic>? ?? const {};
     final rawMusic = j['music'];

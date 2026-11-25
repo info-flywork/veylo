@@ -54,7 +54,13 @@ class ChatRequestPage extends StatelessWidget {
                 return ListView.separated(
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
                   itemCount: requests.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 8),
+                  separatorBuilder: (_, _) => const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: ColoredBox(
+                      color: Color(0xFFE2E2E2),
+                      child: SizedBox(height: 1, width: double.infinity),
+                    ),
+                  ),
                   itemBuilder: (context, index) {
                     final thread = requests[index];
                     // İstekte sabitleme yok; Engelle ve Sil (= isteği reddet).

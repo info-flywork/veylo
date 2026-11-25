@@ -493,7 +493,9 @@
       "createGroupTitle": "Create Group",
       "nameSubtitle": "Give the group you created a name",
       "nameHint": "Night Owl",
-      "createRoomFor": "Create for {count} tokens"
+      "createRoomFor": "Create for {count} tokens",
+      "requirePermission": "Require approval",
+      "requirePermissionSubtitle": "Members need approval to join"
     },
     "liveRoom": {
       "adminSuffix": "(Admin)",
@@ -584,8 +586,12 @@
       "edit": "Edit",
       "delete": "Delete",
       "editCaption": "Edit caption",
-      "deletePostTitle": "Delete this post?",
-      "captionHint": "Write a caption..."
+      "deletePostTitle": "Delete Post?",
+      "captionHint": "Write a caption...",
+      "reply": "Reply",
+      "viewOtherReplies": "View {count} other replies",
+      "boost": "Boost",
+      "deletePostMessage": "Are you sure you want to delete this post? This action cannot be undone."
     },
     "story": {
       "draft": "DRAFT",
@@ -634,7 +640,8 @@
       "boosted": "Boosted! Your post is at the top for 24 hours."
     },
     "hostedBy": "Hosted by {name}",
-    "requestPending": "Your request was sent and is awaiting approval."
+    "requestPending": "Your request was sent and is awaiting approval.",
+    "enter": "Enter"
   },
   "common": {
     "loading": "Loading…",

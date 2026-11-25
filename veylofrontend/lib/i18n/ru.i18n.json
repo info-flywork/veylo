@@ -493,7 +493,9 @@
       "createGroupTitle": "Создать группу",
       "nameSubtitle": "Придумай название для группы",
       "nameHint": "Ночные совы",
-      "createRoomFor": "Создать за {count} ток."
+      "createRoomFor": "Создать за {count} ток.",
+      "requirePermission": "Нужно разрешение",
+      "requirePermissionSubtitle": "Для входа требуется одобрение"
     },
     "liveRoom": {
       "adminSuffix": "(Админ)",
@@ -582,8 +584,12 @@
       "edit": "Изменить",
       "delete": "Удалить",
       "editCaption": "Изменить подпись",
-      "deletePostTitle": "Удалить эту публикацию?",
-      "captionHint": "Напиши подпись..."
+      "deletePostTitle": "Удалить публикацию?",
+      "captionHint": "Напиши подпись...",
+      "reply": "Ответить",
+      "viewOtherReplies": "Посмотреть ещё {count} ответов",
+      "boost": "Продвинуть",
+      "deletePostMessage": "Вы уверены, что хотите удалить эту публикацию? Это действие нельзя отменить."
     },
     "story": {
       "draft": "ЧЕРНОВИК",
@@ -632,7 +638,8 @@
       "boosted": "Готово! Пост в топе на 24 часа."
     },
     "hostedBy": "Ведущий: {name}",
-    "requestPending": "Заявка отправлена и ждёт одобрения."
+    "requestPending": "Заявка отправлена и ждёт одобрения.",
+    "enter": "Войти"
   },
   "common": {
     "loading": "Загрузка…",

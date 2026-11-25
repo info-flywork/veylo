@@ -280,7 +280,13 @@ class _ChatsPageState extends State<ChatsPage> {
                 : ListView.separated(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 110),
                   itemCount: threads.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 8),
+                  separatorBuilder: (_, _) => const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10),
+                    child: ColoredBox(
+                      color: Color(0xFFE2E2E2),
+                      child: SizedBox(height: 1, width: double.infinity),
+                    ),
+                  ),
                   itemBuilder: (context, index) {
                     final thread = threads[index];
                     return ChatThreadTile(

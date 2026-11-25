@@ -14,6 +14,8 @@ import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/core/widgets/profile_tappable_avatar.dart';
 import 'package:veylo/models/profile/follow_user.dart';
 import 'package:veylo/screens/profile/follow_sort_sheet.dart';
+import 'package:veylo/screens/profile/profile_navigation.dart';
+import 'package:veylo/screens/profile/profile_page.dart';
 
 const _kContentWidth = 398.0;
 const _kAvatarSize = 58.0;
@@ -702,13 +704,29 @@ class _FollowRowState extends State<_FollowRow>
                     Transform.translate(
                       offset: Offset(offset, 0),
                       child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
                         onHorizontalDragUpdate: _onDragUpdate,
                         onHorizontalDragEnd: _onDragEnd,
                         onTap: () {
                           if (_ctrl.value > 0.05) {
                             _ctrl.reverse();
                             widget.onOpenChanged(false);
+                            return;
                           }
+                          if (widget.user.id == SessionStore.instance.me?.id) {
+                            Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) => const ProfilePage(),
+                              ),
+                            );
+                            return;
+                          }
+                          openUserProfile(
+                            context,
+                            userId: widget.user.id,
+                            displayName: widget.user.displayName,
+                            avatarUrl: widget.user.avatarUrl,
+                          );
                         },
                         child: Container(
                           height: 78,
@@ -721,6 +739,7 @@ class _FollowRowState extends State<_FollowRow>
                                 size: _kAvatarSize,
                                 userId: widget.user.id,
                                 displayName: widget.user.displayName,
+                                enabled: false,
                               ),
                               const SizedBox(width: 10),
                               Expanded(

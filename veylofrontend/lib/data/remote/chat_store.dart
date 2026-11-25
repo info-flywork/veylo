@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
+import 'package:veylo/data/local/response_cache.dart';
 import 'package:veylo/data/remote/chat_repository.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/data/remote/socket_service.dart';
@@ -21,6 +22,8 @@ class ChatStore extends ChangeNotifier {
   bool _loading = false;
   Object? _error;
   bool _started = false;
+  /// Eski refresh cevabı, yeni mesajla eklenen sohbeti silmesin.
+  int _refreshEpoch = 0;
   final List<StreamSubscription<dynamic>> _subs = [];
   AppLifecycleListener? _lifecycle;
 
@@ -175,6 +178,7 @@ class ChatStore extends ChangeNotifier {
   }
 
   Future<void> refresh() async {
+    final epoch = ++_refreshEpoch;
     final net = Future.wait([_repo.list(), _repo.list(box: 'requests')]);
     // Disk okunurken ağ hata verirse yakalanmamış hata sayılmasın; aşağıda await edilir.
     unawaited(net.then((_) {}, onError: (_) {}));
@@ -184,6 +188,7 @@ class ChatStore extends ChangeNotifier {
         _repo.cachedList(),
         _repo.cachedList(box: 'requests'),
       ]);
+      if (epoch != _refreshEpoch) return;
       if (_inbox.isEmpty && _requests.isEmpty) {
         _inbox = _sorted(cached[0] ?? const []);
         _requests = _sorted(cached[1] ?? const []);
@@ -193,19 +198,59 @@ class ChatStore extends ChangeNotifier {
     notifyListeners();
     try {
       final results = await net;
-      _inbox = _sorted(results[0]);
-      _requests = _sorted(results[1]);
+      if (epoch != _refreshEpoch) return;
+      // Sunucu listesi kaynak; henüz yansımayan canlı sohbetleri silme.
+      _inbox = _mergeServerAndLocal(results[0], _inbox);
+      _requests = _mergeServerAndLocal(results[1], _requests);
       _error = null;
       // Üstteki sohbetleri arka planda ısıt — tıklayınca boş ekran azalır.
       for (final t in _inbox.take(5)) {
         unawaited(prefetchMessages(t.id));
       }
     } catch (e) {
+      if (epoch != _refreshEpoch) return;
       _error = e;
     } finally {
-      _loading = false;
-      notifyListeners();
+      if (epoch == _refreshEpoch) {
+        _loading = false;
+        _persistLists();
+        notifyListeners();
+      }
     }
+  }
+
+  /// Refresh cevabı gelene kadar socket/local ile eklenen yazışmaları korur.
+  static List<ChatThread> _mergeServerAndLocal(
+    List<ChatThread> server,
+    List<ChatThread> local,
+  ) {
+    final serverIds = {for (final t in server) t.id};
+    final retained = <ChatThread>[
+      for (final t in local)
+        if (!serverIds.contains(t.id) &&
+            (t.isGroup ||
+                t.lastMessagePreview.isNotEmpty ||
+                t.lastMessageAt != null))
+          t,
+    ];
+    return _sorted([...server, ...retained]);
+  }
+
+  /// ApiClient cache anahtarıyla aynı: `/conversations?box=inbox`.
+  static String _listCacheKey(String box) => '/conversations?box=$box';
+
+  /// Restart sonrası sohbetler kaybolmasın diye birleşik listeyi diske yaz.
+  void _persistLists() {
+    unawaited(
+      ResponseCache.instance.write(_listCacheKey('inbox'), {
+        'items': [for (final t in _inbox) _toApiShape(t)],
+      }),
+    );
+    unawaited(
+      ResponseCache.instance.write(_listCacheKey('requests'), {
+        'items': [for (final t in _requests) _toApiShape(t)],
+      }),
+    );
   }
 
   ChatThread? byId(String id) {
@@ -233,6 +278,7 @@ class ChatStore extends ChangeNotifier {
         _inbox = _sorted([..._inbox, thread]);
       }
     }
+    _persistLists();
     notifyListeners();
   }
 
@@ -242,6 +288,7 @@ class ChatStore extends ChangeNotifier {
   void remove(String id) {
     _inbox = _inbox.where((t) => t.id != id).toList();
     _requests = _requests.where((t) => t.id != id).toList();
+    _persistLists();
     notifyListeners();
   }
 

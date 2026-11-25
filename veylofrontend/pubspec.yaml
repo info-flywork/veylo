@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+6
+version: 1.0.0+14
 
 environment:
   sdk: ^3.10.0
@@ -87,18 +87,20 @@ flutter_launcher_icons:
   web:
     generate: true
   image_path: assets/images/veyloAppIcon.png
-  adaptive_icon_background: "#250486"
+  adaptive_icon_background: "#6727D5"
   adaptive_icon_foreground: assets/images/veyloAppIcon.png
   remove_alpha_ios: true
 
 flutter_native_splash:
-  background_image: assets/images/splashFirstPage.png
+  # Native ilk kare: mor arka plan + ikon + Veylo yazısı (tek görsel)
+  background_image: assets/images/splashNativeFull.png
   android_12:
-    color: "#FCFBF9"
+    color: "#9B54FA"
     image: assets/images/veylofirstSplashIcon.png
   ios: true
   web: true
-  fullscreen: true
+  # false: iOS Info.plist'te UIStatusBarHidden kalmasın (saat/şarj görünür).
+  fullscreen: false
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

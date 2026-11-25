@@ -493,7 +493,9 @@
       "createGroupTitle": "Créer un groupe",
       "nameSubtitle": "Donne un nom à ton groupe",
       "nameHint": "Oiseaux de nuit",
-      "createRoomFor": "Créer pour {count} jetons"
+      "createRoomFor": "Créer pour {count} jetons",
+      "requirePermission": "Demander une autorisation",
+      "requirePermissionSubtitle": "L’approbation est requise pour rejoindre"
     },
     "liveRoom": {
       "adminSuffix": "(Admin)",
@@ -582,8 +584,12 @@
       "edit": "Modifier",
       "delete": "Supprimer",
       "editCaption": "Modifier la légende",
-      "deletePostTitle": "Supprimer cette publication ?",
-      "captionHint": "Écris une légende..."
+      "deletePostTitle": "Supprimer la publication ?",
+      "captionHint": "Écris une légende...",
+      "reply": "Répondre",
+      "viewOtherReplies": "Voir {count} autres réponses",
+      "boost": "Booster",
+      "deletePostMessage": "Voulez-vous vraiment supprimer cette publication ? Cette action est irréversible."
     },
     "story": {
       "draft": "BROUILLON",
@@ -632,7 +638,8 @@
       "boosted": "Boosté ! Ton post est en tête pendant 24 heures."
     },
     "hostedBy": "Animé par {name}",
-    "requestPending": "Ta demande a été envoyée et attend une validation."
+    "requestPending": "Ta demande a été envoyée et attend une validation.",
+    "enter": "Entrer"
   },
   "common": {
     "loading": "Chargement…",

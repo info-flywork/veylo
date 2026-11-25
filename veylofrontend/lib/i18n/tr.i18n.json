@@ -493,7 +493,9 @@
       "createGroupTitle": "Grup Oluştur",
       "nameSubtitle": "Oluşturduğun gruba bir isim ver",
       "nameHint": "Gece Kuşu",
-      "createRoomFor": "{count} tokene oluştur"
+      "createRoomFor": "{count} tokene oluştur",
+      "requirePermission": "İzin alınsın",
+      "requirePermissionSubtitle": "Katılmak için onay gereksin"
     },
     "liveRoom": {
       "adminSuffix": "(Yönetici)",
@@ -584,8 +586,12 @@
       "edit": "Düzenle",
       "delete": "Sil",
       "editCaption": "Açıklamayı düzenle",
-      "deletePostTitle": "Bu gönderi silinsin mi?",
-      "captionHint": "Açıklama yaz..."
+      "deletePostTitle": "Gönderiyi Sil?",
+      "captionHint": "Açıklama yaz...",
+      "reply": "Yanıtla",
+      "viewOtherReplies": "{count} diğer yanıtı gör",
+      "boost": "Öne çıkar",
+      "deletePostMessage": "Bu gönderiyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz."
     },
     "story": {
       "draft": "TASLAK",
@@ -634,7 +640,8 @@
       "boosted": "Öne çıkarıldı! Gönderin 24 saat boyunca en üstte."
     },
     "hostedBy": "{name} sunuyor",
-    "requestPending": "İsteğin gönderildi, onay bekleniyor."
+    "requestPending": "İsteğin gönderildi, onay bekleniyor.",
+    "enter": "Gir"
   },
   "common": {
     "loading": "Yükleniyor…",

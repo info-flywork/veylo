@@ -544,6 +544,7 @@ class _Translations$discover$zh extends Translations$discover$tr {
 	@override late final _Translations$discover$stats$zh stats = _Translations$discover$stats$zh._(_root);
 	@override String hostedBy({required Object name}) => '主持人：${name}';
 	@override String get requestPending => '申请已发送，等待批准。';
+	@override String get enter => '进入';
 }
 
 // Path: common
@@ -997,6 +998,8 @@ class _Translations$discover$createSpace$zh extends Translations$discover$create
 	@override String get nameSubtitle => '给你创建的群组起个名字';
 	@override String get nameHint => '夜猫子';
 	@override String createRoomFor({required Object count}) => '花 ${count} 代币创建';
+	@override String get requirePermission => '需要许可';
+	@override String get requirePermissionSubtitle => '加入需获得批准';
 }
 
 // Path: discover.liveRoom
@@ -1120,8 +1123,12 @@ class _Translations$discover$post$zh extends Translations$discover$post$tr {
 	@override String get edit => '编辑';
 	@override String get delete => '删除';
 	@override String get editCaption => '编辑说明';
-	@override String get deletePostTitle => '删除这条帖子？';
+	@override String get deletePostTitle => '删除帖子？';
 	@override String get captionHint => '写点说明...';
+	@override String get reply => '回复';
+	@override String viewOtherReplies({required Object count}) => '查看另外 ${count} 条回复';
+	@override String get boost => '推广';
+	@override String get deletePostMessage => '确定要删除这条帖子吗？此操作无法撤销。';
 }
 
 // Path: discover.story
@@ -1699,6 +1706,8 @@ extension on TranslationsZh {
 			'discover.createSpace.nameSubtitle' => '给你创建的群组起个名字',
 			'discover.createSpace.nameHint' => '夜猫子',
 			'discover.createSpace.createRoomFor' => ({required Object count}) => '花 ${count} 代币创建',
+			'discover.createSpace.requirePermission' => '需要许可',
+			'discover.createSpace.requirePermissionSubtitle' => '加入需获得批准',
 			'discover.liveRoom.adminSuffix' => '（管理员）',
 			'discover.liveRoom.messageHint' => '发消息',
 			'discover.liveRoom.quickReplyHey' => '大家好！',
@@ -1740,10 +1749,10 @@ extension on TranslationsZh {
 			'discover.groupInfo.admin' => '管理员',
 			'discover.groupInfo.leaveGroup' => '退出群组',
 			'discover.groupInfo.requests' => '加入申请',
-			'discover.groupInfo.approve' => '同意',
-			'discover.groupInfo.reject' => '拒绝',
 			_ => null,
 		} ?? switch (path) {
+			'discover.groupInfo.approve' => '同意',
+			'discover.groupInfo.reject' => '拒绝',
 			'discover.groupInfo.addPeopleEmpty' => '关注他人后即可将其加入群组。',
 			'discover.groupInfo.add' => '添加',
 			'discover.groupInfo.makeAdmin' => '设为管理员',
@@ -1779,8 +1788,12 @@ extension on TranslationsZh {
 			'discover.post.edit' => '编辑',
 			'discover.post.delete' => '删除',
 			'discover.post.editCaption' => '编辑说明',
-			'discover.post.deletePostTitle' => '删除这条帖子？',
+			'discover.post.deletePostTitle' => '删除帖子？',
 			'discover.post.captionHint' => '写点说明...',
+			'discover.post.reply' => '回复',
+			'discover.post.viewOtherReplies' => ({required Object count}) => '查看另外 ${count} 条回复',
+			'discover.post.boost' => '推广',
+			'discover.post.deletePostMessage' => '确定要删除这条帖子吗？此操作无法撤销。',
 			'discover.story.draft' => '草稿',
 			'discover.story.story' => '快拍',
 			'discover.story.share' => '分享',
@@ -1823,6 +1836,7 @@ extension on TranslationsZh {
 			'discover.stats.boosted' => '推广成功！你的帖子将置顶 24 小时。',
 			'discover.hostedBy' => ({required Object name}) => '主持人：${name}',
 			'discover.requestPending' => '申请已发送，等待批准。',
+			'discover.enter' => '进入',
 			'common.loading' => '加载中…',
 			'common.retry' => '重试',
 			'common.cancel' => '取消',

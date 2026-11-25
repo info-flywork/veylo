@@ -493,7 +493,9 @@
       "createGroupTitle": "그룹 만들기",
       "nameSubtitle": "만든 그룹의 이름을 정해주세요",
       "nameHint": "올빼미족",
-      "createRoomFor": "{count} 토큰으로 만들기"
+      "createRoomFor": "{count} 토큰으로 만들기",
+      "requirePermission": "승인 필요",
+      "requirePermissionSubtitle": "참여하려면 승인이 필요해요"
     },
     "liveRoom": {
       "adminSuffix": "(관리자)",
@@ -582,8 +584,12 @@
       "edit": "수정",
       "delete": "삭제",
       "editCaption": "캡션 수정",
-      "deletePostTitle": "이 게시물을 삭제할까요?",
-      "captionHint": "캡션을 입력하세요..."
+      "deletePostTitle": "게시물을 삭제할까요?",
+      "captionHint": "캡션을 입력하세요...",
+      "reply": "답글",
+      "viewOtherReplies": "다른 답글 {count}개 보기",
+      "boost": "부스트",
+      "deletePostMessage": "이 게시물을 정말 삭제할까요? 이 작업은 되돌릴 수 없어요."
     },
     "story": {
       "draft": "임시저장",
@@ -632,7 +638,8 @@
       "boosted": "부스트 완료! 24시간 동안 게시물이 상단에 노출돼요."
     },
     "hostedBy": "호스트: {name}",
-    "requestPending": "요청을 보냈어요. 승인을 기다리는 중이에요."
+    "requestPending": "요청을 보냈어요. 승인을 기다리는 중이에요.",
+    "enter": "입장"
   },
   "common": {
     "loading": "불러오는 중…",

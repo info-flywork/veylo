@@ -1,6 +1,8 @@
 abstract final class AppAssets {
   static const String veyloAppIcon = 'assets/images/veyloAppIcon.png';
   static const String splashFirstPage = 'assets/images/splashFirstPage.png';
+  /// Native + Flutter açılışta ortak: mor bg + ikon + Veylo yazısı
+  static const String splashNativeFull = 'assets/images/splashNativeFull.png';
   static const String veyloFirstSplashIcon =
       'assets/images/veylofirstSplashIcon.png';
   static const String onboardingPage1 = 'assets/images/secondpageSplash.png';
@@ -88,6 +90,7 @@ abstract final class AppAssets {
   static const String fakePerson08 = '$_fakeDir/fake08.png';
   static const String profileMaleAvatar = '$_fakeDir/profileMaleAvatar.jpg';
   static const String postDetail = '$_fakeDir/postdetail.png';
+  static const String postLandscape = '$_fakeDir/landscape_post.jpg';
 
   static const String navDiscover = 'assets/icons/discover.svg';
   static const String navChat = 'assets/icons/chat.svg';
@@ -119,6 +122,15 @@ abstract final class AppAssets {
   static const String iconDownload = 'assets/icons/download.svg';
   static const String iconShare = 'assets/icons/share.svg';
 
+  /// Lucide — https://lucide.dev/icons/
+  static const String iconLucidePencil = 'assets/icons/pencil.svg';
+  static const String iconLucideText = 'assets/icons/text.svg';
+  static const String iconLucideTrash = 'assets/icons/trash-2.svg';
+  static const String iconLucideBan = 'assets/icons/ban.svg';
+  static const String iconLucideVolumeX = 'assets/icons/volume-x.svg';
+  static const String iconLucideVolume2 = 'assets/icons/volume-2.svg';
+  static const String iconLucideRocket = 'assets/icons/rocket.svg';
+
   /// Story compose — Figma / Zovi icon set
   static const String _storyDir = 'assets/icons/story';
   static const String iconStoryClose = '$_storyDir/close.svg';
@@ -126,6 +138,7 @@ abstract final class AppAssets {
   static const String iconStoryTextAa = '$_storyDir/textAa.svg';
   static const String iconStorySticker = '$_storyDir/sticker.svg';
   static const String iconStoryMusic = '$_storyDir/musicNote.svg';
+  static const String iconStoryDraw = '$_storyDir/draw.svg';
   static const String iconStoryDownload = '$_storyDir/download.svg';
   static const String iconStorySend = '$_storyDir/sendPlane.svg';
   static const String iconStoryKeyboard = '$_storyDir/keyboard.svg';

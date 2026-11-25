@@ -27,6 +27,7 @@ class RoomListItem {
     this.id,
     this.memberCount,
     this.isMember = false,
+    this.isHost = false,
   });
 
   /// Backend grubu (`GET /groups`): açık grupta [count] aktif üye sayısıdır.
@@ -53,7 +54,8 @@ class RoomListItem {
     count: r.participantCount,
     isPrivate: r.isPrivate,
     isRequested: r.requested,
-    isMember: r.hasAccess,
+    isMember: r.hasAccess || r.isHost,
+    isHost: r.isHost,
     avatars: [
       ...r.avatars,
       for (var i = r.avatars.length; i < r.participantCount.clamp(0, 5); i++)
@@ -71,6 +73,9 @@ class RoomListItem {
   final String? id;
   final int? memberCount;
   final bool isMember;
+
+  /// Canlı odanın sahibi — listede "Katıl" yerine "Gir" gösterilir.
+  final bool isHost;
 }
 
 class RoomListCard extends StatelessWidget {
@@ -198,7 +203,7 @@ class RoomListCard extends StatelessWidget {
               child: AppText(
                 locked && !item.isMember
                     ? (item.isRequested ? t.requested : t.request)
-                    : t.join,
+                    : (item.isHost || item.isMember ? t.enter : t.join),
                 style: AppTextStyles.allRoomAction.copyWith(
                   color: AppColors.white,
                 ),

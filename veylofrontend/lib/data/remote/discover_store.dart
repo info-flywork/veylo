@@ -107,6 +107,29 @@ class DiscoverStore extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Gönderi öne çıkarıldı: yerel listede en üste alır, sonra sunucu sırasını yeniler.
+  void promote(String postId, {DateTime? boostedUntil}) {
+    Post? found;
+    final rest = <Post>[];
+    for (final p in _posts) {
+      if (p.id == postId) {
+        found = p.copyWith(
+          boosted: true,
+          boostedUntil:
+              boostedUntil ?? DateTime.now().add(const Duration(hours: 24)),
+        );
+      } else {
+        rest.add(p);
+      }
+    }
+    if (found != null) {
+      _posts = [found, ...rest];
+      _postsEpoch++;
+      notifyListeners();
+    }
+    unawaited(refresh());
+  }
+
   void remove(String id) {
     _posts = _posts.where((p) => p.id != id).toList();
     _postsEpoch++;

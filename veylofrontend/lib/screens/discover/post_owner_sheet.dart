@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_edit_sheet.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
 
-enum PostOwnerAction { edit, editCaption, delete }
+enum PostOwnerAction { boost, edit, editCaption, delete }
 
-/// Kendi gönderim — Düzenle / Sil menüsü (profil işlem menüsüyle aynı yapı).
+/// Kendi gönderim — Öne çıkar / Düzenle / Açıklamayı düzenle / Sil.
 Future<PostOwnerAction?> showPostOwnerActionsSheet(BuildContext context) {
   return showModalBottomSheet<PostOwnerAction>(
     context: context,
@@ -22,17 +24,40 @@ Future<PostOwnerAction?> showPostOwnerActionsSheet(BuildContext context) {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Center(
+              child: Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: AppColors.progressTrack,
+                  borderRadius: BorderRadius.circular(AppBorders.radiusPill),
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            _ActionItem(
+              label: tr.discover.post.boost,
+              iconAsset: AppAssets.iconLucideRocket,
+              color: AppColors.black,
+              onTap: () => Navigator.of(context).pop(PostOwnerAction.boost),
+            ),
             _ActionItem(
               label: tr.discover.post.edit,
+              iconAsset: AppAssets.iconLucidePencil,
+              color: AppColors.black,
               onTap: () => Navigator.of(context).pop(PostOwnerAction.edit),
             ),
             _ActionItem(
               label: tr.discover.post.editCaption,
+              iconAsset: AppAssets.iconLucideText,
+              color: AppColors.black,
               onTap: () =>
                   Navigator.of(context).pop(PostOwnerAction.editCaption),
             ),
             _ActionItem(
               label: tr.discover.post.delete,
+              iconAsset: AppAssets.iconLucideTrash,
+              color: AppColors.logout,
               onTap: () => Navigator.of(context).pop(PostOwnerAction.delete),
             ),
           ],
@@ -64,10 +89,20 @@ class _EditCaptionSheet extends StatefulWidget {
 
 class _EditCaptionSheetState extends State<_EditCaptionSheet> {
   late final _controller = TextEditingController(text: widget.initial.trim());
+  late final _focus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _focus.requestFocus();
+    });
+  }
 
   @override
   void dispose() {
     _controller.dispose();
+    _focus.dispose();
     super.dispose();
   }
 
@@ -88,9 +123,12 @@ class _EditCaptionSheetState extends State<_EditCaptionSheet> {
           ),
           child: TextField(
             controller: _controller,
+            focusNode: _focus,
             autofocus: true,
-            minLines: 1,
-            maxLines: 5,
+            minLines: 4,
+            maxLines: 8,
+            keyboardType: TextInputType.multiline,
+            textInputAction: TextInputAction.newline,
             // Sunucu sınırı (POST.captionMaxLength).
             maxLength: 500,
             style: AppTextStyles.editSheetInput,
@@ -101,7 +139,7 @@ class _EditCaptionSheetState extends State<_EditCaptionSheet> {
               border: InputBorder.none,
               isCollapsed: true,
               counterText: '',
-              contentPadding: const EdgeInsets.fromLTRB(10, 15, 10, 15),
+              contentPadding: const EdgeInsets.fromLTRB(12, 14, 12, 14),
             ),
           ),
         ),
@@ -111,9 +149,16 @@ class _EditCaptionSheetState extends State<_EditCaptionSheet> {
 }
 
 class _ActionItem extends StatelessWidget {
-  const _ActionItem({required this.label, required this.onTap});
+  const _ActionItem({
+    required this.label,
+    required this.iconAsset,
+    required this.color,
+    required this.onTap,
+  });
 
   final String label;
+  final String iconAsset;
+  final Color color;
   final VoidCallback onTap;
 
   @override
@@ -122,18 +167,28 @@ class _ActionItem extends StatelessWidget {
       onTap: onTap,
       child: SizedBox(
         width: double.infinity,
-        height: 48,
-        child: Center(
-          child: AppText(
-            label,
-            style: const TextStyle(
-              fontFamily: AppFonts.poppins,
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              height: 20 / 16,
-              color: Color(0xFFD4537E),
+        height: 52,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              iconAsset,
+              width: 22,
+              height: 22,
+              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
             ),
-          ),
+            const SizedBox(width: 12),
+            AppText(
+              label,
+              style: TextStyle(
+                fontFamily: AppFonts.poppins,
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
+                height: 20 / 16,
+                color: color,
+              ),
+            ),
+          ],
         ),
       ),
     );

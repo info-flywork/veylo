@@ -544,6 +544,7 @@ class _Translations$discover$es extends Translations$discover$tr {
 	@override late final _Translations$discover$stats$es stats = _Translations$discover$stats$es._(_root);
 	@override String hostedBy({required Object name}) => 'Organizada por ${name}';
 	@override String get requestPending => 'Tu solicitud se envió y está pendiente de aprobación.';
+	@override String get enter => 'Entrar';
 }
 
 // Path: common
@@ -997,6 +998,8 @@ class _Translations$discover$createSpace$es extends Translations$discover$create
 	@override String get nameSubtitle => 'Ponle un nombre al grupo que creaste';
 	@override String get nameHint => 'Búho nocturno';
 	@override String createRoomFor({required Object count}) => 'Crear por ${count} tokens';
+	@override String get requirePermission => 'Requerir permiso';
+	@override String get requirePermissionSubtitle => 'Se necesita aprobación para unirse';
 }
 
 // Path: discover.liveRoom
@@ -1120,8 +1123,12 @@ class _Translations$discover$post$es extends Translations$discover$post$tr {
 	@override String get edit => 'Editar';
 	@override String get delete => 'Eliminar';
 	@override String get editCaption => 'Editar descripción';
-	@override String get deletePostTitle => '¿Eliminar esta publicación?';
+	@override String get deletePostTitle => '¿Eliminar publicación?';
 	@override String get captionHint => 'Escribe una descripción...';
+	@override String get reply => 'Responder';
+	@override String viewOtherReplies({required Object count}) => 'Ver ${count} respuestas más';
+	@override String get boost => 'Impulsar';
+	@override String get deletePostMessage => '¿Seguro que quieres eliminar esta publicación? Esta acción no se puede deshacer.';
 }
 
 // Path: discover.story
@@ -1699,6 +1706,8 @@ extension on TranslationsEs {
 			'discover.createSpace.nameSubtitle' => 'Ponle un nombre al grupo que creaste',
 			'discover.createSpace.nameHint' => 'Búho nocturno',
 			'discover.createSpace.createRoomFor' => ({required Object count}) => 'Crear por ${count} tokens',
+			'discover.createSpace.requirePermission' => 'Requerir permiso',
+			'discover.createSpace.requirePermissionSubtitle' => 'Se necesita aprobación para unirse',
 			'discover.liveRoom.adminSuffix' => '(Admin)',
 			'discover.liveRoom.messageHint' => 'Mensaje',
 			'discover.liveRoom.quickReplyHey' => '¡Hola a todos!',
@@ -1740,10 +1749,10 @@ extension on TranslationsEs {
 			'discover.groupInfo.admin' => 'Admin',
 			'discover.groupInfo.leaveGroup' => 'Salir del grupo',
 			'discover.groupInfo.requests' => 'Solicitudes para unirse',
-			'discover.groupInfo.approve' => 'Aprobar',
-			'discover.groupInfo.reject' => 'Rechazar',
 			_ => null,
 		} ?? switch (path) {
+			'discover.groupInfo.approve' => 'Aprobar',
+			'discover.groupInfo.reject' => 'Rechazar',
 			'discover.groupInfo.addPeopleEmpty' => 'Sigue a personas para añadirlas al grupo.',
 			'discover.groupInfo.add' => 'Añadir',
 			'discover.groupInfo.makeAdmin' => 'Hacer admin',
@@ -1779,8 +1788,12 @@ extension on TranslationsEs {
 			'discover.post.edit' => 'Editar',
 			'discover.post.delete' => 'Eliminar',
 			'discover.post.editCaption' => 'Editar descripción',
-			'discover.post.deletePostTitle' => '¿Eliminar esta publicación?',
+			'discover.post.deletePostTitle' => '¿Eliminar publicación?',
 			'discover.post.captionHint' => 'Escribe una descripción...',
+			'discover.post.reply' => 'Responder',
+			'discover.post.viewOtherReplies' => ({required Object count}) => 'Ver ${count} respuestas más',
+			'discover.post.boost' => 'Impulsar',
+			'discover.post.deletePostMessage' => '¿Seguro que quieres eliminar esta publicación? Esta acción no se puede deshacer.',
 			'discover.story.draft' => 'BORRADOR',
 			'discover.story.story' => 'HISTORIA',
 			'discover.story.share' => 'Compartir',
@@ -1823,6 +1836,7 @@ extension on TranslationsEs {
 			'discover.stats.boosted' => '¡Impulsada! Tu publicación estará arriba durante 24 horas.',
 			'discover.hostedBy' => ({required Object name}) => 'Organizada por ${name}',
 			'discover.requestPending' => 'Tu solicitud se envió y está pendiente de aprobación.',
+			'discover.enter' => 'Entrar',
 			'common.loading' => 'Cargando…',
 			'common.retry' => 'Reintentar',
 			'common.cancel' => 'Cancelar',

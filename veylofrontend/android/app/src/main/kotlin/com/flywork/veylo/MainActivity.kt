@@ -1,5 +1,6 @@
 package com.flywork.veylo
 
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 
-class MainActivity : FlutterActivity()
+/// RevenueCat Paywalls / Billing için FlutterFragmentActivity gerekir.
+class MainActivity : FlutterFragmentActivity()

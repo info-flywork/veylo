@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -143,7 +144,7 @@ class _YourMatchPageState extends State<YourMatchPage> {
   Future<void> _startChatting() async {
     if (_cards.isEmpty) return;
     final userId = _cards[_currentPage].userId;
-    // Anonim sohbet isteği.
+    // Kartta isim/foto blurlu → anonim sohbet.
     if (_opening) return;
     setState(() => _opening = true);
     try {
@@ -308,29 +309,39 @@ class _MatchCard extends StatelessWidget {
   final String nameAge;
   final String bio;
 
+  static const _identityBlur = 14.0;
+
   @override
   Widget build(BuildContext context) {
+    final photo = imageAsset.startsWith('assets/')
+        ? Image.asset(
+            imageAsset,
+            fit: BoxFit.cover,
+            alignment: Alignment.topCenter,
+            filterQuality: FilterQuality.high,
+          )
+        : Image(
+            image: CachedNetworkImageProvider(imageAsset),
+            fit: BoxFit.cover,
+            alignment: Alignment.topCenter,
+            filterQuality: FilterQuality.high,
+            errorBuilder: (_, _, _) =>
+                const ColoredBox(color: AppColors.inputFill),
+          );
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(_kCardRadius),
       child: Stack(
         fit: StackFit.expand,
         children: [
-          if (imageAsset.startsWith('assets/'))
-            Image.asset(
-              imageAsset,
-              fit: BoxFit.cover,
-              alignment: Alignment.topCenter,
-              filterQuality: FilterQuality.high,
-            )
-          else
-            Image(
-              image: CachedNetworkImageProvider(imageAsset),
-              fit: BoxFit.cover,
-              alignment: Alignment.topCenter,
-              filterQuality: FilterQuality.high,
-              errorBuilder: (_, _, _) =>
-                  const ColoredBox(color: AppColors.inputFill),
+          // AI eşleşmede kimlik gizli: foto bulanık.
+          ImageFiltered(
+            imageFilter: ImageFilter.blur(
+              sigmaX: _identityBlur,
+              sigmaY: _identityBlur,
             ),
+            child: photo,
+          ),
           const DecoratedBox(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -364,7 +375,10 @@ class _MatchCard extends StatelessWidget {
                   child: AppText(vibeLabel, style: AppTextStyles.yourMatchVibe),
                 ),
                 const SizedBox(height: 10),
-                AppText(nameAge, style: AppTextStyles.yourMatchName),
+                ImageFiltered(
+                  imageFilter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                  child: AppText(nameAge, style: AppTextStyles.yourMatchName),
+                ),
                 const SizedBox(height: 6),
                 AppText(bio, style: AppTextStyles.yourMatchBio),
               ],

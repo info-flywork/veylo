@@ -493,7 +493,9 @@
       "createGroupTitle": "グループを作成",
       "nameSubtitle": "グループに名前を付けよう",
       "nameHint": "夜ふかし部",
-      "createRoomFor": "{count}トークンで作成"
+      "createRoomFor": "{count}トークンで作成",
+      "requirePermission": "承認が必要",
+      "requirePermissionSubtitle": "参加には承認が必要です"
     },
     "liveRoom": {
       "adminSuffix": "（管理者）",
@@ -582,8 +584,12 @@
       "edit": "編集",
       "delete": "削除",
       "editCaption": "キャプションを編集",
-      "deletePostTitle": "この投稿を削除しますか？",
-      "captionHint": "キャプションを書く..."
+      "deletePostTitle": "投稿を削除しますか？",
+      "captionHint": "キャプションを書く...",
+      "reply": "返信",
+      "viewOtherReplies": "他{count}件の返信を表示",
+      "boost": "ブースト",
+      "deletePostMessage": "この投稿を削除してもよろしいですか？この操作は元に戻せません。"
     },
     "story": {
       "draft": "下書き",
@@ -632,7 +638,8 @@
       "boosted": "ブースト完了！投稿が24時間トップに表示されます。"
     },
     "hostedBy": "ホスト：{name}",
-    "requestPending": "リクエストを送信しました。承認をお待ちください。"
+    "requestPending": "リクエストを送信しました。承認をお待ちください。",
+    "enter": "入る"
   },
   "common": {
     "loading": "読み込み中…",

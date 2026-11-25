@@ -493,7 +493,9 @@
       "createGroupTitle": "Crea gruppo",
       "nameSubtitle": "Dai un nome al gruppo che hai creato",
       "nameHint": "Nottambuli",
-      "createRoomFor": "Crea per {count} token"
+      "createRoomFor": "Crea per {count} token",
+      "requirePermission": "Richiedi approvazione",
+      "requirePermissionSubtitle": "Serve l’approvazione per entrare"
     },
     "liveRoom": {
       "adminSuffix": "(Admin)",
@@ -582,8 +584,12 @@
       "edit": "Modifica",
       "delete": "Elimina",
       "editCaption": "Modifica didascalia",
-      "deletePostTitle": "Eliminare questo post?",
-      "captionHint": "Scrivi una didascalia..."
+      "deletePostTitle": "Eliminare il post?",
+      "captionHint": "Scrivi una didascalia...",
+      "reply": "Rispondi",
+      "viewOtherReplies": "Vedi altre {count} risposte",
+      "boost": "Boost",
+      "deletePostMessage": "Sei sicuro di voler eliminare questo post? L’azione non può essere annullata."
     },
     "story": {
       "draft": "BOZZA",
@@ -632,7 +638,8 @@
       "boosted": "Boost attivo! Il tuo post resta in cima per 24 ore."
     },
     "hostedBy": "Organizzata da {name}",
-    "requestPending": "La tua richiesta è stata inviata ed è in attesa di approvazione."
+    "requestPending": "La tua richiesta è stata inviata ed è in attesa di approvazione.",
+    "enter": "Entra"
   },
   "common": {
     "loading": "Caricamento…",

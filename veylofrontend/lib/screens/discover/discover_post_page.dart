@@ -4,6 +4,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:just_audio/just_audio.dart';
@@ -18,7 +19,9 @@ import 'package:veylo/data/remote/user_repository.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/discover/post.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
+import 'package:veylo/core/state/discover_highlight.dart';
 import 'package:veylo/screens/discover/comments_sheet.dart';
+import 'package:veylo/screens/discover/post_stats_sheet.dart';
 import 'package:veylo/screens/discover/story_editor/story_editor_page.dart';
 import 'package:veylo/screens/discover/post_owner_sheet.dart';
 import 'package:veylo/screens/profile/profile_navigation.dart';
@@ -214,6 +217,7 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
   bool _liked = false;
   bool _saved = false;
   late Post? _post = widget.post;
+  String? _localCaption;
   final _repo = PostRepository.instance;
   // iOS varsayılanı çalmadan önce fazladan tampon bekliyor; yeterli veri gelince hemen başlasın.
   final _audio = AudioPlayer(
@@ -393,13 +397,17 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
     }
   }
 
-  /// Kendi gönderim: ⋯ → editörde düzenle, açıklamayı düzenle ya da sil.
+  /// Kendi gönderim: ⋯ → Öne çıkar / düzenle / sil.
   Future<void> _openOwnerMenu() async {
     final post = _post;
-    if (post == null) return;
     final action = await showPostOwnerActionsSheet(context);
     if (!mounted || action == null) return;
+    // Önceki sheet kapansın diye bir frame bekle.
+    await Future<void>.delayed(const Duration(milliseconds: 80));
+    if (!mounted) return;
     switch (action) {
+      case PostOwnerAction.boost:
+        await _boostPost(post);
       case PostOwnerAction.edit:
         await _editInEditor(post);
       case PostOwnerAction.editCaption:
@@ -409,24 +417,60 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
     }
   }
 
-  /// Oluşturma editörü katmanlarıyla açılır; kaydedilirse görsel ve müzik yenilenir.
-  Future<void> _editInEditor(Post post) async {
-    // Editör kendi önizlemesini çalar; buradaki müzik üst üste binmesin.
-    await _audio.pause();
-    if (!mounted) return;
-    final p = await StoryEditorPage.edit(context, post);
-    if (!mounted) return;
-    if (p != null) {
-      setState(() => _post = p);
-      DiscoverStore.instance.replace(p, edited: true);
-    }
-    unawaited(_syncAudio());
+  /// İstatistik sheet + token ile öne çıkar (Keşfet üst sıralama).
+  Future<void> _boostPost(Post? post) async {
+    final id = post?.id ?? DiscoverHighlight.instance.postId;
+    final localPath = DiscoverHighlight.instance.imagePath.value;
+    final imageUrl = post == null
+        ? null
+        : (post.thumbUrl.isNotEmpty ? post.thumbUrl : post.mediaUrl);
+    final imagePath = widget.imageFilePath ??
+        (localPath != null && File(localPath).existsSync() ? localPath : null);
+    await showPostStatsSheet(
+      context,
+      imagePath: imagePath,
+      imageUrl: imageUrl,
+      postId: id,
+    );
   }
 
-  Future<void> _editCaption(Post post) async {
-    final old = post.caption ?? '';
+  /// Story hazırlama ekranı gibi düzenleme.
+  Future<void> _editInEditor(Post? post) async {
+    await _audio.pause();
+    if (!mounted) return;
+    if (post != null) {
+      final p = await StoryEditorPage.edit(context, post);
+      if (!mounted) return;
+      if (p != null) {
+        setState(() => _post = p);
+        DiscoverStore.instance.replace(p, edited: true);
+      }
+      unawaited(_syncAudio());
+      return;
+    }
+    // Önizleme: yerel görselle story editörünü aç.
+    final path = widget.imageFilePath;
+    if (path == null || !File(path).existsSync()) {
+      unawaited(_syncAudio());
+      return;
+    }
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute<void>(
+        builder: (_) => StoryEditorPage(file: File(path)),
+      ),
+    );
+    if (mounted) unawaited(_syncAudio());
+  }
+
+  Future<void> _editCaption(Post? post) async {
+    final old = post?.caption ?? widget.caption ?? '';
     final text = await showEditCaptionSheet(context, initial: old);
     if (text == null || text == old.trim() || !mounted) return;
+    if (post == null) {
+      // Önizlemede yalnızca yerel caption güncellenir.
+      setState(() => _localCaption = text);
+      return;
+    }
     try {
       final p = await _repo.updateCaption(post.id, text.isEmpty ? null : text);
       if (!mounted) return;
@@ -437,18 +481,24 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
     }
   }
 
-  Future<void> _deletePost(Post post) async {
+  /// Apple tarzı onay → sil.
+  Future<void> _deletePost(Post? post) async {
     final tr = Translations.of(context);
-    final ok = await showDialog<bool>(
+    final ok = await showCupertinoDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (context) => CupertinoAlertDialog(
         title: Text(tr.discover.post.deletePostTitle),
+        content: Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: Text(tr.discover.post.deletePostMessage),
+        ),
         actions: [
-          TextButton(
+          CupertinoDialogAction(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(tr.vibes.cancel),
+            child: Text(tr.common.cancel),
           ),
-          TextButton(
+          CupertinoDialogAction(
+            isDestructiveAction: true,
             onPressed: () => Navigator.of(context).pop(true),
             child: Text(tr.discover.post.delete),
           ),
@@ -457,6 +507,11 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
     );
     if (ok != true || !mounted) return;
     final navigator = Navigator.of(context);
+    if (post == null) {
+      await _audio.stop();
+      navigator.pop();
+      return;
+    }
     try {
       await _repo.delete(post.id);
       await _audio.stop();
@@ -519,11 +574,33 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
       );
     }
     return Image.asset(
-      AppAssets.postDetail,
+      AppAssets.postLandscape,
       fit: BoxFit.cover,
       alignment: Alignment.center,
       filterQuality: FilterQuality.high,
     );
+  }
+
+  String _formatCount(int n) {
+    if (n >= 1000000) {
+      final v = n / 1000000;
+      final s = v >= 10 ? '${v.round()}' : v.toStringAsFixed(1);
+      return '${s.replaceAll(RegExp(r'\.0$'), '')}M';
+    }
+    if (n >= 1000) {
+      final v = n / 1000;
+      final s = v >= 10 ? '${v.round()}' : v.toStringAsFixed(1);
+      return '${s.replaceAll(RegExp(r'\.0$'), '')}k';
+    }
+    return '$n';
+  }
+
+  int _displayLikeCount(Post? post) {
+    if (post == null) return 200000;
+    var n = post.likeCount;
+    if (_liked && !post.likedByMe) n += 1;
+    if (!_liked && post.likedByMe) n -= 1;
+    return n < 0 ? 0 : n;
   }
 
   Widget _avatarImage() {
@@ -547,7 +624,7 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
     final music = post?.music;
     final caption = post != null
         ? (post.caption ?? '')
-        : (widget.caption ?? t.sampleCaption);
+        : (_localCaption ?? widget.caption ?? t.sampleCaption);
     final showFollow = post == null || !post.isMine;
 
     return Scaffold(
@@ -572,7 +649,7 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
               ),
             ),
           ),
-          if (post?.isMine ?? false)
+          if (post == null || post.isMine)
             Positioned(
               top: top + 8,
               right: 8,
@@ -606,13 +683,13 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
             left: 0,
             right: 0,
             bottom: 0,
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(16, 16, 16, 10 + bottom),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Row(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 12, 12),
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Expanded(
@@ -661,7 +738,7 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
                                   ),
                                   decoration: BoxDecoration(
                                     color: AppColors.black.withValues(
-                                      alpha: 0.4,
+                                      alpha: 0.50,
                                     ),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -702,60 +779,58 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
                         ),
                       ),
                       const SizedBox(width: 12),
-                      // Alttaki beğeni düğmesiyle (50) aynı eksende dursun.
-                      SizedBox(
-                        width: 50,
-                        child: Column(
+                      Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          _ActionIcon(
-                            asset: AppAssets.iconSave,
-                            size: 32,
-                            active: _saved,
-                            onTap: _toggleSave,
-                          ),
-                          const SizedBox(height: 16),
-                          GestureDetector(
-                            onTap: _openComments,
-                            behavior: HitTestBehavior.opaque,
-                            child: SvgPicture.asset(
-                              AppAssets.iconComment,
-                              width: 32,
-                              height: 32,
+                          _SideAction(
+                            label: _formatCount(_displayLikeCount(post)),
+                            child: _LikeButton(
+                              liked: _liked,
+                              onTap: _toggleLike,
+                              compact: true,
                             ),
+                          ),
+                          const SizedBox(height: 10),
+                          _SideAction(
+                            onTap: _openComments,
+                            asset: AppAssets.iconComment,
+                            label: _formatCount(post?.commentCount ?? 1000),
+                          ),
+                          const SizedBox(height: 10),
+                          _SideAction(
+                            onTap: _toggleSave,
+                            asset: AppAssets.iconSave,
+                            active: _saved,
+                            label: post == null ? '1250' : null,
                           ),
                         ],
                       ),
-                      ),
                     ],
                   ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: _openComments,
-                          child: Container(
-                            height: 50,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            alignment: Alignment.centerLeft,
-                            decoration: BoxDecoration(
-                              color: AppColors.black.withValues(alpha: 0.4),
-                              borderRadius: BorderRadius.circular(99999),
-                            ),
-                            child: AppText(
-                              t.addComment,
-                              style: AppTextStyles.postCommentHint,
-                            ),
-                          ),
+                ),
+                ColoredBox(
+                  color: const Color(0xFF0B0B0F),
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(16, 12, 16, 12 + bottom),
+                    child: GestureDetector(
+                      onTap: _openComments,
+                      child: Container(
+                        height: 50,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        alignment: Alignment.centerLeft,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF2A2A2E),
+                          borderRadius: BorderRadius.circular(99999),
+                        ),
+                        child: AppText(
+                          t.addComment,
+                          style: AppTextStyles.postCommentHint,
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      _LikeButton(liked: _liked, onTap: _toggleLike),
-                    ],
+                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],
@@ -766,10 +841,15 @@ class _FeedPostSlideState extends State<_FeedPostSlide> {
 
 /// Beğeni: dolu mor kalp, beğenince büyüyüp oturur ve etrafa nokta saçar.
 class _LikeButton extends StatefulWidget {
-  const _LikeButton({required this.liked, required this.onTap});
+  const _LikeButton({
+    required this.liked,
+    required this.onTap,
+    this.compact = false,
+  });
 
   final bool liked;
   final VoidCallback onTap;
+  final bool compact;
 
   @override
   State<_LikeButton> createState() => _LikeButtonState();
@@ -815,6 +895,31 @@ class _LikeButtonState extends State<_LikeButton>
   @override
   Widget build(BuildContext context) {
     final liked = widget.liked;
+    final icon = AnimatedBuilder(
+      animation: _c,
+      builder: (_, child) => CustomPaint(
+        painter: _LikeBurstPainter(_c.value),
+        child: Transform.scale(scale: _scale.value, child: child),
+      ),
+      child: SvgPicture.asset(
+        liked ? AppAssets.iconHeartFilled : AppAssets.iconHeart,
+        width: widget.compact ? 32 : 28,
+        height: widget.compact ? 32 : 28,
+        colorFilter: ColorFilter.mode(
+          liked ? AppColors.selectionBorder : AppColors.white,
+          BlendMode.srcIn,
+        ),
+      ),
+    );
+
+    if (widget.compact) {
+      return GestureDetector(
+        onTap: widget.onTap,
+        behavior: HitTestBehavior.opaque,
+        child: SizedBox(width: 44, height: 32, child: Center(child: icon)),
+      );
+    }
+
     return GestureDetector(
       onTap: widget.onTap,
       child: Container(
@@ -825,23 +930,61 @@ class _LikeButtonState extends State<_LikeButton>
           shape: BoxShape.circle,
         ),
         alignment: Alignment.center,
-        child: AnimatedBuilder(
-          animation: _c,
-          builder: (_, child) => CustomPaint(
-            painter: _LikeBurstPainter(_c.value),
-            child: Transform.scale(scale: _scale.value, child: child),
-          ),
-          child: SvgPicture.asset(
-            liked ? AppAssets.iconHeartFilled : AppAssets.iconHeart,
-            width: 28,
-            height: 28,
-            colorFilter: ColorFilter.mode(
-              liked ? AppColors.selectionBorder : AppColors.white,
-              BlendMode.srcIn,
+        child: icon,
+      ),
+    );
+  }
+}
+
+class _SideAction extends StatelessWidget {
+  const _SideAction({
+    required this.label,
+    this.onTap,
+    this.asset,
+    this.active = false,
+    this.child,
+  });
+
+  final String? label;
+  final VoidCallback? onTap;
+  final String? asset;
+  final bool active;
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    final icon = child ??
+        GestureDetector(
+          onTap: onTap,
+          behavior: HitTestBehavior.opaque,
+          child: SizedBox(
+            width: 44,
+            height: 32,
+            child: Center(
+              child: SvgPicture.asset(
+                asset!,
+                width: 32,
+                height: 32,
+                colorFilter: active
+                    ? const ColorFilter.mode(
+                        AppColors.selectionBorder,
+                        BlendMode.srcIn,
+                      )
+                    : null,
+              ),
             ),
           ),
-        ),
-      ),
+        );
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        icon,
+        if (label != null) ...[
+          const SizedBox(height: 4),
+          AppText(label!, style: AppTextStyles.postActionCount),
+        ],
+      ],
     );
   }
 }
@@ -891,45 +1034,6 @@ class _LikeBurstPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_LikeBurstPainter old) => old.t != t;
-}
-
-class _ActionIcon extends StatelessWidget {
-  const _ActionIcon({
-    required this.asset,
-    required this.size,
-    required this.onTap,
-    this.active = false,
-  });
-
-  final String asset;
-  final double size;
-  final VoidCallback onTap;
-  final bool active;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: SizedBox(
-        width: 38,
-        height: size,
-        child: Center(
-          child: SvgPicture.asset(
-            asset,
-            width: size,
-            height: size,
-            colorFilter: active
-                ? const ColorFilter.mode(
-                    AppColors.selectionBorder,
-                    BlendMode.srcIn,
-                  )
-                : null,
-          ),
-        ),
-      ),
-    );
-  }
 }
 
 class _PostMusicChip extends StatelessWidget {

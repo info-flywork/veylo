@@ -544,6 +544,7 @@ class _Translations$discover$en extends Translations$discover$tr {
 	@override late final _Translations$discover$stats$en stats = _Translations$discover$stats$en._(_root);
 	@override String hostedBy({required Object name}) => 'Hosted by ${name}';
 	@override String get requestPending => 'Your request was sent and is awaiting approval.';
+	@override String get enter => 'Enter';
 }
 
 // Path: common
@@ -997,6 +998,8 @@ class _Translations$discover$createSpace$en extends Translations$discover$create
 	@override String get nameSubtitle => 'Give the group you created a name';
 	@override String get nameHint => 'Night Owl';
 	@override String createRoomFor({required Object count}) => 'Create for ${count} tokens';
+	@override String get requirePermission => 'Require approval';
+	@override String get requirePermissionSubtitle => 'Members need approval to join';
 }
 
 // Path: discover.liveRoom
@@ -1122,8 +1125,12 @@ class _Translations$discover$post$en extends Translations$discover$post$tr {
 	@override String get edit => 'Edit';
 	@override String get delete => 'Delete';
 	@override String get editCaption => 'Edit caption';
-	@override String get deletePostTitle => 'Delete this post?';
+	@override String get deletePostTitle => 'Delete Post?';
 	@override String get captionHint => 'Write a caption...';
+	@override String get reply => 'Reply';
+	@override String viewOtherReplies({required Object count}) => 'View ${count} other replies';
+	@override String get boost => 'Boost';
+	@override String get deletePostMessage => 'Are you sure you want to delete this post? This action cannot be undone.';
 }
 
 // Path: discover.story
@@ -1701,6 +1708,8 @@ extension on TranslationsEn {
 			'discover.createSpace.nameSubtitle' => 'Give the group you created a name',
 			'discover.createSpace.nameHint' => 'Night Owl',
 			'discover.createSpace.createRoomFor' => ({required Object count}) => 'Create for ${count} tokens',
+			'discover.createSpace.requirePermission' => 'Require approval',
+			'discover.createSpace.requirePermissionSubtitle' => 'Members need approval to join',
 			'discover.liveRoom.adminSuffix' => '(Admin)',
 			'discover.liveRoom.messageHint' => 'Message',
 			'discover.liveRoom.quickReplyHey' => 'Hey, everyone!',
@@ -1742,10 +1751,10 @@ extension on TranslationsEn {
 			'discover.groupInfo.addPeople' => 'Add people',
 			'discover.groupInfo.you' => 'You',
 			'discover.groupInfo.admin' => 'Admin',
-			'discover.groupInfo.leaveGroup' => 'Leave the group',
-			'discover.groupInfo.requests' => 'Join requests',
 			_ => null,
 		} ?? switch (path) {
+			'discover.groupInfo.leaveGroup' => 'Leave the group',
+			'discover.groupInfo.requests' => 'Join requests',
 			'discover.groupInfo.approve' => 'Approve',
 			'discover.groupInfo.reject' => 'Reject',
 			'discover.groupInfo.addPeopleEmpty' => 'Follow people to add them to the group.',
@@ -1783,8 +1792,12 @@ extension on TranslationsEn {
 			'discover.post.edit' => 'Edit',
 			'discover.post.delete' => 'Delete',
 			'discover.post.editCaption' => 'Edit caption',
-			'discover.post.deletePostTitle' => 'Delete this post?',
+			'discover.post.deletePostTitle' => 'Delete Post?',
 			'discover.post.captionHint' => 'Write a caption...',
+			'discover.post.reply' => 'Reply',
+			'discover.post.viewOtherReplies' => ({required Object count}) => 'View ${count} other replies',
+			'discover.post.boost' => 'Boost',
+			'discover.post.deletePostMessage' => 'Are you sure you want to delete this post? This action cannot be undone.',
 			'discover.story.draft' => 'DRAFT',
 			'discover.story.story' => 'STORY',
 			'discover.story.share' => 'Share',
@@ -1827,6 +1840,7 @@ extension on TranslationsEn {
 			'discover.stats.boosted' => 'Boosted! Your post is at the top for 24 hours.',
 			'discover.hostedBy' => ({required Object name}) => 'Hosted by ${name}',
 			'discover.requestPending' => 'Your request was sent and is awaiting approval.',
+			'discover.enter' => 'Enter',
 			'common.loading' => 'Loading…',
 			'common.retry' => 'Retry',
 			'common.cancel' => 'Cancel',

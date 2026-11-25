@@ -544,6 +544,7 @@ class _Translations$discover$ru extends Translations$discover$tr {
 	@override late final _Translations$discover$stats$ru stats = _Translations$discover$stats$ru._(_root);
 	@override String hostedBy({required Object name}) => 'Ведущий: ${name}';
 	@override String get requestPending => 'Заявка отправлена и ждёт одобрения.';
+	@override String get enter => 'Войти';
 }
 
 // Path: common
@@ -997,6 +998,8 @@ class _Translations$discover$createSpace$ru extends Translations$discover$create
 	@override String get nameSubtitle => 'Придумай название для группы';
 	@override String get nameHint => 'Ночные совы';
 	@override String createRoomFor({required Object count}) => 'Создать за ${count} ток.';
+	@override String get requirePermission => 'Нужно разрешение';
+	@override String get requirePermissionSubtitle => 'Для входа требуется одобрение';
 }
 
 // Path: discover.liveRoom
@@ -1120,8 +1123,12 @@ class _Translations$discover$post$ru extends Translations$discover$post$tr {
 	@override String get edit => 'Изменить';
 	@override String get delete => 'Удалить';
 	@override String get editCaption => 'Изменить подпись';
-	@override String get deletePostTitle => 'Удалить эту публикацию?';
+	@override String get deletePostTitle => 'Удалить публикацию?';
 	@override String get captionHint => 'Напиши подпись...';
+	@override String get reply => 'Ответить';
+	@override String viewOtherReplies({required Object count}) => 'Посмотреть ещё ${count} ответов';
+	@override String get boost => 'Продвинуть';
+	@override String get deletePostMessage => 'Вы уверены, что хотите удалить эту публикацию? Это действие нельзя отменить.';
 }
 
 // Path: discover.story
@@ -1699,6 +1706,8 @@ extension on TranslationsRu {
 			'discover.createSpace.nameSubtitle' => 'Придумай название для группы',
 			'discover.createSpace.nameHint' => 'Ночные совы',
 			'discover.createSpace.createRoomFor' => ({required Object count}) => 'Создать за ${count} ток.',
+			'discover.createSpace.requirePermission' => 'Нужно разрешение',
+			'discover.createSpace.requirePermissionSubtitle' => 'Для входа требуется одобрение',
 			'discover.liveRoom.adminSuffix' => '(Админ)',
 			'discover.liveRoom.messageHint' => 'Сообщение',
 			'discover.liveRoom.quickReplyHey' => 'Всем привет!',
@@ -1740,10 +1749,10 @@ extension on TranslationsRu {
 			'discover.groupInfo.admin' => 'Админ',
 			'discover.groupInfo.leaveGroup' => 'Покинуть группу',
 			'discover.groupInfo.requests' => 'Запросы на вход',
-			'discover.groupInfo.approve' => 'Принять',
-			'discover.groupInfo.reject' => 'Отклонить',
 			_ => null,
 		} ?? switch (path) {
+			'discover.groupInfo.approve' => 'Принять',
+			'discover.groupInfo.reject' => 'Отклонить',
 			'discover.groupInfo.addPeopleEmpty' => 'Подпишись на людей, чтобы добавить их в группу.',
 			'discover.groupInfo.add' => 'Добавить',
 			'discover.groupInfo.makeAdmin' => 'Сделать админом',
@@ -1779,8 +1788,12 @@ extension on TranslationsRu {
 			'discover.post.edit' => 'Изменить',
 			'discover.post.delete' => 'Удалить',
 			'discover.post.editCaption' => 'Изменить подпись',
-			'discover.post.deletePostTitle' => 'Удалить эту публикацию?',
+			'discover.post.deletePostTitle' => 'Удалить публикацию?',
 			'discover.post.captionHint' => 'Напиши подпись...',
+			'discover.post.reply' => 'Ответить',
+			'discover.post.viewOtherReplies' => ({required Object count}) => 'Посмотреть ещё ${count} ответов',
+			'discover.post.boost' => 'Продвинуть',
+			'discover.post.deletePostMessage' => 'Вы уверены, что хотите удалить эту публикацию? Это действие нельзя отменить.',
 			'discover.story.draft' => 'ЧЕРНОВИК',
 			'discover.story.story' => 'ИСТОРИЯ',
 			'discover.story.share' => 'Опубликовать',
@@ -1823,6 +1836,7 @@ extension on TranslationsRu {
 			'discover.stats.boosted' => 'Готово! Пост в топе на 24 часа.',
 			'discover.hostedBy' => ({required Object name}) => 'Ведущий: ${name}',
 			'discover.requestPending' => 'Заявка отправлена и ждёт одобрения.',
+			'discover.enter' => 'Войти',
 			'common.loading' => 'Загрузка…',
 			'common.retry' => 'Повторить',
 			'common.cancel' => 'Отмена',

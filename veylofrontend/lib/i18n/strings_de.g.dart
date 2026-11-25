@@ -544,6 +544,7 @@ class _Translations$discover$de extends Translations$discover$tr {
 	@override late final _Translations$discover$stats$de stats = _Translations$discover$stats$de._(_root);
 	@override String hostedBy({required Object name}) => 'Gehostet von ${name}';
 	@override String get requestPending => 'Deine Anfrage wurde gesendet und wartet auf Bestätigung.';
+	@override String get enter => 'Eintreten';
 }
 
 // Path: common
@@ -997,6 +998,8 @@ class _Translations$discover$createSpace$de extends Translations$discover$create
 	@override String get nameSubtitle => 'Gib deiner Gruppe einen Namen';
 	@override String get nameHint => 'Nachteule';
 	@override String createRoomFor({required Object count}) => 'Für ${count} Token erstellen';
+	@override String get requirePermission => 'Freigabe erforderlich';
+	@override String get requirePermissionSubtitle => 'Beitritt nur mit Zustimmung';
 }
 
 // Path: discover.liveRoom
@@ -1120,8 +1123,12 @@ class _Translations$discover$post$de extends Translations$discover$post$tr {
 	@override String get edit => 'Bearbeiten';
 	@override String get delete => 'Löschen';
 	@override String get editCaption => 'Beschreibung bearbeiten';
-	@override String get deletePostTitle => 'Diesen Beitrag löschen?';
+	@override String get deletePostTitle => 'Beitrag löschen?';
 	@override String get captionHint => 'Beschreibung schreiben...';
+	@override String get reply => 'Antworten';
+	@override String viewOtherReplies({required Object count}) => '${count} weitere Antworten anzeigen';
+	@override String get boost => 'Boosten';
+	@override String get deletePostMessage => 'Möchtest du diesen Beitrag wirklich löschen? Das kann nicht rückgängig gemacht werden.';
 }
 
 // Path: discover.story
@@ -1699,6 +1706,8 @@ extension on TranslationsDe {
 			'discover.createSpace.nameSubtitle' => 'Gib deiner Gruppe einen Namen',
 			'discover.createSpace.nameHint' => 'Nachteule',
 			'discover.createSpace.createRoomFor' => ({required Object count}) => 'Für ${count} Token erstellen',
+			'discover.createSpace.requirePermission' => 'Freigabe erforderlich',
+			'discover.createSpace.requirePermissionSubtitle' => 'Beitritt nur mit Zustimmung',
 			'discover.liveRoom.adminSuffix' => '(Admin)',
 			'discover.liveRoom.messageHint' => 'Nachricht',
 			'discover.liveRoom.quickReplyHey' => 'Hey, alle zusammen!',
@@ -1740,10 +1749,10 @@ extension on TranslationsDe {
 			'discover.groupInfo.admin' => 'Admin',
 			'discover.groupInfo.leaveGroup' => 'Gruppe verlassen',
 			'discover.groupInfo.requests' => 'Beitrittsanfragen',
-			'discover.groupInfo.approve' => 'Annehmen',
-			'discover.groupInfo.reject' => 'Ablehnen',
 			_ => null,
 		} ?? switch (path) {
+			'discover.groupInfo.approve' => 'Annehmen',
+			'discover.groupInfo.reject' => 'Ablehnen',
 			'discover.groupInfo.addPeopleEmpty' => 'Folge Leuten, um sie zur Gruppe hinzuzufügen.',
 			'discover.groupInfo.add' => 'Hinzufügen',
 			'discover.groupInfo.makeAdmin' => 'Zum Admin machen',
@@ -1779,8 +1788,12 @@ extension on TranslationsDe {
 			'discover.post.edit' => 'Bearbeiten',
 			'discover.post.delete' => 'Löschen',
 			'discover.post.editCaption' => 'Beschreibung bearbeiten',
-			'discover.post.deletePostTitle' => 'Diesen Beitrag löschen?',
+			'discover.post.deletePostTitle' => 'Beitrag löschen?',
 			'discover.post.captionHint' => 'Beschreibung schreiben...',
+			'discover.post.reply' => 'Antworten',
+			'discover.post.viewOtherReplies' => ({required Object count}) => '${count} weitere Antworten anzeigen',
+			'discover.post.boost' => 'Boosten',
+			'discover.post.deletePostMessage' => 'Möchtest du diesen Beitrag wirklich löschen? Das kann nicht rückgängig gemacht werden.',
 			'discover.story.draft' => 'ENTWURF',
 			'discover.story.story' => 'STORY',
 			'discover.story.share' => 'Teilen',
@@ -1823,6 +1836,7 @@ extension on TranslationsDe {
 			'discover.stats.boosted' => 'Geboostet! Dein Beitrag ist 24 Stunden lang ganz oben.',
 			'discover.hostedBy' => ({required Object name}) => 'Gehostet von ${name}',
 			'discover.requestPending' => 'Deine Anfrage wurde gesendet und wartet auf Bestätigung.',
+			'discover.enter' => 'Eintreten',
 			'common.loading' => 'Wird geladen…',
 			'common.retry' => 'Erneut versuchen',
 			'common.cancel' => 'Abbrechen',

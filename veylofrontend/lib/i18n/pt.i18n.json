@@ -493,7 +493,9 @@
       "createGroupTitle": "Criar grupo",
       "nameSubtitle": "Dê um nome ao grupo que você criou",
       "nameHint": "Corujas da Noite",
-      "createRoomFor": "Criar por {count} tokens"
+      "createRoomFor": "Criar por {count} tokens",
+      "requirePermission": "Exigir permissão",
+      "requirePermissionSubtitle": "É preciso aprovação para entrar"
     },
     "liveRoom": {
       "adminSuffix": "(Admin)",
@@ -582,8 +584,12 @@
       "edit": "Editar",
       "delete": "Excluir",
       "editCaption": "Editar legenda",
-      "deletePostTitle": "Excluir esta publicação?",
-      "captionHint": "Escreva uma legenda..."
+      "deletePostTitle": "Excluir publicação?",
+      "captionHint": "Escreva uma legenda...",
+      "reply": "Responder",
+      "viewOtherReplies": "Ver mais {count} respostas",
+      "boost": "Impulsionar",
+      "deletePostMessage": "Tem certeza de que deseja excluir esta publicação? Esta ação não pode ser desfeita."
     },
     "story": {
       "draft": "RASCUNHO",
@@ -632,7 +638,8 @@
       "boosted": "Impulsionado! Seu post fica no topo por 24 horas."
     },
     "hostedBy": "Apresentado por {name}",
-    "requestPending": "Seu pedido foi enviado e aguarda aprovação."
+    "requestPending": "Seu pedido foi enviado e aguarda aprovação.",
+    "enter": "Entrar"
   },
   "common": {
     "loading": "Carregando…",

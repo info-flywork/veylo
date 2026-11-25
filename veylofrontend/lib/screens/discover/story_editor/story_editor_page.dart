@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gal/gal.dart';
 import 'package:just_audio/just_audio.dart';
@@ -99,7 +100,7 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
   bool _musicOpen = false;
 
   /// Yazının ekran ortasına göre konumu, ölçeği ve açısı (iki parmakla büyüt/döndür).
-  Offset _textOffset = const Offset(0, -80);
+  Offset _textOffset = Offset.zero;
   double _textScale = 1;
   double _textRotation = 0;
   double _gestureStartScale = 1;
@@ -110,11 +111,30 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
   final _textKey = GlobalKey();
   StoryMusicTrack? _music;
 
-  /// Görsele eklenen çıkartmalar (asset + ekran konumu, merkez).
-  final _stickers = <({String asset, Offset center})>[];
+  /// Görsele eklenen çıkartmalar (asset + merkez + kenar boyutu).
+  final _stickers = <({String asset, Offset center, double size})>[];
   static const _stickerSize = 96.0;
+  static const _stickerMin = 48.0;
+  static const _stickerMax = 280.0;
+  static const _handleSize = 22.0;
+  int? _selectedSticker;
 
-  bool get _hasOverlay => _textDraft.hasContent || _stickers.isNotEmpty;
+  /// Element sürüklenirken alttaki çöp kutusu.
+  bool _draggingOverlay = false;
+  bool _trashHover = false;
+  int? _draggingStickerIndex;
+  bool _draggingText = false;
+  final _trashKey = GlobalKey();
+
+  /// Çizim modu: açıkken parmakla serbest çizim.
+  bool _drawing = false;
+  final _strokes = <_DrawStroke>[];
+  _DrawStroke? _activeStroke;
+  static const _drawColor = AppColors.white;
+  static const _drawWidth = 4.0;
+
+  bool get _hasOverlay =>
+      _textDraft.hasContent || _stickers.isNotEmpty || _strokes.isNotEmpty;
 
   bool _restored = false;
 
@@ -303,8 +323,90 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
       _stickers.add((
         asset: asset,
         center: Offset(size.width / 2, size.height / 2),
+        size: _stickerSize,
       ));
+      _selectedSticker = _stickers.length - 1;
     });
+  }
+
+  bool _hitsTrash(Offset global) {
+    final box = _trashKey.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null || !box.hasSize) return false;
+    final local = box.globalToLocal(global);
+    return (Offset.zero & box.size).inflate(20).contains(local);
+  }
+
+  void _updateTrashHover(Offset global) {
+    final hover = _hitsTrash(global);
+    if (hover == _trashHover) return;
+    if (hover) HapticFeedback.lightImpact();
+    setState(() => _trashHover = hover);
+  }
+
+  void _beginStickerDrag(int index) {
+    setState(() {
+      _selectedSticker = index;
+      _draggingOverlay = true;
+      _draggingStickerIndex = index;
+      _draggingText = false;
+      _trashHover = false;
+    });
+  }
+
+  void _beginTextDrag() {
+    setState(() {
+      _draggingOverlay = true;
+      _draggingText = true;
+      _draggingStickerIndex = null;
+      _trashHover = false;
+    });
+  }
+
+  void _endOverlayDrag({required bool commitDelete}) {
+    final delete = commitDelete && _trashHover;
+    final stickerIdx = _draggingStickerIndex;
+    final dropText = _draggingText;
+    setState(() {
+      _draggingOverlay = false;
+      _trashHover = false;
+      _draggingStickerIndex = null;
+      _draggingText = false;
+      _movingText = false;
+      if (!delete) return;
+      if (stickerIdx != null &&
+          stickerIdx >= 0 &&
+          stickerIdx < _stickers.length) {
+        _stickers.removeAt(stickerIdx);
+        if (_selectedSticker == stickerIdx) {
+          _selectedSticker = null;
+        } else if (_selectedSticker != null && _selectedSticker! > stickerIdx) {
+          _selectedSticker = _selectedSticker! - 1;
+        }
+      } else if (dropText) {
+        _textDraft = const StoryTextDraft();
+        _textOffset = Offset.zero;
+        _textScale = 1;
+        _textRotation = 0;
+      }
+    });
+    if (delete) HapticFeedback.mediumImpact();
+  }
+
+  void _moveSticker(int i, Offset delta) {
+    final s = _stickers[i];
+    _stickers[i] = (
+      asset: s.asset,
+      center: s.center + delta,
+      size: s.size,
+    );
+  }
+
+  void _resizeSticker(int i, Alignment corner, Offset delta) {
+    final s = _stickers[i];
+    // Köşenin dışa doğru hareketi boyutu büyütür.
+    final grow = delta.dx * corner.x + delta.dy * corner.y;
+    final next = (s.size + grow * 2).clamp(_stickerMin, _stickerMax);
+    _stickers[i] = (asset: s.asset, center: s.center, size: next);
   }
 
   Future<void> _openMusic() async {
@@ -410,6 +512,46 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
     }
   }
 
+  Widget _stickerVisual(String src, double size) {
+    if (src.startsWith('http://') || src.startsWith('https://')) {
+      return CachedNetworkImage(
+        imageUrl: src,
+        fit: BoxFit.contain,
+        width: size,
+        height: size,
+      );
+    }
+    return Image.asset(src, fit: BoxFit.contain, width: size, height: size);
+  }
+
+  Widget _stickerHandle(int index, Alignment alignment) {
+    return Align(
+      alignment: alignment,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onPanUpdate: (d) => setState(() {
+          _selectedSticker = index;
+          _resizeSticker(index, alignment, d.delta);
+        }),
+        child: Container(
+          width: _handleSize,
+          height: _handleSize,
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            shape: BoxShape.circle,
+            border: Border.all(color: AppColors.brandPurple, width: 2),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.black.withValues(alpha: 0.35),
+                blurRadius: 4,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   /// Yazı katmanı: editörde ve görsele işlenirken aynı konum/ölçek/açı.
   /// Hareketleri ekran boyu [_textGestures] yakalar; burası sadece çizer.
   Widget _textLayer(String text, Color color, {bool editing = false}) {
@@ -459,6 +601,7 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
         _gestureStartScale = _textScale;
         _gestureStartRotation = _textRotation;
         _movingText = d.pointerCount > 1 || _hitsText(d.focalPoint);
+        if (_movingText) _beginTextDrag();
       },
       onScaleUpdate: (d) {
         if (!_movingText) return;
@@ -469,8 +612,9 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
             _textRotation = _gestureStartRotation + d.rotation;
           }
         });
+        _updateTrashHover(d.focalPoint);
       },
-      onScaleEnd: (_) => _movingText = false,
+      onScaleEnd: (_) => _endOverlayDrag(commitDelete: true),
     );
   }
 
@@ -479,7 +623,6 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
     final t = Translations.of(context).discover.story;
     final top = MediaQuery.paddingOf(context).top;
     final bottom = MediaQuery.paddingOf(context).bottom;
-    final size = MediaQuery.sizeOf(context);
 
     final displayText = _textDraft.displayText;
     final hasText = _textDraft.hasContent;
@@ -500,31 +643,90 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
                   fit: BoxFit.cover,
                   filterQuality: FilterQuality.high,
                 ),
+                // Çizimler paylaşımda görsele gömülsün.
+                if (_strokes.isNotEmpty || _activeStroke != null)
+                  Positioned.fill(
+                    child: CustomPaint(
+                      painter: _StoryDrawPainter([
+                        ..._strokes,
+                        if (_activeStroke != null) _activeStroke!,
+                      ]),
+                    ),
+                  ),
                 // Yazı hareketleri: görselin üstünde, çıkartmaların altında
                 // (çıkartmaya dokununca o taşınır). Çizim yapmaz, görsele girmez.
-                if (!_textEditorOpen && !_capturing && hasText)
+                if (!_textEditorOpen && !_capturing && !_drawing && hasText)
                   Positioned.fill(child: _textGestures()),
-                // Çıkartmalar: sürükle taşı, basılı tut kaldır.
-                for (var i = 0; i < _stickers.length; i++)
-                  Positioned(
-                    left: _stickers[i].center.dx - _stickerSize / 2,
-                    top: _stickers[i].center.dy - _stickerSize / 2,
-                    width: _stickerSize,
-                    height: _stickerSize,
+                // Boş alana dokununca sticker seçimini kaldır.
+                if (!_capturing &&
+                    !_drawing &&
+                    _selectedSticker != null)
+                  Positioned.fill(
                     child: GestureDetector(
-                      onPanUpdate: (d) => setState(() {
-                        final s = _stickers[i];
-                        _stickers[i] = (
-                          asset: s.asset,
-                          center: s.center + d.delta,
-                        );
-                      }),
-                      onLongPress: () => setState(() => _stickers.removeAt(i)),
-                      child: Image.asset(
-                        _stickers[i].asset,
-                        fit: BoxFit.contain,
-                      ),
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () => setState(() => _selectedSticker = null),
                     ),
+                  ),
+                // Çıkartmalar / GIF: sürükle taşı; seçilince köşelerden büyüt/küçült.
+                for (var i = 0; i < _stickers.length; i++)
+                  Builder(
+                    builder: (context) {
+                      final s = _stickers[i];
+                      final selected =
+                          !_capturing && _selectedSticker == i;
+                      final pad = selected ? _handleSize / 2 : 0.0;
+                      final box = s.size + pad * 2;
+                      return Positioned(
+                        left: s.center.dx - box / 2,
+                        top: s.center.dy - box / 2,
+                        width: box,
+                        height: box,
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Positioned(
+                              left: pad,
+                              top: pad,
+                              width: s.size,
+                              height: s.size,
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () =>
+                                    setState(() => _selectedSticker = i),
+                                onPanStart: (_) => _beginStickerDrag(i),
+                                onPanUpdate: (d) {
+                                  final idx = _draggingStickerIndex ?? i;
+                                  setState(() => _moveSticker(idx, d.delta));
+                                  _updateTrashHover(d.globalPosition);
+                                },
+                                onPanEnd: (_) =>
+                                    _endOverlayDrag(commitDelete: true),
+                                onPanCancel: () =>
+                                    _endOverlayDrag(commitDelete: false),
+                                child: DecoratedBox(
+                                  decoration: selected
+                                      ? BoxDecoration(
+                                          border: Border.all(
+                                            color: AppColors.white
+                                                .withValues(alpha: 0.9),
+                                            width: 1.5,
+                                          ),
+                                        )
+                                      : const BoxDecoration(),
+                                  child: _stickerVisual(s.asset, s.size),
+                                ),
+                              ),
+                            ),
+                            if (selected) ...[
+                              _stickerHandle(i, Alignment.topLeft),
+                              _stickerHandle(i, Alignment.topRight),
+                              _stickerHandle(i, Alignment.bottomLeft),
+                              _stickerHandle(i, Alignment.bottomRight),
+                            ],
+                          ],
+                        ),
+                      );
+                    },
                   ),
                 // Paylaşırken görsele işlenen yazı (editörde aşağıdaki katman görünür).
                 if (_capturing && hasText)
@@ -534,6 +736,66 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
               ],
             ),
           ),
+
+          // Boş hikaye: placeholder ortada; dokununca yazı açılsın.
+          // Çıkartma/GIF/çizim eklenince kalkar (sürüklemeyi de engellemesin).
+          if (!_textEditorOpen &&
+              !_capturing &&
+              !_musicOpen &&
+              !_drawing &&
+              !_hasOverlay)
+            Positioned.fill(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => _openTextTools(),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: Text(
+                      t.textPlaceholder,
+                      textAlign: TextAlign.center,
+                      style: _textDraft.textStyle.copyWith(
+                        color: AppColors.white.withValues(alpha: 0.55),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+          // Çizim yüzeyi: sadece çizim modundayken dokunuşları alır.
+          if (_drawing && !_capturing)
+            Positioned.fill(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onPanStart: (d) {
+                  setState(() {
+                    _activeStroke = _DrawStroke(
+                      points: [d.localPosition],
+                      color: _drawColor,
+                      width: _drawWidth,
+                    );
+                  });
+                },
+                onPanUpdate: (d) {
+                  final stroke = _activeStroke;
+                  if (stroke == null) return;
+                  setState(() {
+                    _activeStroke = stroke.copyWith(
+                      points: [...stroke.points, d.localPosition],
+                    );
+                  });
+                },
+                onPanEnd: (_) {
+                  final stroke = _activeStroke;
+                  if (stroke == null) return;
+                  setState(() {
+                    if (stroke.points.length > 1) _strokes.add(stroke);
+                    _activeStroke = null;
+                  });
+                },
+              ),
+            ),
 
           // Top chrome — Figma/Zovi: close + music pill | settings + tools
           if (!_musicOpen)
@@ -545,102 +807,213 @@ class _StoryEditorPageState extends State<StoryEditorPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   GestureDetector(
-                    onTap: _onClose,
+                    onTap: _drawing
+                        ? () => setState(() {
+                              _drawing = false;
+                              _activeStroke = null;
+                            })
+                        : _onClose,
                     behavior: HitTestBehavior.opaque,
+                    child: Container(
+                      width: 40,
+                      height: 40,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.black.withValues(alpha: 0.50),
+                      ),
+                      child: SvgPicture.asset(
+                        AppAssets.iconStoryClose,
+                        width: 22,
+                        height: 22,
+                        colorFilter: const ColorFilter.mode(
+                          AppColors.white,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (_drawing) ...[
+                    const SizedBox(width: 10),
+                    GestureDetector(
+                      onTap: _strokes.isEmpty && _activeStroke == null
+                          ? null
+                          : () => setState(() {
+                                if (_activeStroke != null) {
+                                  _activeStroke = null;
+                                } else if (_strokes.isNotEmpty) {
+                                  _strokes.removeLast();
+                                }
+                              }),
+                      behavior: HitTestBehavior.opaque,
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.black.withValues(alpha: 0.50),
+                        ),
+                        child: Icon(
+                          Icons.undo_rounded,
+                          size: 22,
+                          color: AppColors.white.withValues(
+                            alpha: _strokes.isEmpty && _activeStroke == null
+                                ? 0.35
+                                : 1,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                  if (_music != null && !_drawing) ...[
+                    const SizedBox(width: 10),
+                    _MusicChip(track: _music!, onClear: _clearMusic),
+                  ],
+                  const Spacer(),
+                  if (!_drawing)
+                    SizedBox(
+                      width: 44,
+                      child: Column(
+                        children: [
+                          _ToolIcon(
+                            asset: AppAssets.iconStorySetting,
+                            onTap: () => setState(
+                              () => _toolsExpanded = !_toolsExpanded,
+                            ),
+                          ),
+                          ClipRect(
+                            child: TweenAnimationBuilder<double>(
+                              tween: Tween<double>(
+                                end: _toolsExpanded ? 1 : 0,
+                              ),
+                              duration: const Duration(milliseconds: 280),
+                              curve: Curves.easeOutCubic,
+                              builder: (context, value, child) {
+                                return Align(
+                                  alignment: Alignment.topCenter,
+                                  heightFactor: value,
+                                  widthFactor: 1,
+                                  child: Opacity(
+                                    opacity: value.clamp(0.0, 1.0),
+                                    child: child,
+                                  ),
+                                );
+                              },
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const SizedBox(height: 10),
+                                  _ToolIcon(
+                                    asset: AppAssets.iconStoryTextAa,
+                                    onTap: () => _openTextTools(),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  _ToolIcon(
+                                    asset: AppAssets.iconStorySticker,
+                                    onTap: _openStickers,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  _ToolIcon(
+                                    asset: AppAssets.iconStoryMusic,
+                                    onTap: _openMusic,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  _ToolIcon(
+                                    asset: AppAssets.iconStoryDraw,
+                                    onTap: () => setState(() {
+                                      _drawing = true;
+                                      _activeStroke = null;
+                                    }),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (_drawing)
+                    GestureDetector(
+                      onTap: () => setState(() {
+                        _drawing = false;
+                        _activeStroke = null;
+                      }),
+                      behavior: HitTestBehavior.opaque,
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.black.withValues(alpha: 0.50),
+                        ),
+                        child: const Icon(
+                          Icons.check_rounded,
+                          size: 22,
+                          color: AppColors.white,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          // Yazı: tek parmakla taşı, iki parmakla büyüt/küçült ve döndür, dokun düzenle.
+          if (!_textEditorOpen && !_capturing && !_drawing && hasText)
+            Positioned.fill(
+              child: _textLayer(displayText, _textDraft.color, editing: true),
+            ),
+
+          // Sürüklerken: Paylaş barının üstünde çöp kutusu.
+          if (_draggingOverlay && !_capturing && !_drawing && !_musicOpen)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 84 + bottom + 18,
+              child: Center(
+                child: AnimatedScale(
+                  scale: _trashHover ? 1.28 : 1.0,
+                  duration: const Duration(milliseconds: 160),
+                  curve: Curves.easeOutBack,
+                  child: AnimatedContainer(
+                    key: _trashKey,
+                    duration: const Duration(milliseconds: 160),
+                    width: _trashHover ? 64 : 52,
+                    height: _trashHover ? 64 : 52,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _trashHover
+                          ? AppColors.logout
+                          : AppColors.black.withValues(alpha: 0.55),
+                      border: Border.all(
+                        color: AppColors.white.withValues(alpha: 0.85),
+                        width: 1.5,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.black.withValues(alpha: 0.35),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    alignment: Alignment.center,
                     child: SvgPicture.asset(
-                      AppAssets.iconStoryClose,
-                      width: 32,
-                      height: 32,
+                      AppAssets.iconLucideTrash,
+                      width: _trashHover ? 28 : 24,
+                      height: _trashHover ? 28 : 24,
                       colorFilter: const ColorFilter.mode(
                         AppColors.white,
                         BlendMode.srcIn,
                       ),
                     ),
                   ),
-                  if (_music != null) ...[
-                    const SizedBox(width: 10),
-                    _MusicChip(track: _music!, onClear: _clearMusic),
-                  ],
-                  const Spacer(),
-                  SizedBox(
-                    width: 44,
-                    child: Column(
-                      children: [
-                        _ToolIcon(
-                          asset: AppAssets.iconStorySetting,
-                          onTap: () =>
-                              setState(() => _toolsExpanded = !_toolsExpanded),
-                        ),
-                        ClipRect(
-                          child: TweenAnimationBuilder<double>(
-                            tween: Tween<double>(end: _toolsExpanded ? 1 : 0),
-                            duration: const Duration(milliseconds: 280),
-                            curve: Curves.easeOutCubic,
-                            builder: (context, value, child) {
-                              return Align(
-                                alignment: Alignment.topCenter,
-                                heightFactor: value,
-                                widthFactor: 1,
-                                child: Opacity(
-                                  opacity: value.clamp(0.0, 1.0),
-                                  child: child,
-                                ),
-                              );
-                            },
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const SizedBox(height: 20),
-                                _ToolIcon(
-                                  asset: AppAssets.iconStoryTextAa,
-                                  onTap: () => _openTextTools(),
-                                ),
-                                const SizedBox(height: 20),
-                                _ToolIcon(
-                                  asset: AppAssets.iconStorySticker,
-                                  onTap: _openStickers,
-                                ),
-                                const SizedBox(height: 20),
-                                _ToolIcon(
-                                  asset: AppAssets.iconStoryMusic,
-                                  onTap: _openMusic,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-          // Canvas text — overlay açıkken gizle (çift placeholder olmasın)
-          if (!_textEditorOpen && !_capturing && !_musicOpen && !hasText)
-            Positioned(
-              left: 24,
-              right: 56,
-              top: size.height * 0.28,
-              child: GestureDetector(
-                onTap: () => _openTextTools(),
-                child: Text(
-                  t.textPlaceholder,
-                  textAlign: _textDraft.align,
-                  style: _textDraft.textStyle.copyWith(
-                    color: AppColors.white.withValues(alpha: 0.55),
-                  ),
                 ),
               ),
             ),
-          // Yazı: tek parmakla taşı, iki parmakla büyüt/küçült ve döndür, dokun düzenle.
-          if (!_textEditorOpen && !_capturing && hasText)
-            Positioned.fill(
-              child: _textLayer(displayText, _textDraft.color, editing: true),
-            ),
 
           // Bottom bar — download + mevcut Share buton yapısı
-          if (!_musicOpen)
+          if (!_musicOpen && !_drawing)
             Positioned(
               left: 0,
               right: 0,
@@ -775,11 +1148,20 @@ class _ToolIcon extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
-      child: SvgPicture.asset(
-        asset,
-        width: 32,
-        height: 32,
-        colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
+      child: Container(
+        width: 40,
+        height: 40,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: AppColors.black.withValues(alpha: 0.50),
+        ),
+        child: SvgPicture.asset(
+          asset,
+          width: 22,
+          height: 22,
+          colorFilter: const ColorFilter.mode(AppColors.white, BlendMode.srcIn),
+        ),
       ),
     );
   }
@@ -890,6 +1272,52 @@ class _MusicChip extends StatelessWidget {
       ),
     );
   }
+}
+
+class _DrawStroke {
+  const _DrawStroke({
+    required this.points,
+    required this.color,
+    required this.width,
+  });
+
+  final List<Offset> points;
+  final Color color;
+  final double width;
+
+  _DrawStroke copyWith({List<Offset>? points}) => _DrawStroke(
+        points: points ?? this.points,
+        color: color,
+        width: width,
+      );
+}
+
+class _StoryDrawPainter extends CustomPainter {
+  const _StoryDrawPainter(this.strokes);
+
+  final List<_DrawStroke> strokes;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (final stroke in strokes) {
+      if (stroke.points.length < 2) continue;
+      final paint = Paint()
+        ..color = stroke.color
+        ..strokeWidth = stroke.width
+        ..strokeCap = StrokeCap.round
+        ..strokeJoin = StrokeJoin.round
+        ..style = PaintingStyle.stroke;
+      final path = Path()..moveTo(stroke.points.first.dx, stroke.points.first.dy);
+      for (var i = 1; i < stroke.points.length; i++) {
+        path.lineTo(stroke.points[i].dx, stroke.points[i].dy);
+      }
+      canvas.drawPath(path, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _StoryDrawPainter oldDelegate) =>
+      !identical(oldDelegate.strokes, strokes);
 }
 
 /// Arka planda (isolate) RGBA → JPEG.

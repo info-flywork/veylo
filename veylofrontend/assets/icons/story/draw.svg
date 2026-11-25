@@ -1,0 +1,10 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- Referans scribble: üstte küçük kıvrım → S şeklinde orta → sağ altta halka -->
+<path
+  d="M9.5 6.5C11 4.2 16.5 3.8 17.8 6C18.6 7.4 17.2 8.6 15.2 9.2C11.5 10.4 7.5 12.8 6.2 16.2C5.2 18.8 6.5 21.5 9.2 22.2C12.2 23 15.5 21.2 18.5 18.8C20.8 17 23.2 15.5 25.2 16.2C27.2 16.9 27.8 19.2 26.5 21.2C24.8 23.8 21.5 25.5 18.8 24.5C16.5 23.6 16.8 20.8 19.2 20.2C21.5 19.6 24 20.8 25 22.8C26 24.6 25.2 27 22.8 27.8C20.2 28.6 17.5 27.2 16.2 25.2"
+  stroke="white"
+  stroke-width="2.4"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+/>
+</svg>

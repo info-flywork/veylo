@@ -1,14 +1,6 @@
-/// Ortam ayarları. Yerel backend için:
-/// `flutter run --dart-define=API_BASE_URL=http://192.168.1.20:4000`
+/// Ortam ayarları — canlı API.
 abstract final class AppConfig {
-  static const _apiOverride = String.fromEnvironment('API_BASE_URL');
-
-  static const _productionApi = 'https://veylo.fly-work.com';
-
-  static String get apiBaseUrl {
-    if (_apiOverride.isNotEmpty) return _apiOverride;
-    return _productionApi;
-  }
+  static const apiBaseUrl = 'https://veylo.fly-work.com';
 
   static String get apiUrl => '$apiBaseUrl/api/v1';
 
@@ -24,6 +16,9 @@ abstract final class AppConfig {
   static const revenueCatGoogleApiKey = String.fromEnvironment(
     'REVENUECAT_GOOGLE_API_KEY',
   );
+
+  /// Story GIF sheet — key gerektirmeyen public API.
+  static const gifApiBaseUrl = 'https://gifsnap.com/api/v1';
 }
 
 /// Backend'deki TOKENS ile aynı (fiyatlar sunucuda uygulanır; burada sadece gösterim).

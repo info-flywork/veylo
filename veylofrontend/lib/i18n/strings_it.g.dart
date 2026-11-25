@@ -544,6 +544,7 @@ class _Translations$discover$it extends Translations$discover$tr {
 	@override late final _Translations$discover$stats$it stats = _Translations$discover$stats$it._(_root);
 	@override String hostedBy({required Object name}) => 'Organizzata da ${name}';
 	@override String get requestPending => 'La tua richiesta è stata inviata ed è in attesa di approvazione.';
+	@override String get enter => 'Entra';
 }
 
 // Path: common
@@ -997,6 +998,8 @@ class _Translations$discover$createSpace$it extends Translations$discover$create
 	@override String get nameSubtitle => 'Dai un nome al gruppo che hai creato';
 	@override String get nameHint => 'Nottambuli';
 	@override String createRoomFor({required Object count}) => 'Crea per ${count} token';
+	@override String get requirePermission => 'Richiedi approvazione';
+	@override String get requirePermissionSubtitle => 'Serve l’approvazione per entrare';
 }
 
 // Path: discover.liveRoom
@@ -1120,8 +1123,12 @@ class _Translations$discover$post$it extends Translations$discover$post$tr {
 	@override String get edit => 'Modifica';
 	@override String get delete => 'Elimina';
 	@override String get editCaption => 'Modifica didascalia';
-	@override String get deletePostTitle => 'Eliminare questo post?';
+	@override String get deletePostTitle => 'Eliminare il post?';
 	@override String get captionHint => 'Scrivi una didascalia...';
+	@override String get reply => 'Rispondi';
+	@override String viewOtherReplies({required Object count}) => 'Vedi altre ${count} risposte';
+	@override String get boost => 'Boost';
+	@override String get deletePostMessage => 'Sei sicuro di voler eliminare questo post? L’azione non può essere annullata.';
 }
 
 // Path: discover.story
@@ -1699,6 +1706,8 @@ extension on TranslationsIt {
 			'discover.createSpace.nameSubtitle' => 'Dai un nome al gruppo che hai creato',
 			'discover.createSpace.nameHint' => 'Nottambuli',
 			'discover.createSpace.createRoomFor' => ({required Object count}) => 'Crea per ${count} token',
+			'discover.createSpace.requirePermission' => 'Richiedi approvazione',
+			'discover.createSpace.requirePermissionSubtitle' => 'Serve l’approvazione per entrare',
 			'discover.liveRoom.adminSuffix' => '(Admin)',
 			'discover.liveRoom.messageHint' => 'Messaggio',
 			'discover.liveRoom.quickReplyHey' => 'Ciao a tutti!',
@@ -1740,10 +1749,10 @@ extension on TranslationsIt {
 			'discover.groupInfo.admin' => 'Admin',
 			'discover.groupInfo.leaveGroup' => 'Esci dal gruppo',
 			'discover.groupInfo.requests' => 'Richieste di accesso',
-			'discover.groupInfo.approve' => 'Accetta',
-			'discover.groupInfo.reject' => 'Rifiuta',
 			_ => null,
 		} ?? switch (path) {
+			'discover.groupInfo.approve' => 'Accetta',
+			'discover.groupInfo.reject' => 'Rifiuta',
 			'discover.groupInfo.addPeopleEmpty' => 'Segui delle persone per aggiungerle al gruppo.',
 			'discover.groupInfo.add' => 'Aggiungi',
 			'discover.groupInfo.makeAdmin' => 'Rendi admin',
@@ -1779,8 +1788,12 @@ extension on TranslationsIt {
 			'discover.post.edit' => 'Modifica',
 			'discover.post.delete' => 'Elimina',
 			'discover.post.editCaption' => 'Modifica didascalia',
-			'discover.post.deletePostTitle' => 'Eliminare questo post?',
+			'discover.post.deletePostTitle' => 'Eliminare il post?',
 			'discover.post.captionHint' => 'Scrivi una didascalia...',
+			'discover.post.reply' => 'Rispondi',
+			'discover.post.viewOtherReplies' => ({required Object count}) => 'Vedi altre ${count} risposte',
+			'discover.post.boost' => 'Boost',
+			'discover.post.deletePostMessage' => 'Sei sicuro di voler eliminare questo post? L’azione non può essere annullata.',
 			'discover.story.draft' => 'BOZZA',
 			'discover.story.story' => 'STORIA',
 			'discover.story.share' => 'Condividi',
@@ -1823,6 +1836,7 @@ extension on TranslationsIt {
 			'discover.stats.boosted' => 'Boost attivo! Il tuo post resta in cima per 24 ore.',
 			'discover.hostedBy' => ({required Object name}) => 'Organizzata da ${name}',
 			'discover.requestPending' => 'La tua richiesta è stata inviata ed è in attesa di approvazione.',
+			'discover.enter' => 'Entra',
 			'common.loading' => 'Caricamento…',
 			'common.retry' => 'Riprova',
 			'common.cancel' => 'Annulla',

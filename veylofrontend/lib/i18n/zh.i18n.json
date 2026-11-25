@@ -493,7 +493,9 @@
       "createGroupTitle": "创建群组",
       "nameSubtitle": "给你创建的群组起个名字",
       "nameHint": "夜猫子",
-      "createRoomFor": "花 {count} 代币创建"
+      "createRoomFor": "花 {count} 代币创建",
+      "requirePermission": "需要许可",
+      "requirePermissionSubtitle": "加入需获得批准"
     },
     "liveRoom": {
       "adminSuffix": "（管理员）",
@@ -582,8 +584,12 @@
       "edit": "编辑",
       "delete": "删除",
       "editCaption": "编辑说明",
-      "deletePostTitle": "删除这条帖子？",
-      "captionHint": "写点说明..."
+      "deletePostTitle": "删除帖子？",
+      "captionHint": "写点说明...",
+      "reply": "回复",
+      "viewOtherReplies": "查看另外 {count} 条回复",
+      "boost": "推广",
+      "deletePostMessage": "确定要删除这条帖子吗？此操作无法撤销。"
     },
     "story": {
       "draft": "草稿",
@@ -632,7 +638,8 @@
       "boosted": "推广成功！你的帖子将置顶 24 小时。"
     },
     "hostedBy": "主持人：{name}",
-    "requestPending": "申请已发送，等待批准。"
+    "requestPending": "申请已发送，等待批准。",
+    "enter": "进入"
   },
   "common": {
     "loading": "加载中…",

@@ -42,6 +42,7 @@ Future<CreatedSpace?> showCreateRoomNameSheet(
   BuildContext context, {
   required CreateSpaceType type,
   bool hideAccount = false,
+  bool isPrivate = false,
 }) {
   return showModalBottomSheet<CreatedSpace>(
     context: context,
@@ -50,18 +51,28 @@ Future<CreatedSpace?> showCreateRoomNameSheet(
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
     ),
-    builder: (context) =>
-        _CreateRoomNameSheet(type: type, hideAccount: hideAccount),
+    builder: (context) => _CreateRoomNameSheet(
+      type: type,
+      hideAccount: hideAccount,
+      isPrivate: isPrivate,
+    ),
   );
 }
 
 class _CreateRoomNameSheet extends StatefulWidget {
-  const _CreateRoomNameSheet({required this.type, this.hideAccount = false});
+  const _CreateRoomNameSheet({
+    required this.type,
+    this.hideAccount = false,
+    this.isPrivate = false,
+  });
 
   final CreateSpaceType type;
 
   /// "Hide Your Account": grupta anonim görün.
   final bool hideAccount;
+
+  /// Katılmak için onay / gizli alan.
+  final bool isPrivate;
 
   @override
   State<_CreateRoomNameSheet> createState() => _CreateRoomNameSheetState();
@@ -77,10 +88,13 @@ class _CreateRoomNameSheetState extends State<_CreateRoomNameSheet> {
     if (_creating) return;
     setState(() => _creating = true);
     try {
-      final thread = await GroupRepository.instance.create(
+      var thread = await GroupRepository.instance.create(
         title: name,
         anonymous: widget.hideAccount,
       );
+      if (widget.isPrivate) {
+        await GroupRepository.instance.setPrivate(thread.id, true);
+      }
       ChatStore.instance.replace(thread);
       GroupStore.instance.refresh();
       if (!mounted) return;
@@ -102,6 +116,7 @@ class _CreateRoomNameSheetState extends State<_CreateRoomNameSheet> {
       final id = await RoomRepository.instance.create(
         title: name,
         anonymous: widget.hideAccount,
+        isPrivate: widget.isPrivate,
       );
       RoomStore.instance.refresh();
       if (!mounted) return;

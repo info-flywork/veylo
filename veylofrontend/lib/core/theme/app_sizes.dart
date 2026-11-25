@@ -1,7 +1,7 @@
 abstract final class AppSizes {
-  static const double splashIcon = 120;
-  static const double splashBrandWidth = 100;
-  static const double splashBrandHeight = 40;
+  static const double splashIcon = 140;
+  static const double splashBrandWidth = 160;
+  static const double splashBrandHeight = 48;
 
   static const double inputHeight = 54;
   static const double primaryButtonHeight = 54;

@@ -493,7 +493,9 @@
       "createGroupTitle": "Crear grupo",
       "nameSubtitle": "Ponle un nombre al grupo que creaste",
       "nameHint": "Búho nocturno",
-      "createRoomFor": "Crear por {count} tokens"
+      "createRoomFor": "Crear por {count} tokens",
+      "requirePermission": "Requerir permiso",
+      "requirePermissionSubtitle": "Se necesita aprobación para unirse"
     },
     "liveRoom": {
       "adminSuffix": "(Admin)",
@@ -582,8 +584,12 @@
       "edit": "Editar",
       "delete": "Eliminar",
       "editCaption": "Editar descripción",
-      "deletePostTitle": "¿Eliminar esta publicación?",
-      "captionHint": "Escribe una descripción..."
+      "deletePostTitle": "¿Eliminar publicación?",
+      "captionHint": "Escribe una descripción...",
+      "reply": "Responder",
+      "viewOtherReplies": "Ver {count} respuestas más",
+      "boost": "Impulsar",
+      "deletePostMessage": "¿Seguro que quieres eliminar esta publicación? Esta acción no se puede deshacer."
     },
     "story": {
       "draft": "BORRADOR",
@@ -632,7 +638,8 @@
       "boosted": "¡Impulsada! Tu publicación estará arriba durante 24 horas."
     },
     "hostedBy": "Organizada por {name}",
-    "requestPending": "Tu solicitud se envió y está pendiente de aprobación."
+    "requestPending": "Tu solicitud se envió y está pendiente de aprobación.",
+    "enter": "Entrar"
   },
   "common": {
     "loading": "Cargando…",

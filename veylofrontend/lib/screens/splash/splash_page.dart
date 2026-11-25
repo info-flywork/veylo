@@ -4,8 +4,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/navigation/session_navigation.dart';
-import 'package:veylo/core/theme/theme.dart';
-import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/core/theme/app_theme.dart';
 import 'package:veylo/data/remote/api_client.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
@@ -36,13 +35,7 @@ class _SplashPageState extends State<SplashPage> {
   /// çubuğunu gizli başlatır); uygulamaya geçerken saat/şarj/wifi geri gelsin.
   void _showStatusBar() {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-        statusBarBrightness: Brightness.light,
-      ),
-    );
+    SystemChrome.setSystemUIOverlayStyle(AppTheme.lightStatusBar);
   }
 
   /// Açılış animasyonu süresince oturumu geri yükler, sonra doğru ekrana geçer.
@@ -85,41 +78,14 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    final t = Translations.of(context);
-
     return Scaffold(
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          Image.asset(
-            AppAssets.splashFirstPage,
-            fit: BoxFit.cover,
-          ),
-          Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  AppAssets.veyloFirstSplashIcon,
-                  width: AppSizes.splashIcon,
-                  height: AppSizes.splashIcon,
-                  fit: BoxFit.contain,
-                ),
-                const SizedBox(height: AppSpacing.splashBrandGap),
-                SizedBox(
-                  width: AppSizes.splashBrandWidth,
-                  height: AppSizes.splashBrandHeight,
-                  child: AppText(
-                    t.app.name,
-                    style: AppTextStyles.splashBrand,
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+      body: SizedBox.expand(
+        child: Image.asset(
+          AppAssets.splashNativeFull,
+          fit: BoxFit.cover,
+          gaplessPlayback: true,
+          filterQuality: FilterQuality.medium,
+        ),
       ),
     );
   }

@@ -11,9 +11,10 @@ class ChatRepository {
   final _api = ApiClient.instance;
 
   /// box: inbox | requests
+  /// Disk önbelleğini ChatStore yazar; ham sunucu cevabı yerel yazışmaları ezmesin.
   Future<List<ChatThread>> list({String box = 'inbox'}) async {
     final res =
-        await _api.get('/conversations', query: {'box': box}, cache: true)
+        await _api.get('/conversations', query: {'box': box}, cache: false)
             as Map;
     return _threads(res);
   }

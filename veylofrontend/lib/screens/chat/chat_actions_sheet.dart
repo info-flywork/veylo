@@ -12,9 +12,11 @@ import 'package:veylo/models/profile/profile_user.dart';
 import 'package:veylo/screens/chat/conversation_controller.dart';
 import 'package:veylo/screens/chat/report_reason_sheet.dart';
 import 'package:veylo/screens/profile/block_user_sheet.dart';
-import 'package:veylo/screens/profile/report_user_sheet.dart';
 
-enum _ChatMenuAction { mute, report, block, delete }
+enum _ChatMenuAction { mute, block, delete }
+
+/// Figma: Engelle / Sil kırmızısı.
+const _kDanger = Color(0xFFD4537E);
 
 /// Sohbet başlığındaki "daha fazla" butonu (Direct / Anonim başlıklarıyla aynı ölçü).
 class ChatHeaderMoreButton extends StatelessWidget {
@@ -24,23 +26,20 @@ class ChatHeaderMoreButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Simge boyutunda dokunma alanı: arama simgeleriyle arası tasarımdaki gibi 8 kalsın.
     return GestureDetector(
       onTap: onPressed,
       behavior: HitTestBehavior.opaque,
-      // Sohbet ayarları (sessize al, şikayet, engelle, sil): ayarlar simgesi.
       child: SizedBox(
         height: 44,
         child: Center(
           child: SvgPicture.asset(
-        AppAssets.iconSettings,
-        width: 24,
-        height: 24,
-        // Arama simgeleriyle aynı renk (Figma #5F5F5F).
-        colorFilter: const ColorFilter.mode(
-          Color(0xFF5F5F5F),
-          BlendMode.srcIn,
-        ),
+            AppAssets.iconSettings,
+            width: 24,
+            height: 24,
+            colorFilter: const ColorFilter.mode(
+              Color(0xFF5F5F5F),
+              BlendMode.srcIn,
+            ),
           ),
         ),
       ),
@@ -48,8 +47,7 @@ class ChatHeaderMoreButton extends StatelessWidget {
   }
 }
 
-/// Başlıktaki menü: Sessize al / Şikayet et / Engelle / Sohbeti sil.
-/// Silme sonrası sohbet ekranı kapanır.
+/// Başlıktaki menü: Sessize al / Engelle / Sohbeti sil.
 Future<void> showChatActionsMenu(
   BuildContext context,
   ConversationController controller,
@@ -59,8 +57,11 @@ Future<void> showChatActionsMenu(
   final action = await showModalBottomSheet<_ChatMenuAction>(
     context: context,
     backgroundColor: AppColors.white,
+    isScrollControlled: true,
+    // Safe area'yı kendimiz yönetiyoruz; çift boşluk olmasın.
+    useSafeArea: false,
     shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
     ),
     builder: (_) => _ChatActionsSheet(muted: thread.muted),
   );
@@ -74,18 +75,11 @@ Future<void> showChatActionsMenu(
       } catch (e) {
         if (context.mounted) showErrorSnackBar(context, e);
       }
-    case _ChatMenuAction.report:
-      await showReportUserSheet(
-        context,
-        user: _peerUser(thread),
-        conversationId: thread.id,
-      );
     case _ChatMenuAction.block:
       await showBlockUserSheet(
         context,
         user: _peerUser(thread),
         conversationId: thread.id,
-        // Ekran açık kalır: "Engelle ve şikayet et" şikayet penceresini bu ekranda açar.
         onDone: () => ChatStore.instance.remove(thread.id),
       );
     case _ChatMenuAction.delete:
@@ -98,7 +92,6 @@ Future<void> showChatActionsMenu(
   }
 }
 
-/// Mesaj balonundaki Sil: kendi mesajım herkesten, karşı tarafınki yalnızca benden.
 Future<void> deleteChatMessage(
   BuildContext context,
   ConversationController controller,
@@ -111,7 +104,6 @@ Future<void> deleteChatMessage(
   }
 }
 
-/// Mesaj balonundaki Şikayet Et: sebep seçilir, mesaj id'siyle gönderilir.
 Future<void> reportChatMessage(
   BuildContext context,
   ConversationController controller,
@@ -123,7 +115,6 @@ Future<void> reportChatMessage(
   );
 }
 
-/// Anonim sohbette kullanıcı id'si bilinmez; işlemler sohbet üzerinden yapılır.
 ProfileUser _peerUser(ChatThread thread) => ProfileUser(
   id: thread.peerUserId ?? '',
   displayName: thread.isAnonymous
@@ -149,25 +140,28 @@ class _ChatActionsSheet extends StatelessWidget {
     void pick(_ChatMenuAction a) => Navigator.of(context).pop(a);
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(16, 12, 16, 8 + bottom),
+      padding: EdgeInsets.fromLTRB(24, 20, 24, 8 + bottom),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           _ActionItem(
+            iconAsset: muted
+                ? AppAssets.iconLucideVolume2
+                : AppAssets.iconLucideVolumeX,
             label: muted ? tr.chats.unmute : tr.chats.mute,
-            color: AppColors.textPrimary,
+            color: AppColors.black,
             onTap: () => pick(_ChatMenuAction.mute),
           ),
           _ActionItem(
-            label: tr.profile.report,
-            onTap: () => pick(_ChatMenuAction.report),
-          ),
-          _ActionItem(
+            iconAsset: AppAssets.iconLucideBan,
             label: tr.profile.block,
+            color: _kDanger,
             onTap: () => pick(_ChatMenuAction.block),
           ),
           _ActionItem(
+            iconAsset: AppAssets.iconLucideTrash,
             label: tr.chats.deleteChat,
+            color: _kDanger,
             onTap: () => pick(_ChatMenuAction.delete),
           ),
         ],
@@ -176,14 +170,15 @@ class _ChatActionsSheet extends StatelessWidget {
   }
 }
 
-/// Profil menüsündeki satırla aynı görünüm.
 class _ActionItem extends StatelessWidget {
   const _ActionItem({
+    required this.iconAsset,
     required this.label,
     required this.onTap,
-    this.color = const Color(0xFFD4537E),
+    required this.color,
   });
 
+  final String iconAsset;
   final String label;
   final VoidCallback onTap;
   final Color color;
@@ -192,20 +187,31 @@ class _ActionItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
       child: SizedBox(
         width: double.infinity,
         height: 48,
-        child: Center(
-          child: AppText(
-            label,
-            style: TextStyle(
-              fontFamily: AppFonts.poppins,
-              fontWeight: FontWeight.w500,
-              fontSize: 16,
-              height: 20 / 16,
-              color: color,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              iconAsset,
+              width: 22,
+              height: 22,
+              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
             ),
-          ),
+            const SizedBox(width: 10),
+            AppText(
+              label,
+              style: TextStyle(
+                fontFamily: AppFonts.poppins,
+                fontWeight: FontWeight.w500,
+                fontSize: 16,
+                height: 20 / 16,
+                color: color,
+              ),
+            ),
+          ],
         ),
       ),
     );

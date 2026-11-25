@@ -23,7 +23,7 @@ class StoryEditorLayers {
   final Offset textOffset;
   final double textScale;
   final double textRotation;
-  final List<({String asset, Offset center})> stickers;
+  final List<({String asset, Offset center, double size})> stickers;
   final StoryMusicTrack? music;
 
   Map<String, Object?> toJson() => {
@@ -50,6 +50,7 @@ class StoryEditorLayers {
         {
           'asset': s.asset,
           'center': [s.center.dx, s.center.dy],
+          'size': s.size,
         },
     ],
     if (music != null)
@@ -109,6 +110,7 @@ class StoryEditorLayers {
                 ((raw['center'] as List)[0] as num).toDouble() * sx,
                 ((raw['center'] as List)[1] as num).toDouble() * sy,
               ),
+              size: ((raw['size'] as num?)?.toDouble() ?? 96) * sx,
             ),
         ],
         music: music,

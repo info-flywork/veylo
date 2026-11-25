@@ -104,9 +104,11 @@ class ConversationController extends ChangeNotifier {
     _socket.reconnects.addListener(_syncMissed);
 
     // Önce cache: boş ekran / 1–2 sn beklemeyi keser.
+    // hasMore bilmiyoruz; ağ gelene kadar yukarı kaydırmayı açık tut.
     final cached = ChatStore.instance.cachedMessages(_thread.id);
     if (cached != null && cached.isNotEmpty) {
       _messages = cached;
+      _hasMore = true;
       _loading = false;
       _notify();
     } else if (!_thread.isLocalOnly) {
@@ -116,6 +118,7 @@ class ConversationController extends ChangeNotifier {
           if (_disposed || disk == null || disk.isEmpty) return;
           if (_messages.isNotEmpty) return;
           _messages = disk;
+          _hasMore = true;
           _loading = false;
           _notify();
         }),
@@ -211,14 +214,38 @@ class ConversationController extends ChangeNotifier {
 
   Future<void> loadOlder() async {
     if (!_hasMore || _loadingOlder || _messages.isEmpty) return;
-    final firstSeq = _messages
-        .firstWhere((m) => m.seq != null, orElse: _noSeq)
-        .seq;
-    if (firstSeq == null || firstSeq <= 1) return;
+    var firstSeq = 1 << 30;
+    for (final m in _messages) {
+      final s = m.seq;
+      if (s != null && s < firstSeq) firstSeq = s;
+    }
+    if (firstSeq >= 1 << 30 || firstSeq <= 1) {
+      _hasMore = false;
+      return;
+    }
     _loadingOlder = true;
     try {
       final page = await _repo.messages(_thread.id, beforeSeq: firstSeq);
-      _messages = [...page.items, ..._messages];
+      if (_disposed) return;
+      if (page.items.isEmpty) {
+        _hasMore = false;
+        _notify();
+        return;
+      }
+      final seen = <String>{
+        for (final m in _messages)
+          if (m.id != null) m.id!,
+      };
+      final older = [
+        for (final m in page.items)
+          if (m.id == null || seen.add(m.id!)) m,
+      ];
+      if (older.isEmpty) {
+        _hasMore = page.hasMore;
+        _notify();
+        return;
+      }
+      _messages = [...older, ..._messages];
       _hasMore = page.hasMore;
       _notify();
     } catch (_) {
@@ -355,34 +382,48 @@ class ConversationController extends ChangeNotifier {
         },
       );
     }
-    // Hedef sohbet listede taze önizleme alsın.
+    // Önizleme tazelensin. ChatStore.refresh artık yerel yazışmaları ezmez.
     unawaited(ChatStore.instance.refresh());
   }
+
+  /// Aynı anda tek gönderim; hızlı spam sunucu hatalarını tetiklemesin.
+  Future<void>? _sendInFlight;
 
   /// Mesaj hemen ekranda görünür ("gönderiliyor"), sunucu onaylayınca kesinleşir.
   Future<void> send(String text) async {
     final body = text.trim();
     if (body.isEmpty || _thread.isLocalOnly) return;
-    final editing = _editing;
-    if (editing != null) {
-      _editing = null;
-      _notify();
-      await editMessage(editing, body);
-      return;
+    // Önceki gönderim bitmeden yenisini kuyruğa al.
+    while (_sendInFlight != null) {
+      await _sendInFlight;
     }
-    final replyTo = _consumeReplyPreview();
-    final pending = ChatMessage(
-      clientMsgId: _uuid.v4(),
-      isMine: true,
-      body: body,
-      createdAt: DateTime.now(),
-      status: ChatMessageStatus.sending,
-      replyToId: replyTo?.id,
-      replyTo: replyTo,
-    );
-    _messages = [..._messages, pending];
-    _notify();
-    await _deliver(pending);
+    final done = Completer<void>();
+    _sendInFlight = done.future;
+    try {
+      final editing = _editing;
+      if (editing != null) {
+        _editing = null;
+        _notify();
+        await editMessage(editing, body);
+        return;
+      }
+      final replyTo = _consumeReplyPreview();
+      final pending = ChatMessage(
+        clientMsgId: _uuid.v4(),
+        isMine: true,
+        body: body,
+        createdAt: DateTime.now(),
+        status: ChatMessageStatus.sending,
+        replyToId: replyTo?.id,
+        replyTo: replyTo,
+      );
+      _messages = [..._messages, pending];
+      _notify();
+      await _deliver(pending);
+    } finally {
+      done.complete();
+      if (identical(_sendInFlight, done.future)) _sendInFlight = null;
+    }
   }
 
   Future<void> editMessage(ChatMessage message, String body) async {

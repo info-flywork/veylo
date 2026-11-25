@@ -216,6 +216,8 @@ class _VoiceChipState extends State<_VoiceChip> {
           await _player.setFilePath(widget.url);
         }
       }
+      // Max playback gain (kayıt tarafında autoGain ile birlikte).
+      await _player.setVolume(1.0);
       await _player.play();
     } catch (_) {
       if (mounted) setState(() => _playing = false);

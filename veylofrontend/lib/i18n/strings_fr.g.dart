@@ -544,6 +544,7 @@ class _Translations$discover$fr extends Translations$discover$tr {
 	@override late final _Translations$discover$stats$fr stats = _Translations$discover$stats$fr._(_root);
 	@override String hostedBy({required Object name}) => 'Animé par ${name}';
 	@override String get requestPending => 'Ta demande a été envoyée et attend une validation.';
+	@override String get enter => 'Entrer';
 }
 
 // Path: common
@@ -997,6 +998,8 @@ class _Translations$discover$createSpace$fr extends Translations$discover$create
 	@override String get nameSubtitle => 'Donne un nom à ton groupe';
 	@override String get nameHint => 'Oiseaux de nuit';
 	@override String createRoomFor({required Object count}) => 'Créer pour ${count} jetons';
+	@override String get requirePermission => 'Demander une autorisation';
+	@override String get requirePermissionSubtitle => 'L’approbation est requise pour rejoindre';
 }
 
 // Path: discover.liveRoom
@@ -1120,8 +1123,12 @@ class _Translations$discover$post$fr extends Translations$discover$post$tr {
 	@override String get edit => 'Modifier';
 	@override String get delete => 'Supprimer';
 	@override String get editCaption => 'Modifier la légende';
-	@override String get deletePostTitle => 'Supprimer cette publication ?';
+	@override String get deletePostTitle => 'Supprimer la publication ?';
 	@override String get captionHint => 'Écris une légende...';
+	@override String get reply => 'Répondre';
+	@override String viewOtherReplies({required Object count}) => 'Voir ${count} autres réponses';
+	@override String get boost => 'Booster';
+	@override String get deletePostMessage => 'Voulez-vous vraiment supprimer cette publication ? Cette action est irréversible.';
 }
 
 // Path: discover.story
@@ -1699,6 +1706,8 @@ extension on TranslationsFr {
 			'discover.createSpace.nameSubtitle' => 'Donne un nom à ton groupe',
 			'discover.createSpace.nameHint' => 'Oiseaux de nuit',
 			'discover.createSpace.createRoomFor' => ({required Object count}) => 'Créer pour ${count} jetons',
+			'discover.createSpace.requirePermission' => 'Demander une autorisation',
+			'discover.createSpace.requirePermissionSubtitle' => 'L’approbation est requise pour rejoindre',
 			'discover.liveRoom.adminSuffix' => '(Admin)',
 			'discover.liveRoom.messageHint' => 'Message',
 			'discover.liveRoom.quickReplyHey' => 'Salut tout le monde !',
@@ -1740,10 +1749,10 @@ extension on TranslationsFr {
 			'discover.groupInfo.admin' => 'Admin',
 			'discover.groupInfo.leaveGroup' => 'Quitter le groupe',
 			'discover.groupInfo.requests' => 'Demandes d\'adhésion',
-			'discover.groupInfo.approve' => 'Accepter',
-			'discover.groupInfo.reject' => 'Refuser',
 			_ => null,
 		} ?? switch (path) {
+			'discover.groupInfo.approve' => 'Accepter',
+			'discover.groupInfo.reject' => 'Refuser',
 			'discover.groupInfo.addPeopleEmpty' => 'Suis des personnes pour les ajouter au groupe.',
 			'discover.groupInfo.add' => 'Ajouter',
 			'discover.groupInfo.makeAdmin' => 'Nommer admin',
@@ -1779,8 +1788,12 @@ extension on TranslationsFr {
 			'discover.post.edit' => 'Modifier',
 			'discover.post.delete' => 'Supprimer',
 			'discover.post.editCaption' => 'Modifier la légende',
-			'discover.post.deletePostTitle' => 'Supprimer cette publication ?',
+			'discover.post.deletePostTitle' => 'Supprimer la publication ?',
 			'discover.post.captionHint' => 'Écris une légende...',
+			'discover.post.reply' => 'Répondre',
+			'discover.post.viewOtherReplies' => ({required Object count}) => 'Voir ${count} autres réponses',
+			'discover.post.boost' => 'Booster',
+			'discover.post.deletePostMessage' => 'Voulez-vous vraiment supprimer cette publication ? Cette action est irréversible.',
 			'discover.story.draft' => 'BROUILLON',
 			'discover.story.story' => 'STORY',
 			'discover.story.share' => 'Partager',
@@ -1823,6 +1836,7 @@ extension on TranslationsFr {
 			'discover.stats.boosted' => 'Boosté ! Ton post est en tête pendant 24 heures.',
 			'discover.hostedBy' => ({required Object name}) => 'Animé par ${name}',
 			'discover.requestPending' => 'Ta demande a été envoyée et attend une validation.',
+			'discover.enter' => 'Entrer',
 			'common.loading' => 'Chargement…',
 			'common.retry' => 'Réessayer',
 			'common.cancel' => 'Annuler',

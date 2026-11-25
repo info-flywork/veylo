@@ -544,6 +544,7 @@ class _Translations$discover$ja extends Translations$discover$tr {
 	@override late final _Translations$discover$stats$ja stats = _Translations$discover$stats$ja._(_root);
 	@override String hostedBy({required Object name}) => 'ホスト：${name}';
 	@override String get requestPending => 'リクエストを送信しました。承認をお待ちください。';
+	@override String get enter => '入る';
 }
 
 // Path: common
@@ -997,6 +998,8 @@ class _Translations$discover$createSpace$ja extends Translations$discover$create
 	@override String get nameSubtitle => 'グループに名前を付けよう';
 	@override String get nameHint => '夜ふかし部';
 	@override String createRoomFor({required Object count}) => '${count}トークンで作成';
+	@override String get requirePermission => '承認が必要';
+	@override String get requirePermissionSubtitle => '参加には承認が必要です';
 }
 
 // Path: discover.liveRoom
@@ -1120,8 +1123,12 @@ class _Translations$discover$post$ja extends Translations$discover$post$tr {
 	@override String get edit => '編集';
 	@override String get delete => '削除';
 	@override String get editCaption => 'キャプションを編集';
-	@override String get deletePostTitle => 'この投稿を削除しますか？';
+	@override String get deletePostTitle => '投稿を削除しますか？';
 	@override String get captionHint => 'キャプションを書く...';
+	@override String get reply => '返信';
+	@override String viewOtherReplies({required Object count}) => '他${count}件の返信を表示';
+	@override String get boost => 'ブースト';
+	@override String get deletePostMessage => 'この投稿を削除してもよろしいですか？この操作は元に戻せません。';
 }
 
 // Path: discover.story
@@ -1699,6 +1706,8 @@ extension on TranslationsJa {
 			'discover.createSpace.nameSubtitle' => 'グループに名前を付けよう',
 			'discover.createSpace.nameHint' => '夜ふかし部',
 			'discover.createSpace.createRoomFor' => ({required Object count}) => '${count}トークンで作成',
+			'discover.createSpace.requirePermission' => '承認が必要',
+			'discover.createSpace.requirePermissionSubtitle' => '参加には承認が必要です',
 			'discover.liveRoom.adminSuffix' => '（管理者）',
 			'discover.liveRoom.messageHint' => 'メッセージ',
 			'discover.liveRoom.quickReplyHey' => 'みんな、こんにちは！',
@@ -1740,10 +1749,10 @@ extension on TranslationsJa {
 			'discover.groupInfo.admin' => '管理者',
 			'discover.groupInfo.leaveGroup' => 'グループを退出',
 			'discover.groupInfo.requests' => '参加リクエスト',
-			'discover.groupInfo.approve' => '承認',
-			'discover.groupInfo.reject' => '拒否',
 			_ => null,
 		} ?? switch (path) {
+			'discover.groupInfo.approve' => '承認',
+			'discover.groupInfo.reject' => '拒否',
 			'discover.groupInfo.addPeopleEmpty' => 'フォローした人をグループに追加できます。',
 			'discover.groupInfo.add' => '追加',
 			'discover.groupInfo.makeAdmin' => '管理者にする',
@@ -1779,8 +1788,12 @@ extension on TranslationsJa {
 			'discover.post.edit' => '編集',
 			'discover.post.delete' => '削除',
 			'discover.post.editCaption' => 'キャプションを編集',
-			'discover.post.deletePostTitle' => 'この投稿を削除しますか？',
+			'discover.post.deletePostTitle' => '投稿を削除しますか？',
 			'discover.post.captionHint' => 'キャプションを書く...',
+			'discover.post.reply' => '返信',
+			'discover.post.viewOtherReplies' => ({required Object count}) => '他${count}件の返信を表示',
+			'discover.post.boost' => 'ブースト',
+			'discover.post.deletePostMessage' => 'この投稿を削除してもよろしいですか？この操作は元に戻せません。',
 			'discover.story.draft' => '下書き',
 			'discover.story.story' => 'ストーリー',
 			'discover.story.share' => 'シェア',
@@ -1823,6 +1836,7 @@ extension on TranslationsJa {
 			'discover.stats.boosted' => 'ブースト完了！投稿が24時間トップに表示されます。',
 			'discover.hostedBy' => ({required Object name}) => 'ホスト：${name}',
 			'discover.requestPending' => 'リクエストを送信しました。承認をお待ちください。',
+			'discover.enter' => '入る',
 			'common.loading' => '読み込み中…',
 			'common.retry' => '再試行',
 			'common.cancel' => 'キャンセル',

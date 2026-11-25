@@ -1346,6 +1346,9 @@ class Translations$discover$tr {
 
 	/// tr: 'İsteğin gönderildi, onay bekleniyor.'
 	String get requestPending => 'İsteğin gönderildi, onay bekleniyor.';
+
+	/// tr: 'Gir'
+	String get enter => 'Gir';
 }
 
 // Path: common
@@ -2380,6 +2383,12 @@ class Translations$discover$createSpace$tr {
 
 	/// tr: '{count} tokene oluştur'
 	String createRoomFor({required Object count}) => '${count} tokene oluştur';
+
+	/// tr: 'İzin alınsın'
+	String get requirePermission => 'İzin alınsın';
+
+	/// tr: 'Katılmak için onay gereksin'
+	String get requirePermissionSubtitle => 'Katılmak için onay gereksin';
 }
 
 // Path: discover.liveRoom
@@ -2666,11 +2675,23 @@ class Translations$discover$post$tr {
 	/// tr: 'Açıklamayı düzenle'
 	String get editCaption => 'Açıklamayı düzenle';
 
-	/// tr: 'Bu gönderi silinsin mi?'
-	String get deletePostTitle => 'Bu gönderi silinsin mi?';
+	/// tr: 'Gönderiyi Sil?'
+	String get deletePostTitle => 'Gönderiyi Sil?';
 
 	/// tr: 'Açıklama yaz...'
 	String get captionHint => 'Açıklama yaz...';
+
+	/// tr: 'Yanıtla'
+	String get reply => 'Yanıtla';
+
+	/// tr: '{count} diğer yanıtı gör'
+	String viewOtherReplies({required Object count}) => '${count} diğer yanıtı gör';
+
+	/// tr: 'Öne çıkar'
+	String get boost => 'Öne çıkar';
+
+	/// tr: 'Bu gönderiyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.'
+	String get deletePostMessage => 'Bu gönderiyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.';
 }
 
 // Path: discover.story
@@ -3372,6 +3393,8 @@ extension on Translations {
 			'discover.createSpace.nameSubtitle' => 'Oluşturduğun gruba bir isim ver',
 			'discover.createSpace.nameHint' => 'Gece Kuşu',
 			'discover.createSpace.createRoomFor' => ({required Object count}) => '${count} tokene oluştur',
+			'discover.createSpace.requirePermission' => 'İzin alınsın',
+			'discover.createSpace.requirePermissionSubtitle' => 'Katılmak için onay gereksin',
 			'discover.liveRoom.adminSuffix' => '(Yönetici)',
 			'discover.liveRoom.messageHint' => 'Mesaj',
 			'discover.liveRoom.quickReplyHey' => 'Herkese merhaba!',
@@ -3413,10 +3436,10 @@ extension on Translations {
 			'discover.groupInfo.addPeople' => 'Kişi Ekle',
 			'discover.groupInfo.you' => 'Sen',
 			'discover.groupInfo.admin' => 'Yönetici',
-			'discover.groupInfo.leaveGroup' => 'Gruptan ayrıl',
-			'discover.groupInfo.requests' => 'Katılma istekleri',
 			_ => null,
 		} ?? switch (path) {
+			'discover.groupInfo.leaveGroup' => 'Gruptan ayrıl',
+			'discover.groupInfo.requests' => 'Katılma istekleri',
 			'discover.groupInfo.approve' => 'Onayla',
 			'discover.groupInfo.reject' => 'Reddet',
 			'discover.groupInfo.addPeopleEmpty' => 'Gruba eklemek için önce birilerini takip et.',
@@ -3454,8 +3477,12 @@ extension on Translations {
 			'discover.post.edit' => 'Düzenle',
 			'discover.post.delete' => 'Sil',
 			'discover.post.editCaption' => 'Açıklamayı düzenle',
-			'discover.post.deletePostTitle' => 'Bu gönderi silinsin mi?',
+			'discover.post.deletePostTitle' => 'Gönderiyi Sil?',
 			'discover.post.captionHint' => 'Açıklama yaz...',
+			'discover.post.reply' => 'Yanıtla',
+			'discover.post.viewOtherReplies' => ({required Object count}) => '${count} diğer yanıtı gör',
+			'discover.post.boost' => 'Öne çıkar',
+			'discover.post.deletePostMessage' => 'Bu gönderiyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.',
 			'discover.story.draft' => 'TASLAK',
 			'discover.story.story' => 'HİKÂYE',
 			'discover.story.share' => 'Paylaş',
@@ -3498,6 +3525,7 @@ extension on Translations {
 			'discover.stats.boosted' => 'Öne çıkarıldı! Gönderin 24 saat boyunca en üstte.',
 			'discover.hostedBy' => ({required Object name}) => '${name} sunuyor',
 			'discover.requestPending' => 'İsteğin gönderildi, onay bekleniyor.',
+			'discover.enter' => 'Gir',
 			'common.loading' => 'Yükleniyor…',
 			'common.retry' => 'Tekrar dene',
 			'common.cancel' => 'İptal',

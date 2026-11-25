@@ -107,16 +107,20 @@ class _MainShellState extends State<MainShell> {
   }
 
   /// Gelen arama (socket `call:incoming` ya da arama bildirimi).
-  /// kind=direct: sohbetten birebir arama; diğerleri rastgele (anonim) arama daveti.
+  /// kind=direct: sohbetten birebir arama.
+  /// Rastgele eşleşme yalnızca iki taraf da arama kuyruğundayken `call:matched`
+  /// ile olur; idle kullanıcıya stranger daveti açılmaz.
   void _openIncomingCall(Map<String, dynamic> event) {
     final inviteId = event['inviteId'];
     if (inviteId is! String || inviteId.isEmpty || !mounted || _incomingCallId == inviteId) {
       return;
     }
+    if (event['kind'] != 'direct') {
+      // Arama yapmayan kullanıcıya rastgele eşleşme daveti gösterme.
+      return;
+    }
     _incomingCallId = inviteId;
-    final open = event['kind'] == 'direct'
-        ? DirectCallPage.openIncoming(context, event)
-        : CallStrangerPage.openIncoming(context, {'inviteId': inviteId});
+    final open = DirectCallPage.openIncoming(context, event);
     open.whenComplete(() {
       if (_incomingCallId == inviteId) _incomingCallId = null;
     });

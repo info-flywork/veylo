@@ -544,6 +544,7 @@ class _Translations$discover$pt extends Translations$discover$tr {
 	@override late final _Translations$discover$stats$pt stats = _Translations$discover$stats$pt._(_root);
 	@override String hostedBy({required Object name}) => 'Apresentado por ${name}';
 	@override String get requestPending => 'Seu pedido foi enviado e aguarda aprovação.';
+	@override String get enter => 'Entrar';
 }
 
 // Path: common
@@ -997,6 +998,8 @@ class _Translations$discover$createSpace$pt extends Translations$discover$create
 	@override String get nameSubtitle => 'Dê um nome ao grupo que você criou';
 	@override String get nameHint => 'Corujas da Noite';
 	@override String createRoomFor({required Object count}) => 'Criar por ${count} tokens';
+	@override String get requirePermission => 'Exigir permissão';
+	@override String get requirePermissionSubtitle => 'É preciso aprovação para entrar';
 }
 
 // Path: discover.liveRoom
@@ -1120,8 +1123,12 @@ class _Translations$discover$post$pt extends Translations$discover$post$tr {
 	@override String get edit => 'Editar';
 	@override String get delete => 'Excluir';
 	@override String get editCaption => 'Editar legenda';
-	@override String get deletePostTitle => 'Excluir esta publicação?';
+	@override String get deletePostTitle => 'Excluir publicação?';
 	@override String get captionHint => 'Escreva uma legenda...';
+	@override String get reply => 'Responder';
+	@override String viewOtherReplies({required Object count}) => 'Ver mais ${count} respostas';
+	@override String get boost => 'Impulsionar';
+	@override String get deletePostMessage => 'Tem certeza de que deseja excluir esta publicação? Esta ação não pode ser desfeita.';
 }
 
 // Path: discover.story
@@ -1699,6 +1706,8 @@ extension on TranslationsPt {
 			'discover.createSpace.nameSubtitle' => 'Dê um nome ao grupo que você criou',
 			'discover.createSpace.nameHint' => 'Corujas da Noite',
 			'discover.createSpace.createRoomFor' => ({required Object count}) => 'Criar por ${count} tokens',
+			'discover.createSpace.requirePermission' => 'Exigir permissão',
+			'discover.createSpace.requirePermissionSubtitle' => 'É preciso aprovação para entrar',
 			'discover.liveRoom.adminSuffix' => '(Admin)',
 			'discover.liveRoom.messageHint' => 'Mensagem',
 			'discover.liveRoom.quickReplyHey' => 'Oi, pessoal!',
@@ -1740,10 +1749,10 @@ extension on TranslationsPt {
 			'discover.groupInfo.admin' => 'Admin',
 			'discover.groupInfo.leaveGroup' => 'Sair do grupo',
 			'discover.groupInfo.requests' => 'Pedidos para entrar',
-			'discover.groupInfo.approve' => 'Aprovar',
-			'discover.groupInfo.reject' => 'Recusar',
 			_ => null,
 		} ?? switch (path) {
+			'discover.groupInfo.approve' => 'Aprovar',
+			'discover.groupInfo.reject' => 'Recusar',
 			'discover.groupInfo.addPeopleEmpty' => 'Siga pessoas para adicioná-las ao grupo.',
 			'discover.groupInfo.add' => 'Adicionar',
 			'discover.groupInfo.makeAdmin' => 'Tornar admin',
@@ -1779,8 +1788,12 @@ extension on TranslationsPt {
 			'discover.post.edit' => 'Editar',
 			'discover.post.delete' => 'Excluir',
 			'discover.post.editCaption' => 'Editar legenda',
-			'discover.post.deletePostTitle' => 'Excluir esta publicação?',
+			'discover.post.deletePostTitle' => 'Excluir publicação?',
 			'discover.post.captionHint' => 'Escreva uma legenda...',
+			'discover.post.reply' => 'Responder',
+			'discover.post.viewOtherReplies' => ({required Object count}) => 'Ver mais ${count} respostas',
+			'discover.post.boost' => 'Impulsionar',
+			'discover.post.deletePostMessage' => 'Tem certeza de que deseja excluir esta publicação? Esta ação não pode ser desfeita.',
 			'discover.story.draft' => 'RASCUNHO',
 			'discover.story.story' => 'STORY',
 			'discover.story.share' => 'Compartilhar',
@@ -1823,6 +1836,7 @@ extension on TranslationsPt {
 			'discover.stats.boosted' => 'Impulsionado! Seu post fica no topo por 24 horas.',
 			'discover.hostedBy' => ({required Object name}) => 'Apresentado por ${name}',
 			'discover.requestPending' => 'Seu pedido foi enviado e aguarda aprovação.',
+			'discover.enter' => 'Entrar',
 			'common.loading' => 'Carregando…',
 			'common.retry' => 'Tentar de novo',
 			'common.cancel' => 'Cancelar',

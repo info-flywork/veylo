@@ -493,7 +493,9 @@
       "createGroupTitle": "Gruppe erstellen",
       "nameSubtitle": "Gib deiner Gruppe einen Namen",
       "nameHint": "Nachteule",
-      "createRoomFor": "Für {count} Token erstellen"
+      "createRoomFor": "Für {count} Token erstellen",
+      "requirePermission": "Freigabe erforderlich",
+      "requirePermissionSubtitle": "Beitritt nur mit Zustimmung"
     },
     "liveRoom": {
       "adminSuffix": "(Admin)",
@@ -582,8 +584,12 @@
       "edit": "Bearbeiten",
       "delete": "Löschen",
       "editCaption": "Beschreibung bearbeiten",
-      "deletePostTitle": "Diesen Beitrag löschen?",
-      "captionHint": "Beschreibung schreiben..."
+      "deletePostTitle": "Beitrag löschen?",
+      "captionHint": "Beschreibung schreiben...",
+      "reply": "Antworten",
+      "viewOtherReplies": "{count} weitere Antworten anzeigen",
+      "boost": "Boosten",
+      "deletePostMessage": "Möchtest du diesen Beitrag wirklich löschen? Das kann nicht rückgängig gemacht werden."
     },
     "story": {
       "draft": "ENTWURF",
@@ -632,7 +638,8 @@
       "boosted": "Geboostet! Dein Beitrag ist 24 Stunden lang ganz oben."
     },
     "hostedBy": "Gehostet von {name}",
-    "requestPending": "Deine Anfrage wurde gesendet und wartet auf Bestätigung."
+    "requestPending": "Deine Anfrage wurde gesendet und wartet auf Bestätigung.",
+    "enter": "Eintreten"
   },
   "common": {
     "loading": "Wird geladen…",

@@ -7,9 +7,9 @@ abstract final class AppTextStyles {
   static const TextStyle splashBrand = TextStyle(
     fontFamily: AppFonts.poppins,
     fontWeight: FontWeight.w600,
-    fontSize: 36,
-    height: 40 / 36,
-    letterSpacing: 36 * -0.02,
+    fontSize: 40,
+    height: 44 / 40,
+    letterSpacing: 40 * -0.02,
     color: AppColors.black,
   );
 
@@ -1559,6 +1559,16 @@ abstract final class AppTextStyles {
     color: Color(0xD9FFFFFF),
   );
 
+  /// Post action count under side icons — Poppins Medium 12 / white
+  static const TextStyle postActionCount = TextStyle(
+    fontFamily: AppFonts.poppins,
+    fontWeight: FontWeight.w500,
+    fontSize: 12,
+    height: 16 / 12,
+    letterSpacing: 12 * -0.02,
+    color: AppColors.white,
+  );
+
   /// Add comment hint on post — Poppins Regular 14 / lh 20 / white
   static const TextStyle postCommentHint = TextStyle(
     fontFamily: AppFonts.poppins,
@@ -1616,6 +1626,25 @@ abstract final class AppTextStyles {
     height: 20 / 14,
     letterSpacing: 14 * -0.02,
     color: AppColors.textHintMuted,
+  );
+
+  /// Comment reply / view more — Poppins Medium 12 / muted
+  static const TextStyle commentReplyAction = TextStyle(
+    fontFamily: AppFonts.poppins,
+    fontWeight: FontWeight.w500,
+    fontSize: 12,
+    height: 16 / 12,
+    letterSpacing: 12 * -0.02,
+    color: AppColors.navInactive,
+  );
+
+  /// Comment like count under heart — Poppins Regular 11 / muted
+  static const TextStyle commentLikeCount = TextStyle(
+    fontFamily: AppFonts.poppins,
+    fontWeight: FontWeight.w400,
+    fontSize: 11,
+    height: 14 / 11,
+    color: AppColors.navInactive,
   );
 
   /// Story mode idle — Poppins Medium 16 / white @ 45%

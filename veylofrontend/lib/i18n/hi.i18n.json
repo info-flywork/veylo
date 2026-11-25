@@ -493,7 +493,9 @@
       "createGroupTitle": "ग्रुप बनाएँ",
       "nameSubtitle": "अपने ग्रुप को एक नाम दें",
       "nameHint": "रात के उल्लू",
-      "createRoomFor": "{count} टोकन में बनाएँ"
+      "createRoomFor": "{count} टोकन में बनाएँ",
+      "requirePermission": "अनुमति आवश्यक",
+      "requirePermissionSubtitle": "शामिल होने के लिए स्वीकृति चाहिए"
     },
     "liveRoom": {
       "adminSuffix": "(एडमिन)",
@@ -582,8 +584,12 @@
       "edit": "संपादित करें",
       "delete": "हटाएँ",
       "editCaption": "कैप्शन संपादित करें",
-      "deletePostTitle": "यह पोस्ट हटाएँ?",
-      "captionHint": "कैप्शन लिखें..."
+      "deletePostTitle": "पोस्ट हटाएँ?",
+      "captionHint": "कैप्शन लिखें...",
+      "reply": "जवाब दें",
+      "viewOtherReplies": "{count} और जवाब देखें",
+      "boost": "बूस्ट",
+      "deletePostMessage": "क्या आप वाकई इस पोस्ट को हटाना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।"
     },
     "story": {
       "draft": "ड्राफ़्ट",
@@ -632,7 +638,8 @@
       "boosted": "बूस्ट हो गया! आपकी पोस्ट 24 घंटे तक सबसे ऊपर रहेगी।"
     },
     "hostedBy": "होस्ट: {name}",
-    "requestPending": "आपका अनुरोध भेजा गया है, मंज़ूरी का इंतज़ार है।"
+    "requestPending": "आपका अनुरोध भेजा गया है, मंज़ूरी का इंतज़ार है।",
+    "enter": "प्रवेश"
   },
   "common": {
     "loading": "लोड हो रहा है…",

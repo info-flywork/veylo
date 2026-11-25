@@ -1,4 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.CAMERA"/>
@@ -6,9 +7,22 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <!-- Galeri: image_picker sistem fotoğraf seçicisini kullanır; geniş READ_MEDIA gerekmez. -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
-    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <!-- RevenueCat / Google Play Billing -->
+    <uses-permission android:name="com.android.vending.BILLING"/>
+    <!-- Agora ekran paylaşımı kullanmıyoruz; Play FGS beyanını tetiklemesin. -->
+    <uses-permission
+        android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION"
+        tools:node="remove"/>
+    <uses-permission
+        android:name="android.permission.FOREGROUND_SERVICE"
+        tools:node="remove"/>
+    <!-- Donanım zorunlu olmasın; Wi‑Fi/kamerası olmayan cihazlar da yükleyebilsin. -->
+    <uses-feature android:name="android.hardware.camera" android:required="false" tools:replace="android:required"/>
+    <uses-feature android:name="android.hardware.camera.any" android:required="false" tools:replace="android:required"/>
+    <uses-feature android:name="android.hardware.wifi" android:required="false" tools:replace="android:required"/>
+    <uses-feature android:name="android.hardware.microphone" android:required="false" tools:replace="android:required"/>
     <application
         android:label="veylo"
         android:name="${applicationName}"
@@ -59,5 +73,7 @@
             <action android:name="android.intent.action.SENDTO"/>
             <data android:scheme="mailto"/>
         </intent>
+        <!-- Google Play Billing (RevenueCat) -->
+        <package android:name="com.android.vending"/>
     </queries>
 </manifest>

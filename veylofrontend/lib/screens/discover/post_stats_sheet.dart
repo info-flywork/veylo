@@ -1,34 +1,43 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/widgets/app_text.dart';
+import 'package:veylo/data/remote/discover_store.dart';
 import 'package:veylo/data/remote/post_repository.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
 
-/// Paylaşım sonrası İstatistik bottom sheet (Figma).
+/// Paylaşım sonrası / kendi gönderi İstatistik bottom sheet (Figma).
 /// [postId] verilirse gerçek istatistikler ve token'lı öne çıkarma.
-Future<void> showPostStatsSheet(
+/// Başarılı boost sonrası `true` döner.
+Future<bool> showPostStatsSheet(
   BuildContext context, {
-  required String imagePath,
+  String? imagePath,
+  String? imageUrl,
   String? postId,
 }) {
-  return showModalBottomSheet<void>(
+  return showModalBottomSheet<bool>(
     context: context,
     backgroundColor: Colors.transparent,
     isScrollControlled: true,
-    builder: (context) => _PostStatsSheet(imagePath: imagePath, postId: postId),
-  );
+    builder: (context) => _PostStatsSheet(
+      imagePath: imagePath,
+      imageUrl: imageUrl,
+      postId: postId,
+    ),
+  ).then((v) => v ?? false);
 }
 
 class _PostStatsSheet extends StatefulWidget {
-  const _PostStatsSheet({required this.imagePath, this.postId});
+  const _PostStatsSheet({this.imagePath, this.imageUrl, this.postId});
 
-  final String imagePath;
+  final String? imagePath;
+  final String? imageUrl;
   final String? postId;
 
   @override
@@ -38,8 +47,6 @@ class _PostStatsSheet extends StatefulWidget {
 class _PostStatsSheetState extends State<_PostStatsSheet> {
   ({int views, int likes, int comments, DateTime? boostedUntil})? _stats;
   bool _boosting = false;
-
-  String get imagePath => widget.imagePath;
 
   @override
   void initState() {
@@ -74,7 +81,11 @@ class _PostStatsSheetState extends State<_PostStatsSheet> {
 
   Future<void> _boost() async {
     final id = widget.postId;
-    if (id == null) return Navigator.of(context).pop();
+    // Gönderi yoksa kapat — profil/vibes boost sayfasına gitme.
+    if (id == null) {
+      Navigator.of(context).pop(false);
+      return;
+    }
     if (_boosting) return;
     setState(() => _boosting = true);
     final messenger = ScaffoldMessenger.of(context);
@@ -82,8 +93,10 @@ class _PostStatsSheetState extends State<_PostStatsSheet> {
     try {
       final balance = await PostRepository.instance.boost(id);
       SessionStore.instance.updateTokenBalance(balance);
+      // Keşfet akışında ilk sıralara al.
+      DiscoverStore.instance.promote(id);
       if (!mounted) return;
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(true);
       messenger.showSnackBar(
         SnackBar(content: Text(text), behavior: SnackBarBehavior.floating),
       );
@@ -93,6 +106,26 @@ class _PostStatsSheetState extends State<_PostStatsSheet> {
         showErrorSnackBar(context, e);
       }
     }
+  }
+
+  Widget _previewImage() {
+    final path = widget.imagePath;
+    if (path != null && File(path).existsSync()) {
+      return Image.file(
+        File(path),
+        fit: BoxFit.cover,
+        errorBuilder: (_, _, _) => const SizedBox.expand(),
+      );
+    }
+    final url = widget.imageUrl;
+    if (url != null && url.isNotEmpty) {
+      return Image(
+        image: CachedNetworkImageProvider(url),
+        fit: BoxFit.cover,
+        errorBuilder: (_, _, _) => const SizedBox.expand(),
+      );
+    }
+    return const SizedBox.expand();
   }
 
   static const _avatarSize = 100.0;
@@ -208,13 +241,7 @@ class _PostStatsSheetState extends State<_PostStatsSheet> {
                 ),
               ],
             ),
-            child: ClipOval(
-              child: Image.file(
-                File(imagePath),
-                fit: BoxFit.cover,
-                errorBuilder: (_, _, _) => const SizedBox.expand(),
-              ),
-            ),
+            child: ClipOval(child: _previewImage()),
           ),
         ),
       ],

@@ -63,6 +63,7 @@ class _CreateRoomOrGroupSheet extends StatefulWidget {
 class _CreateRoomOrGroupSheetState extends State<_CreateRoomOrGroupSheet> {
   CreateSpaceType _type = CreateSpaceType.room;
   bool _hideAccount = true;
+  bool _requirePermission = false;
 
   static const _selectedFill = Color(0x0D998FED); // #998FED @ 5%
 
@@ -143,18 +144,48 @@ class _CreateRoomOrGroupSheetState extends State<_CreateRoomOrGroupSheet> {
               ],
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Row(
+              children: [
+                const Icon(Icons.verified_user_outlined, size: 24),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppText(
+                        t.requirePermission,
+                        style: AppTextStyles.createSpaceOption,
+                      ),
+                      AppText(
+                        t.requirePermissionSubtitle,
+                        style: AppTextStyles.allRoomSubtitle,
+                      ),
+                    ],
+                  ),
+                ),
+                _NotificationsToggle(
+                  value: _requirePermission,
+                  onChanged: (v) => setState(() => _requirePermission = v),
+                ),
+              ],
+            ),
+          ),
           const SizedBox(height: 20),
           AppPrimaryButton(
             label: t.create,
             onPressed: () async {
               final type = _type;
               final hideAccount = _hideAccount;
+              final requirePermission = _requirePermission;
               final nav = Navigator.of(context, rootNavigator: true);
               nav.pop();
               final created = await showCreateRoomNameSheet(
                 nav.context,
                 type: type,
                 hideAccount: hideAccount,
+                isPrivate: requirePermission,
               );
               if (created == null || !nav.mounted) return;
               await _openCreated(nav, created);

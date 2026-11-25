@@ -544,6 +544,7 @@ class _Translations$discover$ko extends Translations$discover$tr {
 	@override late final _Translations$discover$stats$ko stats = _Translations$discover$stats$ko._(_root);
 	@override String hostedBy({required Object name}) => '호스트: ${name}';
 	@override String get requestPending => '요청을 보냈어요. 승인을 기다리는 중이에요.';
+	@override String get enter => '입장';
 }
 
 // Path: common
@@ -997,6 +998,8 @@ class _Translations$discover$createSpace$ko extends Translations$discover$create
 	@override String get nameSubtitle => '만든 그룹의 이름을 정해주세요';
 	@override String get nameHint => '올빼미족';
 	@override String createRoomFor({required Object count}) => '${count} 토큰으로 만들기';
+	@override String get requirePermission => '승인 필요';
+	@override String get requirePermissionSubtitle => '참여하려면 승인이 필요해요';
 }
 
 // Path: discover.liveRoom
@@ -1120,8 +1123,12 @@ class _Translations$discover$post$ko extends Translations$discover$post$tr {
 	@override String get edit => '수정';
 	@override String get delete => '삭제';
 	@override String get editCaption => '캡션 수정';
-	@override String get deletePostTitle => '이 게시물을 삭제할까요?';
+	@override String get deletePostTitle => '게시물을 삭제할까요?';
 	@override String get captionHint => '캡션을 입력하세요...';
+	@override String get reply => '답글';
+	@override String viewOtherReplies({required Object count}) => '다른 답글 ${count}개 보기';
+	@override String get boost => '부스트';
+	@override String get deletePostMessage => '이 게시물을 정말 삭제할까요? 이 작업은 되돌릴 수 없어요.';
 }
 
 // Path: discover.story
@@ -1699,6 +1706,8 @@ extension on TranslationsKo {
 			'discover.createSpace.nameSubtitle' => '만든 그룹의 이름을 정해주세요',
 			'discover.createSpace.nameHint' => '올빼미족',
 			'discover.createSpace.createRoomFor' => ({required Object count}) => '${count} 토큰으로 만들기',
+			'discover.createSpace.requirePermission' => '승인 필요',
+			'discover.createSpace.requirePermissionSubtitle' => '참여하려면 승인이 필요해요',
 			'discover.liveRoom.adminSuffix' => '(관리자)',
 			'discover.liveRoom.messageHint' => '메시지',
 			'discover.liveRoom.quickReplyHey' => '안녕하세요, 여러분!',
@@ -1740,10 +1749,10 @@ extension on TranslationsKo {
 			'discover.groupInfo.admin' => '관리자',
 			'discover.groupInfo.leaveGroup' => '그룹 나가기',
 			'discover.groupInfo.requests' => '참여 요청',
-			'discover.groupInfo.approve' => '수락',
-			'discover.groupInfo.reject' => '거절',
 			_ => null,
 		} ?? switch (path) {
+			'discover.groupInfo.approve' => '수락',
+			'discover.groupInfo.reject' => '거절',
 			'discover.groupInfo.addPeopleEmpty' => '그룹에 추가하려면 먼저 팔로우하세요.',
 			'discover.groupInfo.add' => '추가',
 			'discover.groupInfo.makeAdmin' => '관리자로 지정',
@@ -1779,8 +1788,12 @@ extension on TranslationsKo {
 			'discover.post.edit' => '수정',
 			'discover.post.delete' => '삭제',
 			'discover.post.editCaption' => '캡션 수정',
-			'discover.post.deletePostTitle' => '이 게시물을 삭제할까요?',
+			'discover.post.deletePostTitle' => '게시물을 삭제할까요?',
 			'discover.post.captionHint' => '캡션을 입력하세요...',
+			'discover.post.reply' => '답글',
+			'discover.post.viewOtherReplies' => ({required Object count}) => '다른 답글 ${count}개 보기',
+			'discover.post.boost' => '부스트',
+			'discover.post.deletePostMessage' => '이 게시물을 정말 삭제할까요? 이 작업은 되돌릴 수 없어요.',
 			'discover.story.draft' => '임시저장',
 			'discover.story.story' => '스토리',
 			'discover.story.share' => '공유',
@@ -1823,6 +1836,7 @@ extension on TranslationsKo {
 			'discover.stats.boosted' => '부스트 완료! 24시간 동안 게시물이 상단에 노출돼요.',
 			'discover.hostedBy' => ({required Object name}) => '호스트: ${name}',
 			'discover.requestPending' => '요청을 보냈어요. 승인을 기다리는 중이에요.',
+			'discover.enter' => '입장',
 			'common.loading' => '불러오는 중…',
 			'common.retry' => '다시 시도',
 			'common.cancel' => '취소',

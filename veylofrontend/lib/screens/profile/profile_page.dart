@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/data/remote/chat_repository.dart';
+import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/data/remote/safety_repository.dart';
 import 'package:veylo/data/remote/user_repository.dart';
 import 'package:veylo/core/state/discover_highlight.dart';
@@ -278,6 +279,7 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() => _messageBusy = true);
     try {
       final thread = await ChatRepository.instance.createDirect(id!);
+      ChatStore.instance.replace(thread);
       if (!mounted) return;
       await DirectChatPage.open(context, thread);
     } catch (e) {

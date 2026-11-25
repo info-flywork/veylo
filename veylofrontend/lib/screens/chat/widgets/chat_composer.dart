@@ -167,7 +167,14 @@ class _ChatComposerState extends State<ChatComposer> {
         '${Directory.systemTemp.path}/veylo-chat-${DateTime.now().millisecondsSinceEpoch}.m4a';
     try {
       await _recorder.start(
-        const RecordConfig(encoder: AudioEncoder.aacLc),
+        const RecordConfig(
+          encoder: AudioEncoder.aacLc,
+          bitRate: 128000,
+          sampleRate: 44100,
+          numChannels: 1,
+          // Düşük seviye kayıtları yükseltir (sesli mesaj şikayeti).
+          autoGain: true,
+        ),
         path: path,
       );
     } catch (e) {
