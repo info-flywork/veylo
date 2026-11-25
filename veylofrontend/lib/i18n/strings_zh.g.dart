@@ -174,7 +174,7 @@ class _Translations$chats$zh extends Translations$chats$tr {
 	@override String get messageCopy => '复制';
 	@override String get messageEdit => '编辑';
 	@override String get messageDelete => '删除';
-	@override String get messageReport => '举报';
+	@override String get messageReport => '举报消息';
 	@override String get messageEdited => '已编辑';
 	@override String get messageReplying => '正在回复';
 	@override String get messageEditing => '正在编辑';
@@ -198,6 +198,13 @@ class _Translations$chats$zh extends Translations$chats$tr {
 	@override String get videoCall => '视频通话';
 	@override String get videoLocked => '你们双方都公开资料后，即可使用视频通话。';
 	@override String get openSettings => '设置';
+	@override String get reportUser => '举报用户';
+	@override String get blockUserFull => '屏蔽用户';
+	@override String get reportMessage => '举报消息';
+	@override String get reportRoom => '举报房间';
+	@override String get reportGroup => '举报群组';
+	@override String get leaveRoom => '离开房间';
+	@override String get leaveGroup => '退出群组';
 }
 
 // Path: profile
@@ -417,6 +424,12 @@ class _Translations$profile$zh extends Translations$profile$tr {
 	@override String get boostActiveTitle => 'You\'re standing out!';
 	@override String boostRemaining({required Object time}) => '${time} left';
 	@override String get boostExtend => 'Extend';
+	@override String get blockedUsers => '已屏蔽用户';
+	@override String get blockedUsersEmpty => '暂无已屏蔽用户';
+	@override String get blockedUsersEmptyHint => '你屏蔽的人会显示在这里。';
+	@override String get blockedAnonymous => '匿名用户';
+	@override String get unblock => '取消屏蔽';
+	@override String unblockedDone({required Object username}) => '已取消屏蔽 ${username}。';
 }
 
 // Path: nav
@@ -1333,7 +1346,7 @@ extension on TranslationsZh {
 			'chats.messageCopy' => '复制',
 			'chats.messageEdit' => '编辑',
 			'chats.messageDelete' => '删除',
-			'chats.messageReport' => '举报',
+			'chats.messageReport' => '举报消息',
 			'chats.messageEdited' => '已编辑',
 			'chats.messageReplying' => '正在回复',
 			'chats.messageEditing' => '正在编辑',
@@ -1357,6 +1370,13 @@ extension on TranslationsZh {
 			'chats.videoCall' => '视频通话',
 			'chats.videoLocked' => '你们双方都公开资料后，即可使用视频通话。',
 			'chats.openSettings' => '设置',
+			'chats.reportUser' => '举报用户',
+			'chats.blockUserFull' => '屏蔽用户',
+			'chats.reportMessage' => '举报消息',
+			'chats.reportRoom' => '举报房间',
+			'chats.reportGroup' => '举报群组',
+			'chats.leaveRoom' => '离开房间',
+			'chats.leaveGroup' => '退出群组',
 			'profile.eyebrow' => '个人资料',
 			'profile.title' => '设置',
 			'profile.editProfile' => '编辑资料',
@@ -1567,6 +1587,12 @@ extension on TranslationsZh {
 			'profile.boostActiveTitle' => 'You\'re standing out!',
 			'profile.boostRemaining' => ({required Object time}) => '${time} left',
 			'profile.boostExtend' => 'Extend',
+			'profile.blockedUsers' => '已屏蔽用户',
+			'profile.blockedUsersEmpty' => '暂无已屏蔽用户',
+			'profile.blockedUsersEmptyHint' => '你屏蔽的人会显示在这里。',
+			'profile.blockedAnonymous' => '匿名用户',
+			'profile.unblock' => '取消屏蔽',
+			'profile.unblockedDone' => ({required Object username}) => '已取消屏蔽 ${username}。',
 			'nav.discover' => '发现',
 			'nav.chat' => '聊天',
 			'nav.call' => '通话',
@@ -1744,6 +1770,8 @@ extension on TranslationsZh {
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} 位用户',
 			'discover.groupChat.sampleVictoria' => '好无聊啊，大家要不要一起做点什么？',
 			'discover.groupChat.sampleSona' => '我们能做点什么？你有什么想法？',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupChat.sampleOwn' => '我们在码头见吧',
 			'discover.groupInfo.media' => '媒体',
 			'discover.groupInfo.gallery' => '相册',
@@ -1757,8 +1785,6 @@ extension on TranslationsZh {
 			'discover.groupInfo.admin' => '管理员',
 			'discover.groupInfo.leaveGroup' => '退出群组',
 			'discover.groupInfo.requests' => '加入申请',
-			_ => null,
-		} ?? switch (path) {
 			'discover.groupInfo.approve' => '同意',
 			'discover.groupInfo.reject' => '拒绝',
 			'discover.groupInfo.addPeopleEmpty' => '关注他人后即可将其加入群组。',

@@ -92,7 +92,7 @@
     "messageCopy": "Copia",
     "messageEdit": "Modifica",
     "messageDelete": "Elimina",
-    "messageReport": "Segnala",
+    "messageReport": "Segnala messaggio",
     "messageEdited": "modificato",
     "messageReplying": "Rispondendo",
     "messageEditing": "Modifica",
@@ -115,7 +115,14 @@
     "voiceCall": "Chiamata vocale",
     "videoCall": "Videochiamata",
     "videoLocked": "Le videochiamate si sbloccano quando entrambi rivelate i vostri profili.",
-    "openSettings": "Impostazioni"
+    "openSettings": "Impostazioni",
+    "reportUser": "Segnala utente",
+    "blockUserFull": "Blocca utente",
+    "reportMessage": "Segnala messaggio",
+    "reportRoom": "Segnala stanza",
+    "reportGroup": "Segnala gruppo",
+    "leaveRoom": "Lascia la stanza",
+    "leaveGroup": "Lascia il gruppo"
   },
   "profile": {
     "eyebrow": "Profilo",
@@ -327,7 +334,13 @@
     "zodiacPisces": "Pesci",
     "boostActiveTitle": "You're standing out!",
     "boostRemaining": "{time} left",
-    "boostExtend": "Extend"
+    "boostExtend": "Extend",
+    "blockedUsers": "Utenti bloccati",
+    "blockedUsersEmpty": "Nessun utente bloccato",
+    "blockedUsersEmptyHint": "Le persone che blocchi appariranno qui.",
+    "blockedAnonymous": "Utente anonimo",
+    "unblock": "Sblocca",
+    "unblockedDone": "{username} è stato sbloccato."
   },
   "nav": {
     "discover": "Scopri",

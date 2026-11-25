@@ -12,9 +12,11 @@ import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/chat/chat_message.dart';
 import 'package:veylo/models/chat/chat_thread.dart';
 import 'package:veylo/models/group/group_models.dart';
+import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/screens/chat/chat_actions_sheet.dart';
 import 'package:veylo/screens/chat/chat_sticker.dart';
 import 'package:veylo/screens/chat/conversation_controller.dart';
+import 'package:veylo/screens/chat/conversation_safety_sheet.dart';
 import 'package:veylo/screens/chat/message_context_menu.dart';
 import 'package:veylo/screens/chat/message_forward_sheet.dart';
 import 'package:veylo/screens/chat/widgets/chat_attachment.dart';
@@ -273,9 +275,75 @@ class _GroupChatPageState extends State<GroupChatPage> {
             await deleteChatMessage(context, ctrl, m);
           case MessageMenuAction.report:
             await reportChatMessage(context, ctrl, m);
+          case MessageMenuAction.block:
+            await blockChatMessageUser(
+              context,
+              ctrl,
+              m,
+              closeScreen: false,
+            );
         }
       },
     );
+  }
+
+  Future<void> _openGroupSafetyMenu() async {
+    final conversationId = _ctrl?.thread.id ?? widget.thread.id;
+    final action = await showConversationSafetySheet(
+      context,
+      actions: const [
+        ConversationSafetyAction.reportGroup,
+        ConversationSafetyAction.leaveGroup,
+      ],
+    );
+    if (!mounted || action == null) return;
+    switch (action) {
+      case ConversationSafetyAction.reportGroup:
+        String? targetId;
+        try {
+          final info = await GroupRepository.instance.info(conversationId);
+          targetId = info.members
+              .where((m) => m.role == 'OWNER' && m.userId != null && !m.isYou)
+              .map((m) => m.userId)
+              .firstOrNull;
+          targetId ??= info.members
+              .where((m) => m.userId != null && !m.isYou)
+              .map((m) => m.userId)
+              .firstOrNull;
+        } catch (_) {
+          targetId = _ctrl?.messages
+              .where((m) => !m.isMine && m.senderId != null)
+              .map((m) => m.senderId!)
+              .firstOrNull;
+        }
+        if (targetId == null) {
+          if (mounted) {
+            showErrorSnackBar(
+              context,
+              const ApiException(status: 404, code: 'PEER_UNAVAILABLE'),
+            );
+          }
+          return;
+        }
+        if (!mounted) return;
+        await reportTargetUser(
+          context,
+          userId: targetId,
+          conversationId: conversationId,
+          contextType: 'GROUP',
+          contentId: conversationId,
+        );
+      case ConversationSafetyAction.leaveGroup:
+        try {
+          await GroupRepository.instance.leave(conversationId);
+          ChatStore.instance.remove(conversationId);
+          if (mounted) Navigator.of(context).pop();
+        } catch (e) {
+          if (mounted) showErrorSnackBar(context, e);
+        }
+      default:
+        break;
+    }
   }
 
   Future<void> _send() async {
@@ -377,6 +445,7 @@ class _GroupChatPageState extends State<GroupChatPage> {
                       ),
                     ),
                   ),
+                  ChatHeaderMoreButton(onPressed: _openGroupSafetyMenu),
                 ],
               ),
             ),

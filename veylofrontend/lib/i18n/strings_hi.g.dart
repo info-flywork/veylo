@@ -174,7 +174,7 @@ class _Translations$chats$hi extends Translations$chats$tr {
 	@override String get messageCopy => 'कॉपी';
 	@override String get messageEdit => 'संपादित करें';
 	@override String get messageDelete => 'हटाएँ';
-	@override String get messageReport => 'रिपोर्ट';
+	@override String get messageReport => 'संदेश की रिपोर्ट करें';
 	@override String get messageEdited => 'संपादित';
 	@override String get messageReplying => 'जवाब दे रहे हैं';
 	@override String get messageEditing => 'संपादन';
@@ -198,6 +198,13 @@ class _Translations$chats$hi extends Translations$chats$tr {
 	@override String get videoCall => 'वीडियो कॉल';
 	@override String get videoLocked => 'जब आप दोनों अपनी प्रोफ़ाइल दिखा देंगे, तब वीडियो कॉल अनलॉक होगी।';
 	@override String get openSettings => 'सेटिंग्स';
+	@override String get reportUser => 'उपयोगकर्ता की रिपोर्ट करें';
+	@override String get blockUserFull => 'उपयोगकर्ता को ब्लॉक करें';
+	@override String get reportMessage => 'संदेश की रिपोर्ट करें';
+	@override String get reportRoom => 'रूम की रिपोर्ट करें';
+	@override String get reportGroup => 'ग्रुप की रिपोर्ट करें';
+	@override String get leaveRoom => 'रूम छोड़ें';
+	@override String get leaveGroup => 'ग्रुप छोड़ें';
 }
 
 // Path: profile
@@ -417,6 +424,12 @@ class _Translations$profile$hi extends Translations$profile$tr {
 	@override String get boostActiveTitle => 'You\'re standing out!';
 	@override String boostRemaining({required Object time}) => '${time} left';
 	@override String get boostExtend => 'Extend';
+	@override String get blockedUsers => 'ब्लॉक किए गए उपयोगकर्ता';
+	@override String get blockedUsersEmpty => 'कोई ब्लॉक उपयोगकर्ता नहीं';
+	@override String get blockedUsersEmptyHint => 'आपके ब्लॉक किए लोग यहाँ दिखेंगे।';
+	@override String get blockedAnonymous => 'अनाम उपयोगकर्ता';
+	@override String get unblock => 'अनब्लॉक';
+	@override String unblockedDone({required Object username}) => '${username} अनब्लॉक हो गया।';
 }
 
 // Path: nav
@@ -1333,7 +1346,7 @@ extension on TranslationsHi {
 			'chats.messageCopy' => 'कॉपी',
 			'chats.messageEdit' => 'संपादित करें',
 			'chats.messageDelete' => 'हटाएँ',
-			'chats.messageReport' => 'रिपोर्ट',
+			'chats.messageReport' => 'संदेश की रिपोर्ट करें',
 			'chats.messageEdited' => 'संपादित',
 			'chats.messageReplying' => 'जवाब दे रहे हैं',
 			'chats.messageEditing' => 'संपादन',
@@ -1357,6 +1370,13 @@ extension on TranslationsHi {
 			'chats.videoCall' => 'वीडियो कॉल',
 			'chats.videoLocked' => 'जब आप दोनों अपनी प्रोफ़ाइल दिखा देंगे, तब वीडियो कॉल अनलॉक होगी।',
 			'chats.openSettings' => 'सेटिंग्स',
+			'chats.reportUser' => 'उपयोगकर्ता की रिपोर्ट करें',
+			'chats.blockUserFull' => 'उपयोगकर्ता को ब्लॉक करें',
+			'chats.reportMessage' => 'संदेश की रिपोर्ट करें',
+			'chats.reportRoom' => 'रूम की रिपोर्ट करें',
+			'chats.reportGroup' => 'ग्रुप की रिपोर्ट करें',
+			'chats.leaveRoom' => 'रूम छोड़ें',
+			'chats.leaveGroup' => 'ग्रुप छोड़ें',
 			'profile.eyebrow' => 'प्रोफ़ाइल',
 			'profile.title' => 'सेटिंग्स',
 			'profile.editProfile' => 'प्रोफ़ाइल एडिट करें',
@@ -1567,6 +1587,12 @@ extension on TranslationsHi {
 			'profile.boostActiveTitle' => 'You\'re standing out!',
 			'profile.boostRemaining' => ({required Object time}) => '${time} left',
 			'profile.boostExtend' => 'Extend',
+			'profile.blockedUsers' => 'ब्लॉक किए गए उपयोगकर्ता',
+			'profile.blockedUsersEmpty' => 'कोई ब्लॉक उपयोगकर्ता नहीं',
+			'profile.blockedUsersEmptyHint' => 'आपके ब्लॉक किए लोग यहाँ दिखेंगे।',
+			'profile.blockedAnonymous' => 'अनाम उपयोगकर्ता',
+			'profile.unblock' => 'अनब्लॉक',
+			'profile.unblockedDone' => ({required Object username}) => '${username} अनब्लॉक हो गया।',
 			'nav.discover' => 'डिस्कवर',
 			'nav.chat' => 'चैट',
 			'nav.call' => 'कॉल',
@@ -1744,6 +1770,8 @@ extension on TranslationsHi {
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} यूज़र',
 			'discover.groupChat.sampleVictoria' => 'मैं बहुत बोर हो रही हूँ। दोस्तों, कुछ करें?',
 			'discover.groupChat.sampleSona' => 'क्या करें? आपके मन में क्या है?',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupChat.sampleOwn' => 'चलो घाट पर मिलते हैं',
 			'discover.groupInfo.media' => 'मीडिया',
 			'discover.groupInfo.gallery' => 'गैलरी',
@@ -1757,8 +1785,6 @@ extension on TranslationsHi {
 			'discover.groupInfo.admin' => 'एडमिन',
 			'discover.groupInfo.leaveGroup' => 'ग्रुप छोड़ें',
 			'discover.groupInfo.requests' => 'जॉइन रिक्वेस्ट',
-			_ => null,
-		} ?? switch (path) {
 			'discover.groupInfo.approve' => 'स्वीकार करें',
 			'discover.groupInfo.reject' => 'अस्वीकार करें',
 			'discover.groupInfo.addPeopleEmpty' => 'लोगों को ग्रुप में जोड़ने के लिए पहले उन्हें फ़ॉलो करें।',

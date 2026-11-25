@@ -217,7 +217,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
     if (file == null || !mounted) return;
     setState(() => _uploadingPhoto = true);
     try {
+      // SessionStore.setMe → alt bar Profil ikonu anında kullanıcının fotoğrafına döner.
       await UserRepository.instance.uploadAvatar(file.path);
+      if (mounted) setState(() {});
     } catch (e) {
       if (mounted) showErrorSnackBar(context, e);
     } finally {

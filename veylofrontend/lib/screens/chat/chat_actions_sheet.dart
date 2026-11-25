@@ -5,20 +5,20 @@ import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/data/remote/chat_store.dart';
+import 'package:veylo/data/remote/discover_store.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/chat/chat_message.dart';
-import 'package:veylo/models/chat/chat_thread.dart';
-import 'package:veylo/models/profile/profile_user.dart';
 import 'package:veylo/screens/chat/conversation_controller.dart';
+import 'package:veylo/screens/chat/conversation_safety_sheet.dart';
 import 'package:veylo/screens/chat/report_reason_sheet.dart';
 import 'package:veylo/screens/profile/block_user_sheet.dart';
 
-enum _ChatMenuAction { mute, block, delete }
+enum _ChatMenuAction { mute, report, block, delete }
 
 /// Figma: Engelle / Sil kırmızısı.
 const _kDanger = Color(0xFFD4537E);
 
-/// Sohbet başlığındaki "daha fazla" butonu (Direct / Anonim başlıklarıyla aynı ölçü).
+/// Sohbet başlığındaki "daha fazla" butonu (üç nokta).
 class ChatHeaderMoreButton extends StatelessWidget {
   const ChatHeaderMoreButton({super.key, required this.onPressed});
 
@@ -29,25 +29,16 @@ class ChatHeaderMoreButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       behavior: HitTestBehavior.opaque,
-      child: SizedBox(
+      child: const SizedBox(
+        width: 44,
         height: 44,
-        child: Center(
-          child: SvgPicture.asset(
-            AppAssets.iconSettings,
-            width: 24,
-            height: 24,
-            colorFilter: const ColorFilter.mode(
-              Color(0xFF5F5F5F),
-              BlendMode.srcIn,
-            ),
-          ),
-        ),
+        child: Icon(Icons.more_horiz, size: 24, color: Color(0xFF5F5F5F)),
       ),
     );
   }
 }
 
-/// Başlıktaki menü: Sessize al / Engelle / Sohbeti sil.
+/// Başlıktaki menü: Sessize al / Şikayet / Engelle / Sohbeti sil.
 Future<void> showChatActionsMenu(
   BuildContext context,
   ConversationController controller,
@@ -58,7 +49,6 @@ Future<void> showChatActionsMenu(
     context: context,
     backgroundColor: AppColors.white,
     isScrollControlled: true,
-    // Safe area'yı kendimiz yönetiyoruz; çift boşluk olmasın.
     useSafeArea: false,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
@@ -75,12 +65,35 @@ Future<void> showChatActionsMenu(
       } catch (e) {
         if (context.mounted) showErrorSnackBar(context, e);
       }
+    case _ChatMenuAction.report:
+      final peerId = thread.peerUserId;
+      if (peerId == null) return;
+      await reportTargetUser(
+        context,
+        userId: peerId,
+        conversationId: thread.id,
+        contextType: 'CHAT',
+      );
     case _ChatMenuAction.block:
       await showBlockUserSheet(
         context,
-        user: _peerUser(thread),
+        user: safetyPeerUser(
+          id: thread.peerUserId ?? '',
+          username: thread.peerUsername,
+          displayName: thread.isAnonymous
+              ? (thread.maskedName ?? thread.title)
+              : thread.title,
+          avatarUrl: thread.avatarUrl,
+        ),
         conversationId: thread.id,
-        onDone: () => ChatStore.instance.remove(thread.id),
+        // leaveProfile ile onDone.pop birlikte çift pop yapıp siyah ekrana düşüyordu.
+        onDone: () {
+          applyInstantBlockSideEffects(thread.peerUserId);
+          ChatStore.instance.remove(thread.id);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (navigator.mounted) navigator.maybePop();
+          });
+        },
       );
     case _ChatMenuAction.delete:
       try {
@@ -111,22 +124,53 @@ Future<void> reportChatMessage(
 ) {
   return showReportReasonSheet(
     context,
-    onSubmit: (reason) => controller.reportMessage(message, reason),
+    onSubmit: (reason) async {
+      await controller.reportMessage(message, reason);
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(Translations.of(context).profile.reportSent),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    },
   );
 }
 
-ProfileUser _peerUser(ChatThread thread) => ProfileUser(
-  id: thread.peerUserId ?? '',
-  displayName: thread.isAnonymous
-      ? (thread.maskedName ?? thread.title)
-      : thread.title,
-  username: thread.peerUsername,
-  avatarUrl: thread.avatarUrl,
-  bio: '',
-  likeCount: 0,
-  followCount: 0,
-  followerCount: 0,
-);
+Future<void> blockChatMessageUser(
+  BuildContext context,
+  ConversationController controller,
+  ChatMessage message, {
+  bool closeScreen = true,
+}) async {
+  final thread = controller.thread;
+  final userId = message.senderId ?? thread.peerUserId;
+  if (userId == null || message.isMine) return;
+
+  await showBlockUserSheet(
+    context,
+    user: safetyPeerUser(
+      id: userId,
+      displayName: message.senderName ?? thread.title,
+      avatarUrl: message.senderAvatarUrl ?? thread.avatarUrl,
+    ),
+    conversationId: thread.isGroup ? null : thread.id,
+    onDone: () {
+      controller.hideMessagesFrom(userId);
+      applyInstantBlockSideEffects(userId);
+      DiscoverStore.instance.removeByAuthor(userId);
+      if (!thread.isGroup) {
+        ChatStore.instance.remove(thread.id);
+        if (closeScreen) {
+          final nav = Navigator.of(context);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (nav.mounted) nav.maybePop();
+          });
+        }
+      }
+    },
+  );
+}
 
 class _ChatActionsSheet extends StatelessWidget {
   const _ChatActionsSheet({required this.muted});
@@ -153,8 +197,14 @@ class _ChatActionsSheet extends StatelessWidget {
             onTap: () => pick(_ChatMenuAction.mute),
           ),
           _ActionItem(
+            icon: Icons.flag_outlined,
+            label: tr.chats.reportUser,
+            color: _kDanger,
+            onTap: () => pick(_ChatMenuAction.report),
+          ),
+          _ActionItem(
             iconAsset: AppAssets.iconLucideBan,
-            label: tr.profile.block,
+            label: tr.chats.blockUserFull,
             color: _kDanger,
             onTap: () => pick(_ChatMenuAction.block),
           ),
@@ -172,13 +222,15 @@ class _ChatActionsSheet extends StatelessWidget {
 
 class _ActionItem extends StatelessWidget {
   const _ActionItem({
-    required this.iconAsset,
+    this.iconAsset,
+    this.icon,
     required this.label,
     required this.onTap,
     required this.color,
-  });
+  }) : assert(iconAsset != null || icon != null);
 
-  final String iconAsset;
+  final String? iconAsset;
+  final IconData? icon;
   final String label;
   final VoidCallback onTap;
   final Color color;
@@ -194,12 +246,15 @@ class _ActionItem extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SvgPicture.asset(
-              iconAsset,
-              width: 22,
-              height: 22,
-              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-            ),
+            if (iconAsset != null)
+              SvgPicture.asset(
+                iconAsset!,
+                width: 22,
+                height: 22,
+                colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+              )
+            else
+              Icon(icon, size: 22, color: color),
             const SizedBox(width: 10),
             AppText(
               label,

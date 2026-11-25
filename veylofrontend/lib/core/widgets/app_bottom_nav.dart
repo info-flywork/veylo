@@ -39,11 +39,13 @@ class AppBottomNav extends StatelessWidget {
     super.key,
     required this.current,
     required this.onChanged,
-    this.profileAsset = AppAssets.radiusIcon,
+    this.profileAsset = AppAssets.veyloAppIcon,
   });
 
   final AppNavTab current;
   final ValueChanged<AppNavTab> onChanged;
+
+  /// Avatar yokken gösterilen güncel Veylo ikonu.
   final String profileAsset;
 
   /// Figma Ellipse 2396 — Call arkasındaki beyaz disk.
@@ -309,6 +311,7 @@ class _ProfileNavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasAvatar = avatarUrl != null && avatarUrl!.isNotEmpty;
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -322,15 +325,28 @@ class _ProfileNavItem extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: AppColors.selectionBorder,
-                  width: 2,
+                  color: selected
+                      ? AppColors.selectionBorder
+                      : AppColors.navInactive,
+                  width: 1.5,
                 ),
               ),
-              child: ClipOval(
-                child: avatarUrl == null
-                    ? Image.asset(asset, fit: BoxFit.cover)
-                    : ChatAvatarImage(url: avatarUrl!, size: 28),
-              ),
+              clipBehavior: Clip.antiAlias,
+              child: hasAvatar
+                  ? ChatAvatarImage(
+                      key: ValueKey(avatarUrl),
+                      url: avatarUrl!,
+                      size: 28,
+                    )
+                  : Image.asset(
+                      asset,
+                      fit: BoxFit.cover,
+                      gaplessPlayback: true,
+                      errorBuilder: (_, _, _) => Image.asset(
+                        AppAssets.veyloAppIcon,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
             ),
             const SizedBox(height: 4),
             AppText(

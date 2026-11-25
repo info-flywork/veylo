@@ -92,7 +92,7 @@
     "messageCopy": "コピー",
     "messageEdit": "編集",
     "messageDelete": "削除",
-    "messageReport": "報告",
+    "messageReport": "メッセージを報告",
     "messageEdited": "編集済み",
     "messageReplying": "返信中",
     "messageEditing": "編集中",
@@ -115,7 +115,14 @@
     "voiceCall": "音声通話",
     "videoCall": "ビデオ通話",
     "videoLocked": "ビデオ通話は、お互いにプロフィールを公開すると利用できます。",
-    "openSettings": "設定"
+    "openSettings": "設定",
+    "reportUser": "ユーザーを報告",
+    "blockUserFull": "ユーザーをブロック",
+    "reportMessage": "メッセージを報告",
+    "reportRoom": "ルームを報告",
+    "reportGroup": "グループを報告",
+    "leaveRoom": "ルームを退出",
+    "leaveGroup": "グループを退出"
   },
   "profile": {
     "eyebrow": "プロフィール",
@@ -327,7 +334,13 @@
     "zodiacPisces": "うお座",
     "boostActiveTitle": "You're standing out!",
     "boostRemaining": "{time} left",
-    "boostExtend": "Extend"
+    "boostExtend": "Extend",
+    "blockedUsers": "ブロックしたユーザー",
+    "blockedUsersEmpty": "ブロック中のユーザーはいません",
+    "blockedUsersEmptyHint": "ブロックした人がここに表示されます。",
+    "blockedAnonymous": "匿名ユーザー",
+    "unblock": "ブロック解除",
+    "unblockedDone": "{username} のブロックを解除しました。"
   },
   "nav": {
     "discover": "発見",

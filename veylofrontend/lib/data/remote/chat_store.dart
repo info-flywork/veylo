@@ -288,6 +288,25 @@ class ChatStore extends ChangeNotifier {
   void remove(String id) {
     _inbox = _inbox.where((t) => t.id != id).toList();
     _requests = _requests.where((t) => t.id != id).toList();
+    _messageCache.remove(id);
+    _persistLists();
+    notifyListeners();
+  }
+
+  /// Engellenen kullanıcının tüm birebir sohbetlerini listeden kaldırır.
+  void removeByPeer(String userId) {
+    if (userId.isEmpty) return;
+    bool matches(ChatThread t) =>
+        !t.isGroup && t.peerUserId != null && t.peerUserId == userId;
+    final removedIds = [
+      for (final t in [..._inbox, ..._requests])
+        if (matches(t)) t.id,
+    ];
+    _inbox = _inbox.where((t) => !matches(t)).toList();
+    _requests = _requests.where((t) => !matches(t)).toList();
+    for (final id in removedIds) {
+      _messageCache.remove(id);
+    }
     _persistLists();
     notifyListeners();
   }

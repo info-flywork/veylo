@@ -38,9 +38,24 @@ class VibePost {
   final bool isAi;
 
   /// Avatar widget'ları için: fotoğraf yoksa varsayılan görsel.
-  String get avatarAsset => (avatarUrl == null || avatarUrl!.isEmpty)
-      ? AppAssets.strangerAvatar
-      : avatarUrl!;
+  /// Natalie / Lara / Clara için yerel tişörtlü fotoğraflar (CDN eski askılı görselleri baypas).
+  String get avatarAsset {
+    final local = _localPersonaAvatar(username, name);
+    if (local != null) return local;
+    if (avatarUrl == null || avatarUrl!.isEmpty) return AppAssets.strangerAvatar;
+    return avatarUrl!;
+  }
+
+  static String? _localPersonaAvatar(String? username, String name) {
+    final u = username?.toLowerCase() ?? '';
+    final n = name.toLowerCase();
+    if (u == 'natalie_pnk' || n == 'natalie') return AppAssets.fakePerson01;
+    if (u == 'clara.clr' || n == 'clara') return AppAssets.fakePerson05;
+    if (u == 'lara.wtson' || n == 'lara watson' || n == 'lara') {
+      return AppAssets.fakePerson08;
+    }
+    return null;
+  }
 
   /// Kartta gösterilen tarih, seçilen dile göre.
   String get dateLabel {

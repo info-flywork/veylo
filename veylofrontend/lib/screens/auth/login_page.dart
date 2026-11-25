@@ -65,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Future<bool> _ensureEulaForSocial() async {
+  Future<bool> _ensureEula() async {
     if (_eulaAccepted) {
       await EulaStore.accept();
       return true;
@@ -79,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
     return false;
   }
 
-  void _logInWithPassword() {
+  Future<void> _logInWithPassword() async {
     final identifier = _emailOrUsernameController.text.trim();
     final password = _passwordController.text;
     if (identifier.isEmpty || password.isEmpty) {
@@ -91,7 +91,8 @@ class _LoginPageState extends State<LoginPage> {
       );
       return;
     }
-    _signIn(
+    if (!await _ensureEula()) return;
+    await _signIn(
       () => SessionStore.instance.signInWithPassword(identifier, password),
     );
   }
@@ -212,18 +213,20 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.sectionGap),
-                    AppPrimaryButton(
-                      label: _busy ? t.common.loading : t.auth.logIn,
-                      onPressed: _busy ? null : _logInWithPassword,
-                    ),
-                    const SizedBox(height: 40),
-                    AppOrDivider(label: t.common.or),
-                    const SizedBox(height: 24),
                     AgeEulaCheckbox(
                       value: _eulaAccepted,
                       onChanged: (v) => setState(() => _eulaAccepted = v),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpacing.md),
+                    AppPrimaryButton(
+                      label: _busy ? t.common.loading : t.auth.logIn,
+                      onPressed: _busy || !_eulaAccepted
+                          ? null
+                          : _logInWithPassword,
+                    ),
+                    const SizedBox(height: 40),
+                    AppOrDivider(label: t.common.or),
+                    const SizedBox(height: 24),
                     // Android'de Apple ile giriş gösterilmiyor.
                     if (Platform.isIOS) ...[
                       AppSocialButton(
@@ -232,7 +235,7 @@ class _LoginPageState extends State<LoginPage> {
                         onPressed: _busy
                             ? null
                             : () async {
-                                if (!await _ensureEulaForSocial()) return;
+                                if (!await _ensureEula()) return;
                                 await _signIn(session.signInWithApple);
                               },
                       ),
@@ -244,7 +247,7 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: _busy
                           ? null
                           : () async {
-                              if (!await _ensureEulaForSocial()) return;
+                              if (!await _ensureEula()) return;
                               await _signIn(session.signInWithGoogle);
                             },
                     ),

@@ -91,10 +91,11 @@ async function upsertPersona(p: PersonaDef): Promise<User> {
     });
     console.log(`+ persona ${p.username}`);
   }
-  if (!user.avatarUrl) {
+  const refreshAvatars = process.argv.includes('--refresh-avatars');
+  if (!user.avatarUrl || refreshAvatars) {
     await mediaService.uploadAvatar(user, fs.readFileSync(path.join(PHOTOS, p.photo)));
     user = await prisma.user.findUniqueOrThrow({ where: { id: user.id } });
-    console.log(`  foto yüklendi: ${p.username}`);
+    console.log(`  foto ${refreshAvatars ? 'yenilendi' : 'yüklendi'}: ${p.username}`);
   }
   return user;
 }

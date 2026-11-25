@@ -92,7 +92,7 @@
     "messageCopy": "कॉपी",
     "messageEdit": "संपादित करें",
     "messageDelete": "हटाएँ",
-    "messageReport": "रिपोर्ट",
+    "messageReport": "संदेश की रिपोर्ट करें",
     "messageEdited": "संपादित",
     "messageReplying": "जवाब दे रहे हैं",
     "messageEditing": "संपादन",
@@ -115,7 +115,14 @@
     "voiceCall": "वॉइस कॉल",
     "videoCall": "वीडियो कॉल",
     "videoLocked": "जब आप दोनों अपनी प्रोफ़ाइल दिखा देंगे, तब वीडियो कॉल अनलॉक होगी।",
-    "openSettings": "सेटिंग्स"
+    "openSettings": "सेटिंग्स",
+    "reportUser": "उपयोगकर्ता की रिपोर्ट करें",
+    "blockUserFull": "उपयोगकर्ता को ब्लॉक करें",
+    "reportMessage": "संदेश की रिपोर्ट करें",
+    "reportRoom": "रूम की रिपोर्ट करें",
+    "reportGroup": "ग्रुप की रिपोर्ट करें",
+    "leaveRoom": "रूम छोड़ें",
+    "leaveGroup": "ग्रुप छोड़ें"
   },
   "profile": {
     "eyebrow": "प्रोफ़ाइल",
@@ -327,7 +334,13 @@
     "zodiacPisces": "मीन",
     "boostActiveTitle": "You're standing out!",
     "boostRemaining": "{time} left",
-    "boostExtend": "Extend"
+    "boostExtend": "Extend",
+    "blockedUsers": "ब्लॉक किए गए उपयोगकर्ता",
+    "blockedUsersEmpty": "कोई ब्लॉक उपयोगकर्ता नहीं",
+    "blockedUsersEmptyHint": "आपके ब्लॉक किए लोग यहाँ दिखेंगे।",
+    "blockedAnonymous": "अनाम उपयोगकर्ता",
+    "unblock": "अनब्लॉक",
+    "unblockedDone": "{username} अनब्लॉक हो गया।"
   },
   "nav": {
     "discover": "डिस्कवर",

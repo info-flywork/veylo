@@ -92,7 +92,7 @@
     "messageCopy": "Copy",
     "messageEdit": "Edit",
     "messageDelete": "Delete",
-    "messageReport": "Report",
+    "messageReport": "Report Message",
     "messageEdited": "edited",
     "messageReplying": "Replying",
     "messageEditing": "Editing",
@@ -115,7 +115,14 @@
     "voiceCall": "Voice call",
     "videoCall": "Video call",
     "videoLocked": "Video calls unlock once you both reveal your profiles.",
-    "openSettings": "Settings"
+    "openSettings": "Settings",
+    "reportUser": "Report User",
+    "blockUserFull": "Block User",
+    "reportMessage": "Report Message",
+    "reportRoom": "Report Room",
+    "reportGroup": "Report Group",
+    "leaveRoom": "Leave Room",
+    "leaveGroup": "Leave Group"
   },
   "profile": {
     "eyebrow": "Profile",
@@ -332,7 +339,13 @@
     "reportIssueSubtitle": "Report objectionable content or abuse. Support: support@fly-work.com",
     "reportIssueHint": "Briefly describe the issue…",
     "reportIssueSend": "Send",
-    "reportIssueSent": "Thanks — we received your report and will get back soon."
+    "reportIssueSent": "Thanks — we received your report and will get back soon.",
+    "blockedUsers": "Blocked Users",
+    "blockedUsersEmpty": "No blocked users",
+    "blockedUsersEmptyHint": "People you block will appear here.",
+    "blockedAnonymous": "Anonymous user",
+    "unblock": "Unblock",
+    "unblockedDone": "{username} has been unblocked."
   },
   "nav": {
     "discover": "Discover",

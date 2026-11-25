@@ -174,7 +174,7 @@ class _Translations$chats$ko extends Translations$chats$tr {
 	@override String get messageCopy => '복사';
 	@override String get messageEdit => '수정';
 	@override String get messageDelete => '삭제';
-	@override String get messageReport => '신고';
+	@override String get messageReport => '메시지 신고';
 	@override String get messageEdited => '수정됨';
 	@override String get messageReplying => '답장 중';
 	@override String get messageEditing => '수정 중';
@@ -198,6 +198,13 @@ class _Translations$chats$ko extends Translations$chats$tr {
 	@override String get videoCall => '영상 통화';
 	@override String get videoLocked => '두 사람 모두 프로필을 공개하면 영상 통화를 사용할 수 있어요.';
 	@override String get openSettings => '설정';
+	@override String get reportUser => '사용자 신고';
+	@override String get blockUserFull => '사용자 차단';
+	@override String get reportMessage => '메시지 신고';
+	@override String get reportRoom => '룸 신고';
+	@override String get reportGroup => '그룹 신고';
+	@override String get leaveRoom => '룸 나가기';
+	@override String get leaveGroup => '그룹 나가기';
 }
 
 // Path: profile
@@ -417,6 +424,12 @@ class _Translations$profile$ko extends Translations$profile$tr {
 	@override String get boostActiveTitle => 'You\'re standing out!';
 	@override String boostRemaining({required Object time}) => '${time} left';
 	@override String get boostExtend => 'Extend';
+	@override String get blockedUsers => '차단한 사용자';
+	@override String get blockedUsersEmpty => '차단한 사용자가 없어요';
+	@override String get blockedUsersEmptyHint => '차단한 사람이 여기에 표시됩니다.';
+	@override String get blockedAnonymous => '익명 사용자';
+	@override String get unblock => '차단 해제';
+	@override String unblockedDone({required Object username}) => '${username} 차단이 해제되었어요.';
 }
 
 // Path: nav
@@ -1333,7 +1346,7 @@ extension on TranslationsKo {
 			'chats.messageCopy' => '복사',
 			'chats.messageEdit' => '수정',
 			'chats.messageDelete' => '삭제',
-			'chats.messageReport' => '신고',
+			'chats.messageReport' => '메시지 신고',
 			'chats.messageEdited' => '수정됨',
 			'chats.messageReplying' => '답장 중',
 			'chats.messageEditing' => '수정 중',
@@ -1357,6 +1370,13 @@ extension on TranslationsKo {
 			'chats.videoCall' => '영상 통화',
 			'chats.videoLocked' => '두 사람 모두 프로필을 공개하면 영상 통화를 사용할 수 있어요.',
 			'chats.openSettings' => '설정',
+			'chats.reportUser' => '사용자 신고',
+			'chats.blockUserFull' => '사용자 차단',
+			'chats.reportMessage' => '메시지 신고',
+			'chats.reportRoom' => '룸 신고',
+			'chats.reportGroup' => '그룹 신고',
+			'chats.leaveRoom' => '룸 나가기',
+			'chats.leaveGroup' => '그룹 나가기',
 			'profile.eyebrow' => '프로필',
 			'profile.title' => '설정',
 			'profile.editProfile' => '프로필 편집',
@@ -1567,6 +1587,12 @@ extension on TranslationsKo {
 			'profile.boostActiveTitle' => 'You\'re standing out!',
 			'profile.boostRemaining' => ({required Object time}) => '${time} left',
 			'profile.boostExtend' => 'Extend',
+			'profile.blockedUsers' => '차단한 사용자',
+			'profile.blockedUsersEmpty' => '차단한 사용자가 없어요',
+			'profile.blockedUsersEmptyHint' => '차단한 사람이 여기에 표시됩니다.',
+			'profile.blockedAnonymous' => '익명 사용자',
+			'profile.unblock' => '차단 해제',
+			'profile.unblockedDone' => ({required Object username}) => '${username} 차단이 해제되었어요.',
 			'nav.discover' => '탐색',
 			'nav.chat' => '채팅',
 			'nav.call' => '통화',
@@ -1744,6 +1770,8 @@ extension on TranslationsKo {
 			'discover.groupChat.usersCount' => ({required Object count}) => '사용자 ${count}명',
 			'discover.groupChat.sampleVictoria' => '너무 심심해요. 우리 뭐라도 할까요?',
 			'discover.groupChat.sampleSona' => '뭐 할까요? 생각해 둔 거 있어요?',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupChat.sampleOwn' => '부두에서 만나요',
 			'discover.groupInfo.media' => '미디어',
 			'discover.groupInfo.gallery' => '갤러리',
@@ -1757,8 +1785,6 @@ extension on TranslationsKo {
 			'discover.groupInfo.admin' => '관리자',
 			'discover.groupInfo.leaveGroup' => '그룹 나가기',
 			'discover.groupInfo.requests' => '참여 요청',
-			_ => null,
-		} ?? switch (path) {
 			'discover.groupInfo.approve' => '수락',
 			'discover.groupInfo.reject' => '거절',
 			'discover.groupInfo.addPeopleEmpty' => '그룹에 추가하려면 먼저 팔로우하세요.',

@@ -245,6 +245,7 @@ class _DirectChatPageState extends State<DirectChatPage> {
                   },
                   onDeleteMessage: (m) => deleteChatMessage(context, _ctrl, m),
                   onReportMessage: (m) => reportChatMessage(context, _ctrl, m),
+                  onBlockUser: (m) => blockChatMessageUser(context, _ctrl, m),
                   onReact: (m, emoji) => _ctrl.reactToMessage(m, emoji),
                   leading: [
                     if (thread.contextQuote?.trim().isNotEmpty ?? false)

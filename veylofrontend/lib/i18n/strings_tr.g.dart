@@ -353,8 +353,8 @@ class Translations$chats$tr {
 	/// tr: 'Sil'
 	String get messageDelete => 'Sil';
 
-	/// tr: 'Şikayet et'
-	String get messageReport => 'Şikayet et';
+	/// tr: 'Mesajı Şikayet Et'
+	String get messageReport => 'Mesajı Şikayet Et';
 
 	/// tr: 'düzenlendi'
 	String get messageEdited => 'düzenlendi';
@@ -424,6 +424,27 @@ class Translations$chats$tr {
 
 	/// tr: 'Ayarlar'
 	String get openSettings => 'Ayarlar';
+
+	/// tr: 'Kullanıcıyı Şikayet Et'
+	String get reportUser => 'Kullanıcıyı Şikayet Et';
+
+	/// tr: 'Kullanıcıyı Engelle'
+	String get blockUserFull => 'Kullanıcıyı Engelle';
+
+	/// tr: 'Mesajı Şikayet Et'
+	String get reportMessage => 'Mesajı Şikayet Et';
+
+	/// tr: 'Odayı Şikayet Et'
+	String get reportRoom => 'Odayı Şikayet Et';
+
+	/// tr: 'Grubu Şikayet Et'
+	String get reportGroup => 'Grubu Şikayet Et';
+
+	/// tr: 'Odadan Ayrıl'
+	String get leaveRoom => 'Odadan Ayrıl';
+
+	/// tr: 'Gruptan Ayrıl'
+	String get leaveGroup => 'Gruptan Ayrıl';
 }
 
 // Path: profile
@@ -1078,6 +1099,24 @@ class Translations$profile$tr {
 
 	/// tr: 'Bildirimin alındı. En kısa sürede dönüş yapacağız.'
 	String get reportIssueSent => 'Bildirimin alındı. En kısa sürede dönüş yapacağız.';
+
+	/// tr: 'Engellenen Kullanıcılar'
+	String get blockedUsers => 'Engellenen Kullanıcılar';
+
+	/// tr: 'Engellediğin kimse yok'
+	String get blockedUsersEmpty => 'Engellediğin kimse yok';
+
+	/// tr: 'Birini engellediğinde burada görünür.'
+	String get blockedUsersEmptyHint => 'Birini engellediğinde burada görünür.';
+
+	/// tr: 'Anonim kullanıcı'
+	String get blockedAnonymous => 'Anonim kullanıcı';
+
+	/// tr: 'Engeli kaldır'
+	String get unblock => 'Engeli kaldır';
+
+	/// tr: '{username} engeli kaldırıldı.'
+	String unblockedDone({required Object username}) => '${username} engeli kaldırıldı.';
 }
 
 // Path: nav
@@ -3054,7 +3093,7 @@ extension on Translations {
 			'chats.messageCopy' => 'Kopyala',
 			'chats.messageEdit' => 'Düzenle',
 			'chats.messageDelete' => 'Sil',
-			'chats.messageReport' => 'Şikayet et',
+			'chats.messageReport' => 'Mesajı Şikayet Et',
 			'chats.messageEdited' => 'düzenlendi',
 			'chats.messageReplying' => 'Yanıtlanıyor',
 			'chats.messageEditing' => 'Düzenleniyor',
@@ -3078,6 +3117,13 @@ extension on Translations {
 			'chats.videoCall' => 'Görüntülü arama',
 			'chats.videoLocked' => 'Görüntülü arama, ikiniz de profilinizi açtığınızda açılır.',
 			'chats.openSettings' => 'Ayarlar',
+			'chats.reportUser' => 'Kullanıcıyı Şikayet Et',
+			'chats.blockUserFull' => 'Kullanıcıyı Engelle',
+			'chats.reportMessage' => 'Mesajı Şikayet Et',
+			'chats.reportRoom' => 'Odayı Şikayet Et',
+			'chats.reportGroup' => 'Grubu Şikayet Et',
+			'chats.leaveRoom' => 'Odadan Ayrıl',
+			'chats.leaveGroup' => 'Gruptan Ayrıl',
 			'profile.eyebrow' => 'Profil',
 			'profile.title' => 'Ayarlar',
 			'profile.editProfile' => 'Profili Düzenle',
@@ -3293,6 +3339,12 @@ extension on Translations {
 			'profile.reportIssueHint' => 'Sorunu kısaca anlat…',
 			'profile.reportIssueSend' => 'Gönder',
 			'profile.reportIssueSent' => 'Bildirimin alındı. En kısa sürede dönüş yapacağız.',
+			'profile.blockedUsers' => 'Engellenen Kullanıcılar',
+			'profile.blockedUsersEmpty' => 'Engellediğin kimse yok',
+			'profile.blockedUsersEmptyHint' => 'Birini engellediğinde burada görünür.',
+			'profile.blockedAnonymous' => 'Anonim kullanıcı',
+			'profile.unblock' => 'Engeli kaldır',
+			'profile.unblockedDone' => ({required Object username}) => '${username} engeli kaldırıldı.',
 			'nav.discover' => 'Keşfet',
 			'nav.chat' => 'Sohbet',
 			'nav.call' => 'Ara',
@@ -3465,6 +3517,8 @@ extension on Translations {
 			'discover.liveRoom.closeConfirmTitle' => 'Odayı kapatmak istediğine emin misin?',
 			'discover.liveRoom.closeConfirmSubtitle' => 'Oda herkes için kapanacak.',
 			'discover.liveRoom.closeConfirm' => 'Kapat',
+			_ => null,
+		} ?? switch (path) {
 			'discover.liveRoom.leaveConfirmTitle' => 'Odadan ayrılmak istediğine emin misin?',
 			'discover.liveRoom.leaveConfirmSubtitle' => 'Konuşma devam ederken odadan çıkacaksın.',
 			'discover.liveRoom.leaveConfirm' => 'Ayrıl',
@@ -3478,8 +3532,6 @@ extension on Translations {
 			'discover.groupInfo.settings' => 'Ayarlar',
 			'discover.groupInfo.notifications' => 'Bildirimler',
 			'discover.groupInfo.blocked' => 'Engellenenler',
-			_ => null,
-		} ?? switch (path) {
 			'discover.groupInfo.private' => 'Gizli',
 			'discover.groupInfo.membersCount' => ({required Object count}) => '${count} üye',
 			'discover.groupInfo.addPeople' => 'Kişi Ekle',

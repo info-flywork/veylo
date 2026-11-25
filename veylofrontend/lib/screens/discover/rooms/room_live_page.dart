@@ -14,16 +14,21 @@ import 'package:veylo/data/remote/api_client.dart';
 import 'package:veylo/data/remote/room_pip_store.dart';
 import 'package:veylo/data/remote/room_repository.dart';
 import 'package:veylo/data/remote/room_store.dart';
+import 'package:veylo/data/remote/safety_repository.dart';
 import 'package:veylo/data/remote/session_store.dart';
 import 'package:veylo/data/remote/socket_service.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/models/chat/chat_message.dart';
 import 'package:veylo/models/room/live_room.dart';
 import 'package:veylo/screens/chat/chat_sticker.dart';
+import 'package:veylo/screens/chat/conversation_safety_sheet.dart';
+import 'package:veylo/screens/chat/message_context_menu.dart';
+import 'package:veylo/screens/chat/report_reason_sheet.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
 import 'package:veylo/screens/discover/discover_page.dart';
-import 'package:veylo/screens/discover/post_safety_sheet.dart';
 import 'package:veylo/screens/discover/rooms/room_close_confirm_sheet.dart';
 import 'package:veylo/screens/discover/story_editor/story_sticker_sheet.dart';
+import 'package:veylo/screens/profile/block_user_sheet.dart';
 
 /// Odaya girince açılan canlı oda ekranı (katılımcılar + mikrofon + sohbet).
 class RoomLivePage extends StatefulWidget {
@@ -227,17 +232,107 @@ class _RoomLivePageState extends State<RoomLivePage> {
 
   Future<void> _openSafetyMenu() async {
     final myId = SessionStore.instance.me?.id;
-    final peer = _people
+    final host = _people
+        .where((p) => p.isHost && p.userId != null && p.userId != myId)
+        .firstOrNull;
+    final peer = host ??
+        _people
             .where((p) => p.userId != null && p.userId != myId)
-            .firstOrNull ??
-        _people.where((p) => p.isHost && p.userId != null && p.userId != myId).firstOrNull;
-    final userId = peer?.userId;
-    if (userId == null) return;
-    await handlePeerSafetyFromRoom(
+            .firstOrNull;
+    final action = await showConversationSafetySheet(
       context,
-      userId: userId,
-      displayName: peer!.displayName,
-      avatarUrl: peer.avatarUrl,
+      actions: const [
+        ConversationSafetyAction.reportRoom,
+        ConversationSafetyAction.leaveRoom,
+      ],
+    );
+    if (!mounted || action == null) return;
+    switch (action) {
+      case ConversationSafetyAction.reportRoom:
+        final userId = peer?.userId;
+        if (userId == null) {
+          showErrorSnackBar(
+            context,
+            const ApiException(status: 404, code: 'PEER_UNAVAILABLE'),
+          );
+          return;
+        }
+        await reportTargetUser(
+          context,
+          userId: userId,
+          contextType: 'ROOM',
+          contentId: widget.roomId,
+        );
+      case ConversationSafetyAction.leaveRoom:
+        await _leave(toRooms: true);
+      default:
+        break;
+    }
+  }
+
+  Future<void> _onMessageLongPress(RoomChatLine message) async {
+    final myId = SessionStore.instance.me?.id;
+    final userId = message.sender.userId;
+    if (message.kind != null || userId == null || userId == myId) return;
+
+    final shim = ChatMessage(
+      id: message.id,
+      clientMsgId: message.id,
+      isMine: false,
+      createdAt: DateTime.now(),
+      body: message.body,
+      senderId: userId,
+      senderName: message.sender.displayName,
+      senderAvatarUrl: message.sender.avatarUrl,
+    );
+
+    await showMessageContextMenu(
+      context,
+      message: shim,
+      onReact: (_) {},
+      onAction: (action) async {
+        switch (action) {
+          case MessageMenuAction.report:
+            await showReportReasonSheet(
+              context,
+              onSubmit: (reason) async {
+                await SafetyRepository.instance.report(
+                  userId: userId,
+                  reason: reason,
+                  context: 'ROOM',
+                  contentId: message.id,
+                );
+                if (!mounted) return;
+                setState(() {
+                  _messages =
+                      _messages.where((m) => m.id != message.id).toList();
+                });
+              },
+            );
+          case MessageMenuAction.block:
+            await showBlockUserSheet(
+              context,
+              user: safetyPeerUser(
+                id: userId,
+                displayName: message.sender.displayName,
+                avatarUrl: message.sender.avatarUrl,
+              ),
+              onDone: () {
+                applyInstantBlockSideEffects(userId);
+                if (!mounted) return;
+                setState(() {
+                  _messages = _messages
+                      .where((m) => m.sender.userId != userId)
+                      .toList();
+                  _people =
+                      _people.where((p) => p.userId != userId).toList();
+                });
+              },
+            );
+          default:
+            break;
+        }
+      },
     );
   }
 
@@ -731,12 +826,16 @@ class _RoomLivePageState extends State<RoomLivePage> {
                                   _isHost &&
                                   m.kind == 'mic_request' &&
                                   !_handledNotices.contains(m.id);
+                              final mine = m.kind == null &&
+                                  m.sender.uid == _me?.uid;
                               return _ChatBubble(
                                 message: m,
                                 // Kendi yazdığım (sahip olsam da) sağda durur.
-                                mine: m.kind == null &&
-                                    m.sender.uid == _me?.uid,
+                                mine: mine,
                                 notice: _notice(m),
+                                onLongPress: mine || m.kind != null
+                                    ? null
+                                    : () => _onMessageLongPress(m),
                                 actions: askMic
                                     ? (
                                         allow: t.approve,
@@ -1064,11 +1163,13 @@ class _ChatBubble extends StatelessWidget {
     this.mine = false,
     this.notice,
     this.actions,
+    this.onLongPress,
   });
 
   final RoomChatLine message;
   final bool mine;
   final String? notice;
+  final VoidCallback? onLongPress;
 
   /// Mikrofon isteği (sahip): izin ver / reddet.
   final _NoticeActions? actions;
@@ -1087,7 +1188,10 @@ class _ChatBubble extends StatelessWidget {
                 )
               : ChatAvatarImage(url: message.sender.avatarUrl, size: 30),
     );
-    return Row(
+    return GestureDetector(
+      onLongPress: onLongPress,
+      behavior: HitTestBehavior.opaque,
+      child: Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: mine ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
@@ -1156,6 +1260,7 @@ class _ChatBubble extends StatelessWidget {
         ),
         if (mine) ...[const SizedBox(width: 10), avatar],
       ],
+    ),
     );
   }
 }

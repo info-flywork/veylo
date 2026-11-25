@@ -15,6 +15,7 @@ import 'package:veylo/models/chat/chat_note.dart';
 import 'package:veylo/models/chat/chat_thread.dart';
 import 'package:veylo/models/profile/profile_user.dart';
 import 'package:veylo/screens/chat/anonymous_chat_page.dart';
+import 'package:veylo/screens/chat/conversation_safety_sheet.dart';
 import 'package:veylo/screens/chat/direct_chat_page.dart';
 import 'package:veylo/screens/chat/note_sheet.dart';
 import 'package:veylo/screens/chat/widgets/chat_note_card.dart';
@@ -407,7 +408,10 @@ class _ChatsPageState extends State<ChatsPage> {
         followerCount: 0,
       ),
       conversationId: thread.isLocalOnly ? null : thread.id,
-      onDone: () => ChatStore.instance.remove(thread.id),
+      onDone: () {
+        applyInstantBlockSideEffects(thread.peerUserId);
+        ChatStore.instance.remove(thread.id);
+      },
     );
   }
 

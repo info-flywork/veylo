@@ -28,6 +28,7 @@ class ChatMessageList extends StatefulWidget {
     this.onEdit,
     this.onDeleteMessage,
     this.onReportMessage,
+    this.onBlockUser,
     this.onReact,
     this.onForward,
     this.sendingLabel,
@@ -47,6 +48,7 @@ class ChatMessageList extends StatefulWidget {
   final ValueChanged<ChatMessage>? onEdit;
   final ValueChanged<ChatMessage>? onDeleteMessage;
   final ValueChanged<ChatMessage>? onReportMessage;
+  final ValueChanged<ChatMessage>? onBlockUser;
   final Future<void> Function(ChatMessage message, String emoji)? onReact;
   final ValueChanged<ChatMessage>? onForward;
 
@@ -93,6 +95,8 @@ class _ChatMessageListState extends State<ChatMessageList> {
             widget.onDeleteMessage?.call(m);
           case MessageMenuAction.report:
             widget.onReportMessage?.call(m);
+          case MessageMenuAction.block:
+            widget.onBlockUser?.call(m);
         }
       },
     );

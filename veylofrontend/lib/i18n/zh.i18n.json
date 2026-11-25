@@ -92,7 +92,7 @@
     "messageCopy": "复制",
     "messageEdit": "编辑",
     "messageDelete": "删除",
-    "messageReport": "举报",
+    "messageReport": "举报消息",
     "messageEdited": "已编辑",
     "messageReplying": "正在回复",
     "messageEditing": "正在编辑",
@@ -115,7 +115,14 @@
     "voiceCall": "语音通话",
     "videoCall": "视频通话",
     "videoLocked": "你们双方都公开资料后，即可使用视频通话。",
-    "openSettings": "设置"
+    "openSettings": "设置",
+    "reportUser": "举报用户",
+    "blockUserFull": "屏蔽用户",
+    "reportMessage": "举报消息",
+    "reportRoom": "举报房间",
+    "reportGroup": "举报群组",
+    "leaveRoom": "离开房间",
+    "leaveGroup": "退出群组"
   },
   "profile": {
     "eyebrow": "个人资料",
@@ -327,7 +334,13 @@
     "zodiacPisces": "双鱼座",
     "boostActiveTitle": "You're standing out!",
     "boostRemaining": "{time} left",
-    "boostExtend": "Extend"
+    "boostExtend": "Extend",
+    "blockedUsers": "已屏蔽用户",
+    "blockedUsersEmpty": "暂无已屏蔽用户",
+    "blockedUsersEmptyHint": "你屏蔽的人会显示在这里。",
+    "blockedAnonymous": "匿名用户",
+    "unblock": "取消屏蔽",
+    "unblockedDone": "已取消屏蔽 {username}。"
   },
   "nav": {
     "discover": "发现",

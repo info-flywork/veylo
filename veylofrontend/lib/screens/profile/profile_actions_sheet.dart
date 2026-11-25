@@ -4,6 +4,7 @@ import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/data/remote/safety_repository.dart';
 import 'package:veylo/i18n/strings.g.dart';
 import 'package:veylo/models/profile/profile_user.dart';
+import 'package:veylo/screens/chat/conversation_safety_sheet.dart';
 import 'package:veylo/screens/profile/block_user_sheet.dart';
 import 'package:veylo/screens/profile/report_user_sheet.dart';
 
@@ -72,6 +73,7 @@ class _ProfileActionsSheet extends StatelessWidget {
                     parentContext,
                     user: user,
                     leaveProfile: true,
+                    onDone: () => applyInstantBlockSideEffects(user.id),
                   );
                 }
               });

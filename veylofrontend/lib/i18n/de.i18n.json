@@ -92,7 +92,7 @@
     "messageCopy": "Kopieren",
     "messageEdit": "Bearbeiten",
     "messageDelete": "Löschen",
-    "messageReport": "Melden",
+    "messageReport": "Nachricht melden",
     "messageEdited": "bearbeitet",
     "messageReplying": "Antworten",
     "messageEditing": "Bearbeiten",
@@ -115,7 +115,14 @@
     "voiceCall": "Sprachanruf",
     "videoCall": "Videoanruf",
     "videoLocked": "Videoanrufe werden freigeschaltet, sobald ihr beide eure Profile aufgedeckt habt.",
-    "openSettings": "Einstellungen"
+    "openSettings": "Einstellungen",
+    "reportUser": "Nutzer melden",
+    "blockUserFull": "Nutzer blockieren",
+    "reportMessage": "Nachricht melden",
+    "reportRoom": "Raum melden",
+    "reportGroup": "Gruppe melden",
+    "leaveRoom": "Raum verlassen",
+    "leaveGroup": "Gruppe verlassen"
   },
   "profile": {
     "eyebrow": "Profil",
@@ -327,7 +334,13 @@
     "zodiacPisces": "Fische",
     "boostActiveTitle": "You're standing out!",
     "boostRemaining": "{time} left",
-    "boostExtend": "Extend"
+    "boostExtend": "Extend",
+    "blockedUsers": "Blockierte Nutzer",
+    "blockedUsersEmpty": "Keine blockierten Nutzer",
+    "blockedUsersEmptyHint": "Blockierte Personen erscheinen hier.",
+    "blockedAnonymous": "Anonymer Nutzer",
+    "unblock": "Entsperren",
+    "unblockedDone": "{username} wurde entsperrt."
   },
   "nav": {
     "discover": "Entdecken",

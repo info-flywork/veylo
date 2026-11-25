@@ -174,7 +174,7 @@ class _Translations$chats$it extends Translations$chats$tr {
 	@override String get messageCopy => 'Copia';
 	@override String get messageEdit => 'Modifica';
 	@override String get messageDelete => 'Elimina';
-	@override String get messageReport => 'Segnala';
+	@override String get messageReport => 'Segnala messaggio';
 	@override String get messageEdited => 'modificato';
 	@override String get messageReplying => 'Rispondendo';
 	@override String get messageEditing => 'Modifica';
@@ -198,6 +198,13 @@ class _Translations$chats$it extends Translations$chats$tr {
 	@override String get videoCall => 'Videochiamata';
 	@override String get videoLocked => 'Le videochiamate si sbloccano quando entrambi rivelate i vostri profili.';
 	@override String get openSettings => 'Impostazioni';
+	@override String get reportUser => 'Segnala utente';
+	@override String get blockUserFull => 'Blocca utente';
+	@override String get reportMessage => 'Segnala messaggio';
+	@override String get reportRoom => 'Segnala stanza';
+	@override String get reportGroup => 'Segnala gruppo';
+	@override String get leaveRoom => 'Lascia la stanza';
+	@override String get leaveGroup => 'Lascia il gruppo';
 }
 
 // Path: profile
@@ -417,6 +424,12 @@ class _Translations$profile$it extends Translations$profile$tr {
 	@override String get boostActiveTitle => 'You\'re standing out!';
 	@override String boostRemaining({required Object time}) => '${time} left';
 	@override String get boostExtend => 'Extend';
+	@override String get blockedUsers => 'Utenti bloccati';
+	@override String get blockedUsersEmpty => 'Nessun utente bloccato';
+	@override String get blockedUsersEmptyHint => 'Le persone che blocchi appariranno qui.';
+	@override String get blockedAnonymous => 'Utente anonimo';
+	@override String get unblock => 'Sblocca';
+	@override String unblockedDone({required Object username}) => '${username} è stato sbloccato.';
 }
 
 // Path: nav
@@ -1333,7 +1346,7 @@ extension on TranslationsIt {
 			'chats.messageCopy' => 'Copia',
 			'chats.messageEdit' => 'Modifica',
 			'chats.messageDelete' => 'Elimina',
-			'chats.messageReport' => 'Segnala',
+			'chats.messageReport' => 'Segnala messaggio',
 			'chats.messageEdited' => 'modificato',
 			'chats.messageReplying' => 'Rispondendo',
 			'chats.messageEditing' => 'Modifica',
@@ -1357,6 +1370,13 @@ extension on TranslationsIt {
 			'chats.videoCall' => 'Videochiamata',
 			'chats.videoLocked' => 'Le videochiamate si sbloccano quando entrambi rivelate i vostri profili.',
 			'chats.openSettings' => 'Impostazioni',
+			'chats.reportUser' => 'Segnala utente',
+			'chats.blockUserFull' => 'Blocca utente',
+			'chats.reportMessage' => 'Segnala messaggio',
+			'chats.reportRoom' => 'Segnala stanza',
+			'chats.reportGroup' => 'Segnala gruppo',
+			'chats.leaveRoom' => 'Lascia la stanza',
+			'chats.leaveGroup' => 'Lascia il gruppo',
 			'profile.eyebrow' => 'Profilo',
 			'profile.title' => 'Impostazioni',
 			'profile.editProfile' => 'Modifica profilo',
@@ -1567,6 +1587,12 @@ extension on TranslationsIt {
 			'profile.boostActiveTitle' => 'You\'re standing out!',
 			'profile.boostRemaining' => ({required Object time}) => '${time} left',
 			'profile.boostExtend' => 'Extend',
+			'profile.blockedUsers' => 'Utenti bloccati',
+			'profile.blockedUsersEmpty' => 'Nessun utente bloccato',
+			'profile.blockedUsersEmptyHint' => 'Le persone che blocchi appariranno qui.',
+			'profile.blockedAnonymous' => 'Utente anonimo',
+			'profile.unblock' => 'Sblocca',
+			'profile.unblockedDone' => ({required Object username}) => '${username} è stato sbloccato.',
 			'nav.discover' => 'Scopri',
 			'nav.chat' => 'Chat',
 			'nav.call' => 'Chiama',
@@ -1744,6 +1770,8 @@ extension on TranslationsIt {
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count} utenti',
 			'discover.groupChat.sampleVictoria' => 'Mi sto annoiando tantissimo. Facciamo qualcosa, ragazzi?',
 			'discover.groupChat.sampleSona' => 'Cosa possiamo fare? Che idee hai?',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupChat.sampleOwn' => 'Vediamoci al molo',
 			'discover.groupInfo.media' => 'Media',
 			'discover.groupInfo.gallery' => 'Galleria',
@@ -1757,8 +1785,6 @@ extension on TranslationsIt {
 			'discover.groupInfo.admin' => 'Admin',
 			'discover.groupInfo.leaveGroup' => 'Esci dal gruppo',
 			'discover.groupInfo.requests' => 'Richieste di accesso',
-			_ => null,
-		} ?? switch (path) {
 			'discover.groupInfo.approve' => 'Accetta',
 			'discover.groupInfo.reject' => 'Rifiuta',
 			'discover.groupInfo.addPeopleEmpty' => 'Segui delle persone per aggiungerle al gruppo.',

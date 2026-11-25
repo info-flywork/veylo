@@ -174,7 +174,7 @@ class _Translations$chats$ru extends Translations$chats$tr {
 	@override String get messageCopy => 'Копировать';
 	@override String get messageEdit => 'Изменить';
 	@override String get messageDelete => 'Удалить';
-	@override String get messageReport => 'Пожаловаться';
+	@override String get messageReport => 'Пожаловаться на сообщение';
 	@override String get messageEdited => 'изменено';
 	@override String get messageReplying => 'Ответ';
 	@override String get messageEditing => 'Редактирование';
@@ -198,6 +198,13 @@ class _Translations$chats$ru extends Translations$chats$tr {
 	@override String get videoCall => 'Видеозвонок';
 	@override String get videoLocked => 'Видеозвонки станут доступны, когда вы оба откроете профили.';
 	@override String get openSettings => 'Настройки';
+	@override String get reportUser => 'Пожаловаться на пользователя';
+	@override String get blockUserFull => 'Заблокировать пользователя';
+	@override String get reportMessage => 'Пожаловаться на сообщение';
+	@override String get reportRoom => 'Пожаловаться на комнату';
+	@override String get reportGroup => 'Пожаловаться на группу';
+	@override String get leaveRoom => 'Покинуть комнату';
+	@override String get leaveGroup => 'Покинуть группу';
 }
 
 // Path: profile
@@ -417,6 +424,12 @@ class _Translations$profile$ru extends Translations$profile$tr {
 	@override String get boostActiveTitle => 'You\'re standing out!';
 	@override String boostRemaining({required Object time}) => '${time} left';
 	@override String get boostExtend => 'Extend';
+	@override String get blockedUsers => 'Заблокированные';
+	@override String get blockedUsersEmpty => 'Нет заблокированных';
+	@override String get blockedUsersEmptyHint => 'Заблокированные появятся здесь.';
+	@override String get blockedAnonymous => 'Анонимный пользователь';
+	@override String get unblock => 'Разблокировать';
+	@override String unblockedDone({required Object username}) => '${username} разблокирован.';
 }
 
 // Path: nav
@@ -1333,7 +1346,7 @@ extension on TranslationsRu {
 			'chats.messageCopy' => 'Копировать',
 			'chats.messageEdit' => 'Изменить',
 			'chats.messageDelete' => 'Удалить',
-			'chats.messageReport' => 'Пожаловаться',
+			'chats.messageReport' => 'Пожаловаться на сообщение',
 			'chats.messageEdited' => 'изменено',
 			'chats.messageReplying' => 'Ответ',
 			'chats.messageEditing' => 'Редактирование',
@@ -1357,6 +1370,13 @@ extension on TranslationsRu {
 			'chats.videoCall' => 'Видеозвонок',
 			'chats.videoLocked' => 'Видеозвонки станут доступны, когда вы оба откроете профили.',
 			'chats.openSettings' => 'Настройки',
+			'chats.reportUser' => 'Пожаловаться на пользователя',
+			'chats.blockUserFull' => 'Заблокировать пользователя',
+			'chats.reportMessage' => 'Пожаловаться на сообщение',
+			'chats.reportRoom' => 'Пожаловаться на комнату',
+			'chats.reportGroup' => 'Пожаловаться на группу',
+			'chats.leaveRoom' => 'Покинуть комнату',
+			'chats.leaveGroup' => 'Покинуть группу',
 			'profile.eyebrow' => 'Профиль',
 			'profile.title' => 'Настройки',
 			'profile.editProfile' => 'Изменить профиль',
@@ -1567,6 +1587,12 @@ extension on TranslationsRu {
 			'profile.boostActiveTitle' => 'You\'re standing out!',
 			'profile.boostRemaining' => ({required Object time}) => '${time} left',
 			'profile.boostExtend' => 'Extend',
+			'profile.blockedUsers' => 'Заблокированные',
+			'profile.blockedUsersEmpty' => 'Нет заблокированных',
+			'profile.blockedUsersEmptyHint' => 'Заблокированные появятся здесь.',
+			'profile.blockedAnonymous' => 'Анонимный пользователь',
+			'profile.unblock' => 'Разблокировать',
+			'profile.unblockedDone' => ({required Object username}) => '${username} разблокирован.',
 			'nav.discover' => 'Обзор',
 			'nav.chat' => 'Чат',
 			'nav.call' => 'Звонок',
@@ -1744,6 +1770,8 @@ extension on TranslationsRu {
 			'discover.groupChat.usersCount' => ({required Object count}) => 'Участники: ${count}',
 			'discover.groupChat.sampleVictoria' => 'Мне ужасно скучно. Может, чем-нибудь займёмся?',
 			'discover.groupChat.sampleSona' => 'Чем займёмся? Есть идеи?',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupChat.sampleOwn' => 'Давайте встретимся на пирсе',
 			'discover.groupInfo.media' => 'Медиа',
 			'discover.groupInfo.gallery' => 'Галерея',
@@ -1757,8 +1785,6 @@ extension on TranslationsRu {
 			'discover.groupInfo.admin' => 'Админ',
 			'discover.groupInfo.leaveGroup' => 'Покинуть группу',
 			'discover.groupInfo.requests' => 'Запросы на вход',
-			_ => null,
-		} ?? switch (path) {
 			'discover.groupInfo.approve' => 'Принять',
 			'discover.groupInfo.reject' => 'Отклонить',
 			'discover.groupInfo.addPeopleEmpty' => 'Подпишись на людей, чтобы добавить их в группу.',

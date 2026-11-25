@@ -174,7 +174,7 @@ class _Translations$chats$ja extends Translations$chats$tr {
 	@override String get messageCopy => 'コピー';
 	@override String get messageEdit => '編集';
 	@override String get messageDelete => '削除';
-	@override String get messageReport => '報告';
+	@override String get messageReport => 'メッセージを報告';
 	@override String get messageEdited => '編集済み';
 	@override String get messageReplying => '返信中';
 	@override String get messageEditing => '編集中';
@@ -198,6 +198,13 @@ class _Translations$chats$ja extends Translations$chats$tr {
 	@override String get videoCall => 'ビデオ通話';
 	@override String get videoLocked => 'ビデオ通話は、お互いにプロフィールを公開すると利用できます。';
 	@override String get openSettings => '設定';
+	@override String get reportUser => 'ユーザーを報告';
+	@override String get blockUserFull => 'ユーザーをブロック';
+	@override String get reportMessage => 'メッセージを報告';
+	@override String get reportRoom => 'ルームを報告';
+	@override String get reportGroup => 'グループを報告';
+	@override String get leaveRoom => 'ルームを退出';
+	@override String get leaveGroup => 'グループを退出';
 }
 
 // Path: profile
@@ -417,6 +424,12 @@ class _Translations$profile$ja extends Translations$profile$tr {
 	@override String get boostActiveTitle => 'You\'re standing out!';
 	@override String boostRemaining({required Object time}) => '${time} left';
 	@override String get boostExtend => 'Extend';
+	@override String get blockedUsers => 'ブロックしたユーザー';
+	@override String get blockedUsersEmpty => 'ブロック中のユーザーはいません';
+	@override String get blockedUsersEmptyHint => 'ブロックした人がここに表示されます。';
+	@override String get blockedAnonymous => '匿名ユーザー';
+	@override String get unblock => 'ブロック解除';
+	@override String unblockedDone({required Object username}) => '${username} のブロックを解除しました。';
 }
 
 // Path: nav
@@ -1333,7 +1346,7 @@ extension on TranslationsJa {
 			'chats.messageCopy' => 'コピー',
 			'chats.messageEdit' => '編集',
 			'chats.messageDelete' => '削除',
-			'chats.messageReport' => '報告',
+			'chats.messageReport' => 'メッセージを報告',
 			'chats.messageEdited' => '編集済み',
 			'chats.messageReplying' => '返信中',
 			'chats.messageEditing' => '編集中',
@@ -1357,6 +1370,13 @@ extension on TranslationsJa {
 			'chats.videoCall' => 'ビデオ通話',
 			'chats.videoLocked' => 'ビデオ通話は、お互いにプロフィールを公開すると利用できます。',
 			'chats.openSettings' => '設定',
+			'chats.reportUser' => 'ユーザーを報告',
+			'chats.blockUserFull' => 'ユーザーをブロック',
+			'chats.reportMessage' => 'メッセージを報告',
+			'chats.reportRoom' => 'ルームを報告',
+			'chats.reportGroup' => 'グループを報告',
+			'chats.leaveRoom' => 'ルームを退出',
+			'chats.leaveGroup' => 'グループを退出',
 			'profile.eyebrow' => 'プロフィール',
 			'profile.title' => '設定',
 			'profile.editProfile' => 'プロフィールを編集',
@@ -1567,6 +1587,12 @@ extension on TranslationsJa {
 			'profile.boostActiveTitle' => 'You\'re standing out!',
 			'profile.boostRemaining' => ({required Object time}) => '${time} left',
 			'profile.boostExtend' => 'Extend',
+			'profile.blockedUsers' => 'ブロックしたユーザー',
+			'profile.blockedUsersEmpty' => 'ブロック中のユーザーはいません',
+			'profile.blockedUsersEmptyHint' => 'ブロックした人がここに表示されます。',
+			'profile.blockedAnonymous' => '匿名ユーザー',
+			'profile.unblock' => 'ブロック解除',
+			'profile.unblockedDone' => ({required Object username}) => '${username} のブロックを解除しました。',
 			'nav.discover' => '発見',
 			'nav.chat' => 'チャット',
 			'nav.call' => '通話',
@@ -1744,6 +1770,8 @@ extension on TranslationsJa {
 			'discover.groupChat.usersCount' => ({required Object count}) => '${count}人のユーザー',
 			'discover.groupChat.sampleVictoria' => 'すごく退屈。みんなで何かしない？',
 			'discover.groupChat.sampleSona' => '何する？何かアイデアある？',
+			_ => null,
+		} ?? switch (path) {
 			'discover.groupChat.sampleOwn' => '桟橋で会おうよ',
 			'discover.groupInfo.media' => 'メディア',
 			'discover.groupInfo.gallery' => 'ギャラリー',
@@ -1757,8 +1785,6 @@ extension on TranslationsJa {
 			'discover.groupInfo.admin' => '管理者',
 			'discover.groupInfo.leaveGroup' => 'グループを退出',
 			'discover.groupInfo.requests' => '参加リクエスト',
-			_ => null,
-		} ?? switch (path) {
 			'discover.groupInfo.approve' => '承認',
 			'discover.groupInfo.reject' => '拒否',
 			'discover.groupInfo.addPeopleEmpty' => 'フォローした人をグループに追加できます。',

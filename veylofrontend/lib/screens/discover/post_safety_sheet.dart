@@ -3,6 +3,7 @@ import 'package:veylo/core/errors/error_messages.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/data/remote/api_client.dart';
+import 'package:veylo/data/remote/chat_store.dart';
 import 'package:veylo/data/remote/discover_store.dart';
 import 'package:veylo/data/remote/post_repository.dart';
 import 'package:veylo/data/remote/safety_repository.dart';
@@ -154,6 +155,13 @@ Future<void> handlePeerSafetyFromRoom(
         ),
       );
     case PostSafetyAction.block:
-      await showBlockUserSheet(context, user: user);
+      await showBlockUserSheet(
+        context,
+        user: user,
+        onDone: () {
+          DiscoverStore.instance.removeByAuthor(userId);
+          ChatStore.instance.removeByPeer(userId);
+        },
+      );
   }
 }

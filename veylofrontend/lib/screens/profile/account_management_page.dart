@@ -13,6 +13,7 @@ import 'package:veylo/core/assets/app_assets.dart';
 import 'package:veylo/core/theme/theme.dart';
 import 'package:veylo/core/widgets/app_text.dart';
 import 'package:veylo/i18n/strings.g.dart';
+import 'package:veylo/screens/profile/blocked_users_page.dart';
 import 'package:veylo/screens/profile/change_email_sheet.dart';
 import 'package:veylo/screens/profile/change_password_sheet.dart';
 import 'package:veylo/screens/profile/delete_account_sheet.dart';
@@ -272,6 +273,12 @@ class _AccountManagementPageState extends State<AccountManagementPage> {
                     label: t.email,
                     value: _email,
                     onTap: _openEmail,
+                  ),
+                  const SizedBox(height: 8),
+                  _SettingsRow(
+                    iconAsset: AppAssets.iconLucideBan,
+                    label: t.blockedUsers,
+                    onTap: () => BlockedUsersPage.open(context),
                   ),
                   const SizedBox(height: 24),
                   AppText(

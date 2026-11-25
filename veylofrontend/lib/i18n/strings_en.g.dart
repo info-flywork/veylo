@@ -174,7 +174,7 @@ class _Translations$chats$en extends Translations$chats$tr {
 	@override String get messageCopy => 'Copy';
 	@override String get messageEdit => 'Edit';
 	@override String get messageDelete => 'Delete';
-	@override String get messageReport => 'Report';
+	@override String get messageReport => 'Report Message';
 	@override String get messageEdited => 'edited';
 	@override String get messageReplying => 'Replying';
 	@override String get messageEditing => 'Editing';
@@ -198,6 +198,13 @@ class _Translations$chats$en extends Translations$chats$tr {
 	@override String get videoCall => 'Video call';
 	@override String get videoLocked => 'Video calls unlock once you both reveal your profiles.';
 	@override String get openSettings => 'Settings';
+	@override String get reportUser => 'Report User';
+	@override String get blockUserFull => 'Block User';
+	@override String get reportMessage => 'Report Message';
+	@override String get reportRoom => 'Report Room';
+	@override String get reportGroup => 'Report Group';
+	@override String get leaveRoom => 'Leave Room';
+	@override String get leaveGroup => 'Leave Group';
 }
 
 // Path: profile
@@ -422,6 +429,12 @@ class _Translations$profile$en extends Translations$profile$tr {
 	@override String get reportIssueHint => 'Briefly describe the issue…';
 	@override String get reportIssueSend => 'Send';
 	@override String get reportIssueSent => 'Thanks — we received your report and will get back soon.';
+	@override String get blockedUsers => 'Blocked Users';
+	@override String get blockedUsersEmpty => 'No blocked users';
+	@override String get blockedUsersEmptyHint => 'People you block will appear here.';
+	@override String get blockedAnonymous => 'Anonymous user';
+	@override String get unblock => 'Unblock';
+	@override String unblockedDone({required Object username}) => '${username} has been unblocked.';
 }
 
 // Path: nav
@@ -1341,7 +1354,7 @@ extension on TranslationsEn {
 			'chats.messageCopy' => 'Copy',
 			'chats.messageEdit' => 'Edit',
 			'chats.messageDelete' => 'Delete',
-			'chats.messageReport' => 'Report',
+			'chats.messageReport' => 'Report Message',
 			'chats.messageEdited' => 'edited',
 			'chats.messageReplying' => 'Replying',
 			'chats.messageEditing' => 'Editing',
@@ -1365,6 +1378,13 @@ extension on TranslationsEn {
 			'chats.videoCall' => 'Video call',
 			'chats.videoLocked' => 'Video calls unlock once you both reveal your profiles.',
 			'chats.openSettings' => 'Settings',
+			'chats.reportUser' => 'Report User',
+			'chats.blockUserFull' => 'Block User',
+			'chats.reportMessage' => 'Report Message',
+			'chats.reportRoom' => 'Report Room',
+			'chats.reportGroup' => 'Report Group',
+			'chats.leaveRoom' => 'Leave Room',
+			'chats.leaveGroup' => 'Leave Group',
 			'profile.eyebrow' => 'Profile',
 			'profile.title' => 'Settings',
 			'profile.editProfile' => 'Edit Profile',
@@ -1580,6 +1600,12 @@ extension on TranslationsEn {
 			'profile.reportIssueHint' => 'Briefly describe the issue…',
 			'profile.reportIssueSend' => 'Send',
 			'profile.reportIssueSent' => 'Thanks — we received your report and will get back soon.',
+			'profile.blockedUsers' => 'Blocked Users',
+			'profile.blockedUsersEmpty' => 'No blocked users',
+			'profile.blockedUsersEmptyHint' => 'People you block will appear here.',
+			'profile.blockedAnonymous' => 'Anonymous user',
+			'profile.unblock' => 'Unblock',
+			'profile.unblockedDone' => ({required Object username}) => '${username} has been unblocked.',
 			'nav.discover' => 'Discover',
 			'nav.chat' => 'Chat',
 			'nav.call' => 'Call',
@@ -1752,6 +1778,8 @@ extension on TranslationsEn {
 			'discover.liveRoom.closeConfirmTitle' => 'Are you sure you want to close the room?',
 			'discover.liveRoom.closeConfirmSubtitle' => 'The room will end for everyone.',
 			'discover.liveRoom.closeConfirm' => 'Close',
+			_ => null,
+		} ?? switch (path) {
 			'discover.liveRoom.leaveConfirmTitle' => 'Are you sure you want to leave the room?',
 			'discover.liveRoom.leaveConfirmSubtitle' => 'You will leave while the conversation continues.',
 			'discover.liveRoom.leaveConfirm' => 'Leave',
@@ -1765,8 +1793,6 @@ extension on TranslationsEn {
 			'discover.groupInfo.settings' => 'Settings',
 			'discover.groupInfo.notifications' => 'Notifications',
 			'discover.groupInfo.blocked' => 'Blocked',
-			_ => null,
-		} ?? switch (path) {
 			'discover.groupInfo.private' => 'Private',
 			'discover.groupInfo.membersCount' => ({required Object count}) => '${count} members',
 			'discover.groupInfo.addPeople' => 'Add people',

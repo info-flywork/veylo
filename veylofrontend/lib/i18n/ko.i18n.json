@@ -92,7 +92,7 @@
     "messageCopy": "복사",
     "messageEdit": "수정",
     "messageDelete": "삭제",
-    "messageReport": "신고",
+    "messageReport": "메시지 신고",
     "messageEdited": "수정됨",
     "messageReplying": "답장 중",
     "messageEditing": "수정 중",
@@ -115,7 +115,14 @@
     "voiceCall": "음성 통화",
     "videoCall": "영상 통화",
     "videoLocked": "두 사람 모두 프로필을 공개하면 영상 통화를 사용할 수 있어요.",
-    "openSettings": "설정"
+    "openSettings": "설정",
+    "reportUser": "사용자 신고",
+    "blockUserFull": "사용자 차단",
+    "reportMessage": "메시지 신고",
+    "reportRoom": "룸 신고",
+    "reportGroup": "그룹 신고",
+    "leaveRoom": "룸 나가기",
+    "leaveGroup": "그룹 나가기"
   },
   "profile": {
     "eyebrow": "프로필",
@@ -327,7 +334,13 @@
     "zodiacPisces": "물고기자리",
     "boostActiveTitle": "You're standing out!",
     "boostRemaining": "{time} left",
-    "boostExtend": "Extend"
+    "boostExtend": "Extend",
+    "blockedUsers": "차단한 사용자",
+    "blockedUsersEmpty": "차단한 사용자가 없어요",
+    "blockedUsersEmptyHint": "차단한 사람이 여기에 표시됩니다.",
+    "blockedAnonymous": "익명 사용자",
+    "unblock": "차단 해제",
+    "unblockedDone": "{username} 차단이 해제되었어요."
   },
   "nav": {
     "discover": "탐색",

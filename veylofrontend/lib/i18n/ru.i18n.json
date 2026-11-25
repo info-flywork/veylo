@@ -92,7 +92,7 @@
     "messageCopy": "Копировать",
     "messageEdit": "Изменить",
     "messageDelete": "Удалить",
-    "messageReport": "Пожаловаться",
+    "messageReport": "Пожаловаться на сообщение",
     "messageEdited": "изменено",
     "messageReplying": "Ответ",
     "messageEditing": "Редактирование",
@@ -115,7 +115,14 @@
     "voiceCall": "Аудиозвонок",
     "videoCall": "Видеозвонок",
     "videoLocked": "Видеозвонки станут доступны, когда вы оба откроете профили.",
-    "openSettings": "Настройки"
+    "openSettings": "Настройки",
+    "reportUser": "Пожаловаться на пользователя",
+    "blockUserFull": "Заблокировать пользователя",
+    "reportMessage": "Пожаловаться на сообщение",
+    "reportRoom": "Пожаловаться на комнату",
+    "reportGroup": "Пожаловаться на группу",
+    "leaveRoom": "Покинуть комнату",
+    "leaveGroup": "Покинуть группу"
   },
   "profile": {
     "eyebrow": "Профиль",
@@ -327,7 +334,13 @@
     "zodiacPisces": "Рыбы",
     "boostActiveTitle": "You're standing out!",
     "boostRemaining": "{time} left",
-    "boostExtend": "Extend"
+    "boostExtend": "Extend",
+    "blockedUsers": "Заблокированные",
+    "blockedUsersEmpty": "Нет заблокированных",
+    "blockedUsersEmptyHint": "Заблокированные появятся здесь.",
+    "blockedAnonymous": "Анонимный пользователь",
+    "unblock": "Разблокировать",
+    "unblockedDone": "{username} разблокирован."
   },
   "nav": {
     "discover": "Обзор",

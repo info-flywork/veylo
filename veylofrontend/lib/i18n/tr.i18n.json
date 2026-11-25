@@ -92,7 +92,7 @@
     "messageCopy": "Kopyala",
     "messageEdit": "Düzenle",
     "messageDelete": "Sil",
-    "messageReport": "Şikayet et",
+    "messageReport": "Mesajı Şikayet Et",
     "messageEdited": "düzenlendi",
     "messageReplying": "Yanıtlanıyor",
     "messageEditing": "Düzenleniyor",
@@ -115,7 +115,14 @@
     "voiceCall": "Sesli arama",
     "videoCall": "Görüntülü arama",
     "videoLocked": "Görüntülü arama, ikiniz de profilinizi açtığınızda açılır.",
-    "openSettings": "Ayarlar"
+    "openSettings": "Ayarlar",
+    "reportUser": "Kullanıcıyı Şikayet Et",
+    "blockUserFull": "Kullanıcıyı Engelle",
+    "reportMessage": "Mesajı Şikayet Et",
+    "reportRoom": "Odayı Şikayet Et",
+    "reportGroup": "Grubu Şikayet Et",
+    "leaveRoom": "Odadan Ayrıl",
+    "leaveGroup": "Gruptan Ayrıl"
   },
   "profile": {
     "eyebrow": "Profil",
@@ -332,7 +339,13 @@
     "reportIssueSubtitle": "Uygunsuz içerik veya kötüye kullanım bildirmek için yaz. Destek: support@fly-work.com",
     "reportIssueHint": "Sorunu kısaca anlat…",
     "reportIssueSend": "Gönder",
-    "reportIssueSent": "Bildirimin alındı. En kısa sürede dönüş yapacağız."
+    "reportIssueSent": "Bildirimin alındı. En kısa sürede dönüş yapacağız.",
+    "blockedUsers": "Engellenen Kullanıcılar",
+    "blockedUsersEmpty": "Engellediğin kimse yok",
+    "blockedUsersEmptyHint": "Birini engellediğinde burada görünür.",
+    "blockedAnonymous": "Anonim kullanıcı",
+    "unblock": "Engeli kaldır",
+    "unblockedDone": "{username} engeli kaldırıldı."
   },
   "nav": {
     "discover": "Keşfet",

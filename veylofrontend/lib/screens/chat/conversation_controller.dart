@@ -653,6 +653,25 @@ class ConversationController extends ChangeNotifier {
     final id = message.id;
     if (id == null || message.isMine) return;
     await _repo.reportPeer(_thread.id, reason: reason, messageId: id);
+    hideMessage(id);
+  }
+
+  /// Şikayet sonrası mesajı ekrandan anında kaldır.
+  void hideMessage(String messageId) {
+    _messages = _messages.where((m) => m.id != messageId).toList();
+    ChatStore.instance.cacheRemoveMessage(_thread.id, messageId);
+    _notify();
+  }
+
+  /// Engellenen kullanıcının bu sohbetteki mesajlarını gizle.
+  void hideMessagesFrom(String userId) {
+    _messages = _messages
+        .where((m) => m.isMine || m.senderId != userId)
+        .toList();
+    if (!_thread.isLocalOnly) {
+      ChatStore.instance.cacheMessages(_thread.id, _messages);
+    }
+    _notify();
   }
 
   Future<void> setMuted(bool muted) async {
